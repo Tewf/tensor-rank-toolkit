@@ -180,24 +180,25 @@ RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& a
 /// returns at the first yes, so a naive count and a tight bound send it to the
 /// same questions, which is the same fact as "it never reads the ceiling".
 ///
-/// This is the other kind of upper bound. `descend_from_ceiling` in
-/// [`descending_sweep.h`](../oracle_guided_search/descending_sweep.h) returns
-/// `[floor, upper]` with a decomposition at `upper` multiplied out against the
-/// map, and that header has always said handing the bracket back leaves exactly
-/// one refutation to buy. It did not: a bare number cannot say whether the bound
-/// was reached or merely assumed, so the walk had to ask at `upper` to find out,
-/// and asking one question per rank from the floor is what it did instead. This
-/// is the type that carries the difference.
+/// This is the other kind of upper bound: one that was *reached* rather than
+/// assumed. A bare number cannot say which it is, so the walk had to ask at
+/// `upper` to find out, and asking one question per rank from the floor is what
+/// it did instead. This is the type that carries the difference.
+///
+/// The producer that motivated it, a descending sweep returning `[floor, upper]`
+/// with the decomposition at `upper` multiplied out, is on the
+/// `rejected-experiments` branch: it was measured and it loses. The type stays
+/// because the distinction is real and free to a caller that already holds a
+/// checked decomposition.
 ///
 /// **It is not the default anywhere, and the measurement says why.** Producing
 /// the bracket costs more than knowing it saves on every fixture in
-/// [`search/`](search/README.md): the sweep buys a yes at every `k` from the
-/// naive ceiling down, while the walk buys the one or two questions
-/// `rank_lower_bound` leaves it. See
-/// [`what-decides-it.md`](search/what-decides-it.md) for the seven numbers. The
-/// seam is here because the promise next door should be true, and because a
-/// caller that already holds a checked decomposition, from a heuristic or from a
-/// previous run, should not have to buy it again.
+/// [`search/`](search/README.md): a sweep buys a yes at every `k` from the naive
+/// ceiling down, while the walk buys the one or two questions `rank_lower_bound`
+/// leaves it. See [`what-decides-it.md`](search/what-decides-it.md) for the
+/// seven numbers. The seam is here for the caller that already holds a checked
+/// decomposition, from a heuristic or from a previous run, and should not have to
+/// buy it again.
 struct AchievedCeiling {
     std::size_t products = 0;
     /// What reached it, checked against the tensor by whoever found it. Empty

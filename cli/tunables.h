@@ -76,7 +76,7 @@ struct Tunables {
     /// (`satisfiability/rank_question.h`), which `run_solver`
     /// (`satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
     /// --max-memory` and `--timeout`, and from the same two flags on
-    /// `find-at-rank` and `deflate-strictly`.
+    /// `deflate-strictly`.
     std::size_t sat_memory_megabytes = 2048;
     std::size_t sat_timeout_seconds = 300;
 
