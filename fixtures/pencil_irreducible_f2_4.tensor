@@ -1,0 +1,25 @@
+# The identity against the companion matrix of x^4 + x + 1, which is irreducible
+# over GF(2).
+#
+# The pencil is regular with characteristic polynomial x^4 + x^3 + 1, the
+# reciprocal of that modulus and irreducible for the same reason. So over GF(16)
+# it splits into four distinct eigenvalues and costs 4, and Kronecker's formula
+# gives 4 over the algebraic closure.
+#
+# Over GF(2) the rank is 6, proved by the exhaustive search: no algorithm with 5
+# products exists (1 897 576 nodes, tree walked to its end) and one with 6 does.
+# This is the fixture that caught the classical formula being a lower bound
+# rather than an answer over a small field, and it is here to keep it caught.
+# Rank is a fact about a field, not only about a tensor.
+field 2
+shape 2 4 4
+
+1 0 0 0
+0 1 0 0
+0 0 1 0
+0 0 0 1
+
+0 0 0 1
+1 0 0 1
+0 1 0 0
+0 0 1 0

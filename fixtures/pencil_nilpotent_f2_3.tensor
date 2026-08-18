@@ -1,0 +1,18 @@
+# A pencil with one nilpotent Jordan block: the identity against N, where N
+# shifts the basis one step and kills the last vector.
+#
+# The classical answer, and the one this fixture exists to hold: a pencil
+# (I_n, J_n(lambda)) has rank n + 1, one more than its size, because the block
+# is not diagonalisable and no change of coordinates makes it so. Here n = 3,
+# so the rank is 4 and not 3. The pencil is regular, so it has no minimal
+# indices at all and every term of the formula but the last two is zero.
+field 2
+shape 2 3 3
+
+1 0 0
+0 1 0
+0 0 1
+
+0 1 0
+0 0 1
+0 0 0
