@@ -48,6 +48,12 @@ constexpr Fixture kFixtures[] = {{"f2_2x2", 3}, {"f2_2x3", 5}};
 int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
+    // Summed over the fixtures rather than asserted per fixture: `f2_2x2` costs
+    // its rank already, so nothing in the pool improves its slices and the two
+    // shortlists there agree by both being empty. One fixture with something in
+    // it is what makes the comparison mean anything.
+    std::size_t shortlisted = 0;
+
     for (const Fixture& fixture : kFixtures) {
         const linear_algebra::Tensor tensor =
             linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
@@ -64,6 +70,25 @@ int main(int argc, char** argv) {
             bilinear_rank::improving_candidates(field, start, pool);
         const std::vector<Matrix> settled =
             bilinear_rank::minimise_rank(field, start, shortlist);
+
+        // The addressed pool is the same pool, so it has to hand back the same
+        // shortlist: the same maps in the same order, since the walk over them
+        // is deterministic and `RankOnePool::at(i)` is element `i`. Asked of the
+        // tensor's own slices rather than of `settled`, where T5 below says the
+        // answer is empty and two empty lists would agree for the wrong reason.
+        const bilinear_rank::RankOnePool addressed(field, tensor.rows(), tensor.columns());
+        std::string built;
+        std::string formed;
+        const std::vector<Matrix> from_maps =
+            bilinear_rank::improving_candidates(field, tensor.slices, pool);
+        for (const Matrix& map : from_maps) built += key_of(field, map) + ";";
+        for (const Matrix& map :
+             bilinear_rank::improving_candidates(field, tensor.slices, addressed)) {
+            formed += key_of(field, map) + ";";
+        }
+        check::equal(label + ": the addressed pool shortlists the same maps",
+                     built == formed ? 1 : 0, 1);
+        shortlisted += from_maps.size();
 
         // Theorem 2, soundness. The invariant is span(S) contains span(T), so
         // whatever comes back still computes the map it came from.
@@ -115,6 +140,9 @@ int main(int argc, char** argv) {
         check::equal(label + ": and the stabiliser is not the trivial group",
                      stabiliser.size() > 1 ? 1 : 0, 1);
     }
+
+    check::equal("the two pools were compared on a shortlist with maps in it",
+                 shortlisted > 0 ? 1 : 0, 1);
 
     return check::report("descent guarantees");
 }

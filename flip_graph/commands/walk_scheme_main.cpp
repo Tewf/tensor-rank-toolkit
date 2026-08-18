@@ -45,10 +45,13 @@ std::vector<bilinear_rank::Matrix> heuristic_scheme(const bilinear_rank::Field& 
                                                    const linear_algebra::Tensor& tensor) {
     const std::vector<bilinear_rank::Matrix> current =
         bilinear_rank::descend_from_own_basis(field, tensor.slices);
-    const std::vector<bilinear_rank::Matrix> everything =
-        bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
+    // Addressed, not built. This is one forward scan that keeps no index once it
+    // is past, so the pool never has to exist at once: the two vector lists cost
+    // `p^rows + p^columns` against the grid's product, and only the shortlist
+    // that comes back is held.
+    const bilinear_rank::RankOnePool pool(field, tensor.rows(), tensor.columns());
     return bilinear_rank::minimise_rank(
-        field, current, bilinear_rank::improving_candidates(field, current, everything));
+        field, current, bilinear_rank::improving_candidates(field, current, pool));
 }
 
 /// Does this scheme still compute the map it started from? Asked of every

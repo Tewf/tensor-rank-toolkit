@@ -136,16 +136,24 @@ int run(int argc, char** argv) {
     }
 
     if (wanted_steps >= 3) {
-        const std::vector<bilinear_rank::Matrix> everything =
-            bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
-        std::cerr << "step 3 pool: " << everything.size() << " rank-one maps\n";
+        // The pool addressed rather than built. `size()` is the same number
+        // `all_rank_one_maps` would have reported and costs the two vector lists
+        // rather than their product in matrices, so the line below is printed
+        // before anything has decided whether the grid is needed at all.
+        const bilinear_rank::RankOnePool pool(field, tensor.rows(), tensor.columns());
+        std::cerr << "step 3 pool: " << pool.size() << " rank-one maps\n";
 
         if (symmetry.kind == cli::SymmetryKind::None) {
             const std::vector<bilinear_rank::Matrix> shortlist =
-                bilinear_rank::improving_candidates(field, current, everything);
+                bilinear_rank::improving_candidates(field, current, pool);
             std::cerr << "step 3 shortlist: " << shortlist.size() << "\n";
             current = bilinear_rank::minimise_rank(field, current, shortlist);
             if (plateau_budget > 0) {
+                // Built here and nowhere else on this path. `cross_plateaus`
+                // indexes a materialised pool, so --plateau still pays for the
+                // grid; a run without it now never allocates one.
+                const std::vector<bilinear_rank::Matrix> everything =
+                    bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
                 bilinear_rank::PlateauReport crossing;
                 current = bilinear_rank::cross_plateaus(field, current, everything, {},
                                                         plateau_budget, plateau_states, &crossing);
@@ -154,6 +162,13 @@ int run(int argc, char** argv) {
                           << " states, best " << crossing.best << "\n";
             }
         } else {
+            // Materialised, deliberately. `pool_orbits.h` keys its orbit tables
+            // by pool index and `minimise_rank_up_to_symmetry` reads `pool[i]`
+            // back out of them, so this path wants the grid in the order
+            // `all_rank_one_maps` builds it and an addressed pool would only
+            // move the same allocation inside the loop.
+            const std::vector<bilinear_rank::Matrix> everything =
+                bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
             const std::vector<bilinear_rank::Automorphism> ambient =
                 bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry);
             std::cerr << "step 3 ambient generators: " << ambient.size() << "\n";

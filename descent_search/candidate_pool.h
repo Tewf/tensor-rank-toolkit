@@ -38,10 +38,18 @@ std::vector<std::vector<int64_t>> normalised_vectors(const Field& field, std::si
 /// so the two are interchangeable elementwise and
 /// [`tests/test_candidate_pool.cpp`](tests/test_candidate_pool.cpp) asserts it.
 ///
-/// This does not make either search lazy: both index a materialised pool today,
-/// and the exact search carries a pool index down its recursion. It is the piece
-/// they would need first, and it is what lets a caller visit the pool in order
-/// without asking for room it has not got.
+/// Step 3 walks this rather than the grid on its unquotiented path, and so does
+/// `walk-scheme --from`, which is what [`improving_candidates`](minimise_rank.h)
+/// has a second overload for: on the 9x9 slices of `⟨3,3,3⟩` that is 16.7 MB of
+/// resident memory against 189.4 MB, measured both ways at the same cut-off.
+///
+/// The rest still materialise, and for a reason rather than for want of the
+/// conversion. The exact search carries a pool index down its recursion,
+/// canonical augmentation reads one again on the way back up, and the quotiented
+/// step 3 keys its orbit tables by pool position, so all three revisit an index
+/// and would rebuild a map once per visit instead of once per run. What this
+/// buys is a caller that visits the pool in order without asking for room it has
+/// not got.
 class RankOnePool {
    public:
     RankOnePool(const Field& field, std::size_t rows, std::size_t columns);
