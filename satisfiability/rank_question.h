@@ -157,7 +157,7 @@ struct RankBounds {
 /// they are the cheap ones far from the rank.
 ///
 /// **Measured against descending, bisection and the two gallops**, on seven
-/// fixtures at one ceiling each, in [`search.md`](search.md). It wins on the
+/// fixtures at one ceiling each, in [`search/`](search/README.md). It wins on the
 /// cheap ones and **lost on the only expensive one, coming fourth of five on
 /// GF(16)**, where the floor was five short so it walked through a 3.7 s question
 /// no other schedule asks. That handicap is gone: the floor there is now 8 rather
@@ -173,6 +173,47 @@ struct RankBounds {
 /// The upper bound is still wanted, as somewhere to stop.
 RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, std::size_t ceiling);
+
+/// A ceiling somebody has already reached, and the decomposition that reached it.
+///
+/// The `ceiling` above is a place to stop and nothing more. The walk ascends and
+/// returns at the first yes, so a naive count and a tight bound send it to the
+/// same questions, which is the same fact as "it never reads the ceiling".
+///
+/// This is the other kind of upper bound. `descend_from_ceiling` in
+/// [`descending_sweep.h`](../oracle_guided_search/descending_sweep.h) returns
+/// `[floor, upper]` with a decomposition at `upper` multiplied out against the
+/// map, and that header has always said handing the bracket back leaves exactly
+/// one refutation to buy. It did not: a bare number cannot say whether the bound
+/// was reached or merely assumed, so the walk had to ask at `upper` to find out,
+/// and asking one question per rank from the floor is what it did instead. This
+/// is the type that carries the difference.
+///
+/// **It is not the default anywhere, and the measurement says why.** Producing
+/// the bracket costs more than knowing it saves on every fixture in
+/// [`search/`](search/README.md): the sweep buys a yes at every `k` from the
+/// naive ceiling down, while the walk buys the one or two questions
+/// `rank_lower_bound` leaves it. See
+/// [`what-decides-it.md`](search/what-decides-it.md) for the seven numbers. The
+/// seam is here because the promise next door should be true, and because a
+/// caller that already holds a checked decomposition, from a heuristic or from a
+/// previous run, should not have to buy it again.
+struct AchievedCeiling {
+    std::size_t products = 0;
+    /// What reached it, checked against the tensor by whoever found it. Empty
+    /// means nothing was achieved, which makes this the plain ceiling above.
+    std::vector<Matrix> decomposition;
+};
+
+/// The same walk, told that its ceiling is already in hand.
+///
+/// Stops one short of `ceiling.products` rather than at it, since that question
+/// has an answer. Everything else is unchanged, including what a question going
+/// unanswered does: the bracket then reported is `[lower, ceiling.products]`,
+/// which is the achieved bound rather than whatever number was being walked
+/// towards.
+RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
+                     std::size_t floor, const AchievedCeiling& ceiling);
 
 /// Write the question to a file and stop, for a solver of your own.
 ///
