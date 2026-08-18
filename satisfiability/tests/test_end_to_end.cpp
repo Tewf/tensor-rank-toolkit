@@ -96,6 +96,47 @@ void check_membership_direction(const Field& field, const std::string& fixtures,
                  static_cast<long long>(used) <= known_rank ? 1 : 0, 1);
 }
 
+/// The other kind of ceiling: one already reached, handed back.
+///
+/// The walk is run twice. The first has to find the rank; the second is given
+/// the decomposition the first came home with, as an `AchievedCeiling`, and must
+/// reach the same answer without asking at the ceiling again. Strictly fewer
+/// questions is the whole of what the overload buys, so it is asserted rather
+/// than described: on a fixture whose floor already equals its rank the second
+/// run asks none at all.
+void check_achieved_ceiling(const Field& field, const std::string& fixtures,
+                            const std::string& name, long long known_rank) {
+    const auto tensor = linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const std::size_t floor = linear_algebra::flattening_lower_bound(field, tensor.slices);
+
+    satisfiability::SolveOptions approach;
+    approach.break_symmetry = true;
+    approach.plain_cnf = true;
+    approach.timeout_seconds = 300;
+
+    const auto walked =
+        satisfiability::find_rank(tensor, approach, floor, tensor.rows() * tensor.columns());
+    check::equal(name + ": the plain walk finds the rank", static_cast<long long>(walked.upper),
+                 known_rank);
+
+    const satisfiability::AchievedCeiling reached{walked.upper, walked.decomposition};
+    const auto told = satisfiability::find_rank(tensor, approach, floor, reached);
+    check::equal(name + ": a ceiling in hand gives the same rank",
+                 static_cast<long long>(told.upper), known_rank);
+    check::equal(name + ": and it is still a determination", told.exact ? 1 : 0, 1);
+    check::equal(name + ": asked with one question fewer than finding it took",
+                 told.questions_asked < walked.questions_asked ? 1 : 0, 1);
+    check::equal(name + ": and keeps the decomposition it was handed",
+                 told.decomposition.size() == walked.decomposition.size() ? 1 : 0, 1);
+
+    // A bare number is not an achieved bound, so the walk still has to ask at it.
+    // This is the line that would fail if the overload ever started guessing.
+    const satisfiability::AchievedCeiling assumed_only{walked.upper, {}};
+    const auto assumed = satisfiability::find_rank(tensor, approach, floor, assumed_only);
+    check::equal(name + ": a ceiling with nothing behind it is still asked about",
+                 assumed.questions_asked == walked.questions_asked ? 1 : 0, 1);
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -112,6 +153,7 @@ int main(int argc, char** argv) {
     }
 
     check_membership_direction(field, fixtures, "f2_2x2", 3, false);
+    check_achieved_ceiling(field, fixtures, "f2_2x2", 3);
     if (slow) {
         // Bigger, and with the refusal checked by drat-trim when it is present.
         // A proof is asked for only from a solver that writes one, since asking

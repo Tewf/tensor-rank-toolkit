@@ -210,12 +210,18 @@ namespace {
 /// Walk up from the floor to the first satisfiable rank. False if a question
 /// went unanswered, which moves no bound: an unknown is not a no, and treating
 /// it as one would invent a lower bound.
+///
+/// `achieved` says the question at `bounds.upper` has an answer already, so the
+/// walk stops one short of it. Refusing everything below an achieved bound is
+/// then a determination on its own: `lower` arrives at `upper` with the
+/// decomposition already there.
 bool narrow(const linear_algebra::Tensor& tensor, const SolveOptions& approach, std::size_t budget,
-            RankBounds& bounds) {
+            bool achieved, RankBounds& bounds) {
     SolveOptions limited = approach;
     limited.timeout_seconds = budget;
 
-    for (std::size_t k = bounds.lower; k <= bounds.upper; ++k) {
+    const std::size_t last = achieved ? bounds.upper - 1 : bounds.upper;
+    for (std::size_t k = bounds.lower; k <= last; ++k) {
         const Answer answer = decide_rank(tensor, k, limited);
         ++bounds.questions_asked;
         bounds.seconds += answer.seconds;
@@ -236,15 +242,27 @@ bool narrow(const linear_algebra::Tensor& tensor, const SolveOptions& approach, 
 
 RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, std::size_t ceiling) {
+    return find_rank(tensor, approach, floor, AchievedCeiling{ceiling, {}});
+}
+
+RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
+                     std::size_t floor, const AchievedCeiling& ceiling) {
     RankBounds bounds;
     bounds.lower = floor;
-    bounds.upper = ceiling;
+    bounds.upper = ceiling.products;
+
+    // Both halves are checked, not just the count: a `products` with nothing
+    // behind it is the plain ceiling, and stopping short of it would skip the
+    // one question that could have answered the whole thing. Zero is refused for
+    // the same reason and because `upper - 1` has nowhere to go.
+    const bool achieved = ceiling.products > 0 && !ceiling.decomposition.empty();
+    if (achieved) bounds.decomposition = ceiling.decomposition;
 
     // A cheap pass first when one is asked for. Whatever it settles is settled
     // soundly, and whatever it gives up on is left for the pass that can afford
     // it, so the large budget is spent on a bracket rather than on a guess.
     if (approach.probe_seconds > 0 && approach.probe_seconds < approach.timeout_seconds) {
-        narrow(tensor, approach, approach.probe_seconds, bounds);
+        narrow(tensor, approach, approach.probe_seconds, achieved, bounds);
 
         // A probe that reached the rank has already answered the question, and
         // asking it again at the full budget is a free call spent re-deriving a
@@ -256,7 +274,7 @@ RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& a
         }
     }
 
-    bounds.exact = narrow(tensor, approach, approach.timeout_seconds, bounds) &&
+    bounds.exact = narrow(tensor, approach, approach.timeout_seconds, achieved, bounds) &&
                    bounds.lower == bounds.upper;
     return bounds;
 }
