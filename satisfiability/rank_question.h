@@ -32,8 +32,15 @@ struct SolveOptions {
     /// over any field, and the scaling of its operand vectors over GF(p).
     /// Sound, and worth a great deal on a question expected to answer no.
     bool break_symmetry = false;
-    /// Pin a solver instead of taking the best fit.
+    /// Pin a solver instead of taking the best fit. Stronger than `solver_order`
+    /// and not a reordering of it: a named solver is used or the run has none.
     std::string solver;
+
+    /// Which solvers to try, best first, of those on `PATH`. Empty takes
+    /// `default_solver_order` in [`solver_process.h`](solver_process.h), which
+    /// is the compiled default and holds the measurement behind it. The commands
+    /// fill this from `sat_solver_order` in `tunables.conf`.
+    std::vector<std::string> solver_order;
     /// Bias the solver toward the answer this question is expected to have.
     /// See `Tuning` in [`solver_process.h`](solver_process.h): kissat ships the
     /// two configurations and a sweep knows which way each question leans.

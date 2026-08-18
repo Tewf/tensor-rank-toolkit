@@ -15,3 +15,12 @@ add_test(NAME report COMMAND test_report)
 add_executable(test_tunables test_tunables.cpp)
 target_link_libraries(test_tunables PRIVATE cli project_warnings testing)
 add_test(NAME tunables COMMAND test_tunables ${PROJECT_SOURCE_DIR})
+
+# That a file bounds a real run, which the check above cannot see: both its sides
+# come from tunables.h, so it passed throughout the period when no command
+# included the header. This one spends a process, the way satisfiability/ asserts
+# the exit codes against the built commands rather than describing them.
+add_test(NAME tunables_bound_a_run
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_tunables_bound_a_run.sh
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+set_tests_properties(tunables_bound_a_run PROPERTIES TIMEOUT 120)

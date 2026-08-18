@@ -37,11 +37,15 @@ unsigned& time_limit_storage() {
 unsigned solver_time_limit() { return time_limit_storage(); }
 void set_solver_time_limit(unsigned seconds) { time_limit_storage() = seconds; }
 
-const std::vector<Backend>& ranked_backends() {
-    static const std::vector<Backend> ranking{Backend::Gurobi, Backend::Cbc, Backend::Glpk,
-                                              Backend::LpSolve, Backend::BuiltIn};
+namespace {
+std::vector<Backend>& ranking_storage() {
+    static std::vector<Backend> ranking{Backend::Gurobi, Backend::Cbc, Backend::Glpk,
+                                        Backend::LpSolve, Backend::BuiltIn};
     return ranking;
 }
+}  // namespace
+
+const std::vector<Backend>& ranked_backends() { return ranking_storage(); }
 
 std::string name_of(Backend backend) {
     switch (backend) {
@@ -61,6 +65,23 @@ Backend backend_named(const std::string& name, bool& recognised) {
     }
     recognised = false;
     return Backend::BuiltIn;
+}
+
+bool set_backend_order(const std::vector<std::string>& names, std::string& unrecognised) {
+    if (names.empty()) return true;
+    std::vector<Backend> order;
+    order.reserve(names.size());
+    for (const std::string& name : names) {
+        bool recognised = false;
+        const Backend backend = backend_named(name, recognised);
+        if (!recognised) {
+            unrecognised = name;
+            return false;
+        }
+        order.push_back(backend);
+    }
+    ranking_storage() = order;
+    return true;
 }
 
 namespace {

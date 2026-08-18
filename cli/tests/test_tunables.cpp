@@ -1,6 +1,14 @@
 /// That the shipped file says exactly what the code compiles in, and that a
 /// typo in it stops the run.
 ///
+/// **What this file cannot see, and `check_tunables_bound_a_run.sh` beside it
+/// does.** Every check here reads `tunables.h` on both sides of the comparison,
+/// so all of it passed throughout the period when nothing outside `cli/`
+/// included that header: each command was still bounded by its own literal and
+/// the file bounded nothing at all. The sibling script spends a process on the
+/// question this one cannot ask, which is whether a number in a file reaches the
+/// search.
+///
 /// `tunables.h` promises that "every default here is the number that was
 /// compiled in before, so a machine with no file behaves exactly as it did", and
 /// that `tunables.conf` "writes out every default, so the format needs no

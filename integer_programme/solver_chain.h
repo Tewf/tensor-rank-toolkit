@@ -30,7 +30,24 @@ namespace optimisation {
 /// because it is the slowest and the only one that never needs checking.
 enum class Backend { Gurobi, Cbc, Glpk, LpSolve, BuiltIn };
 
+/// The order in force, which is the compiled ranking until a caller changes it.
 const std::vector<Backend>& ranked_backends();
+
+/// Reorder them by name, best first. False, with the offending name in
+/// `unrecognised`, when one of them is not a backend here.
+///
+/// Names and not `Backend`s because the caller is a command holding the words
+/// `tunables.conf` gave it, and one conversion in one place beats the same loop
+/// in every command. An argument rather than a config file read here, for the
+/// reason the whole tunables layer exists: a library that opens `tunables.conf`
+/// binds every caller to a working directory. A name nothing here has is refused
+/// rather than skipped, exactly as `set_tunable` refuses an unknown tunable.
+///
+/// **The built-in's position is not yours to choose.** `solve` walks the order
+/// for a *point*, which it can check, and reaches the built-in last whatever the
+/// order says, because the built-in's refusal is the only one believed. Listing
+/// it first reorders nothing.
+bool set_backend_order(const std::vector<std::string>& names, std::string& unrecognised);
 
 std::string name_of(Backend backend);
 Backend backend_named(const std::string& name, bool& recognised);

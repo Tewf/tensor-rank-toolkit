@@ -63,6 +63,20 @@ inline std::size_t parse_count(const std::string& named, const std::string& text
     }
 }
 
+/// A memory size, with the flag's name in front of the reason it was refused.
+///
+/// `size_argument.h` throws a `std::runtime_error`, which every command that
+/// walks its own line turned into exit 5: a bad word on the command line
+/// reported as a tool that could not run. The wrapping lives here once so that
+/// `--max-memory bogus` leaves as 2 wherever it is written.
+inline std::size_t parse_memory_size(const std::string& named, const std::string& text) {
+    try {
+        return parse_size(text);
+    } catch (const std::exception& problem) {
+        throw ArgumentError(named + ": " + problem.what());
+    }
+}
+
 /// A whole number, which may be negative because `--target -1` is how three
 /// commands spell "no target given".
 inline long long parse_whole_number(const std::string& named, const std::string& text) {
@@ -151,14 +165,7 @@ class Arguments {
 
     /// `2G`, `2048K` or a count of bytes, read by `size_argument.h` and refused
     /// with the flag's name in front of its reason.
-    std::size_t memory_size() {
-        const std::string word = text();
-        try {
-            return parse_size(word);
-        } catch (const std::exception& problem) {
-            throw ArgumentError(flag_ + ": " + problem.what());
-        }
-    }
+    std::size_t memory_size() { return parse_memory_size(flag_, text()); }
 
     /// Hand the rest of the line to a parser that reads several words of its
     /// own: `arguments.parsed_by(cli::parse_symmetry)`. It leaves the cursor on

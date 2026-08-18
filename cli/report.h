@@ -19,13 +19,15 @@
 /// output that is readable by external tools is the point of this layer, and
 /// this is the half of it that costs one character.
 ///
-/// Today `decide-rank-by-ilp` already does this by hand, prefixing its own
-/// commentary with `#`, and `minimise-rank` splits the streams but writes its
-/// commentary bare. That second half is the fault: merging the two streams
-/// (`2>&1`, which is what a CI log does) then produces a file no reader can
-/// parse, because it stops at the first line that does not look like data, and a
-/// bare progress line looks exactly like data. So the convention is not new here,
-/// it is one command's practice made available to the other seven.
+/// Today the writers in [`formats/`](../formats/) already do this, commenting
+/// every header line they emit (`sms_file.cpp`, `tensor_file.cpp`,
+/// `dense_matrix_file.cpp`), while no command does: `minimise-rank` splits the
+/// streams but writes its commentary bare. That second half is the fault:
+/// merging the two streams (`2>&1`, which is what a CI log does) then produces a
+/// file no reader can parse, because it stops at the first line that does not
+/// look like data, and a bare progress line looks exactly like data. So the
+/// convention is not new here, it is the file writers' practice made available
+/// to the eleven commands.
 namespace cli {
 
 /// One piece of commentary, on stderr, with `#` in front of every line of it.

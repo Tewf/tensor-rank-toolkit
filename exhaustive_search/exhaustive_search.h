@@ -30,7 +30,7 @@ namespace bilinear_rank {
 /// because the node limit stopped it first. Those are very different claims, and
 /// taking the second for the first publishes a lower bound nobody proved.
 ///
-/// The word points the other way in `optimisation/branch_and_bound.cpp`, where
+/// The word points the other way in `integer_programme/branch_and_bound.cpp`, where
 /// `Status::Exhausted` is the budget running out. Same name, opposite sense, and
 /// no relation: that one is a different struct in a different namespace.
 struct SearchBudget {

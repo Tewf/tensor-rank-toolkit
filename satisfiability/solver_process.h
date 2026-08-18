@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 
 #include "dimacs_file.h"
 #include "smtlib_file.h"
@@ -56,10 +57,23 @@ struct SatSolver {
     bool writes_proofs = false;
 };
 
+/// The order the solvers are looked for in, when a caller names none.
+///
+/// A function and not a constant because it is also the compiled default of the
+/// argument below, and one of the two would otherwise be a copy of the other.
+const std::vector<std::string>& default_solver_order();
+
 /// Look for a SAT solver. `prefer_xor` asks for one that takes parity
 /// constraints natively, which is only worth it on GF(2); `named` pins a
-/// choice instead of taking the preference.
-SatSolver find_sat_solver(bool prefer_xor, const std::string& named = "");
+/// choice instead of taking the preference; `order` is which to try first, of
+/// those on `PATH`.
+///
+/// `order` is an argument rather than read from `tunables.conf` here, because a
+/// library that opens a config file binds every caller to a working directory.
+/// The command reads the file and fills `SolveOptions::solver_order`; an empty
+/// order means `default_solver_order`.
+SatSolver find_sat_solver(bool prefer_xor, const std::string& named = "",
+                          const std::vector<std::string>& order = default_solver_order());
 
 /// Where `drat-trim` is, or empty. Without it a proof can be written but not
 /// checked, and a refusal stays a matter of trusting the solver.
