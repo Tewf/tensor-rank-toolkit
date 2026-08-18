@@ -122,7 +122,7 @@ Algorithm algorithm_of(const Scheme& scheme) {
     return algorithm;
 }
 
-std::size_t reduce(const Field& field, Scheme& scheme) {
+std::size_t merge_shared_terms(const Field& field, Scheme& scheme) {
     std::size_t removed = 0;
     for (bool again = true; again;) {
         again = false;
@@ -174,10 +174,10 @@ std::size_t reduce(const Field& field, Scheme& scheme) {
     return removed;
 }
 
-Scheme walk(const Field& field, Scheme scheme, std::size_t steps, std::uint64_t seed,
+Scheme random_flip_walk(const Field& field, Scheme scheme, std::size_t steps, std::uint64_t seed,
             FlipReport* report) {
     std::mt19937_64 generator(seed);
-    reduce(field, scheme);
+    merge_shared_terms(field, scheme);
 
     Scheme best = scheme;
     std::size_t flips = 0;
@@ -216,7 +216,7 @@ Scheme walk(const Field& field, Scheme scheme, std::size_t steps, std::uint64_t 
         subtract_from(field, part(scheme[move.second], third), was_third);
         ++flips;
 
-        const std::size_t gone = reduce(field, scheme);
+        const std::size_t gone = merge_shared_terms(field, scheme);
         reductions += gone;
         if (scheme.size() < best.size()) best = scheme;
     }

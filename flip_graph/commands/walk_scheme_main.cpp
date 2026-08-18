@@ -123,7 +123,7 @@ int run(int argc, char** argv) {
     std::size_t best = start.size();
     for (std::size_t seed = 1; seed <= seeds; ++seed) {
         bilinear_rank::FlipReport report;
-        const bilinear_rank::Scheme walked = bilinear_rank::walk(field, start, flips, seed, &report);
+        const bilinear_rank::Scheme walked = bilinear_rank::random_flip_walk(field, start, flips, seed, &report);
         if (walked.size() >= best) continue;
         if (!computes(field, tensor.slices, walked)) {
             std::cout << "  seed " << seed << ": " << walked.size()

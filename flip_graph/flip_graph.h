@@ -64,9 +64,9 @@ Algorithm algorithm_of(const Scheme& scheme);
 
 /// Merge any two terms that share two factors, as many times as possible, and
 /// say how many products that removed.
-std::size_t reduce(const Field& field, Scheme& scheme);
+std::size_t merge_shared_terms(const Field& field, Scheme& scheme);
 
-/// What the walk did.
+/// What the random flip walk did.
 struct FlipReport {
     std::size_t flips = 0;
     std::size_t reductions = 0;
@@ -78,7 +78,7 @@ struct FlipReport {
 ///
 /// `seed` is taken rather than drawn, so a run that finds something can be run
 /// again and find it again.
-Scheme walk(const Field& field, Scheme scheme, std::size_t steps, std::uint64_t seed,
+Scheme random_flip_walk(const Field& field, Scheme scheme, std::size_t steps, std::uint64_t seed,
             FlipReport* report);
 
 }  // namespace bilinear_rank
