@@ -15,6 +15,7 @@ GF(p), in polynomial time and with no candidate pool at all.
 | the Kronecker structure | **exact**, and checked three ways against itself |
 | rank over the algebraic closure | **exact**, by `[jaja1979]`, so a **proved lower bound** over GF(p) |
 | rank over GF(p) | **exact** when the pencil is diagonalisable there; a bound otherwise |
+| the projection bound on a bigger tensor | **sound**, and weaker than `rank_lower_bound` |
 
 The structure is checked rather than trusted. The regular part's size is counted
 along the rows and along the columns, and separately as the total degree of the
