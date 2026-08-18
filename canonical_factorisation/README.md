@@ -51,24 +51,22 @@ and it consults nothing about how the answer was found. The tests tamper with
 one entry of `A` and require the refusal, so the checker is known to be capable
 of saying no.
 
-## What "the most improved version" means here
+## How the rows are found
 
-The rows are found by the strongest route this repository has for the shape,
-rather than by a search of its own:
+By the strongest route this repository has for the shape rather than by a search
+of its own, and the choices are recorded in [`routes.md`](routes.md). The one
+worth knowing here: the sweep runs **upward** from the proved floor and never
+bisects, so every question below the answer is a refutation that was completed,
+which is what makes the first success minimal rather than merely successful.
+`minimal` goes false the moment any budget runs out, and the count is reported
+as an upper bound instead.
 
-- The floor is `rank_lower_bound`, the maximum of the flattening bound and both
-  rank sums. It raises GF(16) from 4 to 8 and costs milliseconds.
-- The ceiling is the sum of the slices' ranks, reachable by decomposing each
-  slice alone, so no search is spent establishing that one exists.
-- The sweep runs **upward** from the floor, not by bisection. Every question
-  below the answer is then a refutation that was completed, which is what makes
-  the first success minimal rather than merely successful.
-- It is quotiented by the stabiliser of the slice space where a group can be
-  built for the shape, and falls back silently where one cannot, because the
-  quotient changes the time and never the answer.
-- `minimal` goes false the moment any budget runs out, and the count is reported
-  as an upper bound instead. A question nobody finished asking is not a question
-  answered no.
+## Two routes
+
+`--route exhaustive` materialises the pool of rank-one maps; `--route sat` never
+forms one, so its space is polynomial in the shape. `--route auto` takes the
+solver past 20 000 pool matrices. Which to use, what each costs, and why
+`GL(n) x GL(m)` cannot shrink the pool: [`routes.md`](routes.md).
 
 ## What it does not do
 

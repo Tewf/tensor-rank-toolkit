@@ -12,6 +12,7 @@
 #include "check.h"
 #include "factorisation.h"
 #include "measures.h"
+#include "solver_process.h"
 #include "tensor_file.h"
 
 namespace {
@@ -69,6 +70,37 @@ int main(int argc, char** argv) {
         // the answer would be a false lower bound rather than a slow search.
         check::equal(label + ": the floor does not exceed the answer",
                      factorisation.floor <= factorisation.components ? 1 : 0, 1);
+    }
+
+    // The two routes must agree, and they share almost nothing: one walks a tree
+    // over a materialised pool, the other hands clauses over the operand vectors
+    // to somebody else's solver and never enumerates a rank-one map. A shape
+    // where they disagree is a defect in whichever is wrong, and the check costs
+    // one extra solve on tensors this small.
+    //
+    // Skipped when no solver is on PATH, and skipped loudly: a route that was
+    // never run reported as agreeing is the worst outcome available here.
+    if (satisfiability::find_sat_solver(false).found) {
+        for (const Fixture& fixture : kFixtures) {
+            const linear_algebra::Tensor tensor =
+                linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+            const linear_algebra::ModularField field(tensor.characteristic);
+
+            canonical_factorisation::FactorisationSettings by_solver;
+            by_solver.route = canonical_factorisation::Route::Satisfiability;
+            const canonical_factorisation::Factorisation solved =
+                canonical_factorisation::factor_over_canonical_basis(field, tensor.slices,
+                                                                     by_solver);
+
+            check::equal(std::string(fixture.name) + ": the SAT route finds the same count",
+                         static_cast<long long>(solved.components), fixture.rank);
+            check::equal(std::string(fixture.name) + ": and its C A is the tensor too",
+                         canonical_factorisation::recovers_slices(field, tensor.slices, solved) ? 1
+                                                                                                : 0,
+                         1);
+        }
+    } else {
+        std::cout << "  skip  no SAT solver on PATH, so the routes were not compared\n";
     }
 
     // A factorisation that is tampered with must be refused. Without this the

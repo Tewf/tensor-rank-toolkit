@@ -1,5 +1,6 @@
 #include "factorisation.h"
 
+#include <limits>
 #include <vector>
 
 #include "bilinear_rank_aliases.h"
@@ -10,6 +11,8 @@
 #include "measures.h"
 #include "orbit_search.h"
 #include "rank_lower_bound.h"
+#include "rank_question.h"
+#include "solver_process.h"
 #include "solver.h"
 
 namespace canonical_factorisation {
@@ -52,6 +55,35 @@ bool recovery_for(const ModularField& field, const std::vector<ModularMatrix>& s
     return true;
 }
 
+/// How many rank-one matrices the shape has, without forming one of them.
+///
+/// `(p^n - 1)(p^m - 1)/(p-1)^2`, which is what the exhaustive route would have
+/// to hold and what the SAT route does not.
+std::size_t pool_size_for(const ModularField& field, std::size_t rows, std::size_t columns) {
+    const std::size_t characteristic = static_cast<std::size_t>(field.residu());
+    const std::size_t ceiling = std::numeric_limits<std::size_t>::max();
+
+    // The count overflows long before the pool becomes formable, and a wrapped
+    // size would read as small and send a hopeless shape to the pool route. So
+    // saturate: anything past here is "too many to count", which is the only
+    // thing the caller does with the number anyway.
+    std::size_t left = 1;
+    std::size_t right = 1;
+    for (std::size_t step = 0; step < rows; ++step) {
+        if (left > ceiling / characteristic) return ceiling;
+        left *= characteristic;
+    }
+    for (std::size_t step = 0; step < columns; ++step) {
+        if (right > ceiling / characteristic) return ceiling;
+        right *= characteristic;
+    }
+    const std::size_t scalars = characteristic - 1;
+    const std::size_t classes = (left - 1) / scalars;
+    const std::size_t others = (right - 1) / scalars;
+    if (classes != 0 && others > ceiling / classes) return ceiling;
+    return classes * others;
+}
+
 /// The stabiliser of the slice space, or nothing when no ambient group can be
 /// built for the shape. Falling back is not a wrong answer, only a slower one.
 std::vector<bilinear_rank::Automorphism> stabiliser_or_nothing(
@@ -63,6 +95,48 @@ std::vector<bilinear_rank::Automorphism> stabiliser_or_nothing(
     } catch (const std::exception&) {
         return {};
     }
+}
+
+}  // namespace
+
+namespace {
+
+/// The SAT route: the same sweep, asked of somebody else's solver.
+///
+/// `find_rank` walks up from the floor exactly as the loop below does, and
+/// returns a decomposition it has already checked against the tensor. What it
+/// never does is enumerate the rank-one maps: the condition is clauses over the
+/// operand vectors, so the space is polynomial in the shape rather than
+/// exponential in it.
+Factorisation by_satisfiability(const ModularField& field,
+                                const std::vector<ModularMatrix>& slices, std::size_t floor,
+                                std::size_t ceiling) {
+    Factorisation factorisation;
+    factorisation.route = Route::Satisfiability;
+    factorisation.floor = floor;
+    factorisation.pool_size =
+        pool_size_for(field, slices.front().rows(), slices.front().columns());
+
+    linear_algebra::Tensor tensor;
+    tensor.characteristic = static_cast<int64_t>(field.residu());
+    tensor.slices = slices;
+
+    satisfiability::SolveOptions approach;
+    approach.break_symmetry = true;
+
+    const satisfiability::RankBounds bounds =
+        satisfiability::find_rank(tensor, approach, floor, ceiling);
+    if (bounds.decomposition.empty()) return factorisation;
+
+    factorisation.chosen =
+        rows_of(bounds.decomposition, slices.front().rows() * slices.front().columns());
+    factorisation.components = bounds.decomposition.size();
+    factorisation.minimal = bounds.exact;
+    if (!recovery_for(field, slices, factorisation.chosen, factorisation.recovery)) {
+        throw cli::CheckFailed(
+            "canonical_factorisation: the solver's decomposition does not span the slices");
+    }
+    return factorisation;
 }
 
 }  // namespace
@@ -85,6 +159,25 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
     const std::size_t ceiling = settings.ceiling > 0
                                     ? settings.ceiling
                                     : linear_algebra::multiplication_count(field, slices);
+
+    factorisation.pool_size =
+        pool_size_for(field, slices.front().rows(), slices.front().columns());
+
+    // The route, decided once and recorded. A solver that is not installed is
+    // not a reason to fail: the pool route answers the same question, and
+    // saying which one ran is what keeps the two comparable.
+    Route route = settings.route;
+    if (route == Route::Automatic) {
+        const bool solver_available =
+            satisfiability::find_sat_solver(false, "", satisfiability::default_solver_order()).found;
+        route = (factorisation.pool_size > settings.pool_ceiling && solver_available)
+                    ? Route::Satisfiability
+                    : Route::Exhaustive;
+    }
+    if (route == Route::Satisfiability) {
+        return by_satisfiability(field, slices, factorisation.floor, ceiling);
+    }
+    factorisation.route = Route::Exhaustive;
 
     const std::vector<ModularMatrix> pool =
         bilinear_rank::all_rank_one_maps(field, slices.front().rows(), slices.front().columns());

@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
     if (argc < 2) {
         std::cerr << "usage: factor-over-canonical-basis <tensor-file> [--floor k]\n"
                   << "                                   [--node-limit n] [--symmetry none]\n"
+                  << "                                   [--route auto|exhaustive|sat]\n"
                   << "  Writes A over the canonical basis, every row a rank-one matrix, and\n"
                   << "  the C with C A equal to the tensor's slices. The number of rows of A\n"
                   << "  is the rank when the sweep below it was complete.\n";
@@ -52,6 +53,19 @@ int main(int argc, char** argv) {
                 settings.floor = cli::parse_count(option, argv[++argument]);
             } else if (option == "--node-limit" && argument + 1 < argc) {
                 settings.node_limit = cli::parse_count(option, argv[++argument]);
+            } else if (option == "--route" && argument + 1 < argc) {
+                const std::string named = argv[++argument];
+                if (named == "auto") {
+                    settings.route = canonical_factorisation::Route::Automatic;
+                } else if (named == "exhaustive") {
+                    settings.route = canonical_factorisation::Route::Exhaustive;
+                } else if (named == "sat") {
+                    settings.route = canonical_factorisation::Route::Satisfiability;
+                } else {
+                    std::cerr << "factor-over-canonical-basis: --route takes auto, exhaustive or "
+                                 "sat, not '" << named << "'\n";
+                    return cli::exit_status(cli::ExitCode::Usage);
+                }
             } else if (option == "--symmetry" && argument + 1 < argc) {
                 settings.use_symmetry = std::string(argv[++argument]) != "none";
             } else {
@@ -83,6 +97,11 @@ int main(int argc, char** argv) {
                   << tensor.slices.size() << " slices of " << tensor.rows() << "x"
                   << tensor.columns() << "\n";
         std::cout << "floor: " << factorisation.floor << " (proved)\n";
+        std::cout << "route: "
+                  << (factorisation.route == canonical_factorisation::Route::Satisfiability
+                          ? "a SAT solver, which formed no pool"
+                          : "exhaustion over the materialised pool")
+                  << ", where the pool would be " << factorisation.pool_size << " matrices\n";
         write_matrix("A, over the canonical basis", factorisation.chosen);
         write_matrix("C, the recovery", factorisation.recovery);
         std::cout << "checked: every row of A has rank 1, and C A is the tensor\n";
