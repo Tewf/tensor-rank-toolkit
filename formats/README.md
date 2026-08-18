@@ -6,9 +6,17 @@ the code it feeds. Three formats, and the reason there are three.
 
 | File | Holds | Read by | Written by |
 |---|---|---|---|
-| `.tensor` | a bilinear map, as one dense matrix per output coordinate | [`tensor_file.h`](tensor_file.h) | `make-tensor` |
-| `.matrix` | one operator, entries integer or `4/9` | [`dense_matrix_file.h`](dense_matrix_file.h) | the fixtures, by hand |
-| `.sms` | the same, in the sparse format LinBox, Givaro and PLinOpt speak | [`sms_file.h`](sms_file.h) | `minimise-rank --emit-operators` |
+| `.tensor` | a bilinear map, as one dense matrix per output coordinate | [`tensor_file.h`](tensor_file.h) | [`tensor_file.h`](tensor_file.h) |
+| `.matrix` | one operator, entries integer or `4/9` | [`dense_matrix_file.h`](dense_matrix_file.h) | [`dense_matrix_file.h`](dense_matrix_file.h) |
+| `.sms` | the same, in the sparse format LinBox, Givaro and PLinOpt speak | [`sms_file.h`](sms_file.h) | [`sms_file.h`](sms_file.h) |
+
+The last two columns naming the same header is the point of the table rather
+than a redundancy in it. A format whose halves sit in different layers cannot be
+round tripped, so its reader is only ever checked against files somebody typed,
+and the tensor format was in exactly that state while `write_tensor` lived
+inside `make-tensor`. The commands write through these headers now:
+`make-tensor` through `write_tensor`, `minimise-rank --emit-operators` through
+`write_sms_file`.
 
 Both text formats ignore blank lines and `#` comments, so a fixture can say what
 it is. Both refuse what they do not understand: a parse error throws rather than
