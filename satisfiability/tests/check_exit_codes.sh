@@ -6,11 +6,20 @@
 # lower bound. That is not hypothetical here: this repository published an
 # F2 5x5 result built on exactly that confusion, and the last case below is the
 # same command that produced it.
+#
+# It lives under satisfiability/ because that is where the convention was first
+# kept, but the vocabulary belongs to every command, so every command is
+# asserted here rather than each strand growing a copy of this file.
 set -u
 
 command=$1
 fixtures=$2
 failures=0
+
+# The other commands sit beside this one in the build tree, one directory per
+# strand, so each path is the one ctest passes with the strand swapped. Passing
+# seven more paths in would only restate that.
+binaries=$(dirname "$(dirname "$command")")
 
 expect() {
     want=$1
@@ -25,6 +34,7 @@ expect() {
     fi
 }
 
+echo "decide-rank-by-sat"
 expect 0 "$fixtures/f2_2x2.tensor"
 expect 0 "$fixtures/f2_2x2.tensor" --target 3
 expect 1 "$fixtures/f2_2x2.tensor" --target 2
@@ -35,6 +45,66 @@ expect 5 "$fixtures/no_such_file.tensor"
 # Undecided, and deliberately the question this repository got wrong: five
 # seconds cannot settle twelve products for F2 5x5, and saying so is the point.
 expect 3 "$fixtures/f2_5x5.tensor" --target 12 --timeout 5
+
+command=$binaries/exhaustive_search/decide-rank
+echo "decide-rank"
+expect 2
+expect 2 "$fixtures/f2_2x2.tensor" --nonsense
+# A target under the polynomial floor, which is a proof and not a search.
+expect 1 "$fixtures/f2_2x2.tensor" --target 1
+expect 5 "$fixtures/no_such_file.tensor"
+
+# The same confusion as above, in the other decider, and the reason this file
+# grew. One node settles nothing about twelve products for F2 5x5, and this
+# used to leave as 2, which is what a mistyped flag leaves as. 3 and not 2 is
+# the assertion: a retry loop reading 2 would have called the invocation wrong,
+# and a caller reading it as a refusal would have had a lower bound out of a
+# budget that expired after a single node.
+expect 3 "$fixtures/f2_5x5.tensor" --target 12 --node-limit 1
+
+command=$binaries/descent_search/minimise-rank
+echo "minimise-rank"
+expect 2
+expect 2 "$fixtures/f2_2x2.tensor" --nonsense
+expect 0 "$fixtures/f2_2x2.tensor"
+expect 5 "$fixtures/no_such_file.tensor"
+
+command=$binaries/flip_graph/walk-scheme
+echo "walk-scheme"
+expect 2
+expect 2 "$fixtures/f2_2x2.tensor" --nonsense
+# --from 1 asks to start from a scheme the heuristic does not reach, so the
+# argument is unavailable rather than the map refuted.
+expect 2 "$fixtures/f2_2x2.tensor" --flips 50 --seeds 1 --from 1
+expect 0 "$fixtures/f2_2x2.tensor" --flips 50 --seeds 1
+expect 5 "$fixtures/no_such_file.tensor"
+
+command=$binaries/map_construction/make-tensor
+echo "make-tensor"
+expect 2
+expect 2 --nonsense 2
+expect 0 --matmul 2 2 2 2
+
+command=$binaries/matrix_sparsification/sparsify-operator
+echo "sparsify-operator"
+expect 2
+expect 0 "$fixtures/strassen_u.matrix"
+expect 5 "$fixtures/no_such_file.matrix"
+
+command=$binaries/curve_bounds/curve-bounds
+echo "curve-bounds"
+expect 2
+expect 2 --nonsense
+expect 0 --table
+expect 0 --degree 4 --points 2:4
+# An odd degree out of degree-2 points only: infeasible as a fact about the
+# supply, which is a refusal and not a budget that ran out.
+expect 1 --degree 3 --points 2:4
+expect 5 --degree 4 --points bogus
+
+command=$binaries/integer_programme/list-solvers
+echo "list-solvers"
+expect 0
 
 if [ "$failures" -ne 0 ]; then
     echo "exit codes: $failures failed"

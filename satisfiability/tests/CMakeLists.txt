@@ -23,8 +23,10 @@ add_test(NAME end_to_end COMMAND test_end_to_end ${PROJECT_SOURCE_DIR}/fixtures)
 add_test(NAME end_to_end_slow COMMAND test_end_to_end ${PROJECT_SOURCE_DIR}/fixtures --slow)
 set_tests_properties(end_to_end_slow PROPERTIES LABELS slow TIMEOUT 900)
 
-# The exit codes, asserted against the built command rather than described in a
-# document. Cheap: six of the seven cases answer in under a second.
+# The exit codes, asserted against the built commands rather than described in a
+# document. One path goes in and the script finds the other commands beside it,
+# since every strand's binary lands in the same build tree. Cheap: every case
+# but the five-second SAT one answers in milliseconds.
 add_test(NAME exit_codes
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_exit_codes.sh
                  $<TARGET_FILE:decide-rank-by-sat> ${PROJECT_SOURCE_DIR}/fixtures)

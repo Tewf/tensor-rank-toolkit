@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 
+#include "arguments.h"
 #include "exit_code.h"
 #include "parallel.h"
 #include "strict_deflation.h"
 #include "symmetry_argument.h"
 #include "tensor_file.h"
+#include "tunables.h"
 
 /// Pricing the refutation-based version of the same commitment.
 ///
@@ -26,9 +28,13 @@ void usage() {
                  "                      tree walks expand_subspace_up_to_symmetry on the span\n"
                  "                      enlarged by the candidate. Default solver\n"
                  "  --candidate-timeout N\n"
-                 "                      seconds per candidate on the solver route, 300\n"
-                 "                      by default. The tree route is bounded by nodes\n"
-                 "  --node-limit N      nodes the tree may visit, 5000000 by default\n"
+                 "                      seconds per candidate on the solver route, from\n"
+                 "                      sat_timeout_seconds in tunables.conf when this is\n"
+                 "                      not given. The tree route is bounded by nodes\n"
+                 "  --node-limit N      nodes the tree may visit, from search_node_limit\n"
+                 "                      in tunables.conf when this is not given\n"
+                 "  --max-memory 2G     cap on the solver, from sat_memory_megabytes in\n"
+                 "                      tunables.conf when this is not given\n"
                  "  --parallel          ask the candidates on all cores. Prices every\n"
                  "                      candidate rather than stopping at the first yes\n"
                  "  --break-symmetry    order terms 1 onward, which is what a matched\n"
@@ -52,6 +58,14 @@ int run(int argc, char** argv) {
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
     bilinear_rank::StrictSettings settings;
+    // The file first, so every flag below overwrites what it said. A refutation
+    // needs the large budget, so the candidate clock takes the SAT timeout
+    // rather than a smaller one of its own.
+    const cli::Tunables& tunables = cli::tunables();
+    settings.candidate_seconds = tunables.sat_timeout_seconds;
+    settings.node_limit = tunables.search_node_limit;
+    settings.approach.memory_megabytes = tunables.sat_memory_megabytes;
+    settings.approach.solver_order = tunables.sat_solver_order;
     cli::Symmetry symmetry;
     long long target = -1;
 
@@ -68,9 +82,12 @@ int run(int argc, char** argv) {
                 return cli::exit_status(cli::ExitCode::Usage);
             }
         } else if (option == "--candidate-timeout" && argument + 1 < argc) {
-            settings.candidate_seconds = std::stoull(argv[++argument]);
+            settings.candidate_seconds = cli::parse_count(option, argv[++argument]);
         } else if (option == "--node-limit" && argument + 1 < argc) {
-            settings.node_limit = std::stoull(argv[++argument]);
+            settings.node_limit = cli::parse_count(option, argv[++argument]);
+        } else if (option == "--max-memory" && argument + 1 < argc) {
+            settings.approach.memory_megabytes =
+                cli::parse_memory_size(option, argv[++argument]) / (1024 * 1024);
         } else if (option == "--parallel") {
             settings.parallel_candidates = true;
             bilinear_rank::set_worker_count(0);
@@ -127,6 +144,11 @@ int main(int argc, char** argv) {
     } catch (const cli::CheckFailed& failure) {
         std::cerr << "deflate-strictly: " << failure.what() << "\n";
         return cli::exit_status(cli::ExitCode::Unverified);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line, or a line of tunables.conf, that could not
+        // be read: the run never started, so Usage rather than Error.
+        std::cerr << "deflate-strictly: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& error) {
         std::cerr << "deflate-strictly: " << error.what() << "\n";
         return cli::exit_status(cli::ExitCode::Error);

@@ -4,8 +4,10 @@
 /// tensor decomposition algorithms.
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "exit_code.h"
 #include "map_construction.h"
 #include "tensor_file.h"
 
@@ -30,7 +32,7 @@ void usage() {
 int main(int argc, char** argv) {
     if (argc < 3) {
         usage();
-        return 2;
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string mode = argv[1];
     const int64_t characteristic = std::stoll(argv[2]);
@@ -69,32 +71,33 @@ int main(int argc, char** argv) {
                           " first.";
         } else {
             usage();
-            return 2;
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     } catch (const std::exception& problem) {
+        // Was 1. This command asks no question, so it has no "no" to give: a
+        // construction that threw is a tool that could not run.
         std::cerr << "make-tensor: " << problem.what() << "\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::Error);
     }
 
     if (slices.empty()) {
         std::cerr << "make-tensor: that produced no slices\n";
-        return 1;
+        // Was 1, and for the same reason: an empty tensor is not an answer
+        // about anything, it is a construction that did not happen.
+        return cli::exit_status(cli::ExitCode::Error);
     }
 
-    std::cout << "# " << description << "\n";
-    std::cout << "# Naive cost " << linear_algebra::multiplication_count(field, slices)
-              << " multiplications, written by make-tensor.\n";
-    std::cout << "field " << characteristic << "\n";
-    std::cout << "shape " << slices.size() << " " << slices.front().rows() << " "
-              << slices.front().columns() << "\n";
-    for (const bilinear_rank::Matrix& slice : slices) {
-        std::cout << "\n";
-        for (std::size_t row = 0; row < slice.rows(); ++row) {
-            for (std::size_t column = 0; column < slice.columns(); ++column) {
-                std::cout << (column == 0 ? "" : " ") << slice(row, column);
-            }
-            std::cout << "\n";
-        }
-    }
-    return 0;
+    linear_algebra::Tensor tensor;
+    tensor.characteristic = characteristic;
+    tensor.slices = std::move(slices);
+
+    // Two lines, because the naive cost is what any rank claim about this file
+    // is an improvement on, and a fixture that has been copied about should
+    // still carry the number it is measured against.
+    const std::string comment =
+        description + "\nNaive cost " +
+        std::to_string(linear_algebra::multiplication_count(field, tensor.slices)) +
+        " multiplications, written by make-tensor.";
+    linear_algebra::write_tensor(std::cout, tensor, comment);
+    return cli::exit_status(cli::ExitCode::Yes);
 }

@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "arguments.h"
 #include "binary_encoding.h"
 #include "exit_code.h"
 #include "orbit_cubes.h"
@@ -25,6 +26,7 @@
 #include "size_argument.h"
 #include "symmetry_argument.h"
 #include "tensor_file.h"
+#include "tunables.h"
 
 namespace {
 
@@ -60,8 +62,10 @@ void usage() {
                  "  --ceiling N         override the naive upper bound the search starts from\n"
                  "  --probe N           smaller budget for the questions a search asks on\n"
                  "                      the way, so the full timeout is spent once\n"
-                 "  --timeout N         seconds per question, 300 by default\n"
-                 "  --max-memory 2G     cap on the solver\n"
+                 "  --timeout N         seconds per question, from sat_timeout_seconds\n"
+                 "                      in tunables.conf when this is not given\n"
+                 "  --max-memory 2G     cap on the solver, from sat_memory_megabytes in\n"
+                 "                      tunables.conf when this is not given\n"
                  "\n"
                  "  exit: 0 yes  1 no  2 usage  3 undecided  4 unverified  5 error\n"
                  "  3 is not 1. A budget that ran out proves nothing either way.\n";
@@ -176,6 +180,13 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Usage);
     }
     satisfiability::SolveOptions approach;
+    // The file first, so every flag below overwrites what it said: a flag that
+    // was given always wins over tunables.conf, and one that was not leaves the
+    // file's number standing.
+    const cli::Tunables& tunables = cli::tunables();
+    approach.memory_megabytes = tunables.sat_memory_megabytes;
+    approach.timeout_seconds = tunables.sat_timeout_seconds;
+    approach.solver_order = tunables.sat_solver_order;
     cli::Symmetry symmetry;
     long long target = -1;
     long long from = -1;
@@ -212,13 +223,14 @@ int run(int argc, char** argv) {
         } else if (option == "--ceiling" && argument + 1 < argc) {
             given_ceiling = std::stoll(argv[++argument]);
         } else if (option == "--probe" && argument + 1 < argc) {
-            approach.probe_seconds = static_cast<std::size_t>(std::stoull(argv[++argument]));
+            approach.probe_seconds = cli::parse_count(option, argv[++argument]);
         } else if (option == "--proof" && argument + 1 < argc) {
             approach.proof_path = argv[++argument];
         } else if (option == "--timeout" && argument + 1 < argc) {
-            approach.timeout_seconds = static_cast<std::size_t>(std::stoull(argv[++argument]));
+            approach.timeout_seconds = cli::parse_count(option, argv[++argument]);
         } else if (option == "--max-memory" && argument + 1 < argc) {
-            approach.memory_megabytes = cli::parse_size(argv[++argument]) / (1024 * 1024);
+            approach.memory_megabytes =
+                cli::parse_memory_size(option, argv[++argument]) / (1024 * 1024);
         } else if (option == "--plain-cnf") {
             approach.plain_cnf = true;
         } else if (option == "--break-symmetry") {
@@ -322,6 +334,11 @@ int main(int argc, char** argv) {
         // this is neither a refusal nor a crash. It means a component is wrong.
         std::cerr << "decide-rank-by-sat: " << problem.what() << "\n";
         return cli::exit_status(cli::ExitCode::Unverified);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line, or a line of tunables.conf, that could not
+        // be read: the run never started, so Usage rather than Error.
+        std::cerr << "decide-rank-by-sat: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& problem) {
         std::cerr << "decide-rank-by-sat: " << problem.what() << "\n";
         return cli::exit_status(cli::ExitCode::Error);
