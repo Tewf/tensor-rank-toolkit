@@ -364,17 +364,25 @@ $\mathrm{GF}(q)$, and span a space containing both. So $R \le r$, and $r$ is the
 value of \eqref{eq:jaja} here.
 \end{proof}
 
-The gap is a field-size effect rather than a defect in \eqref{eq:jaja}. The
-construction attaining the classical bound interpolates through more points than
-$\mathbb{P}^1(\mathrm{GF}(q))$ contains, which is the condition Winograd
-identified for polynomial multiplication over small fields. Twelve pencils
-settled by exhaustion bear this out: \eqref{eq:jaja} is short on exactly three,
-each a block large against its field, while $d = 3$ over $\mathrm{GF}(3)$ and
-$d = 2$ over every field measured are attained. The per-block cost
-$c(p^e, q)$ that would close \eqref{eq:jaja} over a finite field is left as a
-conjecture, stated with its measurements in the module's documentation. It is a
-conjecture of the useful kind: any proposed $c$ is refutable in seconds on
-shapes up to $4 \times 4$ over $\mathrm{GF}(2)$.
+The gap is a field-size effect rather than a defect in \eqref{eq:jaja}, and it
+is not new. Sumi, Miyazaki and Sakata \cite{sumi2009} record the condition
+exactly. Writing $k$ for the number of invariant polynomials of $A$ that do not
+factor into \emph{distinct} linear factors over $K$, their Theorem~3.3, after
+Ja'Ja', gives $\rk_K(E^n; A) \le n + k$ \emph{provided}
+$\mathrm{Card}(K) \ge \deg p_1(A)$; their Theorem~3.5 gives
+$\rk_K(E^n; A) \ge n + k$ with no hypothesis at all, where Ja'Ja' had the
+reverse inequality only when $p_1(A)$ splits; and their Proposition~3.4 exhibits
+$(E_3, A)$ over $\mathrm{GF}(2)$, with $A$ the companion matrix of $x^3 + x + 1$,
+of rank at least $5$, so the cardinality hypothesis cannot be dropped.
+
+That proposition is one of the twelve pencils settled by exhaustion here, and
+this work measured it at exactly $5$ against a count of $4$ before finding the
+statement. So the measurements confirm a theorem rather than exhibiting a gap,
+and \texttt{pencil\_rank} computes $n + k$ and tests the cardinality condition:
+where it holds the rank is settled outright, and where it fails $n + k$ remains
+a proved lower bound over every field. What is left open is the cost \emph{below}
+the threshold, which is where the three short rows of that table live and where
+neither theorem applies.
 
 \section{Negative results}\label{sec:neg}
 
@@ -420,6 +428,9 @@ Nothing here settles the bilinear rank problem.
   forms}, SIAM Journal on Computing 8 (1979), 443--462.
 \bibitem{grigoriev1978} D.~Yu.~Grigoriev, \emph{Some new bounds on tensor rank},
   LOMI preprint, 1978.
+\bibitem{sumi2009} T.~Sumi, M.~Miyazaki, T.~Sakata, \emph{Rank of 3-tensors
+  with 2 slices and Kronecker canonical forms}, Linear Algebra and its
+  Applications \textbf{431} (2009), 1858--1868.
 \bibitem{nakatsukasa2017} Y.~Nakatsukasa, T.~Soma, A.~Uschmajew,
   \emph{Finding a low-rank basis in a matrix subspace}, Mathematical
   Programming \textbf{162} (2017), 325--361.
