@@ -30,9 +30,12 @@ A rank-one term of `⟨n,m,k⟩` is a pair `(U, V)`, `U` an `n×m` matrix and `V
 `m×k` one. The stabiliser is `[covanov2019, Thm. 17]`, and it acts by change of
 basis on each side sharing the middle, so `rank U`, `rank V` and `rank UV` are
 invariant. That those three numbers fix an orbit exactly, with the last confined
-to `max(0, rU+rV−m) ≤ t ≤ min(rU, rV)`, is **this repository's own claim and not
-a published one**: [`pool_orbits.h`](../pool_orbits.h) carries the derivation,
-and the tests are what check it. So the list is a triple loop over `rU ≥ 1`,
+to `max(0, rU+rV−m) ≤ t ≤ min(rU, rV)`, **was carried here as an unproven claim
+of this repository's own and is not one**: the action is that of the `A_3`
+quiver, so `[brion2008, Thm. 2.4.3]` classifies the orbits and
+`[buchfulton1999]`'s (1.2) is the same range. The derivation, and the one step
+still owed over `GF(p)`, are in [`pool_orbits.h`](../pool_orbits.h); the tests
+still check it. So the list is a triple loop over `rU ≥ 1`,
 `rV ≥ 1`, `t`. No group is built and nothing is enumerated: 5 representatives
 for `⟨2,2,2⟩`, 13 for `⟨3,3,3⟩`, 26 for `⟨4,4,4⟩`, against 261 121 and
 4 294 836 225 first terms.

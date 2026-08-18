@@ -211,7 +211,72 @@ product and the matrix product.
 **`covanov2018`**: S. Covanov. *Algorithmes de Multiplication: Complexité
 Bilinéaire et Méthodes Asymptotiquement Rapides.* Thèse, Université de Lorraine,
 2018. NNT 2018LORR0057, [tel-01825744](https://theses.hal.science/tel-01825744v1).
-The long form of `covanov2019`.
+The long form of `covanov2019`, in French, open access. **It has now been read**,
+and the correspondence is: §1.3 *RP-automorphisms* is the paper's §3.1, with
+Def. 1.16 = Def. 7, Prop. 1.17 = Prop. 8, Prop. 1.18 = Prop. 9 and
+Rem. 1.20 = Not. 11; §2.2.4 is the paper's §3.3, with Prop. 2.6 = Prop. 14 and
+Alg. 6 = Alg. 3. Where they agree, cite the paper. Three places where they do
+not:
+
+- **`[covanov2018, Def. 1.16]` defines a larger group than the paper does.**
+  `RPA_{m,n}` there is *"the smallest group containing `GL(K^m) × GL(K^n)` and,
+  if `m = n`, the transposition `τ`"*, where `[covanov2019, Def. 7]` is the pair
+  alone and `[covanov2019, Rem. 10]` says *"for simplicity, we do not take into
+  account the possible transposition τ"*. The code implements the paper's group,
+  so the name `RPA` should not be used for it.
+- **`[covanov2018, Prop. 1.19]` has no counterpart in the paper**: the elements
+  of `RPA_{m,n}` are the *only* rank-preserving automorphisms. It is a statement
+  about the group **with** `τ` and is false of the pair group when `m = n`. The
+  thesis does not prove it; its proof is a pointer to `[burichenko2014]`.
+- **`[covanov2018, Alg. 6]` line 11 recurses on `V` and not on
+  `V ⊕ Span({φ})`**, so the subspace never grows and the base case's
+  `dim V = r` cannot be reached. `[covanov2019, Alg. 3]` line 11 has the same
+  slip. It is typographical, and
+  [`orbit_plan/the-algorithm.md`](orbit_reduction/orbit_plan/the-algorithm.md)
+  records that the pseudocode there departs from both.
+
+**`burichenko2014`**: V. P. Burichenko. *On symmetries of the Strassen
+algorithm.* [arXiv:1408.6273](https://arxiv.org/abs/1408.6273), 2014. Cited here
+for one thing only: it is where `[covanov2018, Prop. 1.19]` sends the reader for
+its proof, in the formalism of order-3 tensors. **Not read.** Nothing in this
+repository rests on it; it is named so that the pointer does not dead-end.
+
+**`gabriel1972`**: P. Gabriel. *Unzerlegbare Darstellungen I.* Manuscripta
+Mathematica **6** (1972), 71-103, with a *Berichtigung* at **6**, 309-310. A
+quiver has finitely many indecomposable representations exactly when its
+underlying graph is a union of simply-laced Dynkin diagrams, and then the
+indecomposables correspond to the positive roots. **Not read**: it is in German
+and no reachable scan was found. What was read is `[brion2008]`, and that is
+what the code cites.
+
+**`brion2008`**: M. Brion. *Representations of quivers.* Notes of the summer
+school *Geometric Methods in Representation Theory*, Grenoble 2008,
+[www-fourier.univ-grenoble-alpes.fr/~mbrion/notes_quivers_rev.pdf](https://www-fourier.univ-grenoble-alpes.fr/~mbrion/notes_quivers_rev.pdf).
+**Theorem 2.4.3** is `[gabriel1972]` in a form that can be cited: (ii)
+indecomposables correspond to the positive roots, (iii) *"every indecomposable
+representation is uniquely determined by its dimension vector, up to
+isomorphism"*, (iv) there are finitely many. The remark after it names the
+positive roots of type `A_r` as the intervals `Σ_{ℓ=i}^{j} ε_ℓ`, `1 ≤ i ≤ j ≤ r`,
+which is what makes `A_3` have six indecomposables and is what
+[`pool_orbits.h`](orbit_reduction/pool_orbits.h) counts.
+
+**The field is the one thing this does not settle.** Brion works over an
+algebraically closed field throughout and says on his first page that *"Gabriel's
+theorem holds over an arbitrary field"*, pointing at Benson, *Representations
+and Cohomology I*, Cambridge Studies in Advanced Math. 30, 1991, §4.7. **Benson
+has not been read.** That one sentence is what the `GF(p)` case here rests on,
+and it is the only unchecked link in that argument.
+
+**`buchfulton1999`**: A. S. Buch, W. Fulton. *Chern class formulas for quiver
+varieties.* Inventiones Mathematicae **135** (1999), 665-687,
+[arXiv:math/9804041](https://arxiv.org/abs/math/9804041). Their subject is
+degeneracy loci, not orbits, but their **condition (1.2)** on a rank array
+`(r_ij)` for an equioriented `A_n` quiver, `r_ij ≤ r_{i,j-1}`, `r_ij ≤ r_{i+1,j}`
+and `r_{i+1,j-1} - r_{i,j-1} - r_{i+1,j} + r_ij ≥ 0`, is at `n = 2` exactly the
+range `max(0, rU+rV-m) ≤ rank UV ≤ min(rU, rV)` that
+[`pool_orbits.h`](orbit_reduction/pool_orbits.h) loops over, arrived at
+independently. They add that rank arrays satisfying (1.2) *"are the only
+conditions that can actually occur"*, which is the existence half.
 
 **`nakatsukasa2017`**: Y. Nakatsukasa, T. Soma, A. Uschmajew. *Finding a
 low-rank basis in a matrix subspace.* Mathematical Programming **162** (2017),
