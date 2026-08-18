@@ -29,18 +29,6 @@ bool spans_all(const Field& field, const std::vector<MatrixOver<Field>>& spannin
     return true;
 }
 
-/// Whether `candidate` lies outside the span of `basis`.
-///
-/// Adding one vector raises the rank by at most one, so a strict increase means
-/// the candidate is outside the span.
-template <class Field>
-bool raises_rank(const Field& field, const std::vector<MatrixOver<Field>>& basis,
-                 const MatrixOver<Field>& candidate) {
-    SpanBasis<Field> span(field, candidate.entry_count());
-    for (const MatrixOver<Field>& element : basis) span.try_add(element);
-    return !span.contains(candidate);
-}
-
 /// Whether two matrices have the same row space.
 ///
 /// Sparsifying an operator means rewriting it as U V for an invertible V, which
