@@ -25,10 +25,12 @@ someone wanting to go further would have to do. Keys are
 | `[covanov2019, Alg. 3]` | `BDEZStab`, which [`orbit_search.h`](orbit_search.h) implements |
 | `[covanov2019, Thm. 17]` | the closed-form stabiliser of a matrix multiplication tensor |
 
-**One thing here is not published and is marked as such.** The closed-form
-orbits of the rank-one pool in [`pool_orbits.h`](pool_orbits.h), the triple loop
-over `rank U`, `rank V` and `rank UV`, are this repository's own; the header
-carries the derivation and says where it stops. They used to be attributed to
+**The closed-form pool orbits were marked unpublished and are not.** The triple
+loop over `rank U`, `rank V` and `rank UV` in [`pool_orbits.h`](pool_orbits.h)
+is the orbit classification of the `A_3` quiver: `[brion2008, Thm. 2.4.3]`, an
+account of `[gabriel1972]`, and `[buchfulton1999]`'s condition (1.2) is the same
+range of `rank UV` written independently. The header carries the reduction and
+the one step still owed over `GF(p)`. The orbits were also once attributed to
 `[covanov2019, Cor. 18]`, which is a statement about elements of the target
 subspace and not about the pool.
 
