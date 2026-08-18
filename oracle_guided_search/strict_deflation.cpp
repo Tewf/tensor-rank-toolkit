@@ -89,6 +89,11 @@ StrictStep by_tree(const linear_algebra::Tensor& tensor, std::size_t products,
             "the tree refuter needs the closed-form orbits, so name the shape with "
             "--symmetry matmul <n> <m> <k>");
     }
+    // Considered for `RankOnePool` and deliberately left materialised.
+    // `tree_verdict` hands this to a refutation tree that indexes it down the
+    // recursion, and every candidate is asked against the same pool, in parallel
+    // when the settings allow. An addressed pool would rebuild each map once per
+    // node per candidate rather than once per run.
     const std::vector<Matrix> pool =
         all_rank_one_maps(field, tensor.rows(), tensor.columns());
     const std::vector<Automorphism> ambient = ambient_or_empty(field, settings.matmul_shape);

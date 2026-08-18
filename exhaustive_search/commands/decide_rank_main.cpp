@@ -106,6 +106,12 @@ int run(int argc, char** argv) {
                   << linear_algebra::multiplication_count(field, anchor) << " multiplications\n";
     }
 
+    // Considered for `RankOnePool` and deliberately left materialised. Every
+    // route below carries a pool index down a recursion rather than scanning
+    // once: `expand_subspace` takes `from` and resumes there, and the two sweeps
+    // do the same underneath. An addressed pool rebuilds a map every time an
+    // index is revisited, which here is once per node instead of once per run,
+    // so the conversion would trade the memory for the search.
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
     std::cout << "  pool: " << pool.size() << " rank-one maps of shape " << tensor.rows()

@@ -77,6 +77,11 @@ int run(int argc, char** argv) {
     }
 
     const bilinear_rank::Field field(tensor.characteristic);
+    // Considered for `RankOnePool` and deliberately left materialised. Canonical
+    // augmentation carries a pool index down its recursion and reads it again on
+    // the way back up, when it asks whether the map it added is the canonical
+    // parent, so an addressed pool would rebuild the same map once per node. The
+    // conversion pays on a single forward scan, which this is not.
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
     std::vector<bilinear_rank::Automorphism> group;

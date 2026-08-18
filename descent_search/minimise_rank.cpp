@@ -32,8 +32,30 @@ struct Trials {
     }
 };
 
+/// Where the candidates come from, so the walk below is written once.
+///
+/// A materialised pool hands back its own matrix and an addressed one builds the
+/// matrix on the spot, and `const Matrix& map = candidates[index]` is correct for
+/// both: the first aliases, the second extends the temporary's lifetime to the
+/// end of the enclosing scope. Nothing else in the walk can tell them apart,
+/// which is the point of the two structs being this small.
+struct Materialised {
+    const std::vector<Matrix>& maps;
+
+    std::size_t size() const { return maps.size(); }
+    const Matrix& operator[](std::size_t index) const { return maps[index]; }
+};
+
+struct Addressed {
+    const RankOnePool& pool;
+
+    std::size_t size() const { return pool.size(); }
+    Matrix operator[](std::size_t index) const { return pool.at(index); }
+};
+
+template <typename Candidates>
 void prefetch(const Field& field, const std::vector<Matrix>& slices,
-              const std::vector<std::size_t>& known, const std::vector<Matrix>& candidates,
+              const std::vector<std::size_t>& known, const Candidates& candidates,
               const std::vector<std::size_t>& queue, std::size_t from, Trials& trials) {
     const std::size_t ahead = worker_count() * 4;
 
@@ -50,9 +72,10 @@ void prefetch(const Field& field, const std::vector<Matrix>& slices,
 
 /// The trial for one candidate, prepared with its neighbours if there are cores
 /// to prepare them on.
+template <typename Candidates>
 const std::vector<Matrix>& trial_for(const Field& field, const std::vector<Matrix>& slices,
                                      const std::vector<std::size_t>& known,
-                                     const std::vector<Matrix>& candidates,
+                                     const Candidates& candidates,
                                      const std::vector<std::size_t>& queue, std::size_t step,
                                      Trials& trials) {
     const std::size_t candidate = queue[step];
@@ -76,9 +99,10 @@ const std::vector<Matrix>& trial_for(const Field& field, const std::vector<Matri
 ///
 /// Anything dropped also has its trial forgotten, which is what keeps the
 /// prepared work bounded by the number of cores rather than by the pool.
+template <typename Candidates>
 std::vector<std::size_t> survivors_after(const Field& field, const std::vector<Matrix>& attempt,
                                          const std::vector<Matrix>& also_reached,
-                                         const std::vector<Matrix>& candidates,
+                                         const Candidates& candidates,
                                          const std::vector<std::size_t>& queue, std::size_t step,
                                          Trials& trials) {
     ReducedBasis reached = linear_algebra::span_of(field, attempt);
@@ -104,10 +128,10 @@ std::vector<std::size_t> all_of(std::size_t count) {
     return queue;
 }
 
-}  // namespace
-
-std::vector<Matrix> improving_candidates(const Field& field, const std::vector<Matrix>& slices,
-                                         const std::vector<Matrix>& candidates) {
+/// The shortlist, whichever way the candidates are supplied.
+template <typename Candidates>
+std::vector<Matrix> improving_over(const Field& field, const std::vector<Matrix>& slices,
+                                   const Candidates& candidates) {
     const std::size_t baseline = linear_algebra::multiplication_count(field, slices);
     const std::vector<std::size_t> known = span_element_ranks(field, slices);
 
@@ -140,6 +164,18 @@ std::vector<Matrix> improving_candidates(const Field& field, const std::vector<M
         }
         if (!pruned) return selected;
     }
+}
+
+}  // namespace
+
+std::vector<Matrix> improving_candidates(const Field& field, const std::vector<Matrix>& slices,
+                                         const std::vector<Matrix>& candidates) {
+    return improving_over(field, slices, Materialised{candidates});
+}
+
+std::vector<Matrix> improving_candidates(const Field& field, const std::vector<Matrix>& slices,
+                                         const RankOnePool& pool) {
+    return improving_over(field, slices, Addressed{pool});
 }
 
 std::vector<Matrix> minimise_rank(const Field& field, std::vector<Matrix> slices,
