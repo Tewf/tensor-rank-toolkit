@@ -62,7 +62,12 @@ int main(int argc, char** argv) {
         const bilinear_rank::Field field(tensor.characteristic);
 
         const pencil_rank::PencilRank reported = pencil_rank::pencil_rank_of(field, tensor.slices);
-        const long long bound = static_cast<long long>(reported.over_closure);
+        // `proved`, not `over_closure`: since `[sumi2009, Thm. 3.5]` landed, the
+        // module's best proved bound is the larger of the two and is the number
+        // `decide-rank-by-pencil` prints. Reading the closure value here left
+        // the test asserting that a bound the module no longer reports is the
+        // rank, which is how it came to say 2 where the tool says 3.
+        const long long bound = static_cast<long long>(reported.proved);
 
         // The ceiling is two above the bound, which covers every gap measured on
         // these shapes. A search allowed to climb without one would spend its
