@@ -67,7 +67,7 @@ void check_scalar_sharing() {
 
     bilinear_rank::FlipReport report;
     const std::vector<Matrix> before = map_of(field, scheme);
-    const Scheme walked = bilinear_rank::walk(field, scheme, 1, 1, &report);
+    const Scheme walked = bilinear_rank::random_flip_walk(field, scheme, 1, 1, &report);
 
     check::equal("GF(3): a flip that exists only up to a scalar is found",
                  static_cast<long long>(report.flips), 1);
@@ -84,7 +84,7 @@ void check_plain_sharing() {
 
     bilinear_rank::FlipReport report;
     const std::vector<Matrix> before = map_of(field, scheme);
-    const Scheme walked = bilinear_rank::walk(field, scheme, 1, 1, &report);
+    const Scheme walked = bilinear_rank::random_flip_walk(field, scheme, 1, 1, &report);
 
     check::equal("GF(2): a shared factor is still a flip", static_cast<long long>(report.flips), 1);
     check::equal("GF(2): flipping it leaves the map alone",
@@ -98,7 +98,7 @@ void check_reductions() {
     Scheme with_nothing = {term_of(field, {1, 0}, {1, 0}, {1, 0}),
                            term_of(field, {0, 0}, {1, 0}, {0, 1})};
     check::equal("a zero factor removes its term",
-                 static_cast<long long>(bilinear_rank::reduce(field, with_nothing)), 1);
+                 static_cast<long long>(bilinear_rank::merge_shared_terms(field, with_nothing)), 1);
     check::equal("and leaves the rest", static_cast<long long>(with_nothing.size()), 1);
 
     // Two terms agreeing in two modes up to scalars: `(1,0)⊗(1,0)⊗(1,0)` and
@@ -107,7 +107,7 @@ void check_reductions() {
                         term_of(field, {2, 0}, {2, 0}, {1, 0})};
     const std::vector<Matrix> before = map_of(field, mergeable);
     check::equal("two terms alike up to scalars merge",
-                 static_cast<long long>(bilinear_rank::reduce(field, mergeable)), 1);
+                 static_cast<long long>(bilinear_rank::merge_shared_terms(field, mergeable)), 1);
     check::equal("merging leaves the map alone", same_map(field, before, map_of(field, mergeable)),
                  1);
 }
@@ -154,7 +154,7 @@ void check_fixtures(const std::string& directory) {
 
         Scheme best = start;
         for (std::uint64_t seed = 1; seed <= 4; ++seed) {
-            const Scheme walked = bilinear_rank::walk(field, start, 4000, seed, nullptr);
+            const Scheme walked = bilinear_rank::random_flip_walk(field, start, 4000, seed, nullptr);
             if (walked.size() < best.size()) best = walked;
         }
 
