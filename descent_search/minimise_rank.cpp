@@ -32,27 +32,6 @@ struct Trials {
     }
 };
 
-/// Where the candidates come from, so the walk below is written once.
-///
-/// A materialised pool hands back its own matrix and an addressed one builds the
-/// matrix on the spot, and `const Matrix& map = candidates[index]` is correct for
-/// both: the first aliases, the second extends the temporary's lifetime to the
-/// end of the enclosing scope. Nothing else in the walk can tell them apart,
-/// which is the point of the two structs being this small.
-struct Materialised {
-    const std::vector<Matrix>& maps;
-
-    std::size_t size() const { return maps.size(); }
-    const Matrix& operator[](std::size_t index) const { return maps[index]; }
-};
-
-struct Addressed {
-    const RankOnePool& pool;
-
-    std::size_t size() const { return pool.size(); }
-    Matrix operator[](std::size_t index) const { return pool.at(index); }
-};
-
 template <typename Candidates>
 void prefetch(const Field& field, const std::vector<Matrix>& slices,
               const std::vector<std::size_t>& known, const Candidates& candidates,

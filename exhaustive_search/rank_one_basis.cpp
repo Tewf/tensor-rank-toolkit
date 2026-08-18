@@ -1,5 +1,6 @@
 #include "rank_one_basis.h"
 
+#include "candidate_pool.h"
 #include "exhaustive_search.h"
 #include "measures.h"
 #include "span_basis.h"
@@ -59,12 +60,14 @@ std::size_t elements_of(const Field& field, std::size_t dimension, std::size_t c
 
 }  // namespace
 
+template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
-                                      const std::vector<Matrix>& pool, std::size_t needed,
+                                      const Candidates& pool, std::size_t needed,
                                       std::vector<Element>& scratch) {
-    if (pool.empty()) return {};
-    const std::size_t rows = pool.front().rows();
-    const std::size_t columns = pool.front().columns();
+    if (pool.size() == 0) return {};
+    const Matrix& first = pool[0];
+    const std::size_t rows = first.rows();
+    const std::size_t columns = first.columns();
 
     const std::size_t elements = elements_of(field, span.dimension(), pool.size());
     if (elements != 0 && elements < pool.size()) {
@@ -72,5 +75,12 @@ std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& sp
     }
     return independent_rank_one_maps_in(field, span, rows * columns, pool, needed, scratch);
 }
+
+template std::vector<Matrix> rank_one_basis_of(const Field&, const ReducedBasis&,
+                                              const std::vector<Matrix>&, std::size_t,
+                                              std::vector<Element>&);
+template std::vector<Matrix> rank_one_basis_of(const Field&, const ReducedBasis&,
+                                              const Addressed&, std::size_t,
+                                              std::vector<Element>&);
 
 }  // namespace bilinear_rank

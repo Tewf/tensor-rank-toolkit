@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "bilinear_rank_aliases.h"
+#include "candidate_pool.h"
 
 /// The exact search: not "can this be improved?" but "is there one of size k?".
 ///
@@ -63,8 +64,14 @@ struct SearchBudget {
 /// is a solution exactly when this returns that many. Exported so [the
 /// quotiented search](../orbit_reduction/orbit_search.h) tests leaves the same way rather than
 /// writing a second copy of it.
+/// Templated on where the candidates come from. A `std::vector<Matrix>` already
+/// satisfies the two methods this needs, `size()` and `operator[]`, so every
+/// existing caller passes one unchanged; `Addressed` in
+/// [`candidate_pool.h`](../descent_search/candidate_pool.h) satisfies them by
+/// building each map on demand. Instantiated for exactly those two in the source.
+template <typename Candidates>
 std::vector<Matrix> independent_rank_one_maps_in(const Field& field, const ReducedBasis& reachable,
-                                                 std::size_t width, const std::vector<Matrix>& pool,
+                                                 std::size_t width, const Candidates& pool,
                                                  std::size_t needed, std::vector<Element>& scratch);
 
 /// The rank-one maps of `pool` lying inside the span of `subspace`, taken
@@ -81,6 +88,25 @@ std::vector<Matrix> rank_one_maps_within(const Field& field, const std::vector<M
 /// On success `products` holds that basis, which is what the caller needs.
 bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
                      const std::vector<Matrix>& pool, std::size_t from, std::size_t target,
+                     SearchBudget& budget, std::vector<Matrix>& products);
+
+/// The same search over an **addressed** pool, which is never materialised.
+///
+/// Same nodes, same answer, and `O(p^rows + p^columns)` of memory instead of
+/// `O(p^rows * p^columns)` matrices. This is the odometer of `[yang2025]`: the
+/// pool is walked by index and each map is built when the index is reached.
+///
+/// **What it costs is a rebuild per visit rather than per run.** The recursion
+/// carries an index down and resumes from it, so a map at a given index is built
+/// once per node that reaches it, not once. That is the trade, and it is the
+/// right one exactly where the materialised pool cannot be had at all: at
+/// `⟨4,4,4⟩` it is 4.3e9 maps and 8.2 TiB, which `require_room` refuses in
+/// milliseconds, so the choice there is between a slower search and no search.
+///
+/// `decide-rank` picks this automatically when the materialised pool would be
+/// refused, and says which it used.
+bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
+                     const RankOnePool& pool, std::size_t from, std::size_t target,
                      SearchBudget& budget, std::vector<Matrix>& products);
 
 }  // namespace bilinear_rank

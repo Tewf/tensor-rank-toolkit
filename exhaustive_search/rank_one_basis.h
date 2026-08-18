@@ -27,8 +27,18 @@ namespace bilinear_rank {
 /// Up to `needed` independent rank-one maps inside `span`. Fewer than `needed`
 /// means there is no such basis.
 /// The shape comes from the pool, which is every rank-one map of it.
+///
+/// Templated on where the candidates come from, so the same code serves a
+/// materialised pool and an addressed one: see `Materialised` and `Addressed` in
+/// [`candidate_pool.h`](../descent_search/candidate_pool.h). Instantiated for
+/// exactly those two in the source, so the definition stays out of this header.
+///
+/// Note that the cheaper of the two routes above, walking the subspace, touches
+/// the pool only for the shape and the size. So the leaf is already pool-free
+/// wherever it is the route taken, and an addressed pool costs nothing there.
+template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
-                                      const std::vector<Matrix>& pool, std::size_t needed,
+                                      const Candidates& pool, std::size_t needed,
                                       std::vector<Element>& scratch);
 
 }  // namespace bilinear_rank
