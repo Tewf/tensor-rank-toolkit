@@ -126,6 +126,7 @@ map_construction/        building the maps every method runs on
 orbit_reduction/         quotienting all three searches by symmetry
 flip_graph/              moving a decomposition sideways instead of building one
 oracle_guided_search/    fixed-k search, tree refutation, canonical augmentation
+canonical_factorisation/ the rank as A B, with the receipt that checks it
 pencil_rank/             two slices, where the answer is read off a canonical
                          form instead of searched for
 matrix_sparsification/   fewest nonzeros in an operator
@@ -147,7 +148,7 @@ A folder with something to say carries its own `README.md`; one without says its
 purpose at the top of its `CMakeLists.txt`. Each method folder holds the code,
 its `tests/`, and where it has an entry point a `commands/`.
 
-**Twelve command-line tools.** Three ask how few multiplications a map needs and
+**Thirteen command-line tools.** Three ask how few multiplications a map needs and
 disagree about what they can prove: `minimise-rank` (descent), `decide-rank`
 (complete), `walk-scheme` (a walk that moves sideways). `decide-rank-by-sat` puts
 that question to somebody else's solver and `list-solvers` says which backends
@@ -155,8 +156,9 @@ this machine has. `find-at-rank`, `deflate-strictly` and `enumerate-subspaces`
 are the fixed-k, tree-refutation and isomorph-free routes. `curve-bounds` answers
 a different question, bounding the rank from a curve's points rather than
 searching. Then `sparsify-operator` for the other strand, and `make-tensor` to
-build a map to run any of them on. `decide-rank-by-pencil` is the twelfth and
-the odd one out: it searches for nothing.
+build a map to run any of them on. `decide-rank-by-pencil` searches for
+nothing, and `factor-over-canonical-basis` returns the rank as the factorisation
+it is, with a receipt anybody can multiply out.
 
 Every paper any of it implements is named once, in
 [`references.md`](references.md), and the code cites a key.
