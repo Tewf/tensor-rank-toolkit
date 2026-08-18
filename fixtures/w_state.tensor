@@ -1,0 +1,15 @@
+# The W state |001> + |010> + |100>, the textbook tensor whose rank and border
+# rank differ: rank 3, border rank 2, because (|0>+t|1>)^3 - |000> divided by t
+# tends to it as t -> 0. Nothing here can see a border rank; this fixture is
+# the rank half, and the one the exact search can settle outright.
+#
+# Slice 0 is the z=0 face, carrying |010> at (0,1) and |100> at (1,0).
+# Slice 1 is the z=1 face, carrying |001> at (0,0).
+field 2
+shape 2 2 2
+
+0 1
+1 0
+
+1 0
+0 0

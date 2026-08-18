@@ -1,0 +1,16 @@
+# Multiplication in GF(2^3), modulus given highest degree first as the original's prompt asked.
+# Naive cost 9 multiplications, written by make-tensor.
+field 2
+shape 3 3 3
+
+0 0 1
+0 1 1
+1 1 1
+
+0 1 0
+1 0 0
+0 0 1
+
+1 0 0
+0 0 1
+0 1 1

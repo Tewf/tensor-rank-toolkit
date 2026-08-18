@@ -1,0 +1,10 @@
+build/
+*.o
+*.a
+
+# Julia
+Manifest.toml
+
+# Python bytecode, from running the frozen original for comparison
+__pycache__/
+*.pyc

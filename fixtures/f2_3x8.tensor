@@ -1,0 +1,45 @@
+# Polynomial multiplication of 3 coefficients by 8, over GF(2).
+# Slice i is the matrix of the bilinear form producing output coefficient c_i,
+# so slice i has a 1 at (j,k) exactly when j+k == i. Naive rank is 3*8 = 24.
+field 2
+shape 10 3 8
+
+1 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+
+0 1 0 0 0 0 0 0
+1 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+
+0 0 1 0 0 0 0 0
+0 1 0 0 0 0 0 0
+1 0 0 0 0 0 0 0
+
+0 0 0 1 0 0 0 0
+0 0 1 0 0 0 0 0
+0 1 0 0 0 0 0 0
+
+0 0 0 0 1 0 0 0
+0 0 0 1 0 0 0 0
+0 0 1 0 0 0 0 0
+
+0 0 0 0 0 1 0 0
+0 0 0 0 1 0 0 0
+0 0 0 1 0 0 0 0
+
+0 0 0 0 0 0 1 0
+0 0 0 0 0 1 0 0
+0 0 0 0 1 0 0 0
+
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 1 0
+0 0 0 0 0 1 0 0
+
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 1
+0 0 0 0 0 0 1 0
+
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 1

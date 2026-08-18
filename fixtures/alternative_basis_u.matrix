@@ -1,0 +1,15 @@
+# A Strassen-like algorithm already
+# written in an alternative basis, so its entries are ninths rather than 0 and
+# +/-1. It equals the product of the 7x4 and 4x4 matrices commented out beside
+# it.
+#
+# This is the case where counting nonzeros in floating point goes wrong: the
+# entries are exact ninths, and a double never holds one.
+shape 7 4
+ 4/9  -8/9  -8/9  -4/9
+   0   5/9     0  10/9
+ 8/9  -2/3     0     0
+ 4/9   2/9   8/9   4/9
+   0 -10/9     0     0
+ 4/9  -1/3  -8/9   2/3
+-4/9  -2/9   8/9   4/9

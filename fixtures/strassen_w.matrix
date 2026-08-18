@@ -1,0 +1,25 @@
+# Strassen's decoding operator: which of the seven products go into each entry
+# of the result. Columns are C11 C12 C21 C22, rows are the products M1..M7 in
+# the order fixtures/strassen_u.matrix and strassen_v.matrix use.
+#
+#   C11 = M1 + M4 - M5 + M7
+#   C12 = M3 + M5
+#   C21 = M2 + M4
+#   C22 = M1 - M2 + M3 + M6
+#
+# This is the third operator, and without it the arithmetic complexity cannot be
+# computed at all: the decoding term of Claim 2.11 is nnz + nns - columns, and
+# only the two encoding operators were fixtures here before. With it, q = 5 + 5
+# + 8 = 18 and the leading coefficient is 18/3 + 1 = 7, which is the 7 of
+# 7*N^log2(7) - 6*N^2.
+#
+# Checked, not asserted: matrix_sparsification/algorithm_check.h verifies the
+# triple against the 2x2 product itself.
+shape 7 4
+ 1  0  0  1
+ 0  0  1 -1
+ 0  1  0  1
+ 1  0  1  0
+-1  1  0  0
+ 0  0  0  1
+ 1  0  0  0

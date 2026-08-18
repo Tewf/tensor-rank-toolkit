@@ -1,0 +1,9 @@
+# Strassen's encoding operator for the right factor, columns B11 B12 B21 B22.
+shape 7 4
+ 1  0  0  1
+ 1  0  0  0
+ 0  1  0 -1
+-1  0  1  0
+ 0  0  0  1
+ 1  1  0  0
+ 0  0  1  1

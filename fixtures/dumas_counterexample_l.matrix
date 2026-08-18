@@ -1,0 +1,25 @@
+# The 7x4 operator of Jean-Guillaume Dumas's `cex_poldet` Maple worksheet:
+# "counterexample, polynomial determinant".
+#
+# The worksheet pins rows 1, 7, 3 and 4, leaves the target pattern as unknowns
+# a_ij, and forms the change of basis those rows force, P = (Q L)^-1 (Q A). The
+# determinant of P is a degree-4 polynomial in the unknowns, and it is the
+# obstruction: the pattern is reachable exactly when that polynomial is not
+# identically zero.
+#
+# Its point is what happens next. Keeping only a_11, a_32, a_43 and a_74 gives a
+# feasible pattern, and L P then has 14 nonzeros reduced to 12 -- while the two
+# oracles in this folder take Strassen's operator from 12 to 10. So a pinned
+# choice can be perfectly feasible and still not be the sparsest thing
+# available, which is why the worksheet is a counterexample and not an
+# algorithm.
+#
+# Decided by matrix_sparsification/pattern_feasibility.h.
+shape 7 4
+ 1  0 -1  0
+ 1  0 -1 -1
+ 1  0  0  0
+ 0  0  0  1
+ 1  1 -1 -1
+ 0  0  1  1
+ 0  1  0  0

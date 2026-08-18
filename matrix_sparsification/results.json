@@ -1,0 +1,79 @@
+{
+  "task": "Matrix sparsification: given the operator U of a fast multiplication algorithm, find an invertible V minimising nnz(U V)",
+  "source": "Produced by `reproduce/measure.py`, which runs `sparsify-operator fixtures/<name>.matrix` once per operator.",
+  "why": "Fewer nonzeros in the operator means fewer additions in the algorithm it encodes, which is the cost the multiplication count does not capture.",
+  "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz.",
+  "methods": [
+    "Row-basis heuristic: invert a square block of rows of U, which forces as many rows of the result to be singletons as U has columns.",
+    "Exact oracle, bottom-up: over every column subset one smaller than the row count, keep the validator whose vector has the most zeros.",
+    "Exact oracle, top-down: walk column subsets from the largest down and take the first validator, since a vector forced to zero on more columns cannot be beaten by one forced on fewer."
+  ],
+  "fixtures": [
+    {
+      "name": "strassen_u",
+      "shape": "7x4",
+      "command": "~/Desktop/Etude/tensor-rank-toolkit/build/matrix_sparsification/sparsify-operator ~/Desktop/Etude/tensor-rank-toolkit/fixtures/strassen_u.matrix",
+      "seconds": 0.0044,
+      "as_given": 12,
+      "row_basis_heuristic": 10,
+      "oracle_bottom_up": 10,
+      "oracle_top_down": 10
+    },
+    {
+      "name": "strassen_v",
+      "shape": "7x4",
+      "command": "~/Desktop/Etude/tensor-rank-toolkit/build/matrix_sparsification/sparsify-operator ~/Desktop/Etude/tensor-rank-toolkit/fixtures/strassen_v.matrix",
+      "seconds": 0.0038,
+      "as_given": 12,
+      "row_basis_heuristic": 10,
+      "oracle_bottom_up": 10,
+      "oracle_top_down": 10
+    },
+    {
+      "name": "alternative_basis_u",
+      "shape": "7x4",
+      "command": "~/Desktop/Etude/tensor-rank-toolkit/build/matrix_sparsification/sparsify-operator ~/Desktop/Etude/tensor-rank-toolkit/fixtures/alternative_basis_u.matrix",
+      "seconds": 0.0084,
+      "as_given": 21,
+      "row_basis_heuristic": 10,
+      "oracle_bottom_up": 10,
+      "oracle_top_down": 10
+    }
+  ],
+  "readings": [
+    "The strand has a number now. Strassen's two encoding operators go from 12 nonzeros to 10; the alternative-basis operator goes from 21 to 10. All three methods reach the same 10, and every result is checked to have the same row space as the operator it came from.",
+    "Ten is what the row-basis construction predicts rather than a surprise: inverting a square block of rows makes four rows singletons, and the remaining three come out with two nonzeros each. It is not proved minimal, and none of these methods proves anything minimal.",
+    "The runs take milliseconds because field operations on small matrices (7\u00d74) are cheap compared to the minimisation over a discrete space.",
+    "The operators no longer have to be typed in. The rank search recovers L and R from the decomposition it finds and writes them out, so deriving a fast algorithm and then reducing its additions is two commands. On F2 5x5 that is 25 multiplications down to 14, and the left operator's 31 nonzeros down to 27."
+  ],
+  "corrections": [
+    "Algorithm 2.4 was unreachable. Both branches of the prompt that offers the choice call algorithm 2.3, so the top-down oracle could never run from the command line.",
+    "Its search returns None when it finds no candidate, into a caller that unpacks the result into two variables. It does not fire on these operators, so it was latent rather than observed.",
+    "The search objective counts zeros exactly by testing field equality, not floating-point equality. Using `== 0` on raw doubles can miscount: on the alternative-basis operator this sees 86 zeros where 144 exist, even with post-rounding applied. The reported count can be sound while the objective being maximised is not."
+  ],
+  "limits": "Both oracles are exact for the sparsest-independent-vector subproblem, but they assemble the answer greedily, one row at a time, and that assembly is not proved optimal.",
+  "provenance": {
+    "commit": null,
+    "tree_clean": null,
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "usage: drat-trim [INPUT] [<PROOF>] [<option> ...]",
+      "cbc": "Welcome to the CBC MILP Solver",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "~/Desktop/Etude/tensor-rank-toolkit/build",
+    "repeats": 3,
+    "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
+  }
+}

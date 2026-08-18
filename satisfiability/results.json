@@ -1,0 +1,128 @@
+{
+  "task": "Deciding tensor rank as a satisfiability question: is there a decomposition of T into k rank-one terms?",
+  "source": "Produced by `decide-rank-by-sat fixtures/<name>.tensor --target k --break-symmetry --plain-cnf`. The exhaustive column is the same question answered by `decide-rank`, which enumerates subspaces instead.",
+  "why": "Hastad proved in 1990 that tensor rank is NP-complete over every finite field. NP-completeness cuts both ways: a decomposition is a certificate, so the question can be handed to a solver rather than enumerated.",
+  "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz, 2026-08-16. Every timing is the fastest of three runs on an otherwise quiet machine, because the spread between runs is larger than several of the values.",
+  "solver": "kissat 4.0.4, and every `*_seconds` field is kissat unless its name says otherwise. Some of these were previously cryptominisat timings under a heading that said kissat, which is why the solver is now named per column: `*_under_cryptominisat` fields are the second opinion and the evidence for preferring kissat, kept rather than deleted because without them the preference has nothing behind it.",
+  "solver_choice": "Native XOR clauses are worth nothing on these instances, 1.559 s against 1.563 s on the same question. Raw strength is worth 134x on the dearest find here, GF(16) at 9 products: 0.270 s against 36.19 s. See `choices.md`.",
+  "methods": [
+    "GF(2): Boolean variables per coordinate, Tseitin conjunctions in two stages, one parity constraint per tensor entry.",
+    "GF(p) one-hot: p Booleans per unknown with exactly one true, and the field's multiplication and addition tables written out as implications.",
+    "GF(p) field theory: the equations handed to cvc5's decision procedure for prime fields, with no encoding of the field at all."
+  ],
+  "caveat": "A no is a lower bound only if the solver finished. Timeouts and memory kills are a third verdict and are never folded into no. A yes is checked: the model is turned back into rank-one matrices and recombined against the tensor.",
+  "fixtures": [
+    {
+      "name": "f2_2x2",
+      "field": 2,
+      "known_rank": 3,
+      "found_at": 3,
+      "found_seconds": 0.0052,
+      "ruled_out_at": 2,
+      "ruled_out_seconds": 0.0027
+    },
+    {
+      "name": "f2_2x3",
+      "field": 2,
+      "known_rank": 5,
+      "found_at": 5,
+      "found_seconds": 0.0113,
+      "ruled_out_at": 4,
+      "ruled_out_seconds": 0.0101
+    },
+    {
+      "name": "gf4_multiplication",
+      "field": 2,
+      "known_rank": 3,
+      "found_at": 3,
+      "found_seconds": 0.0028,
+      "ruled_out_at": 2,
+      "ruled_out_seconds": 0.0027
+    },
+    {
+      "name": "gf8_multiplication",
+      "field": 2,
+      "known_rank": 6,
+      "found_at": 6,
+      "found_seconds": 0.0422,
+      "ruled_out_at": 5,
+      "ruled_out_seconds": 0.0378,
+      "ruled_out_seconds_under_cryptominisat": 0.0357,
+      "note": "The 4.13 s recorded here for ruling out 5 could not be reproduced by anything tried: 0.0378 s with the term ordering, 0.534 s without it, 0.0357 s under cryptominisat. It is replaced rather than explained, and said so here so the next reader does not inherit the same puzzle. `search.md` was the file that was right: its gf8 floor of 0.085 s is the sum of these two questions."
+    },
+    {
+      "name": "w_state",
+      "field": 2,
+      "known_rank": 3,
+      "found_at": 3,
+      "found_seconds": 0.0044,
+      "ruled_out_at": 2,
+      "ruled_out_seconds": 0.0027
+    },
+    {
+      "name": "matmul_2x2x2",
+      "field": 2,
+      "known_rank": 7,
+      "found_at": 7,
+      "found_seconds": 0.177,
+      "found_seconds_under_cryptominisat": 0.469,
+      "ruled_out_at": 6,
+      "ruled_out_seconds": 0.311,
+      "exhaustive_ruled_out_seconds": 0.41,
+      "exhaustive_nodes": 25399
+    },
+    {
+      "name": "matmul_2x2x3",
+      "field": 2,
+      "known_rank": 11,
+      "ruled_out_at": 8,
+      "ruled_out_seconds": 34.26,
+      "exhaustive_ruled_out_seconds": 53.1,
+      "exhaustive_nodes": 446923
+    },
+    {
+      "name": "gf16_multiplication",
+      "field": 2,
+      "known_rank": 9,
+      "found_at": 9,
+      "found_seconds": 0.27,
+      "found_seconds_under_cryptominisat": 36.19,
+      "ruled_out_at": 8,
+      "ruled_out_seconds": 108.0,
+      "exhaustive_ruled_out_seconds": 2328,
+      "exhaustive_nodes": 105600301
+    },
+    {
+      "name": "f2_5x5",
+      "field": 2,
+      "known_rank": null,
+      "known_rank_note": "Not known. The bound established in this repository is 12 <= rank <= 14: 11 products ruled out exhaustively, 14 reached by the heuristic.",
+      "ruled_out_at": null,
+      "ruled_out_seconds": null,
+      "note": "Unresolved here. No answer in 700 s of one core, and no proof written. The exhaustive search has not run k=12 either; its 7 h figure is an extrapolation from k=11, not a measurement.",
+      "exhaustive_ruled_out_seconds": null,
+      "exhaustive_nodes": null
+    }
+  ],
+  "prime_field_backends": {
+    "note": "Ground truth from the exhaustive search. Every verdict both backends produced agrees, which is what the second backend is for.",
+    "comparison": [
+      { "name": "gf9_multiplication", "field": 3, "known_rank": 3, "question": "find 3", "one_hot_seconds": 0.01, "field_theory_seconds": 5.44 },
+      { "name": "gf9_multiplication", "field": 3, "known_rank": 3, "question": "rule out 2", "one_hot_seconds": 0.0075, "field_theory_seconds": 0.085 },
+      { "name": "f3_2x2", "field": 3, "known_rank": 3, "question": "find 3", "one_hot_seconds": 0.014, "field_theory_seconds": 3.0 },
+      { "name": "f3_2x2", "field": 3, "known_rank": 3, "question": "rule out 2", "one_hot_seconds": 0.011, "field_theory_seconds": 0.022 },
+      { "name": "f3_2x3", "field": 3, "known_rank": 4, "question": "find 4", "one_hot_seconds": 0.051, "field_theory_seconds": null },
+      { "name": "f3_2x3", "field": 3, "known_rank": 4, "question": "rule out 3", "one_hot_seconds": 0.099, "field_theory_seconds": 2.22 }
+    ]
+  },
+  "symmetry_breaking": {
+    "note": "Ordering the terms is sound, since permuting a decomposition gives another decomposition, and it was checked against all six fixtures of known rank before being trusted. Off by default because an over-strong constraint would turn a satisfiable instance into UNSAT, which is a wrong lower bound.",
+    "question": "matmul_2x2x2, rule out 6",
+    "without_seconds": 24.71,
+    "with_seconds": 0.311,
+    "worth": "79x, and both ends of that are finite measurements under the shipped solver.",
+    "without_seconds_under_cryptominisat": null,
+    "with_seconds_under_cryptominisat": 1.57,
+    "cryptominisat_note": "No answer in 120 s without the ordering, 1.57 s with it, which is where the earlier `at least 76x` came from. The pair is kept because it is a lower bound on the same effect from the other solver, and labelled because the file used to present it as kissat's."
+  }
+}

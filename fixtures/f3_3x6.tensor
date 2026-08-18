@@ -1,0 +1,37 @@
+# Polynomial multiplication of 3 coefficients by 6, over GF(3).
+# Slice i is the matrix of the bilinear form producing output coefficient c_i,
+# so slice i has a 1 at (j,k) exactly when j+k == i. Naive rank is 3*6 = 18.
+field 3
+shape 8 3 6
+
+1 0 0 0 0 0
+0 0 0 0 0 0
+0 0 0 0 0 0
+
+0 1 0 0 0 0
+1 0 0 0 0 0
+0 0 0 0 0 0
+
+0 0 1 0 0 0
+0 1 0 0 0 0
+1 0 0 0 0 0
+
+0 0 0 1 0 0
+0 0 1 0 0 0
+0 1 0 0 0 0
+
+0 0 0 0 1 0
+0 0 0 1 0 0
+0 0 1 0 0 0
+
+0 0 0 0 0 1
+0 0 0 0 1 0
+0 0 0 1 0 0
+
+0 0 0 0 0 0
+0 0 0 0 0 1
+0 0 0 0 1 0
+
+0 0 0 0 0 0
+0 0 0 0 0 0
+0 0 0 0 0 1

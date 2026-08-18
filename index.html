@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tensor-rank-toolkit</title>
+<meta name="description" content="Exact tensor and bilinear rank over finite fields. A C++20 library on Givaro that searches for fewer multiplications, proves lower bounds by exhaustion, sparsifies the encoding operators, and puts the same question to a SAT solver. MIT licensed.">
+<link rel="icon" href="site/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="site/style.css">
+</head>
+<body data-base="./">
+
+<main class="wrap">
+
+  <section style="padding:3rem 0 .5rem">
+    <p class="eyebrow">Exact tensor and bilinear rank over finite fields</p>
+    <h1>How few multiplications does a product need?</h1>
+    <p class="lede">The rank of a bilinear map is the number of multiplications required to compute it. Strassen doing 2&times;2 matrix multiplication in seven instead of eight is where fast matrix multiplication comes from, and finding such decompositions in general is open.</p>
+  </section>
+  <p class="meta">tensor-rank-toolkit, a library for exact tensor and bilinear rank<br>C++20 on Givaro, MIT licensed</p>
+
+  <h2>What it computes</h2>
+  <p>Four directions on the one question: fewer multiplications, fewer additions, the rank asked as a question a SAT solver can answer, and, where no search can reach, a bound read off an algebraic curve. Nothing here is ever a float, so a reported rank is a fact about the map rather than an artefact of rounding.</p>
+  <p>Every count on this page is asserted by the test suite and reproduces anywhere. The timings are not: none of them is asserted, no test fails on one, and they are quoted as evidence of an order of magnitude rather than of a digit. The protocol they were taken under is <code>MEASURING.md</code>.</p>
+
+  <p>The cheap direction is rank by descent. Three steps: an exact matroid greedy for the starting basis, then two relaxations that trade the guarantee for reach.</p>
+
+  <figure><div id="ranks"></div><figcaption>Multiplications before and after the search, on four bilinear maps. Source: <code>descent_search/results.json</code>, produced by <code>minimise-rank</code>.</figcaption></figure>
+
+  <div class="tw"><table>
+    <thead><tr><th>Field</th><th>Product</th><th class="n">Naive</th><th class="n">Reached</th><th class="n">Time</th><th>Published rank</th></tr></thead>
+    <tbody>
+      <tr><td>F2</td><td>5&times;5</td><td class="n">25</td><td class="n"><strong>14</strong></td><td class="n">1.33 s</td><td>13, <code>[bdez2012]</code></td></tr>
+      <tr><td>F2</td><td>3&times;8</td><td class="n">24</td><td class="n"><strong>15</strong></td><td class="n">3.08 s</td><td>no solution at 14</td></tr>
+      <tr><td>F2</td><td>4&times;7</td><td class="n">28</td><td class="n"><strong>16</strong></td><td class="n">8.96 s</td><td>no solution at 14</td></tr>
+      <tr><td>F3</td><td>3&times;6</td><td class="n">18</td><td class="n"><strong>10</strong></td><td class="n">6.93 s</td><td>10, <code>[bdez2012]</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>What the timings are, and are not</h2>
+  <p>Every figure in the Time column was measured by hand on one core of an i5-12450H at 2.2 GHz, on an otherwise quiet machine, under the protocol in <code>MEASURING.md</code>. Two timings close enough together to be the fan rather than the code are never reported here as a ratio, and no timing is checked by CI, because a shared runner would turn a real regression and a noisy afternoon into the same red tick.</p>
+
+  <figure><div id="times"></div><figcaption>Total search time per map, log scale. One core of an i5-12450H at 2.2 GHz. Source: <code>descent_search/results.json</code>.</figcaption></figure>
+
+  <h2>The finding worth stating on its own</h2>
+  <p>The expensive step buys almost nothing. Step 3 of the descent enumerates the full pool of rank-one maps, and across the four polynomial fixtures it improved the answer in <strong>one of four cases</strong> while accounting for essentially all of the cost: on F2 4&times;7 almost the whole of the 8.96 seconds went to returning the rank the previous step already had.</p>
+  <p>So the step that costs essentially everything buys essentially nothing. Any continuation that only makes step 3 faster is optimising the part that mostly does not pay, and the fixtures exist to hold that finding still.</p>
+
+  <h2>And now a bound from below</h2>
+  <p>The descent is a heuristic: it says a map needs <em>no more than</em> so many multiplications. The complete search asks the other question, not &ldquo;can this be improved&rdquo; but &ldquo;is there one with exactly <em>k</em> products&rdquo;, and a no from it, run to exhaustion, is a fact about the map rather than about the searcher.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Map</th><th class="n">Naive</th><th class="n">Exact answer</th><th>Checked against</th></tr></thead>
+    <tbody>
+      <tr><td>F2 2&times;2</td><td class="n">4</td><td class="n"><strong>3</strong></td><td>Karatsuba; 2n&minus;1 says no fewer exists</td></tr>
+      <tr><td>GF(4) over GF(2)</td><td class="n">4</td><td class="n"><strong>3</strong></td><td>classical</td></tr>
+      <tr><td>GF(8) over GF(2)</td><td class="n">9</td><td class="n"><strong>6</strong></td><td>classical</td></tr>
+      <tr><td>⟨2,2,2⟩ matrix multiplication</td><td class="n">8</td><td class="n"><strong>7</strong></td><td>Strassen; decided from the tensor in half a second</td></tr>
+      <tr><td>F2 5&times;5</td><td class="n">25</td><td class="n"><strong>&ge; 12</strong></td><td>no 9, 10 or 11 exists, each ruled out exhaustively</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>The last line is narrowed from both sides and not closed. Ruling out eleven products puts the rank at twelve or more, and the descent exhibits fourteen, so what is proved here is <strong>12 &le; rank &le; 14</strong>. Ruling out twelve has not been run: it is priced at about seven hours by extrapolation from the eleven-product run. Barbulescu, Detrey, Estibals and Zimmermann report 13, <code>[bdez2012]</code>, so the descent's 14 is not the last word.</p>
+
+  <h2>Cheaper routes to the same question</h2>
+  <p>Two rank-sum bounds return a floor from the tensor alone in milliseconds, and they are tight often enough to remove the dearest question in a sweep entirely: they raise GF(16) from 4 to <strong>8</strong> and cyclic convolution from 5 to <strong>9</strong>, each of which previously cost a minute of exhaustion.</p>
+  <p>H&aring;stad proved deciding tensor rank NP-complete over every finite field, and that cuts both ways. One tool turns 3SAT into a tensor, and three encoders turn the rank question into one a solver answers. A refutation can be written as DRAT and checked by <code>drat-trim</code>, so a lower bound from a solver is verifiable rather than trusted.</p>
+  <p>Symmetry removes work before any of them runs. A change of coordinates fixing the target subspace maps solutions to solutions, so one member of each orbit suffices: <strong>28&times;</strong> on a refutation, and the ⟨3,3,3⟩ candidate pool collapses from 261&nbsp;121 to <strong>13 orbits</strong>. Canonical augmentation goes further, deduplicating with no memory at all, and returns ⟨2,2,2⟩'s 36 solution subspaces as the <strong>1 orbit</strong> they are while visiting <strong>1982&times;</strong> fewer nodes. Wall clock improves only 1.6&times;, because finding a canonical code by walking the whole group spends most of the saving on itself, and that is measured rather than glossed.</p>
+
+  <h2>The other half of the cost</h2>
+  <p>A fast algorithm costs multiplications and additions both, and the additions are set by how many nonzero entries its operators carry. Fewer nonzeros means fewer additions, the cost the multiplication count does not capture.</p>
+
+  <figure><div id="nonzeros"></div><figcaption>Nonzero entries in the encoding operators, before and after. All three methods reach 10. Source: <code>matrix_sparsification/results.json</code>.</figcaption></figure>
+
+  <p>Strassen's two encoding operators go from <strong>12 nonzeros to 10</strong>, and an alternative-basis operator from <strong>21 to 10</strong>, in milliseconds.</p>
+
+  <h2>One pipeline, not two halves</h2>
+  <p>A decomposition is not the deliverable; the algorithm is, and an algorithm is three operators: <code>L</code> and <code>R</code> encoding the two operands, <code>P</code> combining the products. The rank search recovers them from the decomposition it finds and writes them out; the sparsification is what they are for.</p>
+  <pre><code>minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -&gt; 14 multiplications
+sparsify-operator out_L.sms                                 # 31 -&gt; 27 nonzeros</code></pre>
+  <p>Fewer multiplications, then fewer additions, from one map, in two commands.</p>
+
+  <div class="caveat"><h3>Where this stops</h3><p>The descent proves nothing optimal: the 10 for F3 3&times;6 is a decomposition, not a claim about the true rank. The exact search does prove things, but only where it can finish, and from scratch its cost is C(pool,&nbsp;k). Neither settles the bilinear rank problem, which is still open. Nothing in the library is ever a float, so a reported rank is a fact about the map rather than an artefact of rounding, but exact arithmetic makes an answer trustworthy, not optimal.</p></div>
+
+  <h2>Read it</h2>
+  <div class="cards">
+    <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit">
+      <span class="tag">Repository</span>
+      <span class="t">Source, fixtures and CI</span>
+      <span class="d">C++20 on Givaro, MIT licensed. Eleven command-line tools, and a test suite that asserts every count on this page in about two minutes.</span>
+    </a>
+    <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/state-of-the-art.md">
+      <span class="tag">Context</span>
+      <span class="t">Where the research front is</span>
+      <span class="d">What the literature holds, which parts of it are implemented here, and what this library adds to it.</span>
+    </a>
+    <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/MEASURING.md">
+      <span class="tag">Method</span>
+      <span class="t">How a number here was measured</span>
+      <span class="d">The timing protocol, the defaults a published number depends on, and what reproduces anywhere and what does not.</span>
+    </a>
+  </div>
+
+</main>
+
+<script type="module" src="site/nav.js"></script>
+<script type="module">
+import { beforeAfter, logBars } from './site/chart.js';
+
+beforeAfter(document.getElementById('ranks'), {
+  rows: [
+    { label: 'F2  5x5', from: 25, to: 14 },
+    { label: 'F2  3x8', from: 24, to: 15 },
+    { label: 'F2  4x7', from: 28, to: 16 },
+    { label: 'F3  3x6', from: 18, to: 10 },
+  ],
+  unit: ' multiplications'
+});
+
+logBars(document.getElementById('times'), {
+  rows: [
+    { label: 'F2 5x5', value: 1.33, display: '1.3 s', highlight: true },
+    { label: 'F2 3x8', value: 3.08, display: '3.4 s', highlight: true },
+    { label: 'F3 3x6', value: 6.93, display: '7.5 s', highlight: true },
+    { label: 'F2 4x7', value: 8.96, display: '9.7 s', highlight: true },
+  ],
+  note: 'log scale; one core of an i5-12450H at 2.2 GHz'
+});
+
+beforeAfter(document.getElementById('nonzeros'), {
+  rows: [
+    { label: 'Strassen U',        from: 12, to: 10 },
+    { label: 'Strassen V',        from: 12, to: 10 },
+    { label: 'Alternative basis', from: 21, to: 10 },
+  ],
+  unit: ' nonzeros'
+});
+</script>
+</body>
+</html>

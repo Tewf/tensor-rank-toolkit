@@ -1,0 +1,59 @@
+# Polynomial multiplication of 5 coefficients by 5, over GF(2).
+# Slice i is the matrix of the bilinear form producing output coefficient c_i,
+# so slice i has a 1 at (j,k) exactly when j+k == i. Naive rank is 5*5 = 25.
+field 2
+shape 9 5 5
+
+1 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+
+0 1 0 0 0
+1 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+
+0 0 1 0 0
+0 1 0 0 0
+1 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+
+0 0 0 1 0
+0 0 1 0 0
+0 1 0 0 0
+1 0 0 0 0
+0 0 0 0 0
+
+0 0 0 0 1
+0 0 0 1 0
+0 0 1 0 0
+0 1 0 0 0
+1 0 0 0 0
+
+0 0 0 0 0
+0 0 0 0 1
+0 0 0 1 0
+0 0 1 0 0
+0 1 0 0 0
+
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 1
+0 0 0 1 0
+0 0 1 0 0
+
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 1
+0 0 0 1 0
+
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 1
