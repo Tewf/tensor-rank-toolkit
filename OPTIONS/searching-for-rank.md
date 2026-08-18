@@ -23,7 +23,7 @@ about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 |---|---|---|
 | `--target k` | none, sweep | Nothing to measure: with no target the tool answers "how few", with one it answers "is there one this small". |
 | `--node-limit N` | `search_node_limit`, `5000000` | **Nothing.** An argument only: it is a budget and never a refutation, and reaching it is exit 3. |
-| `--anchor map\|heuristic` | `map` | Argument, and semantic rather than quantitative: from the map the answer is the true minimum, from the heuristic it is the minimum only among algorithms containing that subspace. **The `heuristic` arm has never been timed**; every published result was anchored at the map (`../descent_search/method.md`). |
+| `--anchor map\|heuristic` | `map` | Argument, and semantic rather than quantitative: from the map the answer is the true minimum, from the heuristic it is the minimum only among algorithms containing that subspace. **The `heuristic` arm has never been timed**; every published result was anchored at the map (`../descent_search/method/`). |
 | `--bottom-up` | off | **Unmeasured.** It selects `fewest_products_from_scratch`, which its own header calls "the most expensive approach" with no number attached. |
 | sweep vs bisection (no flag) | sweep | **Unmeasured, and this is the one to distrust.** `../exhaustive_search/fewest_products.h` calls the sweep "trustworthy but slow" and bisection "faster", with no timing anywhere in the repository. The test runs both, prints `sweep N nodes, bisection M nodes`, and asserts only that they agree. Bisection's "faster" is an argument. |
 | `-s, --symmetry` | `none` | As `minimise-rank` above. |

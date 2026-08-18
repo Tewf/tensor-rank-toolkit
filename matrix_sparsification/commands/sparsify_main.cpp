@@ -47,7 +47,7 @@ int run(int argc, char** argv) {
     // The format is inferred from the file extension: `.sms` files use the
     // sparse reader, others use the dense reader. The cost is that an SMS file
     // under any other name silently gets the dense reader, which is one of the
-    // failures listed in ../../formats/plinopt_interoperability.md and is
+    // failures listed in ../../formats/plinopt_interoperability/ and is
     // waiting on the CLI work.
     const bool is_sms = path.size() > 4 && path.compare(path.size() - 4, 4, ".sms") == 0;
     const Matrix operator_matrix =

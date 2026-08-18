@@ -27,7 +27,7 @@
 ///
 /// The boundary this crosses, and the protocol that keeps it sound, are written
 /// down once in
-/// [`orbit_cube_boundary.md`](orbit_cube_boundary.md).
+/// [`orbit_cube_boundary/`](orbit_cube_boundary/README.md).
 namespace bilinear_rank {
 
 /// One cube per orbit, as literals over the consumer's variables.

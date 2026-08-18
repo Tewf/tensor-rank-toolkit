@@ -3,7 +3,7 @@
 Solve time peaks sharply just below the rank, which invites a secant-style
 search: probe two ranks, read the times, extrapolate to where the peak must be.
 It is not implemented. The schedule this module does use, and the floor that
-bounds what any schedule can win, are in [`search.md`](search.md).
+bounds what any schedule can win, are in [`search/`](search/README.md).
 
 Three reasons, the first two structural and independent of any measurement.
 

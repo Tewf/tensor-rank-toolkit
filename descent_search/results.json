@@ -155,7 +155,7 @@
     }
   },
   "famous_tensors": {
-    "note": "The tensors the complexity literature argues about, run through both searches over GF(2). A bilinear map is an order-3 tensor, so they need a constructor and nothing else: make-tensor --matmul n m k and --cyclic n. Prose: famous_tensors.md.",
+    "note": "The tensors the complexity literature argues about, run through both searches over GF(2). A bilinear map is an order-3 tensor, so they need a constructor and nothing else: make-tensor --matmul n m k and --cyclic n. Prose: famous_tensors/.",
     "runs": [
       {
         "tensor": "<2,2,2> matrix multiplication",

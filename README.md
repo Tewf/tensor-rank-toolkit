@@ -136,8 +136,8 @@ integer_programme/       the linear and integer programme layer the curve strand
 fixtures/                the maps and operators everything is run on
 reproduce/               regenerates every published number, with its provenance
 references.md            every paper cited anywhere here, by the keys the code uses
-state-of-the-art.md      where the research front is, and which parts of it are here
-positioning.md           what this library adds to it, and what it does not
+state-of-the-art/        where the research front is, and which parts of it are here
+positioning/             what this library adds to it, and what it does not
 MEASURING.md             how a timing here was taken, and what it does not mean
 OPTIONS.md               every flag of every tool, its default, and what
                          measured that default; links OPTIONS/ for the tables

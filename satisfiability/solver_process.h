@@ -23,7 +23,7 @@
 /// arrangement buys in exchange is that each question is a separate
 /// deterministic process, so its cost does not depend on the order it was
 /// reached in, and that is what makes the schedule pricing in
-/// [`search.md`](search.md) exact rather than indicative. Whether the trade is
+/// [`search/`](search/README.md) exact rather than indicative. Whether the trade is
 /// still the right one is open and remains unsettled here.
 ///
 /// Three are looked for, each for a reason:
@@ -40,7 +40,7 @@
 /// worth nothing at all, 1.559 s against 1.563 s on the same question. Kissat's
 /// raw strength on unsatisfiable instances is worth five times, and the
 /// expensive questions here are exactly the ones that answer no. Numbers in
-/// [`method.md`](method.md).
+/// [`method/`](method/README.md).
 namespace satisfiability {
 
 /// A solver found on `PATH`, and whether it understands XOR clauses directly.

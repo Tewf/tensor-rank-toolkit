@@ -124,7 +124,7 @@ forced; its determinant is a polynomial, and the pattern is reachable exactly
 when that polynomial is not identically zero.
 
 All five written out precisely, with their time and space cost:
-**[`method.md`](method.md)**.
+**[`method/`](method/README.md)**.
 
 ## What was corrected
 

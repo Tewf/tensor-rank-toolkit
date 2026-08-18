@@ -18,7 +18,7 @@
 /// `[perminov2026]` covering 680 formats. This implementation is behind all of
 /// them and is not a contribution; what it is for, and the one question in this
 /// area that is genuinely open here, is
-/// [`positioning.md`](../positioning.md).
+/// [`positioning.md`](../positioning/README.md).
 ///
 /// Two moves, and the asymmetry between them is the whole method:
 ///

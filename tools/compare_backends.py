@@ -8,7 +8,7 @@ what this measures, and it measures it on the same tensors with the same targets
 
 A fourth instrument was here and is not: the rank as a MILP lost by two to three
 orders of magnitude on every row and was retired. Why, with the numbers:
-state-of-the-art.md.
+state-of-the-art/rank-as-a-milp.md.
 
 **The orbit reduction is a column, not a separate backend.** The whole claim of
 this repository's symmetry work is that quotienting a search by the map's own
