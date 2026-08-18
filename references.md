@@ -305,13 +305,13 @@ line bound's `|F|^(2 n_d)`.
 **`rref` is not ported, and it is not what its name suggests.** Read from the
 author's repository, `coolcomputery/tensor-cpd-search`, notebook `other/k-th order
 rref pruning.ipynb`, because the paper's abstract does not mention it. It is a
-**higher-order lower bound** rather than any reduction of the rank-one pool:
-contract the tensor with `k`-tuples of vectors, wedge them, and refuse the rank
-when the resulting `k`-planes fail to span enough of the Grassmannian. Its
-headline use there is proving the Strassen tensor has no rank-6 CPD over GF(2)
-without a search, which is the one step
-[`exhaustive_search`](exhaustive_search/exhaustive_search.h) here still pays
-25 399 nodes for. See
+**refutation test** rather than any reduction of the rank-one pool: contract the
+tensor with `k`-tuples of vectors, wedge them, and refuse the rank when the
+resulting `k`-planes fail to span enough of the Grassmannian. Its cost there is
+`C(|F|^n_0, k)` tuples, so it is not a free bound, and the repository pairs it
+with `ranksum` when reporting its Strassen refutation, so whether it refuses rank
+6 alone is not settled by reading that README. Where it would land, and why that
+place matters, is in
 [`state-of-the-art/lower-bounds.md`](state-of-the-art/lower-bounds.md).
 
 **`heule2024`**: *Ruling Out Low-rank Matrix Multiplication Tensor
