@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     if (argc < 2) {
         std::cerr << "usage: factor-over-canonical-basis <tensor-file> [--floor k]\n"
                   << "                                   [--node-limit n] [--symmetry none]\n"
-                  << "                                   [--route auto|exhaustive|sat]\n"
+                  << "                                   [--route auto|exhaustive|sat|canonical]\n"
                   << cli::symmetry_usage()
                   << "  Writes A over the canonical basis, every row a rank-one matrix, and\n"
                   << "  the C with C A equal to the tensor's slices. The number of rows of A\n"
@@ -72,9 +72,11 @@ int main(int argc, char** argv) {
                     settings.route = canonical_factorisation::Route::Exhaustive;
                 } else if (named == "sat") {
                     settings.route = canonical_factorisation::Route::Satisfiability;
+                } else if (named == "canonical") {
+                    settings.route = canonical_factorisation::Route::CanonicalAugmentation;
                 } else {
-                    std::cerr << "factor-over-canonical-basis: --route takes auto, exhaustive or "
-                                 "sat, not '" << named << "'\n";
+                    std::cerr << "factor-over-canonical-basis: --route takes auto, exhaustive, "
+                                 "sat or canonical, not '" << named << "'\n";
                     return cli::exit_status(cli::ExitCode::Usage);
                 }
             } else if (option == "--symmetry" || option == "-s") {
@@ -111,14 +113,18 @@ int main(int argc, char** argv) {
         if (!factorisation.symmetry_refusal.empty()) {
             std::cerr << "# no symmetry: " << factorisation.symmetry_refusal << "\n";
         }
-        std::cout << "route: "
-                  << (factorisation.route == canonical_factorisation::Route::Satisfiability
-                          ? "a SAT solver, which formed no pool"
-                          : "exhaustion over the materialised pool")
+        const char* route_name = "exhaustion over the materialised pool";
+        if (factorisation.route == canonical_factorisation::Route::Satisfiability) {
+            route_name = "a SAT solver, which formed no pool";
+        } else if (factorisation.route == canonical_factorisation::Route::CanonicalAugmentation) {
+            route_name = "exhaustion with canonical augmentation";
+        }
+        std::cout << "route: " << route_name
                   << ", where the pool would be " << factorisation.pool_size << " matrices\n";
-        if (factorisation.route == canonical_factorisation::Route::Exhaustive) {
+        if (factorisation.route != canonical_factorisation::Route::Satisfiability) {
             std::cout << "symmetry: quotiented by " << factorisation.group_size
-                      << " automorphisms\n";
+                      << " automorphisms, " << factorisation.nodes_visited
+                      << " nodes over the sweep\n";
         }
         write_matrix("A, over the canonical basis", factorisation.chosen);
         write_matrix("C, the recovery", factorisation.recovery);
