@@ -1,6 +1,6 @@
 # Handing the bracket over, and what it costs
 
-[`descend_from_ceiling`](../../oracle_guided_search/descending_sweep.h) produces
+`descend_from_ceiling`, now on the `rejected-experiments` branch, produces
 `[floor, upper]` with a decomposition at `upper`, and its header says handing
 that back to `find_rank` leaves exactly one refutation to buy instead of one per
 rank from the floor upward. Nothing could hand it over. `find_rank` took a bare

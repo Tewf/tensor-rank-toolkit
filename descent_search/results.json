@@ -13,7 +13,7 @@
     {
       "name": "f2_5x5",
       "naive": 25,
-      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_5x5.tensor --steps 3",
+      "command": "build/descent_search/minimise-rank fixtures/f2_5x5.tensor --steps 3",
       "step_1": {
         "multiplications": 16,
         "seconds": 0.0006
@@ -30,7 +30,7 @@
     {
       "name": "f2_3x8",
       "naive": 24,
-      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_3x8.tensor --steps 3",
+      "command": "build/descent_search/minimise-rank fixtures/f2_3x8.tensor --steps 3",
       "step_1": {
         "multiplications": 19,
         "seconds": 0.0006
@@ -47,7 +47,7 @@
     {
       "name": "f2_4x7",
       "naive": 28,
-      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_4x7.tensor --steps 3",
+      "command": "build/descent_search/minimise-rank fixtures/f2_4x7.tensor --steps 3",
       "step_1": {
         "multiplications": 19,
         "seconds": 0.0009
@@ -64,7 +64,7 @@
     {
       "name": "f3_3x6",
       "naive": 18,
-      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f3_3x6.tensor --steps 3",
+      "command": "build/descent_search/minimise-rank fixtures/f3_3x6.tensor --steps 3",
       "step_1": {
         "multiplications": 12,
         "seconds": 0.0044
@@ -178,7 +178,7 @@
           "seconds_to_find_7": 0.14
         },
         "known": 7,
-        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step; the plateau walk crosses to 7 in 0.11 s (oracle_guided_search/measurements.md)."
+        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step; the plateau walk crosses to 7 in 0.11 s (oracle_guided_search/measurements/)."
       },
       {
         "tensor": "<2,2,3> matrix multiplication",
@@ -310,7 +310,7 @@
       "cbc": "Welcome to the CBC MILP Solver",
       "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
     },
-    "build_directory": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build",
+    "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
     "defaults_in_force": {

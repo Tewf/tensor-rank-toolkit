@@ -1,29 +1,12 @@
 # Committing to candidates
 
-The fixed-k, tree-refutation and isomorph-free routes: one orbit representative
-at a time. Precedence and `BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
+The tree-refutation and isomorph-free routes: one orbit representative at a time.
+Precedence and `BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
 
-## `find-at-rank`
-
-Produces an upper bound and never waits for a refutation.
-
-| Flag | Default | What chose the default |
-|---|---|---|
-| `--target k` / `--descend` | neither; one is required | Nothing to measure. |
-| `--ceiling N` | naive cost | Nothing to measure. |
-| `--floor N` | `rank_lower_bound` of the tensor | Measured: the weaker flattening bound alone put this command's floor at 4 on GF(16) where its siblings start at **8**, which is four solver calls thrown away. |
-| `--candidate-timeout N` | `30` | Argument, with one datapoint beside it. The argument: the sweep's worst case is candidates times this and only the accepting call has to finish. The datapoint: at `⟨2,2,2⟩` and `k = 7`, candidate 0 does not finish in 30 s and candidate 1 answers in **0.50 s**, so passing over is what makes the step land at 30.5 s rather than never. Deliberately **not** `sat_timeout_seconds`: a candidate that exhausts this is passed over, never refuted. |
-| `--solver <name>` | none; `sat_solver_order` decides | As `decide-rank-by-sat`. |
-| `--max-memory` | `sat_memory_megabytes`, `2G` | **Nothing.** Argument only. |
-| `--break-symmetry` | off | Sound beside a cube, which pins term 0 and orders nothing. Worth is measured on the whole instance; see `deflate-strictly` below. |
-| `-s, --symmetry matmul` | `none` | `auto` is refused: the candidates are the closed-form orbits of `⟨n,m,k⟩`. |
-
-The command as a whole is measured and it loses: **between 390 and 1500 times
-slower** than the baselines on every fixture tried
-([`../oracle_guided_search/measurements.md`](../oracle_guided_search/measurements.md)).
-The premise it was designed against was also measured and refuted: the assumed
-190x to 210x asymmetry between a find and a refutation is, with matched flags,
-about **one**.
+The third route, `find-at-rank`, is on the `rejected-experiments` branch and its
+flags are gone with it. Its defaults and what chose them are recorded there, and
+the measurement that retired it is in
+[`../oracle_guided_search/measurements/README.md`](../oracle_guided_search/measurements/README.md).
 
 ## `deflate-strictly`
 

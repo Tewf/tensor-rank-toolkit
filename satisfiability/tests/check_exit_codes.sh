@@ -106,6 +106,27 @@ command=$binaries/integer_programme/list-solvers
 echo "list-solvers"
 expect 0
 
+command=$binaries/pencil_rank/decide-rank-by-pencil
+echo "decide-rank-by-pencil"
+expect 2
+# 0 when the rank is settled, 3 when only bounded. This command is the one place
+# Undecided means "the mathematics stopped here", not "a budget ran out": the
+# closure formula is exact over an algebraically closed field and short over a
+# small one, so reporting it as a rank would be wrong.
+expect 0 "$fixtures/pencil_split_f3_3.tensor"
+expect 3 "$fixtures/pencil_irreducible_f2_4.tensor"
+# More than two slices is not a pencil, which is a bad invocation.
+expect 2 "$fixtures/matmul_2x2x2.tensor"
+expect 5 "$fixtures/no_such_file.tensor"
+
+command=$binaries/canonical_factorisation/factor-over-canonical-basis
+echo "factor-over-canonical-basis"
+expect 2
+expect 2 --route bogus
+expect 2 "$fixtures/f2_2x2.tensor" --route bogus
+expect 0 "$fixtures/f2_2x2.tensor"
+expect 5 "$fixtures/no_such_file.tensor"
+
 if [ "$failures" -ne 0 ]; then
     echo "exit codes: $failures failed"
     exit 1

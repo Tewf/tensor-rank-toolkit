@@ -20,10 +20,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0052,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x2.tensor --target 3 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
       "ruled_out_seconds": 0.0027,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x2.tensor --target 2 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "f2_2x3",
@@ -31,10 +31,10 @@
       "known_rank": 5,
       "found_at": 5,
       "found_seconds": 0.0113,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x3.tensor --target 5 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --break-symmetry --plain-cnf",
       "ruled_out_at": 4,
       "ruled_out_seconds": 0.0101,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x3.tensor --target 4 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 4 --break-symmetry --plain-cnf"
     },
     {
       "name": "gf4_multiplication",
@@ -42,10 +42,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0028,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf4_multiplication.tensor --target 3 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
       "ruled_out_seconds": 0.0027,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf4_multiplication.tensor --target 2 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "gf8_multiplication",
@@ -53,11 +53,11 @@
       "known_rank": 6,
       "found_at": 6,
       "found_seconds": 0.0422,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf8_multiplication.tensor --target 6 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --break-symmetry --plain-cnf",
       "ruled_out_at": 5,
       "ruled_out_seconds": 0.0378,
       "ruled_out_seconds_under_cryptominisat": 0.0357,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf8_multiplication.tensor --target 5 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 5 --break-symmetry --plain-cnf",
       "note": "The 4.13 s recorded here for ruling out 5 could not be reproduced by anything tried: 0.0378 s with the term ordering, 0.534 s without it, 0.0357 s under cryptominisat. It is replaced rather than explained, and said so here so the next reader does not inherit the same puzzle. `search/` was the file that was right: its gf8 floor of 0.085 s is the sum of these two questions."
     },
     {
@@ -66,10 +66,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0044,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/w_state.tensor --target 3 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
       "ruled_out_seconds": 0.0027,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/w_state.tensor --target 2 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "matmul_2x2x2",
@@ -78,13 +78,13 @@
       "found_at": 7,
       "found_seconds": 0.177,
       "found_seconds_under_cryptominisat": 0.469,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x2.tensor --target 7 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --break-symmetry --plain-cnf",
       "ruled_out_at": 6,
       "ruled_out_seconds": 0.311,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x2.tensor --target 6 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 6 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 25399,
       "exhaustive_ruled_out_seconds": 0.41,
-      "exhaustive_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/exhaustive_search/decide-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x2.tensor --target 6"
+      "exhaustive_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6"
     },
     {
       "name": "matmul_2x2x3",
@@ -92,10 +92,10 @@
       "known_rank": 11,
       "ruled_out_at": 8,
       "ruled_out_seconds": 34.26,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x3.tensor --target 8 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x3.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 0,
       "exhaustive_ruled_out_seconds": null,
-      "exhaustive_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/exhaustive_search/decide-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x3.tensor --target 8",
+      "exhaustive_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x3.tensor --target 8",
       "exhaustive_note": "The tree search opens no node here any more, and that is a real change rather than a lost measurement. `rank_lower_bound` is the maximum over the flattening rank and `[yang2025]`'s two rank sums, and it puts this tensor at 9, so `decide-rank --target 8` refutes the target by Gaussian elimination and returns before the search opens a node. There is therefore no search time to report. The 446 923 nodes and 53.1 s this row carried before were what the same command produced when the flattening rank was the only bound it had; no invocation of the shipped binary produces them now."
     },
     {
@@ -105,10 +105,10 @@
       "found_at": 9,
       "found_seconds": 0.27,
       "found_seconds_under_cryptominisat": 36.19,
-      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf16_multiplication.tensor --target 9 --break-symmetry --plain-cnf",
+      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 9 --break-symmetry --plain-cnf",
       "ruled_out_at": 8,
       "ruled_out_seconds": 108.0,
-      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 105600301,
       "exhaustive_ruled_out_seconds": 2328,
       "exhaustive_nodes_not_reproducible": "The `--node-limit` this run was given was never written down. 105 600 301 nodes is twenty-one times the default ceiling of 5 000 000 (`search_node_limit`, `tunables.conf`), so the run cannot have been made at the default, and the number it was raised to is recorded nowhere; the 2328 s beside it came off the same unrecorded run. `reproduce/measure.py` therefore does not re-derive either, and prints a SKIPPED line naming this figure on every run, `--check` included, rather than passing over it in silence. Re-deriving it is roughly forty minutes of one core at the rate the shipped binary visits nodes. Whoever runs it should write the flag into `exhaustive_command`, delete this key, and let the driver own the figure."
@@ -202,7 +202,7 @@
       "cbc": "Welcome to the CBC MILP Solver",
       "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
     },
-    "build_directory": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build",
+    "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
     "defaults_in_force": {
