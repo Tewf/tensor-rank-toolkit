@@ -45,9 +45,10 @@ corrected, tested, and extended into four strands.
 - **The integer programme layer** the curve strand hands its step 3 to: exact
   simplex and branch and bound, fixed-column MPS output, and a chain of outside
   solvers whose points are re-checked and whose "infeasible" is never believed.
-- **Eight command-line tools**: `minimise-rank`, `decide-rank`, `walk-scheme`,
-  `decide-rank-by-sat`, `list-solvers`, `curve-bounds`, `sparsify-operator` and
-  `make-tensor`, sharing one argument grammar, one clock, one set of exit codes
-  and one file of tunables.
+- **Eleven command-line tools**: `minimise-rank`, `decide-rank`, `walk-scheme`,
+  `decide-rank-by-sat`, `list-solvers`, `find-at-rank`, `deflate-strictly`,
+  `enumerate-subspaces`, `curve-bounds`, `sparsify-operator` and `make-tensor`,
+  sharing one argument grammar, one clock, one set of exit codes and one file of
+  tunables.
 
 [0.1.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.1.0
