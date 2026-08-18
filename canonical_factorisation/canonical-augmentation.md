@@ -11,32 +11,47 @@ what was generated. It is the standard fix for the duplication the plain tree
 leaves, and `oracle_guided_search/` measures it at **1982x fewer nodes** when
 *counting* solution subspaces.
 
-Deciding is not counting, and here it loses badly. On `matmul_2x2x2`:
+Deciding is not counting, and the first wiring of it lost by 129x. Fixing the
+part that was mine to fix took most of that back. On `matmul_2x2x2`, over the
+whole sweep from the floor:
 
-| route | group | nodes over the sweep | time |
+| route | group | nodes | time |
 |---|---|---|---|
-| `exhaustive` | 6, the stabiliser | 3815 | **0.19 s** |
-| `canonical` | 216, the full product group | **1057** | 24.62 s |
+| `exhaustive` | 6, the stabiliser | 3815 | **0.18 s** |
+| `canonical`, as first wired | 216, the full product group | 1057 | 24.62 s |
+| `canonical`, with an early exit | 216 | **235** | 2.76 s |
 
-**3.6x fewer nodes for 129x the wall clock.** Two reasons, both structural rather
-than fixable by tuning:
+The early exit is the whole of that 9x. The enumerator was written to *count*
+solution subspaces, so it finishes every level; a rank search only asks whether
+the level is empty, and the level that answers does not have to be finished. It
+is now an argument, off by default, because a count that stopped early is not a
+count.
 
-- The parent test walks *every* element of the group at every node, and the group
-  it needs is the full 216 rather than the 6-element stabiliser the plain route
-  quotients by. So a node costs about thirty-six times more.
-- The enumerator has **no early exit**: it finishes each level whether or not it
-  has an answer, because counting is what it is for. The plain tree returns at
-  the first success. The saving was supposed to come from the levels *below* the
-  rank, which have to be exhausted anyway, and 3.6x on those does not pay for the
-  level that succeeds.
+**What is left is the honest result: 16.2x fewer nodes for 15x the wall clock.**
+The quotient works, and pays for itself in the only currency that does not depend
+on the machine. What it does not pay for is its own invariant.
 
-The route ships anyway, behind a flag and never by default, with a slow test
-asserting it still returns 7 and still visits strictly fewer nodes. A wired route
-that is known to lose is worth more than an unwired one somebody will suggest
-again: **when you need one answer, early exit beats deduplication; when you need
-a count, it is the other way round.** That is the same trade
-`oracle_guided_search/deduplication-cost.md` prices, tipped the other way and much
-harder, because there the alternative had no quotient at all.
+## The invariant, not the method
+
+`canonical_subspace` finds a canonical code by walking the whole group and taking
+the least, so one parent test costs `|G|` reductions. At 216 elements that is
+about thirty-six times the cost of a plain node, and 16x fewer nodes does not
+cover it.
+
+**That is a property of this implementation and not of canonical augmentation.**
+`oracle_guided_search/deduplication-cost.md` measured the same thing while
+counting, at 1982x fewer nodes and only 1.6x faster, and names the fix: a real
+canonical labelling with **refinement**, which is `nauty`'s actual contribution
+rather than the augmentation scheme built on top of it. That would make the code
+sublinear in `|G|`. With 16x fewer nodes already in hand, it is the one change
+that would plausibly turn this route from losing to winning, and it is the
+substantial piece of work neither module has done.
+
+So the route ships behind a flag, never by default, with a slow test asserting it
+still reaches 7, still engages rather than falling back, and still visits strictly
+fewer nodes than the plain route. **A wired route known to lose is worth more than
+an unwired one somebody will propose again**, and it is worth more still when the
+reason it loses is named and fixable.
 
 **The full `GL(n) x GL(m)` cannot work.** The sandwiching action `M -> mu M nu`
 is *transitive* on nonzero rank-one matrices: given `u v^T` and `u' v'^T`, take

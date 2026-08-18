@@ -294,14 +294,16 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
         bool found = false;
 
         if (route == Route::CanonicalAugmentation) {
-            // The enumerator has no early exit: it finishes the level whether or
-            // not it has an answer. That is a loss on the level that succeeds and
-            // is meant to be a win on every level below it, which has to be
-            // exhausted anyway. Whether it nets out is measured, not assumed:
-            // see `narrowing-the-search.md`.
+            // `stop_at_first`, because this is deciding and not counting: the
+            // level that succeeds does not have to be finished. The levels below
+            // it still are, since a level with no solution has to be exhausted
+            // before it can be called empty, and those are where the node saving
+            // was supposed to pay. Whether it does is measured, not assumed:
+            // see `canonical-augmentation.md`.
             const bilinear_rank::EnumerationReport pass =
                 bilinear_rank::enumerate_solution_subspaces(field, as_tensor, pool, group,
-                                                           components, /*canonical=*/true);
+                                                           components, /*canonical=*/true,
+                                                           /*stop_at_first=*/true);
             factorisation.nodes_visited += pass.nodes;
             if (!pass.decompositions.empty()) {
                 products = pass.decompositions.front();

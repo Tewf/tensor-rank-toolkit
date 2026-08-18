@@ -42,5 +42,6 @@ the trivial group rather than a wrong answer.
 
 ## Canonical augmentation
 
-Wired as `--route canonical`, and it loses by two orders of magnitude:
+Wired as `--route canonical`. It wins on nodes and loses on wall clock, and
+the reason is its invariant rather than the method:
 [`canonical-augmentation.md`](canonical-augmentation.md).
