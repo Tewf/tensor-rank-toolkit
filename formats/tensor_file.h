@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <istream>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -32,5 +33,21 @@ struct Tensor {
 Tensor read_tensor(std::istream& input);
 
 Tensor read_tensor_file(const std::string& path);
+
+/// Write what `read_tensor` reads, with `comment` as a leading `#` block, one
+/// `# ` line per line of it.
+///
+/// This lived inside `make-tensor` for as long as one command was the only
+/// thing that wrote a tensor, which left the format's two halves in different
+/// layers: the reader could only ever be checked against fixtures somebody had
+/// typed, never against what the repository itself emits. With both halves here
+/// a round trip is a test.
+///
+/// The comment parameter is the one `write_sms_file` and `write_matrix_file`
+/// carry, for their reason as well as one of its own. Every reader here skips
+/// `#`, so a file that has travelled still says which map it holds and what
+/// wrote it, and no caller has to know that a tensor comment starts with a hash.
+void write_tensor(std::ostream& output, const Tensor& tensor,
+                  const std::string& comment = "");
 
 }  // namespace linear_algebra

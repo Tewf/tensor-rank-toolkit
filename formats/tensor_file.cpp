@@ -4,6 +4,11 @@
 #include <sstream>
 #include <stdexcept>
 
+// For `to_string`, which renders a matrix as dense rows. A slice of a tensor
+// and a `.matrix` file are the same rows written the same way, and having one
+// renderer is what stops the two formats drifting apart entry by entry.
+#include "dense_matrix_file.h"
+
 namespace linear_algebra {
 
 namespace {
@@ -87,6 +92,20 @@ Tensor read_tensor_file(const std::string& path) {
     std::ifstream input(path);
     if (!input) throw std::runtime_error("cannot open tensor file: " + path);
     return read_tensor(input);
+}
+
+void write_tensor(std::ostream& output, const Tensor& tensor, const std::string& comment) {
+    std::istringstream lines(comment);
+    for (std::string line; std::getline(lines, line);) output << "# " << line << "\n";
+    output << "field " << tensor.characteristic << "\n";
+    output << "shape " << tensor.slices.size() << " " << tensor.rows() << " " << tensor.columns()
+           << "\n";
+    // A blank line before every slice, the first one included. It is what the
+    // fixtures carry, and the reader skips blank lines anyway, so this is for
+    // whoever opens the file rather than for anything that parses it.
+    for (const ModularMatrix& slice : tensor.slices) {
+        output << "\n" << to_string(slice);
+    }
 }
 
 }  // namespace linear_algebra
