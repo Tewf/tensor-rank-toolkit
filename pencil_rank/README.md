@@ -18,7 +18,7 @@ candidate pool at all.
 |---|---|
 | the Kronecker structure | **exact**, and checked three ways against itself |
 | rank over the algebraic closure | **exact**, by `[grigoriev1978, Thm. 1]` and `[jaja1979]`, so a **proved lower bound** over GF(p) |
-| rank over GF(p) | **exact** when the pencil is diagonalisable there; a bound otherwise, and weaker than `[sumi2009, Thm. 3.5]` allows |
+| rank over GF(p) | **exact** by `[sumi2009, Thm. 3.3]` when the field is large enough for the pencil, or when it is diagonalisable; a proved bound otherwise |
 | the projection bound on a bigger tensor | **sound**, and weaker than `rank_lower_bound` |
 
 The structure is checked rather than trusted. The regular part's size is counted
@@ -36,8 +36,10 @@ exhaustion, three of which the classical formula gets wrong:
 ## What closes it, and it is published
 
 The field-size condition this module was written around is the hypothesis of a
-theorem, and the counterexample is in the same paper, which this repository
-already cited: [`what-the-literature-settles.md`](what-the-literature-settles.md).
+theorem and the counterexample is in the same paper, which this repository
+already cited. Both are now implemented, and they settle three fixtures outright
+that were bounds before and sharpen two others:
+[`what-the-literature-settles.md`](what-the-literature-settles.md).
 
 ## A second use for the canonical form
 

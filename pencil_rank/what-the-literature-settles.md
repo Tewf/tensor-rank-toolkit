@@ -22,13 +22,33 @@ That last one is row three of the table above, which this repository measured at
 exactly 5 against a count of 4 and wrote up as a discovery. It is a published
 counterexample, and the measurement confirms a theorem rather than finding a gap.
 
-**So the honest position is better than the one this page used to state.** `n + k`
-is a proved lower bound over every field, and it is *exact* whenever
-`Card(K) >= deg p_1(A)`, which a program can check. Both are stronger than what
-is implemented here, which reports the closure value and calls itself exact only
-where the pencil is diagonalisable. Implementing `k` and the cardinality test is
-the named next step for this module, and it would settle six of the twelve rows
-above outright rather than bounding them.
+**Both are now implemented**, in [`sumi_bound.h`](sumi_bound.h). `invariant_factors`
+puts the Smith diagonal into the divisibility chain that `elementary_divisors`
+deliberately skips, because `k` depends on how the prime powers are distributed
+among the invariant polynomials and not merely on the multiset. The test for
+"splits into distinct linear factors over GF(p)" is divisibility by `x^p - x`.
+
+What that bought, on the fixtures:
+
+| fixture | rank | closure alone | with `n + k` |
+|---|---|---|---|
+| `gf4_multiplication` | 3 | 2 | **3, exact** |
+| `w_state` | 3 | 3 | **3, exact** |
+| `pencil_split_f3_3` | 3 | 3 | **3, exact** |
+| `pencil_nilpotent_f2_3` | 4 | 4 | 4, a bound |
+| `pencil_irreducible_f2_4` | 6 | 4 | **5**, a bound |
+| `pencil_singular_f2_2x3` | 3 | 3 | does not apply |
+
+Two rows gain a proved exact answer where they had a bound, and two gain a
+strictly better bound. Nothing became unsound, which the test asserts separately
+from the values: a proved bound above the rank would be a false refutation and
+nothing downstream would catch it.
+
+The theorems are about `(E^n; A)`, so the module puts the pencil in that form by
+inverting an invertible member. A singular pencil has none, and over a small field
+a regular one may have none either, since `det` is a form of degree `n` while the
+projective line has `p + 1` points. Those report "does not apply" rather than a
+guess, which is the `pencil_singular_f2_2x3` row.
 
 What remains genuinely open is the cost *below* the threshold, where the table's
 three short rows live and where neither theorem applies.

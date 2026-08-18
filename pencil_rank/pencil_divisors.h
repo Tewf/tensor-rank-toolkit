@@ -62,4 +62,19 @@ struct PencilDivisors {
 PencilDivisors elementary_divisors(const ModularField& field, const ModularMatrix& first,
                                    const ModularMatrix& second);
 
+/// The invariant factors of a square matrix, as a divisibility chain, each
+/// dividing the next.
+///
+/// These are the diagonal of the Smith form of `x I - square` over `GF(p)[x]`,
+/// and unlike the elementary divisors they need the chain that
+/// `elementary_divisors` deliberately skips: `[sumi2009, Thm. 3.3]` counts *which
+/// invariant polynomials* fail to split, and that count depends on how the prime
+/// powers are distributed among them.
+///
+/// Ascending, so the last entry is Ja'Ja's `p_1`, the minimal polynomial, whose
+/// degree is what the cardinality hypothesis is compared against. Entries that
+/// are units are dropped, since they say nothing.
+std::vector<Polynomial> invariant_factors(const ModularField& field,
+                                          const ModularMatrix& square);
+
 }  // namespace pencil_rank
