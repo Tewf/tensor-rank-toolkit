@@ -1,0 +1,18 @@
+# The same shape as the nilpotent pencil and the opposite answer: the identity
+# against a diagonal matrix whose three entries are distinct in GF(3).
+#
+# Both slices are already diagonal, so the three matrices e_i e_i^T span a space
+# containing both and the rank is 3, its size. This is the fixture that would
+# catch a formula charging for a repeated eigenvalue that is not there: it and
+# pencil_nilpotent_f2_3 differ only in whether the second slice is
+# diagonalisable, and their ranks differ by exactly the term that measures it.
+field 3
+shape 2 3 3
+
+1 0 0
+0 1 0
+0 0 1
+
+0 0 0
+0 1 0
+0 0 2

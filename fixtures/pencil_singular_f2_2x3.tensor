@@ -1,0 +1,15 @@
+# A singular pencil, and the only fixture here whose rank comes from a minimal
+# index rather than from an eigenvalue.
+#
+# The pencil is [1 x 0; 0 1 x], which is Kronecker's L_2 block: it is 2 by 3, so
+# it has a null vector over GF(2)(x) and the whole of its structure is one
+# column minimal index of 2. Its regular part is empty, so both the elementary
+# divisors and the row indices are, and the rank is the block's width, 3.
+field 2
+shape 2 2 3
+
+1 0 0
+0 1 0
+
+0 1 0
+0 0 1
