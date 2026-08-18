@@ -4,7 +4,7 @@
 
 namespace bilinear_rank {
 
-Matrix combine(const Field& field, const std::vector<Matrix>& slices,
+Matrix linear_combination(const Field& field, const std::vector<Matrix>& slices,
                const std::vector<int64_t>& coefficients) {
     if (slices.empty()) return Matrix();
     Matrix result(slices.front().rows(), slices.front().columns());

@@ -50,7 +50,7 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
                           std::size_t width, const std::vector<Matrix>& pool, std::size_t from,
                           std::size_t target, SearchBudget& budget, std::vector<Element>& scratch,
                           std::vector<Matrix>& products) {
-    if (!budget.spend()) return false;
+    if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = span.dimension();
     if (dimension > target) return false;
@@ -92,7 +92,7 @@ bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
 
     // The root node itself, counted here exactly as the recursion counts it, so
     // that a node total does not depend on how many cores answered the question.
-    if (!budget.spend()) return false;
+    if (!budget.try_consume_node()) return false;
 
     // One worker per first choice. The subtrees share nothing but the budget,
     // which is atomic, so the only synchronisation left is handing back a

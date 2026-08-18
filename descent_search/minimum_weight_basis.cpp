@@ -26,7 +26,7 @@ std::vector<std::size_t> span_element_ranks(const Field& field,
     for (std::size_t index = 0; index < combinations; ++index) {
         ranks[index] = linear_algebra::rank(
             field,
-            combine(field, slices, coefficient_vector(index, slices.size(), field.characteristic())));
+            linear_combination(field, slices, coefficient_vector(index, slices.size(), field.characteristic())));
     }
     return ranks;
 }
@@ -41,7 +41,7 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
     // combination and is skipped: it can never enter a basis.
     //
     // Only the rank and the index are held. The element itself is rebuilt from
-    // its index by `combine` when the greedy actually reaches it, which is at
+    // its index by `linear_combination` when the greedy actually reaches it, which is at
     // most `dimension` times. Holding the matrices instead costs
     // `p^slices * (56 + 8*n*m)` bytes: 134 MB for the sixteen slices of 4x4
     // matrix multiplication, against 1 MB this way.
@@ -60,7 +60,7 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
             continue;
         }
         const Matrix element =
-            combine(field, slices, coefficient_vector(index, slices.size(), field.characteristic()));
+            linear_combination(field, slices, coefficient_vector(index, slices.size(), field.characteristic()));
         candidates.push_back({linear_algebra::rank(field, element), index});
     }
 
@@ -76,7 +76,7 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
     ReducedBasis span(field, width);
     for (const Candidate& candidate : candidates) {
         if (basis.size() == dimension) break;
-        Matrix element = combine(
+        Matrix element = linear_combination(
             field, slices, coefficient_vector(candidate.index, slices.size(), field.characteristic()));
         if (span.try_add(element)) {
             basis.push_back(std::move(element));

@@ -27,7 +27,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
                        const std::vector<std::uint32_t>& residual, std::size_t target,
                        std::size_t depth, SearchBudget& budget, std::vector<Element>& scratch,
                        PositionsByDepth& positions, std::vector<Matrix>& products) {
-    if (!budget.spend()) return false;
+    if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = span.dimension();
     if (dimension > target) return false;

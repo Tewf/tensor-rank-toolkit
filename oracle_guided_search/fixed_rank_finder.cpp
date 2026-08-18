@@ -143,7 +143,7 @@ FoundAtRank find_at_rank(const linear_algebra::Tensor& tensor, std::size_t produ
         return result;
     }
 
-    satisfiability::Approach approach = settings.approach;
+    satisfiability::SolveOptions approach = settings.approach;
     approach.timeout_seconds = settings.candidate_seconds;
     approach.probe_seconds = 0;
     // Never asked for, because a refutation is exactly what this does not wait

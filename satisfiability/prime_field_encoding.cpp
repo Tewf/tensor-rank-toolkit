@@ -31,17 +31,17 @@ std::vector<int> one_hot(linear_algebra::Cnf& formula, std::size_t size) {
 
 /// A fresh group holding the field operation of two groups, table and all.
 ///
-/// `combine(x, y)` is the field's own answer, so the same eight lines serve
+/// `linear_combination(x, y)` is the field's own answer, so the same eight lines serve
 /// multiplication and addition and there is one place for either to be wrong.
 template <class Operation>
 std::vector<int> combined(linear_algebra::Cnf& formula, std::size_t characteristic,
                           const std::vector<int>& first, const std::vector<int>& second,
-                          Operation combine) {
+                          Operation linear_combination) {
     const std::vector<int> result = one_hot(formula, characteristic);
     for (std::size_t left = 0; left < characteristic; ++left) {
         for (std::size_t right = 0; right < characteristic; ++right) {
             formula.add_clause(
-                {-first[left], -second[right], result[combine(left, right)]});
+                {-first[left], -second[right], result[linear_combination(left, right)]});
         }
     }
     return result;

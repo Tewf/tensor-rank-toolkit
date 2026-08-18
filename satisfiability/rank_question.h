@@ -21,7 +21,7 @@
 namespace satisfiability {
 
 /// How the question should be put.
-struct Approach {
+struct SolveOptions {
     /// Hand `GF(p)` to cvc5's theory of finite fields instead of encoding it.
     bool use_field_theory = false;
     /// Write parities as clauses rather than `x` lines, for a solver without
@@ -120,7 +120,7 @@ struct CubeReport {
 /// cubes, so the saving is real. It is encoding time only and buys nothing in the
 /// solver, which is where the cost actually is.
 Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
-                   const Approach& approach, CubeReport* report = nullptr);
+                   const SolveOptions& approach, CubeReport* report = nullptr);
 
 /// What a search established, and whether it is a determination.
 struct RankBounds {
@@ -164,7 +164,7 @@ struct RankBounds {
 /// about three percent.
 ///
 /// The upper bound is still wanted, as somewhere to stop.
-RankBounds find_rank(const linear_algebra::Tensor& tensor, const Approach& approach,
+RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, std::size_t ceiling);
 
 /// Write the question to a file and stop, for a solver of your own.
@@ -172,6 +172,6 @@ RankBounds find_rank(const linear_algebra::Tensor& tensor, const Approach& appro
 /// Returns what was written, as "N variables, M clauses" or the SMT-LIB
 /// equivalent, because the sizes are the interesting part of not solving it.
 std::string write_question(const linear_algebra::Tensor& tensor, std::size_t products,
-                           const Approach& approach, const std::string& path);
+                           const SolveOptions& approach, const std::string& path);
 
 }  // namespace satisfiability

@@ -56,6 +56,6 @@ Assignment satisfying_assignment(const Formula& formula);
 ///
 /// Throws on an empty clause, which is unsatisfiable and has no first literal
 /// to repeat, rather than quietly producing a tensor for a different formula.
-Clause padded_to_three(const Clause& clause);
+Clause padded_to_three_literals(const Clause& clause);
 
 }  // namespace satisfiability

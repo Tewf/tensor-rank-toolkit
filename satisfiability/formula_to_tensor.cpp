@@ -58,7 +58,7 @@ Matrix marker_slice(const Field& field, const Formula& formula, std::size_t vari
 }
 
 Matrix clause_slice(const Field& field, const Formula& formula, std::size_t index) {
-    const Clause clause = padded_to_three(formula.clauses[index]);
+    const Clause clause = padded_to_three_literals(formula.clauses[index]);
     const std::size_t first = formula.variable_count + 2 + 2 * index;
 
     Matrix slice = empty_slice(formula);
@@ -137,7 +137,7 @@ std::vector<Matrix> witness_from_assignment(const Field& field, const Formula& f
     }
 
     for (std::size_t index = 0; index < formula.clause_count(); ++index) {
-        const Clause clause = padded_to_three(formula.clauses[index]);
+        const Clause clause = padded_to_three_literals(formula.clauses[index]);
         std::size_t chosen = clause.literals[0].variable;
         for (const Literal& literal : clause.literals) {
             if (literal.holds_under(assignment)) {

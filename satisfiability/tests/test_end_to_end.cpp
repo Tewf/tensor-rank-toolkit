@@ -75,7 +75,7 @@ void check_membership_direction(const Field& field, const std::string& fixtures,
                      : 0,
                  1);
 
-    satisfiability::Approach approach;
+    satisfiability::SolveOptions approach;
     approach.break_symmetry = true;
     approach.plain_cnf = true;
     approach.timeout_seconds = 300;

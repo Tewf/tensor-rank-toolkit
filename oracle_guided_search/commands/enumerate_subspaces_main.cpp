@@ -38,12 +38,12 @@ void report(const char* name, const bilinear_rank::EnumerationReport& pass) {
 int run(int argc, char** argv) {
     if (argc < 2) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string path = argv[1];
     if (path.rfind("--", 0) == 0 || path == "-h") {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
@@ -64,12 +64,12 @@ int run(int argc, char** argv) {
             symmetry = cli::parse_symmetry(argc, argv, argument);
         } else {
             usage();
-            return cli::as_int(cli::ExitCode::Usage);
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
     if (target < 1) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     if (!plain && !canonical) {
         plain = true;
@@ -97,7 +97,7 @@ int run(int argc, char** argv) {
         report("canonical", bilinear_rank::enumerate_solution_subspaces(field, tensor, pool, group,
                                                                        products, true));
     }
-    return cli::as_int(cli::ExitCode::Yes);
+    return cli::exit_status(cli::ExitCode::Yes);
 }
 
 }  // namespace
@@ -107,9 +107,9 @@ int main(int argc, char** argv) {
         return run(argc, argv);
     } catch (const cli::CheckFailed& failure) {
         std::cerr << "enumerate-subspaces: " << failure.what() << "\n";
-        return cli::as_int(cli::ExitCode::Unverified);
+        return cli::exit_status(cli::ExitCode::Unverified);
     } catch (const std::exception& error) {
         std::cerr << "enumerate-subspaces: " << error.what() << "\n";
-        return cli::as_int(cli::ExitCode::Error);
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

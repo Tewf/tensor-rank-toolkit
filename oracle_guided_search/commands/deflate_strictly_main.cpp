@@ -42,12 +42,12 @@ void usage() {
 int run(int argc, char** argv) {
     if (argc < 2) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string path = argv[1];
     if (path.rfind("--", 0) == 0 || path == "-h") {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
@@ -65,7 +65,7 @@ int run(int argc, char** argv) {
                 settings.refuter = bilinear_rank::Refuter::QuotientedTree;
             } else if (named != "solver") {
                 usage();
-                return cli::as_int(cli::ExitCode::Usage);
+                return cli::exit_status(cli::ExitCode::Usage);
             }
         } else if (option == "--candidate-timeout" && argument + 1 < argc) {
             settings.candidate_seconds = std::stoull(argv[++argument]);
@@ -82,12 +82,12 @@ int run(int argc, char** argv) {
             symmetry = cli::parse_symmetry(argc, argv, argument);
         } else {
             usage();
-            return cli::as_int(cli::ExitCode::Usage);
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
     if (target < 1) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     settings.matmul_shape = symmetry.shape;
 
@@ -114,9 +114,9 @@ int run(int argc, char** argv) {
     std::cout << (step.solver_name.empty() ? ", quotiented tree" : ", " + step.solver_name);
     std::cout << "\n";
 
-    if (step.accepted) return cli::as_int(cli::ExitCode::Yes);
-    if (step.refuted) return cli::as_int(cli::ExitCode::No);
-    return cli::as_int(cli::ExitCode::Undecided);
+    if (step.accepted) return cli::exit_status(cli::ExitCode::Yes);
+    if (step.refuted) return cli::exit_status(cli::ExitCode::No);
+    return cli::exit_status(cli::ExitCode::Undecided);
 }
 
 }  // namespace
@@ -126,9 +126,9 @@ int main(int argc, char** argv) {
         return run(argc, argv);
     } catch (const cli::CheckFailed& failure) {
         std::cerr << "deflate-strictly: " << failure.what() << "\n";
-        return cli::as_int(cli::ExitCode::Unverified);
+        return cli::exit_status(cli::ExitCode::Unverified);
     } catch (const std::exception& error) {
         std::cerr << "deflate-strictly: " << error.what() << "\n";
-        return cli::as_int(cli::ExitCode::Error);
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

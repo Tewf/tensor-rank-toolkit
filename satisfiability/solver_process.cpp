@@ -99,7 +99,7 @@ std::string find_smt_solver() { return on_path("cvc5"); }
 
 std::string find_proof_checker() { return on_path("drat-trim"); }
 
-SolverRun solve(const linear_algebra::Cnf& formula, const SatSolver& solver,
+SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver,
                 std::size_t memory_megabytes, std::size_t timeout_seconds,
                 const std::string& proof_path, Tuning tuning) {
     SolverRun run;
@@ -162,7 +162,7 @@ SolverRun solve(const linear_algebra::Cnf& formula, const SatSolver& solver,
     return run;
 }
 
-SolverRun solve_in_field(const linear_algebra::SmtProblem& problem, std::size_t memory_megabytes,
+SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t memory_megabytes,
                          std::size_t timeout_seconds) {
     SolverRun run;
     const std::string solver = find_smt_solver();

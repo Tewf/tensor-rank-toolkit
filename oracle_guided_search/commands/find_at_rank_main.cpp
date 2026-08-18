@@ -84,12 +84,12 @@ void report_step(const bilinear_rank::FoundAtRank& step) {
 int run(int argc, char** argv) {
     if (argc < 2) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string path = argv[1];
     if (path.rfind("--", 0) == 0 || path == "-h") {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
@@ -121,7 +121,7 @@ int run(int argc, char** argv) {
             symmetry = cli::parse_symmetry(argc, argv, argument);
         } else {
             usage();
-            return cli::as_int(cli::ExitCode::Usage);
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
 
@@ -129,7 +129,7 @@ int run(int argc, char** argv) {
         std::cerr << "find-at-rank: --symmetry auto has no meaning here. The candidates are the\n"
                      "closed-form orbits of a matrix multiplication tensor, so name the shape:\n"
                      "--symmetry matmul <n> <m> <k>\n";
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     settings.matmul_shape = symmetry.shape;
 
@@ -153,25 +153,25 @@ int run(int argc, char** argv) {
         for (const bilinear_rank::FoundAtRank& step : sweep.steps) report_step(step);
         if (sweep.upper == 0) {
             std::cout << "  nothing found, " << sweep.seconds << " s\n";
-            return cli::as_int(cli::ExitCode::Undecided);
+            return cli::exit_status(cli::ExitCode::Undecided);
         }
         std::cout << "  upper bound " << sweep.upper << ", bracket [" << sweep.floor << ", "
                   << sweep.upper << "], " << sweep.seconds << " s\n";
-        return cli::as_int(cli::ExitCode::Yes);
+        return cli::exit_status(cli::ExitCode::Yes);
     }
 
     if (target < 1) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     const bilinear_rank::FoundAtRank step =
         bilinear_rank::find_at_rank(tensor, static_cast<std::size_t>(target), settings);
     report_step(step);
-    if (bilinear_rank::was_found(step.outcome)) return cli::as_int(cli::ExitCode::Yes);
+    if (bilinear_rank::was_found(step.outcome)) return cli::exit_status(cli::ExitCode::Yes);
     if (step.outcome == bilinear_rank::Outcome::BelowFloor) {
-        return cli::as_int(cli::ExitCode::No);
+        return cli::exit_status(cli::ExitCode::No);
     }
-    return cli::as_int(cli::ExitCode::Undecided);
+    return cli::exit_status(cli::ExitCode::Undecided);
 }
 
 }  // namespace
@@ -181,9 +181,9 @@ int main(int argc, char** argv) {
         return run(argc, argv);
     } catch (const cli::CheckFailed& failure) {
         std::cerr << "find-at-rank: " << failure.what() << "\n";
-        return cli::as_int(cli::ExitCode::Unverified);
+        return cli::exit_status(cli::ExitCode::Unverified);
     } catch (const std::exception& error) {
         std::cerr << "find-at-rank: " << error.what() << "\n";
-        return cli::as_int(cli::ExitCode::Error);
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

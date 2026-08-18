@@ -70,7 +70,7 @@ struct StrictSettings {
     /// this way.
     bool parallel_candidates = false;
     std::vector<std::size_t> matmul_shape;
-    satisfiability::Approach approach;
+    satisfiability::SolveOptions approach;
 };
 
 /// One candidate's verdict, with what it cost to reach.

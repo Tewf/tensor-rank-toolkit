@@ -44,7 +44,7 @@ struct SearchBudget {
     /// exchange rather than a fetch and add so that a refused node is not
     /// counted: the node totals this repository publishes have to mean the same
     /// thing on one thread and on twelve.
-    bool spend() {
+    bool try_consume_node() {
         std::size_t seen = nodes_visited.load(std::memory_order_relaxed);
         do {
             if (seen >= node_limit) {

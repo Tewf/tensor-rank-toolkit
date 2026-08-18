@@ -31,7 +31,7 @@ enum class ExitCode {
     Error = 5,
 };
 
-inline int as_int(ExitCode code) { return static_cast<int>(code); }
+inline int exit_status(ExitCode code) { return static_cast<int>(code); }
 
 /// Thrown when an answer fails its own verification, so that the check can live
 /// deep in a library and still reach the exit code without every layer between

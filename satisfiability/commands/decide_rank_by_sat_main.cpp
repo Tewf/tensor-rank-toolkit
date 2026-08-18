@@ -83,7 +83,7 @@ struct Progress {
 
 /// Ask one `k` and say what came back. True when the sweep should stop.
 bool report(const linear_algebra::Tensor& tensor, std::size_t products,
-            const satisfiability::Approach& approach, const std::string& emit_to,
+            const satisfiability::SolveOptions& approach, const std::string& emit_to,
             Progress& progress) {
     if (!emit_to.empty()) {
         // Written first, printed second. Streaming the claim before the call that
@@ -128,7 +128,7 @@ bool report(const linear_algebra::Tensor& tensor, std::size_t products,
 /// left as a reading of the loop, because a change of allocation order would
 /// silently pin the wrong variables.
 bool build_orbit_cubes(const linear_algebra::Tensor& tensor, const cli::Symmetry& symmetry,
-                       std::size_t first_products, satisfiability::Approach& approach) {
+                       std::size_t first_products, satisfiability::SolveOptions& approach) {
     if (symmetry.kind == cli::SymmetryKind::None) return true;
 
     // Not a limitation to apologise for: an orbit cube *is* a representative of
@@ -165,7 +165,7 @@ bool build_orbit_cubes(const linear_algebra::Tensor& tensor, const cli::Symmetry
 int run(int argc, char** argv) {
     if (argc < 2) {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     const std::string path = argv[1];
@@ -173,9 +173,9 @@ int run(int argc, char** argv) {
     // Reported as usage rather than error so a script can tell them apart.
     if (path.rfind("--", 0) == 0 || path == "-h") {
         usage();
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
-    satisfiability::Approach approach;
+    satisfiability::SolveOptions approach;
     cli::Symmetry symmetry;
     long long target = -1;
     long long from = -1;
@@ -207,7 +207,7 @@ int run(int argc, char** argv) {
                 approach.tuning = satisfiability::Tuning::None;
             } else {
                 usage();
-                return cli::as_int(cli::ExitCode::Usage);
+                return cli::exit_status(cli::ExitCode::Usage);
             }
         } else if (option == "--ceiling" && argument + 1 < argc) {
             given_ceiling = std::stoll(argv[++argument]);
@@ -227,7 +227,7 @@ int run(int argc, char** argv) {
             symmetry = cli::parse_symmetry(argc, argv, argument);
         } else {
             usage();
-            return cli::as_int(cli::ExitCode::Usage);
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
 
@@ -260,7 +260,7 @@ int run(int argc, char** argv) {
         from = static_cast<long long>(floor);
     }
     if (!build_orbit_cubes(tensor, symmetry, static_cast<std::size_t>(from), approach)) {
-        return cli::as_int(cli::ExitCode::Usage);
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     // No range asked for: find the rank by walking up from the flattening bound,
@@ -279,11 +279,11 @@ int run(int argc, char** argv) {
         std::cout << "\n";
         if (bounds.exact) {
             std::cout << "rank is exactly " << bounds.upper << "\n";
-            return cli::as_int(cli::ExitCode::Yes);
+            return cli::exit_status(cli::ExitCode::Yes);
         }
         std::cout << "rank is between " << bounds.lower << " and " << bounds.upper
                   << ", and a question went unanswered\n";
-        return cli::as_int(cli::ExitCode::Undecided);
+        return cli::exit_status(cli::ExitCode::Undecided);
     }
     if (to < 0) to = static_cast<long long>(ceiling);
     if (to < from) to = from;
@@ -302,14 +302,14 @@ int run(int argc, char** argv) {
             } else {
                 std::cout << "rank is at most " << products << "\n";
             }
-            return cli::as_int(cli::ExitCode::Yes);
+            return cli::exit_status(cli::ExitCode::Yes);
         }
     }
     // Writing questions out answers none of them.
-    if (!emit_to.empty()) return cli::as_int(cli::ExitCode::Yes);
+    if (!emit_to.empty()) return cli::exit_status(cli::ExitCode::Yes);
     // Nothing in the range was decomposable. That is a refusal only if every
     // question in it actually came back.
-    return cli::as_int(progress.any_undecided ? cli::ExitCode::Undecided : cli::ExitCode::No);
+    return cli::exit_status(progress.any_undecided ? cli::ExitCode::Undecided : cli::ExitCode::No);
 }
 
 }  // namespace
@@ -321,9 +321,9 @@ int main(int argc, char** argv) {
         // The machine ran and produced something that failed its own check, so
         // this is neither a refusal nor a crash. It means a component is wrong.
         std::cerr << "decide-rank-by-sat: " << problem.what() << "\n";
-        return cli::as_int(cli::ExitCode::Unverified);
+        return cli::exit_status(cli::ExitCode::Unverified);
     } catch (const std::exception& problem) {
         std::cerr << "decide-rank-by-sat: " << problem.what() << "\n";
-        return cli::as_int(cli::ExitCode::Error);
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }
