@@ -15,7 +15,7 @@ None of the mathematics is new here. Keys are
 | `[bland1977, Thm. 1.1]` | that the smallest-subscript pivot cannot cycle, which is the only reason the built-in terminates |
 | `[landdoig1960, §3]` | branch and bound on a linear relaxation |
 | `[dakin1965, (6)-(7)]` | the `x ≤ ⌊v⌋` / `x ≥ ⌈v⌉` dichotomy, which is *not* Land and Doig's equality branching |
-| `[mps360]`, `[murtagh1981]` | the file format every backend is fed through |
+| `[oslmps]` | the fixed-column record layout and the integer markers, in IBM's own words; `[mps360]` and `[murtagh1981]` name the origin, and neither was read |
 
 Several things here minimise something subject to constraints and used to do it
 by enumeration. The curve strand's interpolation bound is now handed here
@@ -71,9 +71,9 @@ believed, which is why it is both the last resort and the arbiter.
 point found, which bounds the optimum without proving it; `Optimal` is a proof.
 ## What the file format cost
 
-MPS is fixed-column, and the integer markers go in fields 3 and 5 rather than 4
-and 6, which is where a whitespace-token reading puts them:
-[`the-file-format.md`](the-file-format.md).
+MPS is fixed-column, and the integer markers go in fields 3 and 5, not 4 and 6
+where a whitespace-token reading puts them; settled against IBM's own text now
+rather than against the solvers: [`the-file-format.md`](the-file-format.md).
 
 ## Verified here
 

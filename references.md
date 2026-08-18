@@ -734,27 +734,104 @@ storage requirements"*, which he credits to Little et al.'s "Throw away the
 tree".
 
 **`mps360`**: IBM. *Mathematical Programming System/360, Linear and Separable
-Programming - User's Manual*, form **H20-0476**. The origin of the fixed-column
-MPS format, whose eighty columns are a punched card. The form number is IBM's
-own, from *Catalog of Programs for IBM System/360, Models 25 and above*,
-GC20-1619-8, January 1971, which lists it under the MPS/360 documentation.
-**The manual itself was not read and no scan of it appears to exist**; the
-edition suffix and year are unsettled, secondhand sources giving 1968, 1969 and
-1976 for the same form number, so none is stated here.
+Programming - User's Manual*, order number **GH20-0476**, program number
+360A-CO-14X, 224 pages. The origin of the fixed-column MPS format, whose eighty
+columns are a punched card.
 
-**What was checked instead is the format, against three descriptions that
-agree**: the fields begin at columns 2, 5, 15, 25, 40 and 50, and an integrality
-marker puts its own name in field 2, `'MARKER'` in field 3, and `'INTORG'` or
-`'INTEND'` in field 5. CPLEX's file-format manual says field 4, counting
-whitespace-separated tokens in a format it no longer parses by column, which is
-a disagreement worth knowing about rather than a second opinion.
+**The form number is now from IBM and not from a secondhand list.** IBM's own
+*System/360 and System/370 Bibliography*, GA22-6822-16, July 1971, is readable
+on bitsavers and describes it as *"the information required to prepare input
+data and control cards and to interpret the system's output"*, alongside its
+siblings GH20-0136, GH20-0290, GH20-0291 and GH20-0505. The prefix is `G`,
+IBM's distribution letter; `H20-0476` is the same document.
+
+**The manual itself still has not been read, and this is now a checked negative
+rather than an impression.** Where it was looked for: bitsavers' complete file
+index, `pdf/IndexByDate.txt`, **93 664 files, newest entry 2026-08-17**, has
+zero hits for the form number, and `pdf/ibm/360/` has no `mps` directory; the
+Internet Archive's search returns nothing for `H20-0476` or `GH20-0476`; the
+Computer History Museum holds only a *different* MPS/360 manual, Y20-0065-0
+(1967, 502 pp), and holds it as an unscanned artefact. **Two places were not
+checked and are where a falsification should start**: HathiTrust, which answers
+a scripted request with a Cloudflare challenge, and Google Books, which answered
+with a quota error. The edition suffix and year remain unsettled, secondhand
+sources giving 1968, 1969 and 1976, so none is stated here.
+
+**It is also the wrong manual for half of what was cited to it.** MPS/360 was
+*linear and separable* programming, and separable is not integer: a system with
+no integer variables has no convention for marking them. The GA22-6822-16
+bibliography bears that out, since **it contains no occurrence of "integer
+programming" or "mixed integer" anywhere in it**, MPS/360 document set included.
+IBM's own `[oslmps]` refers the reader to the *Mathematical Programming System
+Extended/370 (MPSX/370) Program Reference Manual*, SH19-1095, and MPSX/370's
+mixed integer option MIP/370, whose Program Reference Manual is **SH19-1099**
+(SH19-1099-1, November 1975, per the Centre for Computing History's catalogue
+record), is the lineage the markers belong to. No scan of either exists either:
+the same bitsavers index has no `H19-1xxx` file at all. So `[mps360]` stands for
+the fixed-column card layout and nothing more, and
+[`mps_format.h`](integer_programme/mps_format.h) cites `[oslmps]` for the
+markers.
+
+**`oslmps`**: IBM. *Mathematical Programming System (MPS) Format*, a chapter of
+the *Optimization Subroutine Library Guide and Reference*, SC23-0519. Read at
+the mirror
+[cenapad.unicamp.br/parque/manuais/OSL/oslweb/features/featur11.htm](https://www.cenapad.unicamp.br/parque/manuais/OSL/oslweb/features/featur11.htm),
+IBM's own text and not a third-party account of it. It gives the six fields as
+columns **2-3, 5-12, 15-22, 25-36, 40-47 and 50-61**, and tabulates the marker
+record as field 1 blank, field 2 the marker name, field 3 `'MARKER'`, **field 4
+blank**, field 5 the keyword, in the words *"field 5 must contain the value
+'INTORG' (including the quotation marks) in the record that denotes the start of
+integer variables"*. That is this repository's claim, from IBM, and *"field 4,
+although ignored, must be blank"* is the sentence that rules the other reading
+out.
+
+**`lpsolve_mps`**: lp_solve reference guide, *MPS file format*,
+[lpsolve.sourceforge.net/5.5/mps-format.htm](https://lpsolve.sourceforge.net/5.5/mps-format.htm).
+The same six column ranges and, in as many words, *"the start marker has its
+name in field 2, 'MARKER' in field 3, and 'INTORG' in field 5"*. Read; a second
+witness rather than a source.
+
+**`cplex_mps`**: ILOG CPLEX, *MPS File Format*, read at
+[plato.asu.edu/cplex_mps.pdf](https://plato.asu.edu/cplex_mps.pdf). **Its prose
+says field 4 and its own example says field 5, and the example is right.** The
+prose is *"Field 4: Keyword 'INTORG' and 'INTEND'"* with *"fields 5 and 6 are
+ignored"*; but its Table 2 of the six fields gives no column positions at all,
+and it requires only that fields *"must be separated by white space"*. CPLEX is
+counting tokens, and a marker line has three, so its fourth field is the
+fixed-format fifth. Its worked example settles it: `'INTORG'` and `'INTEND'` sit
+at the same offset as the field-5 row names on the `COLUMNS` lines above and
+below them, not at the field-4 values. **This is not a disagreement about the
+format**, which is what this file used to record; it is two ways of numbering
+the same characters.
 
 **`murtagh1981`**: B. A. Murtagh. *Advanced Linear Programming: Computation and
-Practice.* McGraw-Hill, New York, 1981, ISBN 0-07-044095-6, xii + 202 pp. The
-description of MPS most bibliographies point at, this one included. **The pages
-usually quoted, 163-166, could not be verified**: every copy reachable is
-lending-restricted. The book exists and the range fits inside it, which is not
-the same as having read it.
+Practice.* McGraw-Hill, New York, 1981, ISBN 0-07-044095-6. The description of
+MPS most bibliographies point at, this one included.
+
+**It has now been read for the claim that matters, and the page range everyone
+quotes is the wrong one.** Every copy is closed: the Internet Archive scan
+`advancedlinearpr0000murt` is `access-restricted-item`, lending-only, with the
+page images not viewable; HathiTrust's `mdp.39015000495419` is rights code `ic`,
+*"Limited (search-only)"*; Google Books offers no preview. But the Archive's
+search-inside index over that scan returns the paragraphs themselves, and two of
+them settle it. On **leaf 191, printed page 175**:
+
+> *"Marker cards can be used to specify the start and end of a group of integer
+> variables in the same manner as GUB sets, discussed in Sec. 9-6-1. The start
+> marker has the marker name in field 2, the keyword 'MARKER' in field 3, and
+> the keyword 'INTORG' in field 5. The end marker has the marker name in field
+> 2, the keyword 'MARKER' in field 3, and the keyword 'INTEND' in field 5."*
+
+and on **leaf 189, printed page 173**, the GUB marker table it refers back to,
+carrying the column ranges: *"Field 1 Field 2 Field 3 Field 4 Field 5 Field 6
+(2-3) (5-12) (15-22) (25-36) (40-47) (50-61)"*, with the start marker's keyword
+`'GUBORG'` in field 5 and **field 4 blank**.
+
+So Murtagh says field 5, in the same words as `[oslmps]`, and **pp. 163-166 do
+not contain it**: the marker passage is p. 175 and the field table p. 173. The
+printed page numbers are the scan's own leaf-to-page table, not an arithmetic
+guess. What was read is the full-text index, not the page images, which is a
+weaker thing than holding the book and is said here so that it can be checked.
 
 ## Software
 
