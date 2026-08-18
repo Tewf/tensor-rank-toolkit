@@ -45,10 +45,22 @@ corrected, tested, and extended into four strands.
 - **The integer programme layer** the curve strand hands its step 3 to: exact
   simplex and branch and bound, fixed-column MPS output, and a chain of outside
   solvers whose points are re-checked and whose "infeasible" is never believed.
-- **Eleven command-line tools**: `minimise-rank`, `decide-rank`, `walk-scheme`,
+- **The Kronecker canonical form of a two-slice tensor**, exactly and in
+  polynomial time, with no candidate pool: the minimal indices from the ranks of
+  one block system, the elementary divisors from a Smith diagonal over
+  `GF(p)[x]` taken forwards and reversed, and three internal counts that must
+  agree before anything is returned. It reports a **bound** rather than a rank,
+  because Ja'Ja's formula is a theorem over an algebraically closed field and
+  falls short over a small one: twelve pencils settled by exhaustion are
+  tabulated, three of which it gets wrong.
+- **The rank as a factorisation over the canonical basis**, `S = C A` with every
+  row of `A` rank one, returned with the receipt that checks it in one matrix
+  product without rerunning the search. Two routes, a materialised pool and a
+  solver that forms none, required to agree on every fixture.
+- **Thirteen command-line tools**: `minimise-rank`, `decide-rank`, `walk-scheme`,
   `decide-rank-by-sat`, `list-solvers`, `find-at-rank`, `deflate-strictly`,
-  `enumerate-subspaces`, `curve-bounds`, `sparsify-operator` and `make-tensor`,
-  sharing one argument grammar, one clock, one set of exit codes and one file of
-  tunables.
+  `enumerate-subspaces`, `decide-rank-by-pencil`, `factor-over-canonical-basis`,
+  `curve-bounds`, `sparsify-operator` and `make-tensor`, sharing one argument
+  grammar, one clock, one set of exit codes and one file of tunables.
 
 [0.1.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.1.0
