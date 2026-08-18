@@ -26,6 +26,19 @@ enum class Route {
     /// all: the rank-one condition is clauses over the operand vectors, so the
     /// space is polynomial. Needs a solver on `PATH`.
     Satisfiability,
+
+    /// The exhaustive tree with McKay canonical augmentation `[mckay1998]`, so
+    /// each solution subspace is reached once per orbit rather than once per
+    /// orbit element, with no memory of what was generated.
+    ///
+    /// This is aimed at the part of the sweep that costs: a question *below* the
+    /// rank has to exhaust its tree, and every question below the answer is one
+    /// of those. Needs the **full** closed-form group rather than generators,
+    /// because the parent test walks it, so it is available only where that group
+    /// fits in a list: 216 elements at `<2,2,2>`, and refused at `<3,3,3>` where
+    /// it is 4 741 632. Falls back to `Exhaustive` and says so when it cannot be
+    /// had.
+    CanonicalAugmentation,
 };
 
 /// A factorisation `S = C A` of the slice matrix, where every row of `A` reads
@@ -58,6 +71,10 @@ struct Factorisation {
     /// otherwise. A silent fallback here is how symmetry gets reported as on
     /// while doing nothing.
     std::string symmetry_refusal;
+
+    /// Subspaces built and tested, summed over the sweep. The measure that does
+    /// not depend on the machine, and the one the routes are compared by.
+    std::size_t nodes_visited = 0;
 
     /// The materialised pool this would have needed, whether or not it formed
     /// one. Reported so the SAT route's advantage is a number and not a claim.

@@ -6,6 +6,11 @@ factorisation is the same object either way and is checked the same way, by
 what the answer is allowed to claim. See [`README.md`](README.md) for the
 formulation itself.
 
+There are three. `--route canonical` is the third and is documented separately,
+in [`canonical-augmentation.md`](canonical-augmentation.md), because what it has
+to say is a negative result rather than a trade-off: it visits 3.6x fewer nodes
+for 129x the wall clock, and is never the default.
+
 `--route exhaustive` materialises the pool of rank-one maps and walks a tree
 over it. `--route sat` hands the same sweep to a solver, which never enumerates
 a rank-one map at all: the condition is clauses over the operand vectors, so

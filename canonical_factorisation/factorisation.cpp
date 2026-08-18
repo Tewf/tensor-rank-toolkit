@@ -7,6 +7,7 @@
 #include "bilinear_rank_aliases.h"
 #include "exit_code.h"
 #include "candidate_pool.h"
+#include "canonical_augmentation.h"
 #include "exhaustive_search.h"
 #include "group_construction.h"
 #include "requested_group.h"
@@ -201,6 +202,28 @@ Factorisation by_satisfiability(const ModularField& field,
     return factorisation;
 }
 
+/// The full closed-form group of a product shape, or nothing.
+///
+/// Deliberately the enumerated group and not the generators: the canonical
+/// parent test walks every element, so generators would silently make the test
+/// wrong rather than slow. `matrix_multiplication_symmetries` refuses above a
+/// list it can hold, which is the honest answer at `<3,3,3>`.
+std::vector<bilinear_rank::Automorphism> full_product_group(
+    const ModularField& field, const std::vector<ModularMatrix>& slices, std::string& refusal) {
+    std::size_t shape[3] = {0, 0, 0};
+    if (!inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
+                               shape)) {
+        refusal = "canonical augmentation needs a product shape, and these dimensions are not one";
+        return {};
+    }
+    try {
+        return bilinear_rank::matrix_multiplication_symmetries(field, shape[0], shape[1], shape[2]);
+    } catch (const std::exception& error) {
+        refusal = error.what();
+        return {};
+    }
+}
+
 }  // namespace
 
 Factorisation factor_over_canonical_basis(const ModularField& field,
@@ -239,24 +262,60 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
     if (route == Route::Satisfiability) {
         return by_satisfiability(field, slices, factorisation.floor, ceiling);
     }
-    factorisation.route = Route::Exhaustive;
 
     const std::vector<ModularMatrix> pool =
         bilinear_rank::all_rank_one_maps(field, slices.front().rows(), slices.front().columns());
-    const std::vector<bilinear_rank::Automorphism> group =
-        stabiliser_or_nothing(field, slices, settings.symmetry, factorisation.symmetry_refusal);
+
+    // Canonical augmentation wants the whole group, the quotiented tree wants
+    // the stabiliser, and the two are different objects: the first is walked by
+    // the parent test and the second only has to fix the span. Asking for the
+    // wrong one is the way this reports a false refusal, so each route builds
+    // its own and neither is reused.
+    std::vector<bilinear_rank::Automorphism> group;
+    if (route == Route::CanonicalAugmentation) {
+        group = full_product_group(field, slices, factorisation.symmetry_refusal);
+        if (group.empty()) route = Route::Exhaustive;
+    }
+    if (route != Route::CanonicalAugmentation) {
+        group =
+            stabiliser_or_nothing(field, slices, settings.symmetry, factorisation.symmetry_refusal);
+    }
+    factorisation.route = route;
     factorisation.group_size = group.size();
+
+    linear_algebra::Tensor as_tensor;
+    as_tensor.characteristic = static_cast<int64_t>(field.residu());
+    as_tensor.slices = slices;
 
     bool every_refusal_complete = true;
     for (std::size_t components = factorisation.floor; components <= ceiling; ++components) {
         bilinear_rank::SearchBudget budget{settings.node_limit};
         std::vector<ModularMatrix> products;
-        const bool found =
-            group.size() > 1
-                ? bilinear_rank::expand_subspace_up_to_symmetry(field, slices, pool, group,
-                                                                components, budget, products)
-                : bilinear_rank::expand_subspace(field, slices, pool, 0, components, budget,
-                                                 products);
+        bool found = false;
+
+        if (route == Route::CanonicalAugmentation) {
+            // The enumerator has no early exit: it finishes the level whether or
+            // not it has an answer. That is a loss on the level that succeeds and
+            // is meant to be a win on every level below it, which has to be
+            // exhausted anyway. Whether it nets out is measured, not assumed:
+            // see `narrowing-the-search.md`.
+            const bilinear_rank::EnumerationReport pass =
+                bilinear_rank::enumerate_solution_subspaces(field, as_tensor, pool, group,
+                                                           components, /*canonical=*/true);
+            factorisation.nodes_visited += pass.nodes;
+            if (!pass.decompositions.empty()) {
+                products = pass.decompositions.front();
+                found = true;
+            }
+        } else {
+            found = group.size() > 1
+                        ? bilinear_rank::expand_subspace_up_to_symmetry(field, slices, pool, group,
+                                                                       components, budget, products)
+                        : bilinear_rank::expand_subspace(field, slices, pool, 0, components, budget,
+                                                        products);
+            factorisation.nodes_visited += budget.nodes_visited.load();
+        }
+
         if (!found) {
             if (!budget.exhausted) every_refusal_complete = false;
             continue;
