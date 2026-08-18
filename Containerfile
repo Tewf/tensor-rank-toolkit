@@ -17,11 +17,16 @@
 # is a shared virtual machine. Use it to check the counts. The protocol for the
 # timings, and why they are not asserted anywhere, is MEASURING.md.
 
-# `ca-certificates` is in the list because without it this image could not build
-# at all: `--no-install-recommends` leaves it out, and the two `git clone https`
-# steps below then fail with "server certificate verification failed. CAfile:
-# none". That is what the reproduction mechanism failing looks like, and it went
-# unnoticed until somebody ran the build.
+# Two packages here are in the list only because `--no-install-recommends` drops
+# them, and without either this image could not build at all.
+#
+# `ca-certificates`: the two `git clone https` steps fail with "server
+# certificate verification failed. CAfile: none".
+# `libgmp-dev`: `libgivaro-dev` pulls the GMP runtime but not `gmpxx.h`, which
+# `gmp++/gmp++.h` includes, so every translation unit that touches a field fails.
+#
+# Both went unnoticed because nobody had run the build, which is the whole
+# argument for the verification step that found them.
 FROM ubuntu:24.04
 
 # Kissat and drat-trim are not in the Ubuntu archive, so CI clones the default
@@ -43,7 +48,7 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       build-essential cmake ninja-build pkg-config libgivaro-dev \
       cryptominisat coinor-cbc glpk-utils git python3 \
-      ca-certificates \
+      ca-certificates libgmp-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # Kissat writes the DRAT refutation and drat-trim checks it. A refutation nobody

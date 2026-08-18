@@ -35,8 +35,8 @@ jobs:
       - name: Install Givaro, and the solvers so no step skips itself
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libgivaro-dev ninja-build \
-            cryptominisat coinor-cbc glpk-utils
+          sudo apt-get install -y --no-install-recommends libgivaro-dev libgmp-dev \
+            ninja-build cryptominisat coinor-cbc glpk-utils
 
       # Neither of these is in the Ubuntu archive, and that absence is why the
       # proof step has been verifying nothing since it was written: with only
@@ -95,6 +95,26 @@ jobs:
           ./build/exhaustive_search/decide-rank /tmp/gf4.tensor
           ./build/exhaustive_search/decide-rank fixtures/gf8_multiplication.tensor
           ./build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7
+
+      # The two routes that do not search a pool for their answer. Both are new
+      # and neither was exercised here, so a break in either would have shown up
+      # only in the unit tests, which do not run a command line.
+      - name: The pencil and the factorisation agree with what is known
+        run: |
+          # Exit 0 because this pencil is diagonalisable over GF(3), so the
+          # closure bound is the rank. Exit 3 on the next one because it is not,
+          # and a bound reported as a rank is the mistake being avoided.
+          ./build/pencil_rank/decide-rank-by-pencil fixtures/pencil_split_f3_3.tensor
+          if ./build/pencil_rank/decide-rank-by-pencil \
+               fixtures/pencil_irreducible_f2_4.tensor; then
+            echo "a pencil whose bound is not tight reported success"; exit 1
+          fi
+          # Karatsuba as a factorisation, both routes, each checked by
+          # multiplying C A out against the tensor before it is printed.
+          ./build/canonical_factorisation/factor-over-canonical-basis \
+            fixtures/f2_2x2.tensor --route exhaustive
+          ./build/canonical_factorisation/factor-over-canonical-basis \
+            fixtures/f2_2x2.tensor --route sat
 
       # A run that does not fit says so and stops, rather than reaching the
       # allocator. The pool for 4x4 matrix multiplication is 4.3e9 rank-one
