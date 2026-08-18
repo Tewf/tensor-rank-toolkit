@@ -46,21 +46,29 @@ this repository is, and the front is much closer to us:
   contains no pruner at all, so the paper's own timings are unpruned and no
   implementation anywhere combines the two halves.
 
-  **`rref` is not ported, and it is the one worth porting.** Read from the
-  author's own repository (`coolcomputery/tensor-cpd-search`, the notebook
-  `other/k-th order rref pruning.ipynb`) rather than from the paper, whose
-  abstract does not mention it. It is **not** a reduction of the rank-one pool,
-  which is what the name suggests and what two readers here guessed: it is a
-  **higher-order lower bound**. Contract the tensor with `k`-tuples of vectors,
-  wedge them, and if the resulting `k`-planes fail to span enough of the
-  Grassmannian then no CPD of that rank exists. The author's own headline use of
-  it is proving the Strassen tensor has **no rank-6 CPD over GF(2)**, with no
-  search.
+  **`rref` is not ported, and what it is had to be read from the author's code.**
+  `coolcomputery/tensor-cpd-search`, notebook `other/k-th order rref pruning.ipynb`;
+  the paper's abstract does not mention it.
 
-  That is precisely where this repository still pays a search.
-  `rank_lower_bound` gives `⟨2,2,2⟩` a floor of **6**, and ruling out 6 costs
-  `decide-rank` **25 399 nodes and 0.65 s** of exhaustion. A ported `rref` would
-  settle the same step in polynomial time, and 6 is not a number any bound here
-  reaches by another route. It belongs beside the rank sums in
-  [`rank_lower_bound.h`](../linear_algebra/rank_lower_bound.h), whose docstring
-  already takes the maximum over every bound it has.
+  It is **not** a reduction of the rank-one pool, which is what the name suggests
+  and what two readers here guessed. It is a **refutation test of a different
+  family from the bounds we hold**: contract the tensor with `k`-tuples of
+  vectors, wedge them, and refuse the rank when the resulting `k`-planes fail to
+  span enough of the Grassmannian. `k_th_rref_prune0` returns "no CPD exists"
+  outright when its condition fails, so it can refuse at a node rather than only
+  narrow one.
+
+  **Two things about it are not established, and are recorded as not
+  established.** Its cost there is `C(|F|^n_0, k)` tuples, cheap at `⟨2,2,2⟩` over
+  GF(2) and not polynomial in general, so calling it a free bound would be wrong.
+  And that README pairs it with `ranksum` when reporting the Strassen refutation,
+  so whether `rref` alone refuses rank 6, or only does so inside a pruned search,
+  is not something the README settles.
+
+  What is worth stating is where it would land. Our `rank_lower_bound` is the
+  maximum over the flattening rank and both rank sums, and on `⟨2,2,2⟩` that
+  maximum is **6**; ruling out 6 then costs `decide-rank` **25 399 nodes and
+  0.65 s** of exhaustion. So this is a shape where every bound we have stops one
+  short of the answer and a search pays for the last step, and `rref` is the only
+  candidate in the literature aimed at exactly that gap. Establishing whether it
+  closes it means reading the thesis rather than the repository.
