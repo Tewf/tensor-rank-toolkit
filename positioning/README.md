@@ -24,3 +24,7 @@ field, and finds almost nothing.
 | [`where-we-sit.md`](where-we-sit.md) | the one open question the rank strand has a contribution available on, and the first measurement against it |
 | [`the-sparsification-strand.md`](the-sparsification-strand.md) | the other strand, where the finding is an absence, and how narrowly to read it |
 | [`what-this-changes.md`](what-this-changes.md) | the next flip graph run this position implies |
+
+- [What machine this is the right shape for](hardware-and-parallelism.md): why a
+  GPU is the wrong instrument for the tree and backwards for the solver, and why
+  a GF(2) bitset representation is worth 40x to 64x on the hot loop first.

@@ -14,7 +14,8 @@
 /// module's documented purpose being taken up, not a new idea.
 ///
 /// **Why a suboptimal solve is safe here, and would not be in a rank
-/// refutation.** Theorem 2 reads `µ_sym_q(m) ≤ Σᵢ µ_sym_q(deg Pᵢ, uᵢ)`, so *any*
+/// refutation.** `[rambaud2014, Thm. 2]` reads
+/// `µ_sym_q(m) ≤ Σᵢ µ_sym_q(deg Pᵢ, uᵢ)`, so *any*
 /// feasible selection is already a valid bound and minimising only makes it the
 /// tightest one the table allows. A solver that stops early yields a weaker
 /// envelope, never a wrong one. Contrast a rank refutation, where an early stop

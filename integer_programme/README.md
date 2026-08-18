@@ -14,7 +14,7 @@ None of the mathematics is new here. Keys are
 | `[dantzig1955, p. 193]` | phase I and phase II as two explicit phases |
 | `[bland1977, Thm. 1.1]` | that the smallest-subscript pivot cannot cycle, which is the only reason the built-in terminates |
 | `[landdoig1960, §3]` | branch and bound on a linear relaxation |
-| `[dakin1965]` | the `x ≤ ⌊v⌋` / `x ≥ ⌈v⌉` dichotomy, which is *not* Land and Doig's equality branching |
+| `[dakin1965, (6)-(7)]` | the `x ≤ ⌊v⌋` / `x ≥ ⌈v⌉` dichotomy, which is *not* Land and Doig's equality branching |
 | `[mps360]`, `[murtagh1981]` | the file format every backend is fed through |
 
 Several things here minimise something subject to constraints and used to do it
