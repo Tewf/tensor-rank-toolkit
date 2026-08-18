@@ -7,6 +7,25 @@
 
 namespace canonical_factorisation {
 
+/// How the rank-one rows are found. The factorisation they produce is the same
+/// object and is checked the same way; what differs is the space it costs and
+/// what the answer is allowed to claim.
+enum class Route {
+    /// By the shape. The pool is `(p^n - 1)(p^m - 1)/(p-1)^2` matrices and is
+    /// materialised, so past `pool_ceiling` this takes the SAT route instead of
+    /// asking for room it may not have.
+    Automatic,
+
+    /// The exhaustive tree over a materialised pool. Exponential space, and the
+    /// only route whose refusals are proofs this repository walked itself.
+    Exhaustive,
+
+    /// A SAT solver, which is handed the question and never forms a pool at
+    /// all: the rank-one condition is clauses over the operand vectors, so the
+    /// space is polynomial. Needs a solver on `PATH`.
+    Satisfiability,
+};
+
 /// A factorisation `S = C A` of the slice matrix, where every row of `A` reads
 /// as a rank-one matrix over the canonical basis.
 ///
@@ -26,6 +45,13 @@ struct Factorisation {
     /// The floor the sweep started from, which is a proved lower bound.
     std::size_t floor = 0;
 
+    /// Which route produced it, so a reader knows what `minimal` rests on.
+    Route route = Route::Exhaustive;
+
+    /// The materialised pool this would have needed, whether or not it formed
+    /// one. Reported so the SAT route's advantage is a number and not a claim.
+    std::size_t pool_size = 0;
+
     /// Whether `components` is the rank, rather than merely a number of rows
     /// that worked.
     ///
@@ -37,6 +63,12 @@ struct Factorisation {
 };
 
 struct FactorisationSettings {
+    Route route = Route::Automatic;
+
+    /// Where `Automatic` stops trusting the pool, in matrices. The default is
+    /// the largest pool measured here that still costs under a second to form.
+    std::size_t pool_ceiling = 20000;
+
     /// 0 asks for `rank_lower_bound`, which is the sharpest floor here.
     std::size_t floor = 0;
 
@@ -57,6 +89,11 @@ struct FactorisationSettings {
 /// sweep upward, quotiented by symmetry where a group can be built. It sweeps
 /// upward rather than bisecting because every question below the answer is then
 /// a refutation that is kept, and the first success is minimal by construction.
+///
+/// Past `pool_ceiling` it hands the same sweep to a SAT solver, which asks the
+/// same questions without ever forming the pool. That is the difference between
+/// polynomial and exponential space here, and it is what lets shapes the pool
+/// refuses outright be factored at all.
 Factorisation factor_over_canonical_basis(const ModularField& field,
                                           const std::vector<ModularMatrix>& slices,
                                           const FactorisationSettings& settings);
