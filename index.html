@@ -67,6 +67,10 @@
   <p>H&aring;stad proved deciding tensor rank NP-complete over every finite field, and that cuts both ways. One tool turns 3SAT into a tensor, and three encoders turn the rank question into one a solver answers. A refutation can be written as DRAT and checked by <code>drat-trim</code>, so a lower bound from a solver is verifiable rather than trusted.</p>
   <p>Symmetry removes work before any of them runs. A change of coordinates fixing the target subspace maps solutions to solutions, so one member of each orbit suffices: <strong>28&times;</strong> on a refutation, and the ⟨3,3,3⟩ candidate pool collapses from 261&nbsp;121 to <strong>13 orbits</strong>. Canonical augmentation goes further, deduplicating with no memory at all, and returns ⟨2,2,2⟩'s 36 solution subspaces as the <strong>1 orbit</strong> they are while visiting <strong>1982&times;</strong> fewer nodes. Wall clock improves only 1.6&times;, because finding a canonical code by walking the whole group spends most of the saving on itself, and that is measured rather than glossed.</p>
 
+  <h2>Where no search is needed, and a theorem that stops holding</h2>
+  <p>A tensor with two slices is a matrix pencil, and Kronecker's theory settles it by exact linear algebra in <strong>polynomial time, with no candidate pool at all</strong>, in about fifty microseconds on a 4&times;4. What it will not settle is the rank, and that is the finding. Ja'Ja's 1979 formula reads the rank off that canonical form, and it is a theorem <em>over an algebraically closed field</em>: on <code>(I<sub>4</sub>, C)</code> over GF(2) with <code>C</code> the companion of <code>x<sup>4</sup>+x+1</code> it gives 5, and the exhaustive search <strong>proves</strong> no five-product algorithm exists, walking 1&nbsp;897&nbsp;576 nodes to the end of the tree, then exhibits one with six.</p>
+  <p>The construction that attains the classical bound interpolates through more points than the projective line over GF(2) contains, which is Winograd's condition. So the module reports the closure value as a proved lower bound, a sharper count beside it marked provisional, and <em>exact</em> only where the pencil is diagonalisable over the field. Twelve pencils settled by exhaustion are tabulated, three of which the classical formula gets wrong. The per-block cost that would close it is stated as a conjecture, and the wrong fixture is kept with its node count in its header, because the artefact that caught an error is worth more than a clean repository.</p>
+
   <h2>The other half of the cost</h2>
   <p>A fast algorithm costs multiplications and additions both, and the additions are set by how many nonzero entries its operators carry. Fewer nonzeros means fewer additions, the cost the multiplication count does not capture.</p>
 
@@ -87,7 +91,7 @@ sparsify-operator out_L.sms                                 # 31 -&gt; 27 nonzer
     <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit">
       <span class="tag">Repository</span>
       <span class="t">Source, fixtures and CI</span>
-      <span class="d">C++20 on Givaro, MIT licensed. Eleven command-line tools, and a test suite that asserts every count on this page in about two minutes.</span>
+      <span class="d">C++20 on Givaro, MIT licensed. Twelve command-line tools, and a test suite that asserts every count on this page in about two minutes.</span>
     </a>
     <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/state-of-the-art/README.md">
       <span class="tag">Context</span>
