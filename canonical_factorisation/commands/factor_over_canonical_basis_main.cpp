@@ -43,6 +43,15 @@ int main(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Usage);
     }
 
+    // A flag where the tensor should be is a bad invocation, not an unreadable
+    // file. Without this, `--route bogus` reports that it cannot read a file
+    // called `--route`, which names the wrong thing to fix and exits 5 where a
+    // script watching for 2 would not see it.
+    if (cli::looks_like_flag(argv[1])) {
+        std::cerr << "factor-over-canonical-basis: expected a tensor file, not '" << argv[1] << "'\n";
+        return cli::exit_status(cli::ExitCode::Usage);
+    }
+
     try {
         const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(argv[1]);
         const linear_algebra::ModularField field(tensor.characteristic);

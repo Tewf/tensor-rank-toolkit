@@ -12,14 +12,14 @@ The rank is `r`. See [`README.md`](README.md) for what `A` and `C` are and
 2. **Ceiling.** `sum_i rank(T_i)`, reachable by decomposing each slice alone, so
    its existence needs no search. `O(k N^2)`.
 3. **Sweep.** For `t = floor, floor+1, ...` ask: *is there a `t`-dimensional
-   `W` containing `span(T)` with a basis of rank-one matrices?* The first yes is
-   the rank, because every question below it was refused with the tree finished.
+   `W` containing `span(T)` with a rank-one basis?* The first yes is the rank,
+   every question below it having been refused with the tree finished.
 4. **Rows.** The `t` rank-one matrices the successful question returns, flattened,
    are the rows of `A`.
 5. **Recovery.** `C` by solving `T_i = c_i A` once per slice, which is Gaussian
    elimination on a `N x t` system: `O(k t N min(t, N))`, negligible beside step 3.
 
-Only step 3 is hard, and steps 1, 2, 4 and 5 are polynomial in every argument.
+Only step 3 is hard; the other four are polynomial in every argument.
 
 ## Step 3, and where the cost is
 
@@ -35,10 +35,8 @@ and it is what refuses `<4,4,4>` at 8.2 TiB before any search begins.
 
 **SAT route.** The question goes to a solver as clauses over the operand
 vectors, `O(t(n+m))` of them plus `O(tk)` coefficients. No pool is formed, so
-space is polynomial in the shape; `<4,4,4>` is 206 800 variables and 617 728
-clauses, about 11 MB. Time is the solver's, and worst case still exponential:
-deciding tensor rank is NP-complete over every finite field `[hastad1990]`, so
-no route here is polynomial and none claims to be.
+space is polynomial in the shape: `<4,4,4>` is 206 800 variables and 617 728
+clauses, about 11 MB. Time is the solver's and worst case still exponential.
 
 ## Against the exhaustive search
 
@@ -58,8 +56,8 @@ The comparison worth making is the SAT route against the tree.
 | time, worst case | `p^((n+m)(r-s))` | no better bound; see below |
 | a refusal is | a tree this code walked to its end | the solver's, checkable as DRAT |
 
-**The space separation is proved and is the whole point.** It is the difference
-between refusing `<4,4,4>` in milliseconds and starting on it.
+**The space separation is proved and is the point**: it is the difference between
+refusing `<4,4,4>` in milliseconds and starting on it.
 
 **The time separation is not proved, and the direction may surprise.** The SAT
 encoding carries about `r(n+m) log p` operand bits, so brute force over its

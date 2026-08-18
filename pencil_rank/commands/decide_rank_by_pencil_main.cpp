@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "arguments.h"
 #include "exit_code.h"
 #include "kronecker_structure.h"
 #include "tensor_file.h"
@@ -58,6 +59,15 @@ int main(int argc, char** argv) {
         std::cerr << "usage: decide-rank-by-pencil <tensor-file>\n"
                   << "  The Kronecker canonical form of a tensor with at most two slices, and\n"
                   << "  the rank bound it gives. Polynomial time, and no candidate pool.\n";
+        return cli::exit_status(cli::ExitCode::Usage);
+    }
+
+    // A flag where the tensor should be is a bad invocation, not an unreadable
+    // file. Without this, `--route bogus` reports that it cannot read a file
+    // called `--route`, which names the wrong thing to fix and exits 5 where a
+    // script watching for 2 would not see it.
+    if (cli::looks_like_flag(argv[1])) {
+        std::cerr << "decide-rank-by-pencil: expected a tensor file, not '" << argv[1] << "'\n";
         return cli::exit_status(cli::ExitCode::Usage);
     }
 

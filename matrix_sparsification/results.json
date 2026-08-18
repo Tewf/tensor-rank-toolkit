@@ -12,7 +12,7 @@
     {
       "name": "strassen_u",
       "shape": "7x4",
-      "command": "~/Desktop/Etude/tensor-rank-toolkit/build/matrix_sparsification/sparsify-operator ~/Desktop/Etude/tensor-rank-toolkit/fixtures/strassen_u.matrix",
+      "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_u.matrix",
       "seconds": 0.0044,
       "as_given": 12,
       "row_basis_heuristic": 10,
@@ -22,7 +22,7 @@
     {
       "name": "strassen_v",
       "shape": "7x4",
-      "command": "~/Desktop/Etude/tensor-rank-toolkit/build/matrix_sparsification/sparsify-operator ~/Desktop/Etude/tensor-rank-toolkit/fixtures/strassen_v.matrix",
+      "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_v.matrix",
       "seconds": 0.0038,
       "as_given": 12,
       "row_basis_heuristic": 10,
@@ -32,7 +32,7 @@
     {
       "name": "alternative_basis_u",
       "shape": "7x4",
-      "command": "~/Desktop/Etude/tensor-rank-toolkit/build/matrix_sparsification/sparsify-operator ~/Desktop/Etude/tensor-rank-toolkit/fixtures/alternative_basis_u.matrix",
+      "command": "build/matrix_sparsification/sparsify-operator fixtures/alternative_basis_u.matrix",
       "seconds": 0.0084,
       "as_given": 21,
       "row_basis_heuristic": 10,
@@ -66,7 +66,7 @@
       "cbc": "Welcome to the CBC MILP Solver",
       "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
     },
-    "build_directory": "~/Desktop/Etude/tensor-rank-toolkit/build",
+    "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
     "defaults_in_force": {

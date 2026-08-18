@@ -39,6 +39,26 @@ import time
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
+
+def shown(command):
+    """A command line as a reader on another machine can run it.
+
+    The commands recorded here used to be absolute, which made every one of
+    them a fact about this laptop: they carried a home directory, a username
+    and a directory layout, none of which a reader has and none of which the
+    numbers depend on. Anything under the repository is rendered relative to
+    it, so the recorded line is what you type after cloning; a solver found on
+    PATH keeps its absolute path, because that one really is a fact about the
+    machine and pretending otherwise would hide which binary answered.
+    """
+    words = []
+    for word in command:
+        try:
+            words.append(str(pathlib.Path(word).resolve().relative_to(ROOT)))
+        except ValueError:
+            words.append(word)
+    return " ".join(words)
+
 # Fastest of this many, because wall clock is noisy upward and not downward: a
 # slow run means the machine was busy, and averaging that in measures the
 # machine rather than the code.
@@ -129,7 +149,7 @@ def provenance(build):
             for name in ("kissat", "cryptominisat5", "cadical", "cvc5",
                          "drat-trim", "cbc", "glpsol")
         },
-        "build_directory": str(build),
+        "build_directory": shown([str(build)]),
         "repeats": REPEATS,
         "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
         "defaults_in_force": {
@@ -170,7 +190,7 @@ def descent_of(build, name, repeats=REPEATS):
     naive = re.search(r"naive: (\d+) multiplications", text)
     return {"name": name,
             "naive": int(naive.group(1)) if naive else None,
-            "command": " ".join(command),
+            "command": shown(command),
             **steps}
 
 
@@ -194,7 +214,7 @@ def sparsification_of(build, name, repeats=REPEATS):
     shape = re.search(r"as given: \d+ nonzeros, (\d+x\d+)", text)
     return {"name": name,
             "shape": shape.group(1) if shape else None,
-            "command": " ".join(command),
+            "command": shown(command),
             "seconds": seconds,
             **counts}
 
@@ -230,7 +250,7 @@ def satisfiability_of(build, question, committed, repeats=REPEATS):
         text, seconds = fastest(command, repeats, expect=(expect,))
         if wanted not in text:
             raise RuntimeError(f"{name}: k={target} no longer answers {wanted!r}\n{text}")
-        return " ".join(command), seconds
+        return shown(command), seconds
 
     if "found_at" in question:
         target = question["found_at"]
@@ -255,7 +275,7 @@ def satisfiability_of(build, question, committed, repeats=REPEATS):
         visited = re.search(r"(\d+) nodes in", text)
         row.update({"exhaustive_nodes": int(visited.group(1)) if visited else 0,
                     "exhaustive_ruled_out_seconds": seconds if visited else None,
-                    "exhaustive_command": " ".join(command)})
+                    "exhaustive_command": shown(command)})
     return row
 
 

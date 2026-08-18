@@ -46,10 +46,10 @@ different numbers in one run.
 | `search_node_limit` | `decide-rank`, `deflate-strictly` | `--node-limit` |
 | `ilp_node_limit` | `curve-bounds` | `--node-limit` |
 | `plateau_state_budget` | `minimise-rank` | `--plateau-states` |
-| `sat_memory_megabytes` | `decide-rank-by-sat`, `find-at-rank`, `deflate-strictly` | `--max-memory` |
+| `sat_memory_megabytes` | `decide-rank-by-sat`, `deflate-strictly` | `--max-memory` |
 | `sat_timeout_seconds` | `decide-rank-by-sat`, `deflate-strictly` | `--timeout`, `--candidate-timeout` |
 | `ilp_time_limit_seconds` | `curve-bounds` | `--solver-timeout` |
-| `sat_solver_order` | `decide-rank-by-sat`, `find-at-rank`, `deflate-strictly` | `--solver` |
+| `sat_solver_order` | `decide-rank-by-sat`, `deflate-strictly` | `--solver` |
 | `ilp_backend_order` | `curve-bounds`, `list-solvers` | none; `--route built-in` sidesteps it |
 
 A name the file spells wrongly is refused rather than ignored, and the refusal
@@ -63,10 +63,16 @@ against the built command rather than against the parser.
   `decide-rank`, `walk-scheme`
 - [Asking a SAT solver](OPTIONS/asking-a-sat-solver.md): `decide-rank-by-sat`
 - [Committing to candidates](OPTIONS/committing-to-candidates.md):
-  `find-at-rank`, `deflate-strictly`, `enumerate-subspaces`
+  `deflate-strictly`, `enumerate-subspaces`
 - [Bounding from a curve](OPTIONS/bounding-from-a-curve.md): `curve-bounds`,
   `list-solvers`
 - [Sparsifying operators](OPTIONS/sparsifying-operators.md): `sparsify-operator`
 - [Building maps](OPTIONS/building-maps.md): `make-tensor`
 
-`pencil_rank/`'s command is being written and is not documented here yet.
+`decide-rank-by-pencil` and `factor-over-canonical-basis` are documented in
+[`OPTIONS/reading-the-answer-off.md`](OPTIONS/reading-the-answer-off.md).
+
+`find-at-rank` is gone from this branch, and with it the `--descend`,
+`--candidate-timeout` and `--pretest-ceiling` flags. It is on
+`rejected-experiments`; the numbers that retired it are in
+[`oracle_guided_search/measurements.md`](oracle_guided_search/measurements/README.md).

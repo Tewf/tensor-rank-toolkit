@@ -48,7 +48,7 @@ for, and, given sideways steps and a backtrack, the same strand gets there:
 | `⟨3,3,3⟩` | 27, no improvement | **24** | 38.1 s, `--flips 20000 --seeds 8` |
 
 Both rows are measured in
-[`oracle_guided_search/measurements.md`](../oracle_guided_search/measurements.md),
+[`oracle_guided_search/measurements.md`](../oracle_guided_search/measurements/README.md),
 lines 14 and 29. On `⟨2,2,2⟩` the number to beat is 7 and not 8; on `⟨3,3,3⟩`
 the walk is three products under the naive 27 where the descent is level with
 it. One sideways step does not do it: from the naive eight, `⟨2,2,2⟩` needs

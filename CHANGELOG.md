@@ -57,10 +57,23 @@ corrected, tested, and extended into four strands.
   row of `A` rank one, returned with the receipt that checks it in one matrix
   product without rerunning the search. Two routes, a materialised pool and a
   solver that forms none, required to agree on every fixture.
-- **Thirteen command-line tools**: `minimise-rank`, `decide-rank`, `walk-scheme`,
-  `decide-rank-by-sat`, `list-solvers`, `find-at-rank`, `deflate-strictly`,
-  `enumerate-subspaces`, `decide-rank-by-pencil`, `factor-over-canonical-basis`,
-  `curve-bounds`, `sparsify-operator` and `make-tensor`, sharing one argument
-  grammar, one clock, one set of exit codes and one file of tunables.
+- **Twelve command-line tools**: `minimise-rank`, `decide-rank`, `walk-scheme`,
+  `decide-rank-by-sat`, `list-solvers`, `deflate-strictly`, `enumerate-subspaces`,
+  `decide-rank-by-pencil`, `factor-over-canonical-basis`, `curve-bounds`,
+  `sparsify-operator` and `make-tensor`, sharing one argument grammar, one clock,
+  one set of exit codes and one file of tunables.
+
+### Removed
+
+- **The fixed-`k` finder** and the descending sweep built on it, to the
+  `rejected-experiments` branch. The finder rested on an assumed asymmetry
+  between the cost of acceptance and refutation, quoted at two orders of
+  magnitude; measured with matched flags it is about one, the original figures
+  having compared instances encoded with and without symmetry breaking. It is
+  dominated by the descent on every fixture. The sweep existed to hand
+  `find_rank` a bracket, and once `[yang2025]`'s rank sums closed the
+  floor-to-rank gap there was nothing left for a bracket to save: measured, it
+  loses on all seven fixtures. No answer either gave was ever wrong. Both sets of
+  numbers stay, because they are the evidence for the removal.
 
 [0.1.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.1.0
