@@ -26,3 +26,11 @@ add_test(NAME algorithm_recovery COMMAND test_algorithm_recovery ${PROJECT_SOURC
 add_executable(test_candidate_pool test_candidate_pool.cpp)
 target_link_libraries(test_candidate_pool PRIVATE descent_search testing project_warnings)
 add_test(NAME candidate_pool COMMAND test_candidate_pool)
+
+# The theorems of correctness.md, executed. T5 in particular is a live check on
+# the pruning: if a discarded candidate could ever have improved the result,
+# this fails rather than returning a quietly worse answer.
+add_executable(test_descent_guarantees test_descent_guarantees.cpp)
+target_link_libraries(test_descent_guarantees PRIVATE descent_search orbit_reduction
+                                                      formats testing project_warnings)
+add_test(NAME descent_guarantees COMMAND test_descent_guarantees ${PROJECT_SOURCE_DIR}/fixtures)
