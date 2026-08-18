@@ -178,7 +178,7 @@
           "seconds_to_find_7": 0.14
         },
         "known": 7,
-        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. The heuristic cannot move at all."
+        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step; the plateau walk crosses to 7 in 0.11 s (oracle_guided_search/measurements.md)."
       },
       {
         "tensor": "<2,2,3> matrix multiplication",

@@ -116,7 +116,10 @@ rebuilt and compared against the input map.
 The same two searches, run on the tensors the complexity literature argues
 about: **[`../famous_tensors.md`](../famous_tensors.md)**. The short version is that
 rank ⟨2,2,2⟩ = 7 is decided here in half a second, Strassen and Winograd both,
-and that the heuristic cannot improve a matrix multiplication tensor at all.
+and that no single rank-one map strictly improves a matrix multiplication
+tensor: the step 3 shortlist is 0 of 225 candidates on `⟨2,2,2⟩`, so this
+descent cannot take a first step. A walk that may cross equal-cost maps can,
+and reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/)).
 
 ## Where this stops
 

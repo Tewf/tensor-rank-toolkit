@@ -10,15 +10,23 @@ Build them with `make-tensor --matmul n m k` and `--cyclic n`.
 
 ## What each search did
 
-| Tensor | Naive | Heuristic | Exact says | Known |
-|---|---|---|---|---|
-| `⟨2,2,2⟩` matrix multiplication | 8 | **8**, stuck | **exactly 7** | 7 |
-| `⟨2,2,3⟩` | 12 | **12**, stuck | **≥ 9** | 11 |
-| `⟨2,3,3⟩` | 18 | **18**, stuck | nothing reachable | 15 |
-| `⟨3,3,3⟩` | 27 | **27**, stuck | out of reach | open, 19–23 |
-| W state | 3 | 3 | **exactly 3** | 3, border rank 2 |
-| Cyclic convolution, length 5 | 25 | **10** | **≥ 9** | |
-| GF(16) over GF(2) | 16 | **9** | **exactly 9** | ≥ 8 by de Groote |
+| Tensor | Naive | Strict descent | Plateau walk | Exact says | Known |
+|---|---|---|---|---|---|
+| `⟨2,2,2⟩` matrix multiplication | 8 | **8**, no first step | **7** · 0.11 s | **exactly 7** | 7 |
+| `⟨2,2,3⟩` | 12 | **12**, no first step | not measured | **≥ 9** | 11 |
+| `⟨2,3,3⟩` | 18 | **18**, no first step | not measured | nothing reachable | 15 |
+| `⟨3,3,3⟩` | 27 | **27**, no first step | **24** · 38.1 s | out of reach | open, 19–23 |
+| W state | 3 | 3 | | **exactly 3** | 3, border rank 2 |
+| Cyclic convolution, length 5 | 25 | **10** | | **≥ 9** | |
+| GF(16) over GF(2) | 16 | **9** | 9 · 0.69 s | **exactly 9** | ≥ 8 by de Groote |
+
+"No first step" is the step 3 shortlist coming back empty, and it stops
+`minimise-rank` and nothing else. The plateau column is the same heuristic
+strand allowed to cross equal-cost maps, and on both matrix multiplication
+shapes it was run on it improves on the descent. Its three timings are
+`walk-scheme`, measured in
+[`oracle_guided_search/measurements.md`](oracle_guided_search/measurements.md);
+`⟨3,3,3⟩`'s 24 is `--flips 20000 --seeds 8`.
 
 ## The result worth having: rank ⟨2,2,2⟩ = 7, decided here in 0.55 s
 
@@ -48,14 +56,14 @@ de Groote's theorem says the bound `2n-1` is attained only for `n ≤ q/2 + 1`, 
 GF(16) over GF(2) must need more than 7. **That half no longer needs the
 theorem**: the rank-sum bound gets `≥ 8` from the tensor in milliseconds, with no
 theorem, no solver and no exhaustion, because all fifteen nonzero contractions
-have full rank 4 — the span is a field, so every nonzero element is invertible —
+have full rank 4 (the span is a field, so every nonzero element is invertible)
 and `60 / 8 = 7.5`. That it needs more than 8 is still decided here by
 exhaustion, and that is the half the 38.8 minutes buys.
 
-## The finding about the heuristic: it cannot move on matrix multiplication
+## The finding: no single map strictly improves matrix multiplication
 
-Three matrix multiplication tensors run through the whole method, three times no
-improvement whatsoever, while the same heuristic takes cyclic convolution from
+Three matrix multiplication tensors run through the whole descent, three times no
+improvement whatsoever, while the same descent takes cyclic convolution from
 25 to 10 and GF(16) from 16 to 9. `⟨3,3,3⟩` matches through steps 1 and 2; its
 step 3 was given forty-five minutes and did not finish. Projected from the
 measured `⟨2,3,3⟩` scan, 4.77 ms a candidate over 32 193 of them, and scaled by
@@ -71,20 +79,47 @@ step 3 pool: 225 rank-one maps      step 3 pool: 225 rank-one maps
 step 3 shortlist: 0        ⟨2,2,2⟩  step 3 shortlist: 4        GF(16)
 ```
 
-**Not one rank-one map of the 225 improves ⟨2,2,2⟩**, so a first-improvement
-greedy has nowhere to step. Nor does one of the 945 for `⟨2,2,3⟩`, nor one of
-the 32 193 for `⟨2,3,3⟩`: the shortlist is empty every time, on every size the
-scan can finish. The reason is structural, and it is the same
-property that makes step 1 trustworthy: step 1 returns a minimum-weight basis of
-`span(T)` and is provably optimal for that, so 8 is the true minimum **over all
-bases of the span**. Strassen's seven products are not a basis of `span(T)`,
-which has dimension 4; they span a 7-dimensional space containing it. The
-heuristic only ever moves between spanning sets that pay off one candidate at a
-time, and the road to 7 does not.
+**Not one rank-one map of the 225 strictly improves ⟨2,2,2⟩**, so a
+first-improvement greedy has nowhere to step. Nor does one of the 945 for
+`⟨2,2,3⟩`, nor one of the 32 193 for `⟨2,3,3⟩`: the shortlist is empty every
+time, on every size the scan can finish. Quotienting the pool by symmetry does
+not rescue it either, because an empty shortlist stays empty however it is
+grouped ([`flip_graph/plateau_search.h:15-20`](flip_graph/plateau_search.h)).
 
-So the two methods here are not a fast one and a slow one. They fail and
-succeed on different tensors, and matrix multiplication is exactly where the
-heuristic stops and the exact search starts.
+The reason is structural, and it is the same property that makes step 1
+trustworthy: step 1 returns a minimum-weight basis of `span(T)` and is provably
+optimal for that, so 8 is the true minimum **over all bases of the span**.
+Strassen's seven products are not a basis of `span(T)`, which has dimension 4;
+they span a 7-dimensional space containing it. A strictly descending walk only
+ever moves between spanning sets that pay off one candidate at a time, and the
+road to 7 does not.
+
+## What that bounds is the descent, not the heuristic strand
+
+Strassen's seven are reachable from the naive eight only through maps that cost
+the same, and a strictly descending walk cannot enter an equal-cost state by
+construction. That is what
+[`flip_graph/plateau_search.h:15-26`](flip_graph/plateau_search.h) was written
+for, and, given sideways steps and a backtrack, the same strand gets there:
+
+| Tensor | Strict descent | Plateau walk | Cost |
+|---|---|---|---|
+| `⟨2,2,2⟩` | 8, shortlist 0 of 225 | **7** | 0.11 s |
+| `⟨3,3,3⟩` | 27, no improvement | **24** | 38.1 s, `--flips 20000 --seeds 8` |
+
+Both rows are measured in
+[`oracle_guided_search/measurements.md`](oracle_guided_search/measurements.md),
+lines 14 and 29. On `⟨2,2,2⟩` the number to beat is 7 and not 8; on `⟨3,3,3⟩`
+the walk is three products under the naive 27 where the descent is level with
+it. One sideways step does not do it: from the naive eight, `⟨2,2,2⟩` needs
+three additions before the count moves, which is why the plateau is searched to
+a depth rather than walked across.
+
+So the two methods here are not a fast one and a slow one. They fail and succeed
+on different tensors, and matrix multiplication is where the *strictly
+descending* heuristic stops: the exact search decides `⟨2,2,2⟩` at 7 and the
+plateau walk exhibits 7 and 24 without deciding anything. What the descent
+cannot do is take a first step; what no heuristic here can do is prove a bound.
 
 ## Where the exact search stops, measured
 

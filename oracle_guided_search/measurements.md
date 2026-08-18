@@ -31,7 +31,7 @@ in 300 s while the greedy returns a verified 10-product algorithm in 18.9 s.
 | `find-at-rank --target 23`, unrestricted | nothing | 300 s |
 | `find-at-rank --descend --ceiling 27 -s matmul 3 3 3` | 26, stalling at 25 | 313 s |
 
-Nobody reaches 23. The greedy cannot move off the naive 27, which is the shortlist
+Nobody reaches 23. `minimise-rank` cannot move off the naive 27, which is the shortlist
 problem again at a larger shape; the plateau walk reaches 24 in 38 s; the finder in its
 best mode reaches 26 in 313 s. The flattening floor here is 9 against a true rank of at
 least 19, so the free bound refuses no part of a descent.
