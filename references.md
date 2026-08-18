@@ -16,6 +16,43 @@ length rule is for.
 
 ## What the problem is, and how hard
 
+**`brockett1978`**: R. W. Brockett, D. Dobkin. *On the optimal evaluation of a
+set of bilinear forms.* Linear Algebra and its Applications (1978). Defines the
+rank of a set of bilinear forms as the smallest number of rank-one matrices
+whose span contains the set. **That definition is what this repository's whole
+rank strand computes.** A map is held as its slices, their span is
+[`span_of`](linear_algebra/span_basis.h), and every search here is a search for
+rank-one matrices spanning it, which is why
+[`rank_one_basis_of`](exhaustive_search/rank_one_basis.h) is the question at
+every leaf rather than a step on the way to one.
+
+**`grigoriev1978`**: D. Grigoriev. *Multiplicative complexity of a pair of
+bilinear forms and of the polynomial multiplication.* MFCS 1978, LNCS **64**.
+The same definition, reached independently, and with it the polynomial-time
+solution for two slices. Polynomial multiplication is what every `.tensor`
+fixture here is; the two-slice case is the one shape of it that never needed a
+search, and nothing here special-cases it.
+
+**`jaja1979`**: J. Ja'Ja'. *Optimal evaluation of pairs of bilinear forms.* SIAM
+Journal on Computing **8** (1979), no. 3, 443-462; STOC 1978. Determines the
+rank of any `p x q x 2` tensor in polynomial time, through the Kronecker theory
+of matrix pencils. It marks where the exhaustive machinery here starts being
+necessary: at two slices the answer is a canonical form, and the searches in
+this repository are for what lies past that.
+
+**`sumi2009`**: T. Sumi, M. Miyata, T. Sakata. *Rank of 3-tensors with 2 slices
+and Kronecker canonical forms.* Linear Algebra and its Applications (2009),
+[arXiv:0808.1167](https://arxiv.org/abs/0808.1167). The modern treatment of the
+two-slice case, and the warning that comes with it: **the rank of a Kronecker
+canonical form is not the sum of the ranks of its direct summands**, so a
+decomposition into summands does not license adding their ranks up.
+
+**`byrne2021`**: E. Byrne, G. Cotardo.
+[arXiv:2103.08544](https://arxiv.org/abs/2103.08544), 2021. Uses the same
+characterisation as `brockett1978`, under a name worth knowing because it is the
+one a search finds: `span(T)` is the **first slice space**. No title is quoted
+here because the entry was added from the identifier alone.
+
 **`hastad1990`**: J. Håstad. *Tensor rank is NP-complete.* Journal of
 Algorithms **11** (1990), no. 4, 644-654.
 [doi:10.1016/0196-6774(90)90014-6](https://doi.org/10.1016/0196-6774(90)90014-6),
@@ -39,6 +76,15 @@ Journal of the ACM **60** (2013), no. 6, article 45,
 [arXiv:0911.1393](https://arxiv.org/abs/0911.1393). Extends Håstad's hardness to
 `ℝ` and `ℂ`, and the source of the shorthand that flattens the per-field
 picture.
+
+**`buss1999`**: S. Buss, G. Frandsen, J. Shallit. *The computational complexity
+of some problems of linear algebra.* 1999. **MinRank**: given matrices over a
+finite field, is some combination of them of rank at most `r`? It is
+NP-complete, and it is the inner question a rank search asks over and over.
+Every leaf of the searches here is MinRank at `r = 1` over the span in hand,
+which is why the leaf and not the branching is where the time goes:
+[`rank_one_basis.h`](exhaustive_search/rank_one_basis.h) chooses between two
+ways of asking it per call because neither is cheap.
 
 ## The exact search
 
@@ -76,6 +122,21 @@ product and the matrix product.
 Bilinéaire et Méthodes Asymptotiquement Rapides.* Thèse, Université de Lorraine,
 2018. NNT 2018LORR0057, [tel-01825744](https://theses.hal.science/tel-01825744v1).
 The long form of `covanov2019`.
+
+**`nakatsukasa2017`**: Y. Nakatsukasa, T. Soma, A. Uschmajew. *Finding a
+low-rank basis in a matrix subspace.* Mathematical Programming **162** (2017),
+no. 1, 325-361, [arXiv:1503.08601](https://arxiv.org/abs/1503.08601). The
+closest existing work to the search this repository runs at every leaf, stated
+as its own problem: given a matrix subspace, find a basis of it made of low-rank
+matrices.
+Their route is a nuclear-norm relaxation, soft singular-value thresholding and
+alternating projections, over the reals throughout. **None of that machinery has
+a finite-field analogue**, since a nuclear norm needs singular values and a
+threshold needs an ordering and `GF(p)` supplies neither, which is why this line
+of work has no `GF(p)` descendant and why
+[`rank_one_basis_of`](exhaustive_search/rank_one_basis.h) answers the same
+question by enumeration instead. Worth naming for what it rules out: the
+continuous method is not waiting to be ported.
 
 ## Deciding rank with a solver
 
@@ -236,7 +297,7 @@ of its rank-sum bounds are
 [`linear_algebra/tensor_rank_sum.h`](linear_algebra/tensor_rank_sum.h): its
 `ranksum` as `line_rank_sum_lower_bound_on_axis`, and the bound its Java calls
 `lask`, which is **Laskowski's, Theorem 3 of this thesis**, as
-`total_rank_sum_lower_bound_on_axis` — it sums the same counting inequality over
+`total_rank_sum_lower_bound_on_axis`: it sums the same counting inequality over
 every projective point instead of along one line, and costs `|F|^n_d` against the
 line bound's `|F|^(2 n_d)`. `rref` is **not ported**.
 
