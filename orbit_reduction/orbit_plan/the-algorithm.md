@@ -21,6 +21,10 @@ why deeper levels prune less and why this is not just a level-1 trick.
 1. `symmetry_group.h/.cpp`: `Symmetry {left, right, transposed}`, the action,
    and `stabilises(field, σ, span)`. Verification is cheap and exact: `X`, `Y`
    invertible, and every basis slice's image back inside the span.
+   **Built as [`automorphism.h`](../automorphism.h), without `transposed`**, and
+   named `Automorphism` rather than `Symmetry`. Why the transposition is absent
+   is in [`the-group.md`](the-group.md); it follows the source rather than
+   overlooking it.
 2. Orbits of the pool under an explicit element list, by union-find. `U` is
    carried as a list, so `Stab(V ⊕ ⟨φ⟩) ∩ U` is a filter, not group theory.
 3. Sources of generators (below), each **verified before use**.

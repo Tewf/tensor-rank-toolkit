@@ -5,7 +5,9 @@
 Choosing a basis of `span(T)` minimising `Σ rank` is a matroid problem:
 independence of vectors forms a matroid, and the greedy (sort by weight
 ascending, keep whatever stays independent) yields a **minimum-weight basis**
-(Rado-Edmonds). So step 1 does not approximate anything, and its result is
+(Rado-Edmonds, `[oxley, Lem. 1.8.3]`; for this problem by name,
+`[nakatsukasa2017, Thm. 2.1]`, whose Cor. 1 is stronger). So step 1 does not
+approximate anything, and its result is
 tie-break independent. Everything after it relaxes the constraint that the
 answer be a basis of `span(T)`, and that is where the guarantee goes.
 
