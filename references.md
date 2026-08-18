@@ -132,6 +132,16 @@ is a citable structural fact: no polynomial-time heuristic can promise better th
 that factor unless P = NP. It bounds every heuristic in this repository at once,
 including any future one.
 
+**`kyrillidis2025`**: Y. Cai, Z. Zhang, et al. *Massively Parallel Continuous
+Local Search for Hybrid SAT Solving on GPUs.* AAAI 2025,
+[arXiv:2308.15020](https://arxiv.org/abs/2308.15020). FastFourierSAT, and the
+reason a GPU does not help this repository: it accelerates **continuous local
+search**, which finds satisfying assignments and cannot refute, while the
+expensive half here is the refutation. Named in
+[`positioning/hardware-and-parallelism.md`](positioning/hardware-and-parallelism.md),
+which also records that GPU CDCL is reported as slower than CPU CDCL. The author
+list is from the arXiv record and the first name may not be the one to cite by.
+
 **`schaefer2018`**: M. Schaefer, D. Štefankovič. *The Complexity of Tensor
 Rank.* Theory of Computing Systems **62** (2018), 1161-1174.
 [preprint](https://www.cs.rochester.edu/~stefanko/Publications-new/J36.pdf).

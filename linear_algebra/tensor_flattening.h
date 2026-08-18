@@ -17,7 +17,14 @@
 ///
 /// > `rank(T) ≥ max_d rank(T⁽ᵈ⁾)`
 ///
-/// That is a lower bound in **polynomial time**, against a decision procedure
+/// **That is derived above and not cited, deliberately.** A rank-one tensor has
+/// rank-one flattenings and rank is subadditive, which is the whole proof, so
+/// there is no algorithm here from a paper to name; the definition it rests on
+/// is `[brockett1978]`'s and keys are [`../references.md`](../references.md).
+/// A search for an earlier owner of the inequality itself found the bound
+/// treated as folklore everywhere it appears, so nothing is claimed for it.
+///
+/// It is a lower bound in **polynomial time**, against a decision procedure
 /// that is exponential in the rank it is asking about. Asking a solver to rule
 /// out a rank the flattenings already forbid is pure waste, and this repository
 /// was doing exactly that: a sweep from `k = 1` spent solver calls on ranks that
