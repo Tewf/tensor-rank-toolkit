@@ -12,6 +12,7 @@
 
 #include "algorithm_recovery.h"
 #include "candidate_pool.h"
+#include "exit_code.h"
 #include "fewest_products.h"
 #include "flip_graph.h"
 #include "minimise_rank.h"
@@ -66,7 +67,7 @@ bool computes(const bilinear_rank::Field& field,
 int run(int argc, char** argv) {
     if (argc < 2) {
         usage();
-        return 2;
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     std::size_t flips = 20000;
@@ -82,7 +83,7 @@ int run(int argc, char** argv) {
             from = std::stoll(argv[++argument]);
         } else {
             usage();
-            return 2;
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
 
@@ -93,7 +94,9 @@ int run(int argc, char** argv) {
     if (!bilinear_rank::recovers_map(
             field, tensor.slices, bilinear_rank::rank_one_candidates(field, tensor.slices), naive)) {
         std::cerr << "no naive algorithm for this map, so nothing to walk from\n";
-        return 1;
+        // Was 1. Nothing was walked and nothing refuted: without a starting
+        // scheme the tool cannot begin, which is Error and not an answer.
+        return cli::exit_status(cli::ExitCode::Error);
     }
 
     bilinear_rank::Scheme start = bilinear_rank::scheme_of(naive);
@@ -108,12 +111,17 @@ int run(int argc, char** argv) {
                                         reduced)) {
             std::cerr << "the heuristic's result did not turn back into an algorithm, so there "
                          "is nothing to walk from\n";
-            return 1;
+            // Was 1. The heuristic produced a result and recovery rejected it,
+            // which is an answer failing its own check: Unverified.
+            return cli::exit_status(cli::ExitCode::Unverified);
         }
         if (reduced.product_count() > static_cast<std::size_t>(from)) {
             std::cerr << "the heuristic reached " << reduced.product_count() << " products, not "
                       << from << ", so there is no " << from << "-product scheme to walk from\n";
-            return 1;
+            // Was 1, which reads as a refutation of a k-product scheme. Nothing
+            // of the sort was shown: --from k asked for a starting point this
+            // heuristic does not hand over, so the argument is the problem.
+            return cli::exit_status(cli::ExitCode::Usage);
         }
         start = bilinear_rank::scheme_of(reduced);
         std::cout << "heuristic scheme: " << start.size() << " products, walking from there\n";
@@ -138,7 +146,7 @@ int run(int argc, char** argv) {
     const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
     std::cout << "best over " << seeds << " seeds: " << bilinear_rank::require_bound_consistent(best, bound)
               << "\n";
-    return 0;
+    return cli::exit_status(cli::ExitCode::Yes);
 }
 
 }  // namespace
@@ -147,7 +155,9 @@ int main(int argc, char** argv) {
     try {
         return run(argc, argv);
     } catch (const std::exception& failure) {
+        // Was 1, which reads as a refusal about the map. An unreadable file is
+        // a tool that could not run, and the walk refutes nothing in any case.
         std::cerr << failure.what() << "\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

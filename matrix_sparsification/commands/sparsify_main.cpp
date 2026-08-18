@@ -8,6 +8,8 @@
 #include <string>
 
 #include "dense_matrix_file.h"
+#include "exit_code.h"
+#include "greedy_sparsifier.h"
 #include "heuristic_sparsifier.h"
 #include "linear_algebra.h"
 #include "oracle_sparsifier.h"
@@ -36,7 +38,7 @@ void report(const Field& field, const std::string& method,
 int run(int argc, char** argv) {
     if (argc < 2) {
         std::cerr << "usage: sparsify-operator <matrix-file|.sms> [--show]\n";
-        return 2;
+        return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string path = argv[1];
     const bool show_matrix = (argc > 2 && std::string(argv[2]) == "--show");
@@ -73,7 +75,19 @@ int run(int argc, char** argv) {
     report(field, "exact oracle, top-down", operator_matrix,
            linear_algebra::transpose<Field>(top_down), cli::elapsed_seconds(started), show_matrix);
 
-    return 0;
+    // `[beniamini2020, Alg. 6]`, which was implemented, tested and then never
+    // run from here. It is the one method that minimises `nnz + nns` rather than
+    // zeros, and that is where it wins: on the alternative-basis operator all
+    // four reach 10 nonzeros, but the oracles leave all ten as ninths, twenty
+    // operations, and this leaves ten signs, ten. The line below reports the
+    // nonzero count like its siblings, so that column does not separate them;
+    // `../README.md` carries the one that does.
+    started = cli::Clock::now();
+    const Matrix rescaled = matrix_sparsification::sparsify_by_rescaling(field, transposed);
+    report(field, "greedy, by rescaling", operator_matrix,
+           linear_algebra::transpose<Field>(rescaled), cli::elapsed_seconds(started), show_matrix);
+
+    return cli::exit_status(cli::ExitCode::Yes);
 }
 
 }  // namespace
@@ -82,9 +96,10 @@ int main(int argc, char** argv) {
     try {
         return run(argc, argv);
     } catch (const std::exception& problem) {
-        // A refusal is a result: an unreadable file, or a run that would not
-        // fit the memory budget. Reported as a line, not as a terminate.
+        // An unreadable file, or a run that would not fit the memory budget.
+        // Reported as a line, not as a terminate. Was 1, which this command has
+        // no use for anyway: it sparsifies an operator, it refutes nothing.
         std::cerr << "sparsify-operator: " << problem.what() << "\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

@@ -13,9 +13,13 @@
 #include <string>
 #include <vector>
 
+#include "arguments.h"
+#include "exit_code.h"
 #include "interpolation_by_solver.h"
 #include "interpolation_programme.h"
+#include "solver_chain.h"
 #include "symmetric_bound_table.h"
+#include "tunables.h"
 
 namespace {
 
@@ -39,6 +43,13 @@ void usage() {
                  "                  the model accepts but whose optimality it cannot check.\n"
                  "                  enumeration is the dynamic programme, exact and the\n"
                  "                  cross-check.\n"
+                 "  --node-limit N  nodes the built-in branch and bound may open, from\n"
+                 "                  ilp_node_limit in tunables.conf when this is not given.\n"
+                 "                  Reaching it falls back to the dynamic programme\n"
+                 "  --solver-timeout N\n"
+                 "                  seconds an outside solver may run, from\n"
+                 "                  ilp_time_limit_seconds in tunables.conf when this is not\n"
+                 "                  given. --route chain only: the built-in has no clock\n"
                  "\n"
                  "  The result is an envelope, not a bound on mu_sym_q(m): steps 2 and 4 of\n"
                  "  the roadmap are absent, so nothing here checks that such a curve exists.\n";
@@ -105,16 +116,33 @@ int run(int argc, char** argv) {
     // feasibility-verified here, so it is asked for rather than fallen into.
     Route route = Route::BuiltIn;
 
+    // The file first, so the two flags below overwrite what it said. The backend
+    // order has no flag: --route is the coarser choice a caller makes here, and
+    // the built-in is reached last whatever the order says.
+    const cli::Tunables& tunables = cli::tunables();
+    curve_bounds::set_solver_node_limit(tunables.ilp_node_limit);
+    optimisation::set_solver_time_limit(static_cast<unsigned>(tunables.ilp_time_limit_seconds));
+    std::string unrecognised;
+    if (!optimisation::set_backend_order(tunables.ilp_backend_order, unrecognised)) {
+        throw cli::ArgumentError("tunables.conf ilp_backend_order: no backend is called '" +
+                                 unrecognised + "'");
+    }
+
     for (int argument = 1; argument < argc; ++argument) {
         const std::string option = argv[argument];
         if (option == "--table") {
             print_table();
-            return 0;
+            return cli::exit_status(cli::ExitCode::Yes);
         }
         if (option == "--degree" && argument + 1 < argc) {
             divisor_degree = std::stoll(argv[++argument]);
         } else if (option == "--points" && argument + 1 < argc) {
             supply.push_back(parse_supply(argv[++argument]));
+        } else if (option == "--node-limit" && argument + 1 < argc) {
+            curve_bounds::set_solver_node_limit(cli::parse_count(option, argv[++argument]));
+        } else if (option == "--solver-timeout" && argument + 1 < argc) {
+            optimisation::set_solver_time_limit(
+                static_cast<unsigned>(cli::parse_count(option, argv[++argument])));
         } else if (option == "--route" && argument + 1 < argc) {
             const std::string wanted = argv[++argument];
             if (wanted == "chain") {
@@ -125,17 +153,17 @@ int run(int argc, char** argv) {
                 route = Route::Enumeration;
             } else {
                 usage();
-                return 2;
+                return cli::exit_status(cli::ExitCode::Usage);
             }
         } else {
             usage();
-            return 2;
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
 
     if (divisor_degree < 0 || supply.empty()) {
         usage();
-        return 2;
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     std::cout << "supply:";
@@ -158,7 +186,7 @@ int run(int argc, char** argv) {
     if (!programme.solved) {
         std::cout << "no divisor [" << programme.solved_by << "]: degree " << divisor_degree
                   << " cannot be made from this supply at any price the table publishes\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::No);
     }
 
     std::cout << "bound [" << programme.solved_by << "]: mu_sym_2(m) <= " << programme.bound
@@ -177,7 +205,7 @@ int run(int argc, char** argv) {
                   << " own\n  checks, which cannot check optimality. --route built-in proves it.\n";
     }
     std::cout << "  an envelope, not a bound: no curve with this supply was shown to exist\n";
-    return 0;
+    return cli::exit_status(cli::ExitCode::Yes);
 }
 
 }  // namespace
@@ -185,8 +213,13 @@ int run(int argc, char** argv) {
 int main(int argc, char** argv) {
     try {
         return run(argc, argv);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line, or a line of tunables.conf, that could not
+        // be read: the run never started, so Usage rather than Error.
+        std::cerr << "curve-bounds: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& problem) {
         std::cerr << "curve-bounds: " << problem.what() << "\n";
-        return 5;
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

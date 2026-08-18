@@ -8,7 +8,9 @@
 #include <vector>
 
 #include "algorithm_recovery.h"
+#include "arguments.h"
 #include "candidate_pool.h"
+#include "exit_code.h"
 #include "fewest_products.h"
 #include "group_construction.h"
 #include "sms_file.h"
@@ -23,6 +25,7 @@
 #include "symmetry_argument.h"
 #include "tensor_file.h"
 #include "timing.h"
+#include "tunables.h"
 
 namespace {
 
@@ -56,10 +59,13 @@ int run(int argc, char** argv) {
                      "  --emit-operators <stem>   write <stem>_{L,R,P}.sms, the encoding\n"
                      "                            operators, in the format PLinOpt reads\n"
                      "  --plateau N               allow N equal-cost steps\n"
+                     "  --plateau-states N        distinct subspaces one crossing may visit,\n"
+                     "                            from plateau_state_budget in tunables.conf\n"
+                     "                            when this is not given. Never measured\n"
                      "  -s|--symmetry none|auto|matmul <n> <m> <k>\n"
                      "                            quotient step 3's pool by the map's own\n"
                      "                            automorphisms: one candidate per orbit\n";
-        return 2;
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     std::string path = argv[1];
@@ -68,6 +74,10 @@ int run(int argc, char** argv) {
     std::string operator_prefix;
     cli::Symmetry symmetry;
     std::size_t plateau_budget = 0;
+    // The file first, so `--plateau-states` below can overwrite it. Until this
+    // flag existed the number was a literal at the two call sites and no run had
+    // ever tried another value.
+    std::size_t plateau_states = cli::tunables().plateau_state_budget;
     for (int argument = 2; argument < argc; ++argument) {
         const std::string option = argv[argument];
         if (option == "--json") {
@@ -75,19 +85,21 @@ int run(int argc, char** argv) {
         } else if (option == "--steps" && argument + 1 < argc) {
             wanted_steps = std::stoi(argv[++argument]);
         } else if (option == "--plateau" && argument + 1 < argc) {
-            plateau_budget = static_cast<std::size_t>(std::stoull(argv[++argument]));
+            plateau_budget = cli::parse_count(option, argv[++argument]);
+        } else if (option == "--plateau-states" && argument + 1 < argc) {
+            plateau_states = cli::parse_count(option, argv[++argument]);
         } else if (option == "--symmetry" || option == "-s") {
             symmetry = cli::parse_symmetry(argc, argv, argument);
         } else if (option == "--threads" && argument + 1 < argc) {
             bilinear_rank::set_worker_count(
                 static_cast<std::size_t>(std::stoull(argv[++argument])));
         } else if (option == "--max-memory" && argument + 1 < argc) {
-            bilinear_rank::set_memory_budget(cli::parse_size(argv[++argument]));
+            bilinear_rank::set_memory_budget(cli::parse_memory_size(option, argv[++argument]));
         } else if (option == "--emit-operators" && argument + 1 < argc) {
             operator_prefix = argv[++argument];
         } else {
             std::cerr << "unrecognised option: " << option << "\n";
-            return 2;
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
 
@@ -100,7 +112,12 @@ int run(int argc, char** argv) {
            as_json);
 
     std::vector<bilinear_rank::Matrix> current = bilinear_rank::minimum_weight_basis(field, tensor.slices);
-    if (!verify(field, current, tensor.slices, "step 1")) return 1;
+    // Was 1 here and at every other verify below, which reads as a refusal. The
+    // step ran and its own check rejected what it produced, so the news is that
+    // a component is wrong, not that the map resists: Unverified, not No.
+    if (!verify(field, current, tensor.slices, "step 1")) {
+        return cli::exit_status(cli::ExitCode::Unverified);
+    }
     if (as_json) std::cout << ",";
     report("step 1", linear_algebra::multiplication_count(field, current), current.size(),
            cli::elapsed_seconds(started), as_json);
@@ -110,7 +127,9 @@ int run(int argc, char** argv) {
         const std::vector<bilinear_rank::Matrix> shortlist =
             bilinear_rank::improving_candidates(field, current, own);
         current = bilinear_rank::minimise_rank(field, current, shortlist);
-        if (!verify(field, current, tensor.slices, "step 2")) return 1;
+        if (!verify(field, current, tensor.slices, "step 2")) {
+            return cli::exit_status(cli::ExitCode::Unverified);
+        }
         if (as_json) std::cout << ",";
         report("step 2", linear_algebra::multiplication_count(field, current), current.size(),
                cli::elapsed_seconds(started), as_json);
@@ -129,7 +148,7 @@ int run(int argc, char** argv) {
             if (plateau_budget > 0) {
                 bilinear_rank::PlateauReport crossing;
                 current = bilinear_rank::cross_plateaus(field, current, everything, {},
-                                                        plateau_budget, 200000, &crossing);
+                                                        plateau_budget, plateau_states, &crossing);
                 std::cerr << "plateau: " << crossing.improvements << " improvements, "
                           << crossing.sideways << " sideways, " << crossing.states
                           << " states, best " << crossing.best << "\n";
@@ -145,7 +164,7 @@ int run(int argc, char** argv) {
             if (plateau_budget > 0) {
                 bilinear_rank::PlateauReport crossing;
                 current = bilinear_rank::cross_plateaus(field, current, everything, ambient,
-                                                        plateau_budget, 200000, &crossing);
+                                                        plateau_budget, plateau_states, &crossing);
                 std::cerr << "plateau: " << crossing.improvements << " improvements, "
                           << crossing.sideways << " sideways, " << crossing.states
                           << " states, best " << crossing.best << "\n";
@@ -156,7 +175,9 @@ int run(int argc, char** argv) {
                           << " orbits of " << orbits.pool << "\n";
             }
         }
-        if (!verify(field, current, tensor.slices, "step 3")) return 1;
+        if (!verify(field, current, tensor.slices, "step 3")) {
+            return cli::exit_status(cli::ExitCode::Unverified);
+        }
         if (as_json) std::cout << ",";
         report("step 3", linear_algebra::multiplication_count(field, current), current.size(),
                cli::elapsed_seconds(started), as_json);
@@ -171,7 +192,9 @@ int run(int argc, char** argv) {
     if (!bilinear_rank::recovers_map(field, tensor.slices, products, algorithm)) {
         std::cerr << "FAILED: the decomposition did not turn back into an algorithm "
                      "that computes the map\n";
-        return 1;
+        // The same failure as a rejected verify, one stage later, so the same
+        // code: was 1, and an answer that fails its own check is Unverified.
+        return cli::exit_status(cli::ExitCode::Unverified);
     }
     // What is left to win. A heuristic cannot say whether its answer is optimal,
     // but the flattenings say how much room there is underneath it, and a gap of
@@ -205,7 +228,7 @@ int run(int argc, char** argv) {
     }
 
     if (as_json) std::cout << "]\n";
-    return 0;
+    return cli::exit_status(cli::ExitCode::Yes);
 }
 
 }  // namespace
@@ -213,10 +236,16 @@ int run(int argc, char** argv) {
 int main(int argc, char** argv) {
     try {
         return run(argc, argv);
-    } catch (const std::exception& problem) {
-        // A refusal is a result: an unreadable file, or a run that would not
-        // fit the memory budget. Reported as a line, not as a terminate.
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line, or a line of tunables.conf, that could not
+        // be read: the run never started, so Usage rather than Error.
         std::cerr << "minimise-rank: " << problem.what() << "\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::Usage);
+    } catch (const std::exception& problem) {
+        // An unreadable file, or a run that would not fit the memory budget.
+        // Reported as a line, not as a terminate. Was 1, which said something
+        // about the map when the heuristic had not run on it at all.
+        std::cerr << "minimise-rank: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }

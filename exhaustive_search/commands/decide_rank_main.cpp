@@ -9,9 +9,11 @@
 #include <string>
 
 #include "algorithm_recovery.h"
+#include "arguments.h"
 #include "candidate_pool.h"
 #include "dense_matrix_file.h"
 #include "exhaustive_search.h"
+#include "exit_code.h"
 #include "fewest_products.h"
 #include "group_construction.h"
 #include "memory_budget.h"
@@ -23,6 +25,7 @@
 #include "symmetry_argument.h"
 #include "tensor_file.h"
 #include "timing.h"
+#include "tunables.h"
 
 namespace {
 
@@ -36,21 +39,27 @@ void usage() {
                  "                      the true minimum, and the search is exponential\n"
                  "  --anchor heuristic  run the heuristic first and search from its result:\n"
                  "                      far cheaper, but the answer is the minimum only\n"
-                 "                      among algorithms containing that subspace\n";
+                 "                      among algorithms containing that subspace\n"
+                 "  --node-limit N      nodes the search may visit, from search_node_limit\n"
+                 "                      in tunables.conf when this is not given. Reaching\n"
+                 "                      it is exit 3 and proves nothing either way\n";
 }
 
 /// The tool proper. main only turns a thrown refusal into a line.
 int run(int argc, char** argv) {
     if (argc < 2) {
         usage();
-        return 2;
+        return cli::exit_status(cli::ExitCode::Usage);
     }
 
     const std::string path = argv[1];
     long long target = -1;
     bool anchor_on_heuristic = false;
     bool bottom_up = false;
-    std::size_t node_limit = 5'000'000;
+    // The file first, so that `--node-limit` below can overwrite it: a flag that
+    // was given always wins over tunables.conf, and one that was not leaves the
+    // file's number standing.
+    std::size_t node_limit = cli::tunables().search_node_limit;
     cli::Symmetry symmetry;
 
     for (int argument = 2; argument < argc; ++argument) {
@@ -65,14 +74,14 @@ int run(int argc, char** argv) {
             bilinear_rank::set_worker_count(
                 static_cast<std::size_t>(std::stoull(argv[++argument])));
         } else if (option == "--max-memory" && argument + 1 < argc) {
-            bilinear_rank::set_memory_budget(cli::parse_size(argv[++argument]));
+            bilinear_rank::set_memory_budget(cli::parse_memory_size(option, argv[++argument]));
         } else if (option == "--node-limit" && argument + 1 < argc) {
-            node_limit = static_cast<std::size_t>(std::stoull(argv[++argument]));
+            node_limit = cli::parse_count(option, argv[++argument]);
         } else if (option == "--bottom-up") {
             bottom_up = true;
         } else {
             usage();
-            return 2;
+            return cli::exit_status(cli::ExitCode::Usage);
         }
     }
 
@@ -87,7 +96,7 @@ int run(int argc, char** argv) {
     if (target >= 0 && static_cast<std::size_t>(target) < bound) {
         std::cout << "  NO: there is no algorithm with " << target
                   << " products, which the polynomial bounds already refute.\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::No);
     }
 
     std::vector<bilinear_rank::Matrix> anchor = tensor.slices;
@@ -134,16 +143,22 @@ int run(int argc, char** argv) {
         bilinear_rank::Algorithm algorithm;
         if (!bilinear_rank::recovers_map(field, tensor.slices, products, algorithm)) {
             std::cerr << "FAILED: those products do not compute the map\n";
-            return 1;
+            // Was 1, which reads as "no such algorithm". The search did find
+            // one and then its own check threw it out, so a component here is
+            // wrong: that is Unverified, and it is worse news than a refusal.
+            return cli::exit_status(cli::ExitCode::Unverified);
         }
         std::cout << "  verified: they compute the map\n";
-        return 0;
+        return cli::exit_status(cli::ExitCode::Yes);
     }
 
     if (!budget.exhausted) {
         std::cout << "  GAVE UP: the node limit was reached, so nothing is decided.\n"
                      "           Raise --node-limit to search further.\n";
-        return 2;
+        // Was 2, the same code the two usage errors above return, so a script
+        // could not tell a mistyped flag from a search that ran and gave up.
+        // A spent budget decides nothing, which is exactly what 3 is for.
+        return cli::exit_status(cli::ExitCode::Undecided);
     }
     if (target >= 0) {
         std::cout << "  NO: there is no algorithm with " << target << " products"
@@ -152,7 +167,7 @@ int run(int argc, char** argv) {
     } else {
         std::cout << "  NO decomposition found in the searched range.\n";
     }
-    return 1;
+    return cli::exit_status(cli::ExitCode::No);
 }
 
 }  // namespace
@@ -160,10 +175,17 @@ int run(int argc, char** argv) {
 int main(int argc, char** argv) {
     try {
         return run(argc, argv);
-    } catch (const std::exception& problem) {
-        // A refusal is a result: an unreadable file, or a run that would not
-        // fit the memory budget. Reported as a line, not as a terminate.
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line, or a line of tunables.conf, that could not
+        // be read. The run never started, so it is Usage and not Error, which is
+        // the distinction `arguments.h` exists to keep.
         std::cerr << "decide-rank: " << problem.what() << "\n";
-        return 1;
+        return cli::exit_status(cli::ExitCode::Usage);
+    } catch (const std::exception& problem) {
+        // An unreadable file, or a run that would not fit the memory budget.
+        // Reported as a line, not as a terminate. Was 1, which claimed no such
+        // algorithm exists on the strength of a search that never started.
+        std::cerr << "decide-rank: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Error);
     }
 }
