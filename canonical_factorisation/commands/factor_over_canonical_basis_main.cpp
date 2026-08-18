@@ -11,6 +11,8 @@
 #include "arguments.h"
 #include "symmetry_argument.h"
 #include "exit_code.h"
+#include "memory_budget.h"
+#include "parallel.h"
 #include "factorisation.h"
 #include "tensor_file.h"
 #include "timing.h"
@@ -36,6 +38,7 @@ int main(int argc, char** argv) {
         std::cerr << "usage: factor-over-canonical-basis <tensor-file> [--floor k]\n"
                   << "                                   [--node-limit n] [--symmetry none]\n"
                   << "                                   [--route auto|exhaustive|sat|canonical]\n"
+                  << "                                   [--threads N] [--max-memory N]\n"
                   << cli::symmetry_usage()
                   << "  Writes A over the canonical basis, every row a rank-one matrix, and\n"
                   << "  the C with C A equal to the tensor's slices. The number of rows of A\n"
@@ -64,6 +67,16 @@ int main(int argc, char** argv) {
                 settings.floor = cli::parse_count(option, argv[++argument]);
             } else if (option == "--node-limit" && argument + 1 < argc) {
                 settings.node_limit = cli::parse_count(option, argv[++argument]);
+            } else if (option == "--threads" && argument + 1 < argc) {
+                // Only the pool routes have anything to spread: `expand_subspace`
+                // runs one subtree per pool element. The solver route is one
+                // process and the canonical route recurses through a shared
+                // parent test, so neither reads this and both say so rather than
+                // appearing to accept it.
+                bilinear_rank::set_worker_count(cli::parse_count(option, argv[++argument]));
+            } else if (option == "--max-memory" && argument + 1 < argc) {
+                bilinear_rank::set_memory_budget(
+                    cli::parse_memory_size(option, argv[++argument]));
             } else if (option == "--route" && argument + 1 < argc) {
                 const std::string named = argv[++argument];
                 if (named == "auto") {

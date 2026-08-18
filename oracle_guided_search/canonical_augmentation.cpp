@@ -22,6 +22,10 @@ struct Walk {
     const std::vector<Automorphism>* group = nullptr;
     std::size_t target = 0;
     bool canonical = false;
+    /// Stop as soon as one solution is in hand, for a caller that is deciding
+    /// rather than counting. Off by default, because a count that stopped early
+    /// is not a count.
+    bool stop_at_first = false;
     /// Every distinct solution subspace's code, kept only so the plain route can
     /// report the true count. It is exactly the storage the canonical route does
     /// without, which is the point of using a parent test instead of a seen-set.
@@ -87,6 +91,7 @@ std::vector<std::size_t> augmentations(const Walk& walk, const std::vector<Matri
 
 void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimension,
              std::size_t from) {
+    if (walk.stop_at_first && !walk.report.decompositions.empty()) return;
     ++walk.report.nodes;
     if (dimension == walk.target) {
         emit_if_solution(walk, current);
@@ -108,6 +113,7 @@ void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimensi
             if (!test.accepted) continue;
         }
         descend(walk, child, dimension + 1, index + 1);
+        if (walk.stop_at_first && !walk.report.decompositions.empty()) return;
     }
 }
 
@@ -117,12 +123,14 @@ EnumerationReport enumerate_solution_subspaces(const Field& field,
                                                const linear_algebra::Tensor& tensor,
                                                const std::vector<Matrix>& pool,
                                                const std::vector<Automorphism>& group,
-                                               std::size_t target, bool canonical) {
+                                               std::size_t target, bool canonical,
+                                               bool stop_at_first) {
     const cli::Clock::time_point started = cli::Clock::now();
     Walk walk;
     walk.field = &field;
     walk.tensor = &tensor;
     walk.pool = &pool;
+    walk.stop_at_first = stop_at_first;
     walk.group = &group;
     walk.target = target;
     walk.canonical = canonical;

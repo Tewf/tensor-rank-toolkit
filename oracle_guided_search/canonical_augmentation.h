@@ -79,10 +79,18 @@ struct EnumerationReport {
 /// An empty `group` makes the canonical route degenerate to the plain one, since
 /// every object is then its own orbit. Reported rather than refused, because that is
 /// exactly what happens at shapes whose group will not fit in a list.
+///
+/// `stop_at_first` returns as soon as one solution is in hand, for a caller that is
+/// **deciding** rather than counting. Off by default, and it has to be: `emitted`,
+/// `distinct` and `nodes` are all counts of a completed walk, and a walk that
+/// stopped early reports numbers that mean nothing. It exists because a rank search
+/// asks only whether the level is empty, and finishing a level it has already
+/// answered is work spent on a question nobody asked.
 EnumerationReport enumerate_solution_subspaces(const Field& field,
                                                const linear_algebra::Tensor& tensor,
                                                const std::vector<Matrix>& pool,
                                                const std::vector<Automorphism>& group,
-                                               std::size_t target, bool canonical);
+                                               std::size_t target, bool canonical,
+                                               bool stop_at_first = false);
 
 }  // namespace bilinear_rank
