@@ -3,8 +3,12 @@
 A tensor with two slices is a **matrix pencil** `A + xB`, and Kronecker's theory
 says everything about it that strict equivalence can: a pencil is a direct sum of
 singular blocks, indexed by **minimal indices**, and a regular block, described by
-its **elementary divisors**. Both are computed here by exact linear algebra over
-GF(p), in polynomial time and with no candidate pool at all.
+its **elementary divisors**. That those four data settle the pencil up to strict
+equivalence is `[gantmacher1959, Ch. XII §5, Thm. 5]`, and the canonical form
+itself is `[gantmacher1959, Ch. XII §4, (30)]`, restated as `[sumi2009, Lem.
+2.1]`; keys are [`../references.md`](../references.md). Both halves are computed
+here by exact linear algebra over GF(p), in polynomial time and with no
+candidate pool at all.
 
 `decide-rank-by-pencil <tensor>` prints the form and what it implies.
 
@@ -13,7 +17,7 @@ GF(p), in polynomial time and with no candidate pool at all.
 | | Claim |
 |---|---|
 | the Kronecker structure | **exact**, and checked three ways against itself |
-| rank over the algebraic closure | **exact**, by `[jaja1979]`, so a **proved lower bound** over GF(p) |
+| rank over the algebraic closure | **exact**, by `[grigoriev1978, Thm. 1]` and `[jaja1979]`, so a **proved lower bound** over GF(p) |
 | rank over GF(p) | **exact** when the pencil is diagonalisable there; a bound otherwise |
 | the projection bound on a bigger tensor | **sound**, and weaker than `rank_lower_bound` |
 
@@ -33,6 +37,12 @@ The classical formula is a theorem over an algebraically closed field. Over a
 small one it is a lower bound, because the construction that attains it wants to
 evaluate at more points than `P^1(GF(q))` has. That is Winograd's condition,
 the same one that governs polynomial multiplication over small fields.
+
+**None of that is this repository's discovery.** `[sumi2009, Thm. 3.3]` carries
+Ja'Ja's count only under `|F| >= deg p_1(A)`, and `[sumi2009, Prop. 3.4]` is the
+published counterexample when it fails: `(I_3, C)` with `C` the companion of
+`x^3 + x + 1` over GF(2) has rank at least 5. That pencil is in the table below,
+where exhaustion gives exactly 5 against a GF(q) count of 4.
 
 Twelve pencils, all settled by exhaustion, with both counts this module reports:
 

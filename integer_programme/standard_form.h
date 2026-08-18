@@ -7,9 +7,10 @@
 
 /// A programme rewritten as `min cᵀx` subject to `Ax = b`, `x ≥ 0`, `b ≥ 0`.
 ///
-/// The simplex in [`simplex.h`](simplex.h) knows only this shape. Getting here
-/// costs four rewritings, none of them deep: maximising is minimising the
-/// negative; a variable with a lower bound is shifted until that bound is zero;
+/// The simplex in [`simplex.h`](simplex.h) knows only this shape, which is
+/// `[dantzig1951, Ch. XXI]`'s; keys are [`../references.md`](../references.md).
+/// Getting here costs four rewritings, none of them deep: maximising is
+/// minimising the negative; a variable with a lower bound is shifted until that bound is zero;
 /// a variable with no lower bound is the difference of two that have one; and an
 /// inequality becomes an equality by paying for its own slack.
 ///

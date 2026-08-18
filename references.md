@@ -47,6 +47,56 @@ two-slice case, and the warning that comes with it: **the rank of a Kronecker
 canonical form is not the sum of the ranks of its direct summands**, so a
 decomposition into summands does not license adding their ranks up.
 
+Two of its numbered results are what [`pencil_rank/`](pencil_rank/README.md)
+actually rests on, and neither is about `ℝ` or `ℂ` despite the paper's own
+setting. **Lemma 2.1** is the Kronecker canonical form, quoted there from
+`gantmacher1959`. **Theorem 3.3** carries Ja'Ja's count only under
+`Card(K) >= deg p_1(A)`, and **Proposition 3.4** is the counterexample that
+shows the condition cannot be dropped: `(E_3, A)` over `GF(2)` with `A` the
+companion matrix of `x^3 + x + 1` has rank at least 5, which is the pencil this
+repository's own table settles at exactly 5 against a `GF(q)` count of 4.
+
+**`gantmacher1959`**: F. R. Gantmacher. *The Theory of Matrices*, Vols. 1 and 2.
+Translated by K. A. Hirsch. Chelsea, New York, 1959. Where Kronecker's 1890
+theory of pencils is stated and proved, and the source `sumi2009` quotes for it.
+Volume 2, **Chapter XII §4, equation (30)** is the canonical form of a pencil in
+the most general case, `{0; L_ε…; L_ηᵀ…; N…; J + λE}`. **Chapter XII §5, Theorem
+5 (Kronecker)** is the classification: two pencils of the same shape are
+strictly equivalent *if and only if* they have the same minimal indices and the
+same finite and infinite elementary divisors. That is what licenses
+[`kronecker_structure.h`](pencil_rank/kronecker_structure.h) computing four
+counts and never assembling the form.
+
+**§5 also settles the one thing that would otherwise be an assumption**: *"L_ε
+has no elementary divisors, since among its minors of maximal order ε there is
+one equal to 1 and one equal to λ^ε"*, the same holding for its transpose, so
+the elementary divisors of a pencil are exactly those of its regular kernel.
+[`pencil_divisors.h`](pencil_rank/pencil_divisors.h) reads the regular part
+without isolating it on the strength of that sentence.
+
+Volume 1, **Chapter VI**, *Equivalent Transformations of Polynomial Matrices.
+Analytic Theory of Elementary Divisors*, is where the diagonalisation
+`pencil_divisors.cpp` runs half of is proved: **§3, Theorem 3**, p. 141, that a
+rectangular polynomial matrix is always equivalent to a canonical diagonal one
+whose entries are its invariant polynomials. **Not §2 and not Theorem 1**, whose
+Theorems 1 and 2 are about one-sided operations and a triangular form.
+**Gantmacher never calls it the Smith form**; the name is `smith1861`'s and
+attaching it is ours.
+
+**`smith1861`**: H. J. S. Smith. *On Systems of Linear Indeterminate Equations
+and Congruences.* Philosophical Transactions of the Royal Society of London
+**151** (1861), item XV, 293-326. Where the diagonal normal form is first
+obtained, **over the integers**. Named here for the name and not cited in code,
+because what [`pencil_divisors.h`](pencil_rank/pencil_divisors.h) needs is the
+form over `GF(p)[x]` and that is `gantmacher1959`'s Volume 1.
+
+**It has no numbered theorems.** The paper runs to twenty numbered **Articles**
+and sets its theorems in quotation marks without numbering them, so a citation
+of the shape `[smith1861, Thm. n]` would be to something that does not exist.
+The transformation is **Art. 12** (p. 311) and **Art. 14**, equation (67)
+(p. 314); **Art. 16** is what makes the diagonal entries a divisibility chain,
+each being itself a greatest common divisor of quotients of minors.
+
 **`byrne2021`**: E. Byrne, G. Cotardo. *Bilinear Complexity of 3-Tensors Linked
 to Coding Theory.* [arXiv:2103.08544](https://arxiv.org/abs/2103.08544), 2021.
 Uses the same characterisation as `brockett1978`, under names worth knowing
@@ -170,6 +220,28 @@ of work has no `GF(p)` descendant and why
 [`rank_one_basis_of`](exhaustive_search/rank_one_basis.h) answers the same
 question by enumeration instead. Worth naming for what it rules out: the
 continuous method is not waiting to be ported.
+
+**`oxley`**: J. Oxley. *Matroid Theory*, 2nd edition. Oxford Graduate Texts in
+Mathematics 21, Oxford University Press, 2011. The general form of what
+`nakatsukasa2017` states for this problem in particular, and the book
+[`article/bilinear-rank.pdf`](article/bilinear-rank.pdf) already carried in its
+bibliography while this file did not. **Proposition 1.1.1** is that linear
+independence of the columns of a matrix over a field is a matroid, the vector
+matroid `M[A]`. **Lemma 1.8.3** is that the greedy returns a maximal independent
+set of maximum weight, and the remark after **1.8.2** is that solving for `−w`
+instead gives one of minimum weight, which is what makes ascending rank the
+right order in
+[`minimum_weight_basis.h`](descent_search/minimum_weight_basis.h).
+**Theorem 1.8.5** is the converse, that the greedy works for matroids and for
+nothing else.
+
+**The name is not Oxley's.** §1.8 never says "Rado-Edmonds"; it credits the
+first published proof of Theorem 1.8.5 to Borůvka (1926). The name this
+repository uses comes from the optimisation literature, for R. Rado, *Note on
+independence functions*, Proc. LMS (3) **7** (1957), 300-320, and J. Edmonds,
+*Matroids and the greedy algorithm*, Mathematical Programming **1** (1971),
+127-136. Those two are named here and cited nowhere, because the numbered result
+the code needs was read in Oxley and not in them.
 
 ## Deciding rank with a solver
 
@@ -499,6 +571,104 @@ retired the encoding: [`state-of-the-art/rank-as-a-milp.md`](state-of-the-art/ra
 **`strassen1969`**: V. Strassen. *Gaussian elimination is not optimal.*
 Numerische Mathematik **13** (1969), no. 4, 354-356.
 `fixtures/strassen_u.matrix` and `strassen_v.matrix`.
+
+## Linear and integer programming
+
+What [`integer_programme/`](integer_programme/README.md) is, all of it somebody
+else's and most of it older than this problem area.
+
+**`dantzig1951`**: G. B. Dantzig. *Maximization of a Linear Function of
+Variables Subject to Linear Inequalities.* In T. C. Koopmans (ed.), *Activity
+Analysis of Production and Allocation*, Cowles Commission Monograph 13, Wiley,
+New York, 1951, **Chapter XXI, pp. 339-347**. The simplex method. Chapter,
+pages, editor, series and year were read off the volume rather than copied:
+two corruptions are in wide circulation, "pp. 359-373" and the year 1947, the
+second being when the work was done and not when it appeared.
+
+**Its two stages are not yet the two-phase method.** The chapter's own summary
+is that the technique *"consists in constructing first a feasible, and then a
+maximum feasible, solution"*, and its two sections are exactly those. But it
+reaches feasibility from a fixed reference point rather than from artificial
+variables: the words *artificial* and *phase* do not occur in it at all.
+
+**`dantzig1955`**: G. B. Dantzig, A. Orden, P. Wolfe. *The generalized simplex
+method for minimizing a linear form under linear inequality restraints.* Pacific
+Journal of Mathematics **5** (1955), no. 2, 183-195,
+[open access](https://msp.org/pjm/1955/5-2/pjm-v5-n2-p04-s.pdf). Where the two
+phases are named as such, **p. 193**: *"the first phase is to apply the
+generalized simplex procedure to maximize the variable x_{n+1}"*, and when it
+becomes positive *"the second phase, which is the search for an optimal
+solution, begins"*. That is the shape
+[`simplex.h`](integer_programme/simplex.h) has.
+
+**`bland1977`**: R. G. Bland. *New Finite Pivoting Rules for the Simplex
+Method.* Mathematics of Operations Research **2** (1977), no. 2, 103-107.
+**Theorem 1.1**, and the only numbered theorem in the paper: *"The simplex
+method under Rule I cannot cycle, hence it is finite."* Rule I is the
+smallest-subscript choice on **both** the entering and the leaving variable,
+which is what `simplex.cpp` does and the whole of why it terminates. There is no
+Theorem 2 here; Rule II's finiteness is deferred to a separate paper.
+
+**`landdoig1960`**: A. H. Land, A. G. Doig. *An Automatic Method of Solving
+Discrete Programming Problems.* Econometrica **28** (1960), no. 3, 497-520. The
+first branch and bound over a linear relaxation. **It carries no numbered
+results at all**: no theorem, lemma or proposition occurs in it, only numbered
+equations and the steps of a procedure, so **§3**, *Description of the Method*,
+is the finest pinpoint there is.
+
+**Their branching is by equality and this repository's is not.** At p. 504 the
+children of a variable left at `x_r⁰` are the two problems with `x_r = [x_r⁰]`
+and `x_r = [x_r⁰] + 1`, and the method then steps outward to further integers,
+so the tree is not binary. The dichotomy in
+[`branch_and_bound.h`](integer_programme/branch_and_bound.h) is `dakin1965`.
+
+**`dakin1965`**: R. J. Dakin. *A tree-search algorithm for mixed integer
+programming problems.* The Computer Journal **8** (1965), no. 3, 250-255,
+[doi:10.1093/comjnl/8.3.250](https://doi.org/10.1093/comjnl/8.3.250). Where
+splitting a fractional `x` into `x ≤ ⌊v⌋` and `x ≥ ⌈v⌉` comes from, and now read
+in full rather than from the abstract.
+
+**The dichotomy is (6) and (7)**, p. 250: having found a continuous solution in
+which an integer variable `x_j` takes a non-integral `b_j`, *"we may divide all
+solutions to the constraints (3) to (5) into two non-overlapping groups, viz.:
+(i) solutions in which `x_j ≤ k`, (ii) solutions in which `x_j ≥ k + 1`"*, with
+`k = [b_j]` the integral part, that being (8) and (9). That is exactly what
+[`branch_and_bound.cpp`](integer_programme/branch_and_bound.cpp) does, and the
+paper's own §"Comparison with Land and Doig method", p. 252, is what rules the
+predecessor out: *"the Land and Doig algorithm forces variables to take exact
+integral values rather than applying bounds"*, searching over the range a
+variable may take, where this branches on one inequality and its complement.
+
+Two further things it contains that this repository does independently, worth
+recording since neither was taken from it: the depth-first walk with a list and a
+"list marker" saying which of a node's two subtrees has been explored, §"
+Computational search procedure" and Fig. 2, which is `Node`'s stack here; and
+Dakin's own reason for it, that recording the tree *"could involve excessive
+storage requirements"*, which he credits to Little et al.'s "Throw away the
+tree".
+
+**`mps360`**: IBM. *Mathematical Programming System/360, Linear and Separable
+Programming - User's Manual*, form **H20-0476**. The origin of the fixed-column
+MPS format, whose eighty columns are a punched card. The form number is IBM's
+own, from *Catalog of Programs for IBM System/360, Models 25 and above*,
+GC20-1619-8, January 1971, which lists it under the MPS/360 documentation.
+**The manual itself was not read and no scan of it appears to exist**; the
+edition suffix and year are unsettled, secondhand sources giving 1968, 1969 and
+1976 for the same form number, so none is stated here.
+
+**What was checked instead is the format, against three descriptions that
+agree**: the fields begin at columns 2, 5, 15, 25, 40 and 50, and an integrality
+marker puts its own name in field 2, `'MARKER'` in field 3, and `'INTORG'` or
+`'INTEND'` in field 5. CPLEX's file-format manual says field 4, counting
+whitespace-separated tokens in a format it no longer parses by column, which is
+a disagreement worth knowing about rather than a second opinion.
+
+**`murtagh1981`**: B. A. Murtagh. *Advanced Linear Programming: Computation and
+Practice.* McGraw-Hill, New York, 1981, ISBN 0-07-044095-6, xii + 202 pp. The
+description of MPS most bibliographies point at, this one included. **The pages
+usually quoted, 163-166, could not be verified**: every copy reachable is
+lending-restricted. The book exists and the range fits inside it, which is not
+the same as having read it.
 
 ## Software
 

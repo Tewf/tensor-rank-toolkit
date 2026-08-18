@@ -7,22 +7,24 @@
 
 /// The rank-preserving automorphism group a search may quotient by.
 ///
-/// Covanov 2018 (arXiv:1705.07728) section 3, itself an unpublished improvement
-/// by Barbulescu and Zimmermann to the framework [the exact
-/// search](../exhaustive_search/exhaustive_search.h) implements. In one line: an invertible change of
-/// coordinates on each of the two operands preserves rank, so if it also maps
-/// the target subspace to itself then it maps solutions to solutions, and the
-/// search need visit only one per orbit.
+/// `[covanov2019]` §3, itself an unpublished improvement by Barbulescu and
+/// Zimmermann to the framework [the exact
+/// search](../exhaustive_search/exhaustive_search.h) implements; keys are
+/// [`../references.md`](../references.md). In one line: an invertible change of
+/// coordinates on each of the two operands preserves rank
+/// (`[covanov2019, Prop. 9]`, for a single form and for a subspace), so if it
+/// also maps the target subspace to itself then it maps solutions to solutions,
+/// and the search need visit only one per orbit.
 ///
 /// **The group is the setwise stabiliser of the target subspace, not of the
-/// map** (Covanov's Definition 13). That is the larger group, because remixing
+/// map**, `[covanov2019, Def. 13]`. That is the larger group, because remixing
 /// the slices among themselves leaves their span untouched, and the size of the
 /// group is exactly what the reduction is worth.
 ///
 /// Where the groups come from is [`group_construction.h`](group_construction.h).
 namespace bilinear_rank {
 
-/// Covanov's Definition 7: the pair `(μ, ν)` acting on a bilinear form by
+/// `[covanov2019, Def. 7]`: the pair `(μ, ν)` acting on a bilinear form by
 /// `(a, b) ↦ Φ(μa, νb)`.
 ///
 /// On the matrix of that form it is `M ↦ μᵀ M ν`, since
@@ -42,7 +44,9 @@ Automorphism identity_automorphism(const Field& field, std::size_t rows, std::si
 /// `ν'ᵀ(μᵀ M ν)ν' = (μμ')ᵀ M (νν')`.
 Automorphism compose(const Field& field, const Automorphism& first, const Automorphism& second);
 
-/// The automorphism that undoes this one.
+/// The automorphism that undoes this one. It exists for every element:
+/// `[covanov2019, Prop. 8]` is that this really is a group action and that all
+/// of its elements are invertible.
 Automorphism inverse(const Field& field, const Automorphism& sigma);
 
 /// Everything reachable from `generators` by composition.
@@ -54,7 +58,8 @@ Automorphism inverse(const Field& field, const Automorphism& sigma);
 std::vector<Automorphism> group_closure(const Field& field,
                                         const std::vector<Automorphism>& generators);
 
-/// The elements of `group` that map `span(slices)` into itself.
+/// The elements of `group` that map `span(slices)` into itself: the setwise
+/// stabiliser `Stab(T)` of `[covanov2019, Def. 13]`.
 std::vector<Automorphism> stabiliser_of(const Field& field, const std::vector<Matrix>& slices,
                                         const std::vector<Automorphism>& group);
 

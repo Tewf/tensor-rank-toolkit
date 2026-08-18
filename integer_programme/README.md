@@ -3,6 +3,20 @@
 A linear objective under linear constraints, with some variables required to be
 whole, and whichever solver this machine has to answer it.
 
+## Whose work this is
+
+None of the mathematics is new here. Keys are
+[`../references.md`](../references.md), which says for each what was read.
+
+| Result | What rests on it |
+|---|---|
+| `[dantzig1951, Ch. XXI]` | the simplex method, and the standard form it wants |
+| `[dantzig1955, p. 193]` | phase I and phase II as two explicit phases |
+| `[bland1977, Thm. 1.1]` | that the smallest-subscript pivot cannot cycle, which is the only reason the built-in terminates |
+| `[landdoig1960, §3]` | branch and bound on a linear relaxation |
+| `[dakin1965]` | the `x ≤ ⌊v⌋` / `x ≥ ⌈v⌉` dichotomy, which is *not* Land and Doig's equality branching |
+| `[mps360]`, `[murtagh1981]` | the file format every backend is fed through |
+
 Several things here minimise something subject to constraints and used to do it
 by enumeration. The curve strand's interpolation bound is now handed here
 instead, through [`../curve_bounds/interpolation_by_solver.h`](../curve_bounds/interpolation_by_solver.h),

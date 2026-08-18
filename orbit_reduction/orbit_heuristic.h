@@ -10,8 +10,10 @@
 ///
 /// [Steps 2 and 3](../descent_search/minimise_rank.h) walk a pool of rank-one maps and adopt the
 /// first candidate that lowers the count. If `σ` maps `span(T)` to itself then
-/// adding `φ` and adding `φ∘σ` cost exactly the same, so one of each orbit is
-/// enough and the rest are the same experiment repeated.
+/// adding `φ` and adding `φ∘σ` cost exactly the same, since `σ` preserves the
+/// rank of every form and of every subspace (`[covanov2019, Prop. 9]`; keys are
+/// [`../references.md`](../references.md)), so one of each orbit is enough and
+/// the rest are the same experiment repeated.
 ///
 /// **The catch, and why this is not a one-line change.** The heuristic has
 /// state: after an adoption its map is no longer `T` but something larger, and
@@ -19,7 +21,7 @@
 /// quotient taken once goes stale the moment the map moves, and a stale quotient
 /// can throw away the candidate that would have paid. So the group is recomputed
 /// from the map every time the map moves, which is the same intersection
-/// Covanov's Algorithm 3 carries down its recursion, and cheap here because
+/// `[covanov2019, Alg. 3]` carries down its recursion, and cheap here because
 /// adoptions are rare.
 ///
 /// At the fixed point no representative improves the map, and since improving is

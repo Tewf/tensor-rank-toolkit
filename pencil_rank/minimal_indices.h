@@ -11,8 +11,16 @@
 /// Every other search in this repository is exponential because it is looking
 /// for a set of rank-one maps. For two slices nobody has to look: the rank is
 /// determined by the Kronecker canonical form of the matrix pencil the two
-/// slices are, and that form is computed by exact linear algebra. See
-/// [`README.md`](README.md) for the theorem and its attribution.
+/// slices are, and that form is computed by exact linear algebra.
+///
+/// The structure theorem is `[gantmacher1959, Ch. XII §5, Thm. 5]`: two pencils
+/// of the same shape are strictly equivalent **if and only if** they have the
+/// same minimal indices and the same finite and infinite elementary divisors.
+/// That is what licenses computing the four counts and never assembling the
+/// form. The canonical form itself is `[gantmacher1959, Ch. XII §4, (30)]`,
+/// restated modernly as `[sumi2009, Lem. 2.1]`. Keys are
+/// [`../references.md`](../references.md); [`README.md`](README.md) is what the
+/// rank formula then does with them.
 namespace pencil_rank {
 
 using linear_algebra::ModularField;
@@ -45,7 +53,9 @@ std::vector<std::size_t> column_minimal_indices(const ModularField& field,
 
 /// The row minimal indices, which are the column minimal indices of the
 /// transposed pencil. Kronecker's form is symmetric under transposition and so
-/// is this, which is why there is one implementation and not two.
+/// is this, which is why there is one implementation and not two:
+/// `[gantmacher1959, Ch. XII §5]` defines the row indices `η_j` as the column
+/// indices of `Aᵀ + xBᵀ` and nothing else.
 std::vector<std::size_t> row_minimal_indices(const ModularField& field,
                                              const ModularMatrix& first,
                                              const ModularMatrix& second,

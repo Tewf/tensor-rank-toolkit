@@ -38,7 +38,8 @@ Number reduced_cost(const Tableau& tableau, const std::vector<Number>& cost, std
     return total;
 }
 
-/// Bland's rule on both choices: the first column that pays, and among the rows
+/// `[bland1977, Thm. 1.1]`'s Rule I on both choices, which is what buys the
+/// finiteness: the first column that pays, and among the rows
 /// that bound it the one whose basic column has the smallest index.
 Status optimise(Tableau& tableau, const std::vector<Number>& cost) {
     for (;;) {

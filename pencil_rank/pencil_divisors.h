@@ -36,11 +36,18 @@ struct PencilDivisors {
 /// The elementary divisors of the pencil `first + x second` over GF(p).
 ///
 /// Both halves come from a Smith diagonal over `GF(p)[x]`, taken twice.
+/// `GF(p)[x]` is Euclidean, which is what makes the diagonalisation
+/// terminate on degrees alone; the classical normal form it is the first half
+/// of is `[gantmacher1959, Vol. 1, Ch. VI §3, Thm. 3]`, and keys are
+/// [`../references.md`](../references.md).
 ///
 /// The finite half is the prime powers of the diagonal entries of `first + x
-/// second`. The singular blocks of the Kronecker form contribute nothing to it:
-/// each `L` block diagonalises to `[I | 0]` over `GF(p)[x]`, so its invariant
-/// factors are all 1 and the regular part is read without ever being isolated.
+/// second`. The singular blocks of the Kronecker form contribute nothing to it,
+/// which is why the regular part is read without ever being isolated. That is
+/// `[gantmacher1959, Ch. XII §5]` and not an assumption: an `L_ε` block has no
+/// elementary divisors at all, since among its minors of maximal order one
+/// equals 1 and one equals `x^ε`, the same holding for its transpose, so the
+/// elementary divisors of the whole pencil are those of its regular kernel.
 ///
 /// The infinite half is read from the *reversed* pencil `second + x first`,
 /// where the point at infinity has moved to zero. It needs no factorisation at

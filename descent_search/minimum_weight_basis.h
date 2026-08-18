@@ -7,11 +7,25 @@
 /// Step 1, and the only step of the heuristic that guarantees anything.
 ///
 /// Choosing a basis of `span(T)` whose ranks sum to the least is a **matroid**
-/// problem: linear independence forms a matroid, and greedy by ascending weight
-/// yields a minimum-weight basis (Rado-Edmonds). So this does not approximate,
-/// and its answer does not depend on how ties are broken. What is heuristic is
-/// the constraint that the answer be a basis of `span(T)` at all, which is
-/// exactly what [steps 2 and 3](minimise_rank.h) relax.
+/// problem, and none of that is new here. Keys are
+/// [`../references.md`](../references.md).
+///
+/// In general: linear independence of vectors over a field is a matroid,
+/// `[oxley, Prop. 1.1.1]`, and the greedy returns a maximum-weight basis of any
+/// matroid under any weight function, `[oxley, Lem. 1.8.3]`; 1.8.2's remark
+/// that solving for `-w` gives a minimum-weight one is what makes ascending
+/// order the right direction here.
+///
+/// For this exact problem: `[nakatsukasa2017, Thm. 2.1]` states the same
+/// exactness of the same greedy for the low-rank basis problem itself, and its
+/// `Cor. 1` is stronger than the matroid statement, every basis of lowest rank
+/// taking the same ranks up to permutation. Their *algorithm* is over the reals
+/// and does not port; the theorem is the matroid argument and does.
+///
+/// So this does not approximate, and its answer does not depend on how ties are
+/// broken. What is heuristic is the constraint that the answer be a basis of
+/// `span(T)` at all, which is exactly what [steps 2 and 3](minimise_rank.h)
+/// relax.
 namespace bilinear_rank {
 
 /// Walk the span of the map from lowest rank upwards, greedily keeping anything

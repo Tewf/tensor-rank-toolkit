@@ -11,8 +11,16 @@
 /// one, and the group makes most of those choices the same question asked again:
 /// if `σ` maps the target subspace to itself then it carries any decomposition
 /// to another, so a solution can always be moved until its first term is an
-/// orbit representative. For `⟨3,3,3⟩` that is thirteen choices instead of
-/// 261 121, and for `⟨4,4,4⟩` twenty-six instead of 4 294 836 225.
+/// orbit representative. That last step is `[covanov2019, Prop. 14]`: a
+/// decomposition meeting the orbit `φ ∘ Stab(T)` at all is equivalent to one
+/// that contains `φ` itself. Keys are [`../references.md`](../references.md).
+/// For `⟨3,3,3⟩` that is thirteen choices instead of 261 121, and for `⟨4,4,4⟩`
+/// twenty-six instead of 4 294 836 225.
+///
+/// **The representatives are not from the paper.** Which thirteen, and why
+/// three ranks name an orbit, is
+/// [`pool_orbits.h`](pool_orbits.h)'s own construction rather than a published
+/// result, and it says so there.
 ///
 /// Emitted as **cubes** rather than as one disjunction: one instance per
 /// representative, each with the first term pinned. They are independent, so

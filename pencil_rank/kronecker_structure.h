@@ -13,7 +13,9 @@ namespace pencil_rank {
 ///
 /// The form itself is never assembled. Every question the rank formula asks is
 /// answered by these counts, and building the block matrix would only give
-/// something else to keep consistent.
+/// something else to keep consistent. `[gantmacher1959, Ch. XII §5, Thm. 5]` is
+/// what says the four are enough: they determine the pencil up to strict
+/// equivalence. Keys are [`../references.md`](../references.md).
 struct KroneckerStructure {
     /// Degrees of a minimal basis of the pencil's null space, ascending. A zero
     /// here is a column that is zero in both slices.
@@ -39,9 +41,10 @@ KroneckerStructure kronecker_structure(const ModularField& field, const ModularM
 
 /// What this module can say about the rank, and how strongly.
 struct PencilRank {
-    /// The rank over the algebraic closure of GF(p), which Ja'Ja's theorem
-    /// gives exactly. Enlarging a field can only add rank-one maps to choose
-    /// from, so this is a **proved lower bound** on the rank over GF(p) itself.
+    /// The rank over the algebraic closure of GF(p), which
+    /// `[grigoriev1978, Thm. 1]` gives exactly, and `[jaja1979]` independently.
+    /// Enlarging a field can only add rank-one maps to choose from, so this is
+    /// a **proved lower bound** on the rank over GF(p) itself.
     std::size_t over_closure = 0;
 
     /// The same count taken with the elementary divisors over GF(p) itself,
@@ -53,6 +56,14 @@ struct PencilRank {
     /// every one of them. It is not proved to be a lower bound and it is not
     /// proved to be reached, so it is reported beside the proved number rather
     /// than instead of it.
+    ///
+    /// That it cannot simply be the answer is published, not merely observed
+    /// here: `[sumi2009, Thm. 3.3]` carries Ja'Ja's count only under
+    /// `|F| >= deg p_1(A)`, and `[sumi2009, Prop. 3.4]` is the counterexample
+    /// showing that condition cannot be dropped. Its pencil is `(I_3, C)` with
+    /// `C` the companion matrix of `x^3 + x + 1` over GF(2), which is in this
+    /// module's own table, and the published bound there is `>= 5` against a
+    /// count of 4.
     std::size_t over_the_field = 0;
 
     /// Whether `over_closure` is also the rank over GF(p).
@@ -74,9 +85,16 @@ struct PencilRank {
 ///     rank = sum (eps_i + 1) + sum (eta_j + 1) + regular_size + delta
 ///
 /// over the nonzero minimal indices, where `delta` counts the elementary
-/// divisors of degree at least 2 **over the closure**. An irreducible of degree
-/// `d` splits there into `d` distinct linear forms, so a GF(p) divisor `p^e`
-/// contributes `deg(p)` closure divisors, each nonlinear exactly when `e >= 2`.
+/// divisors of degree at least 2 **over the closure**. This is
+/// `[grigoriev1978, Thm. 1]` term for term, stated there for a pair of matrices
+/// over an algebraically closed field, which is the hypothesis the whole of
+/// this file's caution is about. `[jaja1979]` reaches the same count
+/// independently; the `eps_i + 1` per singular block is its Theorem 2.1 and the
+/// regular part its Theorem 3.3, as `[sumi2009]` cites them.
+///
+/// An irreducible of degree `d` splits there into `d` distinct linear forms,
+/// so a GF(p) divisor `p^e` contributes `deg(p)` closure divisors, each
+/// nonlinear exactly when `e >= 2`.
 /// That is why the count below multiplies by the base degree rather than adding
 /// one per GF(p) divisor, and getting this wrong is what made an earlier
 /// version of this file claim 5 for a tensor of rank 6.

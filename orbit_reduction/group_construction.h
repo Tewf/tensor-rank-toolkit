@@ -10,7 +10,8 @@
 /// builds.
 ///
 /// The same division as [`map_construction.h`](../map_construction/map_construction.h), which builds
-/// the maps: this builds the groups worth quotienting them by. Two sources.
+/// the maps: this builds the groups worth quotienting them by. Keys are
+/// [`../references.md`](../references.md). Two sources.
 /// Brute force enumerates every invertible pair and works only on small shapes;
 /// the closed form for matrix multiplication works at any size but has to be
 /// derived correctly.
@@ -62,6 +63,12 @@ std::vector<Automorphism> matrix_multiplication_symmetry_generators(const Field&
 /// the same problem written in different coordinates, and the span of the slices
 /// is preserved because the output is remixed invertibly. On the flattened
 /// operands that is the pair of Kronecker products `(X ⊗ (Y⁻¹)ᵀ, Y ⊗ (Z⁻¹)ᵀ)`.
+///
+/// **This is the whole stabiliser and not a subgroup of it.**
+/// `[covanov2019, Thm. 17]` shows the setwise stabiliser of the matrix
+/// multiplication subspace is exactly the pairs `(P ⊗ Rᵀ, Q ⊗ R⁻¹)`, which is
+/// what is built here with `R = Y⁻¹` and `Q = (Z⁻¹)ᵀ`. Nothing is being left on
+/// the table by using a closed form instead of a search.
 ///
 /// This is the group that is enormous where it matters: 216 elements at
 /// `⟨2,2,2⟩` over GF(2), and `|GL_3(F_2)|³ = 4 741 632` at `⟨3,3,3⟩`, which is
