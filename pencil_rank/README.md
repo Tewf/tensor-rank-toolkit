@@ -68,6 +68,15 @@ larger below that, which is a conjecture and is written here as one. The
 exhaustive search settles any single case up to about 4x4 over GF(2), so a
 proposed `c` can be refuted cheaply, which is the useful half.
 
+## A second use for the canonical form
+
+`projections_refute` is `[yang2025thesis]`'s `rref` pruner at `k = 2`, and it is
+affordable here only because its inner question is a pencil: 105 canonical forms
+on `⟨2,2,2⟩` in 0.94 ms, where the source runs a CPD search per plane. It is
+sound, it is a millisecond, and **it loses to `rank_lower_bound` on every fixture
+where it applies**, for a reason that is precise and fixable:
+[`projection-bound.md`](projection-bound.md).
+
 ## Files
 
 `polynomial` is arithmetic over GF(p)[x]; `prime_power_factors` turns a
@@ -75,4 +84,6 @@ polynomial into the degrees and exponents of its prime powers, deterministically
 `pencil_divisors` diagonalises the pencil over GF(p)[x] twice, forwards for the
 finite divisors and reversed for the infinite ones; `minimal_indices` reads the
 singular structure off the ranks of one block system; `kronecker_structure` puts
-them together and refuses to return anything the three counts disagree about.
+them together and refuses to return anything the three counts disagree about;
+`projection_lower_bound` is the one consumer that is not about pencils for their
+own sake.

@@ -13,3 +13,8 @@ target_link_libraries(test_pencil_agreement PRIVATE pencil_rank descent_search e
                                                     project_warnings testing)
 add_test(NAME pencil_agreement COMMAND test_pencil_agreement ${PROJECT_SOURCE_DIR}/fixtures)
 set_tests_properties(pencil_agreement PROPERTIES LABELS slow TIMEOUT 900)
+
+add_executable(test_projection_lower_bound test_projection_lower_bound.cpp)
+target_link_libraries(test_projection_lower_bound PRIVATE pencil_rank project_warnings testing)
+add_test(NAME projection_lower_bound
+         COMMAND test_projection_lower_bound ${PROJECT_SOURCE_DIR}/fixtures)
