@@ -1,9 +1,11 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 #include <vector>
 
 #include "canonical_basis.h"
+#include "symmetry_argument.h"
 
 namespace canonical_factorisation {
 
@@ -48,6 +50,15 @@ struct Factorisation {
     /// Which route produced it, so a reader knows what `minimal` rests on.
     Route route = Route::Exhaustive;
 
+    /// How many automorphisms the search was actually quotiented by, so a run
+    /// that asked for symmetry and got none says so as a number.
+    std::size_t group_size = 0;
+
+    /// Why no group was built, when one was asked for and refused. Empty
+    /// otherwise. A silent fallback here is how symmetry gets reported as on
+    /// while doing nothing.
+    std::string symmetry_refusal;
+
     /// The materialised pool this would have needed, whether or not it formed
     /// one. Reported so the SAT route's advantage is a number and not a claim.
     std::size_t pool_size = 0;
@@ -78,9 +89,20 @@ struct FactorisationSettings {
 
     std::size_t node_limit = 5'000'000;
 
-    /// Quotient the search by the stabiliser of the slice space. Sound for any
-    /// subgroup, so this only ever changes how long the answer takes.
-    bool use_symmetry = true;
+    /// Which ambient group to narrow to the stabiliser of the slice space
+    /// before quotienting the pool search by it. Sound for any subgroup, so
+    /// this only ever changes how long the answer takes.
+    ///
+    /// **`Automatic` is not the strong choice, and on the shapes that matter it
+    /// is no choice at all.** It enumerates the ambient group, which
+    /// `requested_ambient_group` refuses past a ceiling: a 4x4 map over GF(2)
+    /// would need about four hundred million automorphisms. So on every matrix
+    /// multiplication fixture here it refuses and the search runs unquotiented.
+    /// `MatrixMultiplication` uses the closed form instead, which needs no group
+    /// enumerated and works at any size. See
+    /// [`narrowing-the-search.md`](narrowing-the-search.md) for what each is
+    /// worth, measured.
+    cli::Symmetry symmetry{cli::SymmetryKind::Automatic, {}};
 };
 
 /// The fewest rank-one rows whose span contains the slices, with the receipt.

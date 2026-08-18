@@ -9,6 +9,7 @@
 #include <string>
 
 #include "arguments.h"
+#include "symmetry_argument.h"
 #include "exit_code.h"
 #include "factorisation.h"
 #include "tensor_file.h"
@@ -35,6 +36,7 @@ int main(int argc, char** argv) {
         std::cerr << "usage: factor-over-canonical-basis <tensor-file> [--floor k]\n"
                   << "                                   [--node-limit n] [--symmetry none]\n"
                   << "                                   [--route auto|exhaustive|sat]\n"
+                  << cli::symmetry_usage()
                   << "  Writes A over the canonical basis, every row a rank-one matrix, and\n"
                   << "  the C with C A equal to the tensor's slices. The number of rows of A\n"
                   << "  is the rank when the sweep below it was complete.\n";
@@ -66,8 +68,8 @@ int main(int argc, char** argv) {
                                  "sat, not '" << named << "'\n";
                     return cli::exit_status(cli::ExitCode::Usage);
                 }
-            } else if (option == "--symmetry" && argument + 1 < argc) {
-                settings.use_symmetry = std::string(argv[++argument]) != "none";
+            } else if (option == "--symmetry" || option == "-s") {
+                settings.symmetry = cli::parse_symmetry(argc, argv, argument);
             } else {
                 std::cerr << "factor-over-canonical-basis: unrecognised option '" << option
                           << "'\n";
@@ -97,11 +99,18 @@ int main(int argc, char** argv) {
                   << tensor.slices.size() << " slices of " << tensor.rows() << "x"
                   << tensor.columns() << "\n";
         std::cout << "floor: " << factorisation.floor << " (proved)\n";
+        if (!factorisation.symmetry_refusal.empty()) {
+            std::cerr << "# no symmetry: " << factorisation.symmetry_refusal << "\n";
+        }
         std::cout << "route: "
                   << (factorisation.route == canonical_factorisation::Route::Satisfiability
                           ? "a SAT solver, which formed no pool"
                           : "exhaustion over the materialised pool")
                   << ", where the pool would be " << factorisation.pool_size << " matrices\n";
+        if (factorisation.route == canonical_factorisation::Route::Exhaustive) {
+            std::cout << "symmetry: quotiented by " << factorisation.group_size
+                      << " automorphisms\n";
+        }
         write_matrix("A, over the canonical basis", factorisation.chosen);
         write_matrix("C, the recovery", factorisation.recovery);
         std::cout << "checked: every row of A has rank 1, and C A is the tensor\n";

@@ -12,17 +12,25 @@ a rank-one map at all: the condition is clauses over the operand vectors, so
 the space is polynomial in the shape. `--route auto`, the default, takes the
 solver past 20 000 pool matrices when one is on `PATH`.
 
-Measured on this machine, one core:
+Measured on this machine, one core, at the default node limit:
 
 | tensor | shape | pool | exhaustive | SAT |
 |---|---|---|---|---|
-| `matmul_2x2x2` | 4x4 over GF(2) | 225 | 1.01 s, 11.9 MB | **0.54 s, 6.0 MB** |
-| `<4,4,4>` | 16x16 over GF(2) | 4 294 836 225 | **refused**: 8.2 TiB against a 2.0 GiB budget | runs |
+| `matmul_2x2x2` | 4x4 over GF(2) | 225 | 7, 1.01 s, 11.9 MB | **7, 0.54 s, 6.0 MB** |
+| `gf16_multiplication` | 4x4 over GF(2) | 225 | **12**, an upper bound, 9 m 52 s | **9, the rank, 2 m 12 s** |
+| `<4,4,4>` | 16x16 over GF(2) | 4 294 836 225 | **refused**: 8.2 TiB against 2.0 GiB | runs |
 
-The second row is the whole argument. The pool route cannot begin on `<4,4,4>`
-and says so in milliseconds; the solver route starts on the same tensor without
-forming anything. Neither finishes it, because the rank of `<4,4,4>` is open,
-but one of them is in the game.
+Two rows carry the argument.
+
+On `gf16_multiplication` the routes differ in more than speed: they return
+**different answers**. The solver reports 9, the rank. The pool route spends
+four and a half times as long, reports 12, and reports it as an *upper bound*,
+because its node budget ran out at 9, 10 and 11 and a question nobody finished
+asking is not a question answered no. That is `minimal` doing its job.
+
+On `<4,4,4>` the pool route cannot begin, and says so in milliseconds; the
+solver starts on the same tensor without forming anything. Neither finishes it,
+because that rank is open, but one of them is in the game.
 
 What the pool route keeps is the kind of refusal it produces. Its `NO` is a tree
 this repository walked to the end, in its own code. A solver's `NO` is a

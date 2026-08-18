@@ -53,13 +53,15 @@ of saying no.
 
 ## How the rows are found
 
-By the strongest route this repository has for the shape rather than by a search
-of its own, and the choices are recorded in [`routes.md`](routes.md). The one
-worth knowing here: the sweep runs **upward** from the proved floor and never
-bisects, so every question below the answer is a refutation that was completed,
-which is what makes the first success minimal rather than merely successful.
-`minimal` goes false the moment any budget runs out, and the count is reported
-as an upper bound instead.
+A floor, a ceiling, then a sweep **upward** that never bisects, so every
+question below the answer is a refutation that was completed, which is what
+makes the first success minimal rather than merely successful. `minimal` goes
+false the moment any budget runs out, and the count becomes an upper bound.
+
+## Cost
+
+How `A` is found step by step, the time and space of each, and two narrowings
+of the search that were tried and do not pay: [`complexity.md`](complexity.md).
 
 ## Two routes
 

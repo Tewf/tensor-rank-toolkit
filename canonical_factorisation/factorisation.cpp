@@ -1,5 +1,6 @@
 #include "factorisation.h"
 
+#include <cmath>
 #include <limits>
 #include <vector>
 
@@ -8,6 +9,7 @@
 #include "candidate_pool.h"
 #include "exhaustive_search.h"
 #include "group_construction.h"
+#include "requested_group.h"
 #include "measures.h"
 #include "orbit_search.h"
 #include "rank_lower_bound.h"
@@ -84,17 +86,77 @@ std::size_t pool_size_for(const ModularField& field, std::size_t rows, std::size
     return classes * others;
 }
 
-/// The stabiliser of the slice space, or nothing when no ambient group can be
-/// built for the shape. Falling back is not a wrong answer, only a slower one.
+/// The stabiliser of the slice space, narrowed from whichever ambient group was
+/// asked for.
+///
+/// `expand_subspace_up_to_symmetry` requires a group that stabilises the span it
+/// is given, and a group that does not is the one way it can report a false NO.
+/// So the ambient group is narrowed here and never passed through.
+///
+/// A refusal to build the ambient group is not a wrong answer, only a slower
+/// one, so it falls back rather than failing. What it must not do is fall back
+/// **quietly**, which is what this did when it called `all_automorphisms`
+/// directly: that refuses on any 4x4 map over GF(2), so every matrix
+/// multiplication fixture ran unquotiented while reporting that symmetry was on.
+/// The `<n,m,k>` a shape would have if it were a matrix multiplication tensor.
+///
+/// `nm x mk x kn` are the three dimensions, so their product is `(nmk)^2` and
+/// the three sizes divide out of its square root. Returns false when they do
+/// not come out whole, which is most tensors.
+///
+/// Guessing wrong is safe rather than merely unlikely: `stabiliser_of` keeps
+/// only the elements that actually fix `span(T)`, which is the precondition
+/// `expand_subspace_up_to_symmetry` needs, so a wrong guess yields a small
+/// group and never a false refusal.
+bool inferred_matmul_shape(std::size_t rows, std::size_t columns, std::size_t slices,
+                           std::size_t shape[3]) {
+    if (rows == 0 || columns == 0 || slices == 0) return false;
+    const std::size_t product = rows * columns * slices;
+    std::size_t root = static_cast<std::size_t>(std::sqrt(static_cast<double>(product)));
+    while (root > 0 && root * root > product) --root;
+    while ((root + 1) * (root + 1) <= product) ++root;
+    if (root * root != product) return false;
+
+    if (root % columns || root % slices || root % rows) return false;
+    shape[0] = root / columns;   // n
+    shape[1] = root / slices;    // m
+    shape[2] = root / rows;      // k
+    return shape[0] * shape[1] == rows && shape[1] * shape[2] == columns &&
+           shape[2] * shape[0] == slices;
+}
+
 std::vector<bilinear_rank::Automorphism> stabiliser_or_nothing(
-    const ModularField& field, const std::vector<ModularMatrix>& slices) {
+    const ModularField& field, const std::vector<ModularMatrix>& slices,
+    const cli::Symmetry& symmetry, std::string& refusal) {
+    if (symmetry.kind == cli::SymmetryKind::None) return {};
     try {
-        const std::vector<bilinear_rank::Automorphism> ambient = bilinear_rank::all_automorphisms(
-            field, slices.front().rows(), slices.front().columns());
-        return bilinear_rank::stabiliser_of(field, slices, ambient);
-    } catch (const std::exception&) {
-        return {};
+        return bilinear_rank::stabiliser_of(
+            field, slices, bilinear_rank::requested_ambient_group(field, slices, symmetry));
+    } catch (const std::exception& error) {
+        refusal = error.what();
     }
+
+    // `auto` refuses on any 4x4 map over GF(2), which is every matrix
+    // multiplication fixture here, so refusing is where the useful group starts
+    // rather than where it stops. The closed form needs no group enumerated and
+    // works at any size, and a shape that is not really a product yields a small
+    // stabiliser rather than a wrong one.
+    std::size_t shape[3] = {0, 0, 0};
+    if (symmetry.kind == cli::SymmetryKind::Automatic &&
+        inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
+                              shape)) {
+        try {
+            const std::vector<bilinear_rank::Automorphism> closed =
+                bilinear_rank::matrix_multiplication_symmetry_generators(field, shape[0], shape[1],
+                                                                         shape[2]);
+            const std::vector<bilinear_rank::Automorphism> kept =
+                bilinear_rank::stabiliser_of(field, slices, closed);
+            if (kept.size() > 1) refusal.clear();
+            return kept;
+        } catch (const std::exception&) {
+        }
+    }
+    return {};
 }
 
 }  // namespace
@@ -182,8 +244,8 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
     const std::vector<ModularMatrix> pool =
         bilinear_rank::all_rank_one_maps(field, slices.front().rows(), slices.front().columns());
     const std::vector<bilinear_rank::Automorphism> group =
-        settings.use_symmetry ? stabiliser_or_nothing(field, slices)
-                              : std::vector<bilinear_rank::Automorphism>{};
+        stabiliser_or_nothing(field, slices, settings.symmetry, factorisation.symmetry_refusal);
+    factorisation.group_size = group.size();
 
     bool every_refusal_complete = true;
     for (std::size_t components = factorisation.floor; components <= ceiling; ++components) {
