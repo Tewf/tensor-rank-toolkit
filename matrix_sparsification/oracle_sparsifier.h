@@ -7,8 +7,8 @@
 
 /// The two exact oracles of the article, and the validator both rest on.
 ///
-/// `[beniamini2020, Alg. 3]` is `sparsify_bottom_up` and `[beniamini2020,
-/// Alg. 4]` is `sparsify_top_down`, each with the driver `[gottlieb2010]`
+/// `[beniamini2020, Alg. 3]` is `sparsify_by_best_corank_one` and `[beniamini2020,
+/// Alg. 4]` is `sparsify_by_descending_support`, each with the driver `[gottlieb2010]`
 /// wrapped around it rather than beside it. Keys are
 /// [references.md](../references.md).
 ///
@@ -37,7 +37,7 @@ Validator find_validator(const Field& field, const Matrix& rows,
 
 /// Bottom-up: consider every column subset of size one less than the number of
 /// rows, and keep the validator whose vector has the most zeros.
-Matrix sparsify_bottom_up(const Field& field, Matrix rows);
+Matrix sparsify_by_best_corank_one(const Field& field, Matrix rows);
 
 /// Top-down: walk column subsets from the largest down and take the first
 /// validator found, because a vector forced to zero on more columns cannot be
@@ -45,6 +45,6 @@ Matrix sparsify_bottom_up(const Field& field, Matrix rows);
 ///
 /// This variant handles the case where the search finds no candidate, returning
 /// an empty result gracefully.
-Matrix sparsify_top_down(const Field& field, Matrix rows);
+Matrix sparsify_by_descending_support(const Field& field, Matrix rows);
 
 }  // namespace matrix_sparsification

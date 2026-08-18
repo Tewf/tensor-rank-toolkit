@@ -149,7 +149,7 @@ bool build_orbit_cubes(const linear_algebra::Tensor& tensor, const cli::Symmetry
     }
 
     const satisfiability::BinaryEncoding numbering =
-        satisfiability::encode_rank_at_most(tensor, first_products);
+        satisfiability::encode_binary_rank_at_most(tensor, first_products);
     const satisfiability::Field field(tensor.characteristic);
     // The shape is an argument and never inferred from the tensor's dimensions:
     // `orbit_cubes` checks the map really is that product, and that check is the

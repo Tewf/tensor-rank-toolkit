@@ -29,7 +29,7 @@ answer be a basis of `span(T)`, and that is where the guarantee goes.
 ## Step 1: greedy smallest basis
 
 ```
-smallest_basis(T):
+minimum_weight_basis(T):
     C ← [ Σᵢ cᵢ·Tᵢ  for c ∈ GF(p)^k, c ≠ 0 ]        # p^k − 1 candidates
     sort C by (rank, enumeration index)
     B ← ∅
@@ -57,7 +57,7 @@ minimise_rank(T, G):
         span ← basis(T)
         for i in 0 … |G|−1:
             if G[i] ∈ span: continue
-            V ← smallest_basis(T ∪ {G[i]})
+            V ← minimum_weight_basis(T ∪ {G[i]})
             if cost(V) < cost(T):
                 T ← V ; span ← basis(T) ; continue      # keep going down this G
             else:
@@ -80,7 +80,7 @@ Every restart replaces `G` with a strict suffix of itself, so there are at most
 The worst case is very loose, because the pruning step is doing the real work.
 The shortlists `improving_candidates` actually returned on the four fixtures
 were **0, 1, 0 and 6** out of pools of 961 to 4732, so almost every candidate
-is discarded before `smallest_basis` is ever called on it.
+is discarded before `minimum_weight_basis` is ever called on it.
 
 **Step 2's pool** is the rank-one maps already inside `T`: `rank_one_candidates`
 decomposes each slice, giving `Σ rank(Tᵢ)` candidates, which is `cost(T)`.
@@ -97,7 +97,7 @@ fixtures, which is what the tool reports.
 
 `p^k` dominates everything, and **`k` grows during the search**, which is the
 point of the method, and also its wall. Peak memory is essentially the largest
-`smallest_basis` call:
+`minimum_weight_basis` call:
 
 > peak ≈ `p^(k+1) · (8w + 88)` bytes
 

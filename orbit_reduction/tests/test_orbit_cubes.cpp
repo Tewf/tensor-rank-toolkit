@@ -34,15 +34,15 @@ void check_representatives_partition_the_pool(const bilinear_rank::Field& field,
     const std::vector<bilinear_rank::Automorphism> generators =
         bilinear_rank::matrix_multiplication_symmetry_generators(field, rows, inner, columns);
     const std::vector<std::vector<std::uint32_t>> action =
-        bilinear_rank::action_on(field, generators, pool);
+        bilinear_rank::permutation_action_on(field, generators, pool);
 
     // Where each pool element sits, so a representative can be looked up.
     std::vector<std::uint32_t> everything(pool.size());
     std::iota(everything.begin(), everything.end(), std::uint32_t(0));
-    const std::vector<std::uint32_t> computed = bilinear_rank::one_per_orbit(action, everything);
+    const std::vector<std::uint32_t> computed = bilinear_rank::orbit_representatives(action, everything);
 
     const std::vector<bilinear_rank::Matrix> closed =
-        bilinear_rank::matrix_multiplication_pool_orbits(field, rows, inner, columns);
+        bilinear_rank::matrix_multiplication_orbit_representatives(field, rows, inner, columns);
     check::equal(what + " closed form counts the orbits",
                  static_cast<long long>(closed.size()),
                  static_cast<long long>(computed.size()));
@@ -186,9 +186,9 @@ void check_cubes_do_not_change_the_answer(const satisfiability::SatSolver& solve
                                           Verdict expected) {
     const linear_algebra::Tensor tensor = matrix_multiplication(rows, inner, columns);
     const satisfiability::BinaryEncoding whole_form =
-        satisfiability::encode_rank_at_most(tensor, products, break_symmetry, false);
+        satisfiability::encode_binary_rank_at_most(tensor, products, break_symmetry, false);
     const satisfiability::BinaryEncoding cube_form =
-        satisfiability::encode_rank_at_most(tensor, products, break_symmetry, true);
+        satisfiability::encode_binary_rank_at_most(tensor, products, break_symmetry, true);
 
     const std::vector<std::vector<int>> cubes = bilinear_rank::orbit_cubes(
         field, tensor.slices, rows, inner, columns, cube_form.left, cube_form.right);

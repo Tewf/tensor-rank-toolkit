@@ -142,8 +142,8 @@ std::vector<Term> karatsuba_terms() {
 /// the ordering ones, so "no clause mentions term 0 beside another term" is
 /// exactly "term 0 is unordered".
 void check_a_cube_leaves_term_zero_unordered(const linear_algebra::Tensor& tensor) {
-    const auto ordered = satisfiability::encode_rank_at_most(tensor, 3, true, false);
-    const auto pinned = satisfiability::encode_rank_at_most(tensor, 3, true, true);
+    const auto ordered = satisfiability::encode_binary_rank_at_most(tensor, 3, true, false);
+    const auto pinned = satisfiability::encode_binary_rank_at_most(tensor, 3, true, true);
 
     auto mentions_term_zero_beside_another = [](const satisfiability::BinaryEncoding& encoding) {
         std::vector<int> first;
@@ -185,8 +185,8 @@ void check_a_cube_leaves_term_zero_unordered(const linear_algebra::Tensor& tenso
 /// next term's. Asserted here so that reordering that loop fails a test instead
 /// of pinning the wrong variables in silence.
 void check_term_zero_numbering_does_not_move(const linear_algebra::Tensor& tensor) {
-    const auto one = satisfiability::encode_rank_at_most(tensor, 1);
-    const auto many = satisfiability::encode_rank_at_most(tensor, 5);
+    const auto one = satisfiability::encode_binary_rank_at_most(tensor, 1);
+    const auto many = satisfiability::encode_binary_rank_at_most(tensor, 5);
 
     bool same = true;
     for (std::size_t index = 0; index < one.rows; ++index) {
@@ -208,7 +208,7 @@ int main() {
     check::equal("slice 1 has a0b1", field.isOne(tensor.slices[1](0, 1)) ? 1 : 0, 1);
     check::equal("slice 2 is a1b1", field.isOne(tensor.slices[2](1, 1)) ? 1 : 0, 1);
 
-    auto encoding = satisfiability::encode_rank_at_most(tensor, 3);
+    auto encoding = satisfiability::encode_binary_rank_at_most(tensor, 3);
     check::equal("three terms of a 2x2x3 tensor use 21 literal variables",
                  static_cast<long long>(encoding.left.size() + encoding.right.size() +
                                         encoding.output.size()),
@@ -230,7 +230,7 @@ int main() {
     // Change one entry and the same assignment must break a parity.
     auto perturbed = tensor;
     field.addin(perturbed.slices[0](1, 1), field.one);
-    auto other = satisfiability::encode_rank_at_most(perturbed, 3);
+    auto other = satisfiability::encode_binary_rank_at_most(perturbed, 3);
     Model same = model_for(other, terms);
     complete(other.formula, same);
     check::equal("a changed tensor is no longer satisfied",
@@ -284,7 +284,7 @@ int main() {
             // the ordering constraint were still applied to the pinned term
             // this is where it would show: a yes would become a no.
             {
-                const auto pinned = satisfiability::encode_rank_at_most(tensor, 3, true, true);
+                const auto pinned = satisfiability::encode_binary_rank_at_most(tensor, 3, true, true);
                 const int first = pinned.left[0];
                 const int second = pinned.left[1];
                 satisfiability::Approach cubed = approach;
@@ -312,7 +312,7 @@ int main() {
                 const std::vector<Term> pair = {Term{{true, true}, {true, true}, {true, true}},
                                                 Term{{true, false}, {true, false}, {true, false}}};
                 const auto sum = tensor_from(field, pair, 2, 2, 2);
-                const auto layout = satisfiability::encode_rank_at_most(sum, 2, true, true);
+                const auto layout = satisfiability::encode_binary_rank_at_most(sum, 2, true, true);
 
                 satisfiability::Approach ordered = approach;
                 ordered.cubes = {{layout.left[0], layout.left[1], layout.right[0], layout.right[1],
@@ -369,7 +369,7 @@ int main() {
     ternary.characteristic = 3;
     bool threw = false;
     try {
-        satisfiability::encode_rank_at_most(ternary, 3);
+        satisfiability::encode_binary_rank_at_most(ternary, 3);
     } catch (const std::invalid_argument&) {
         threw = true;
     }
@@ -382,7 +382,7 @@ int main() {
     satisfiability::set_variable_budget(10);
     bool refused = false;
     try {
-        satisfiability::encode_rank_at_most(tensor, 3);
+        satisfiability::encode_binary_rank_at_most(tensor, 3);
     } catch (const std::invalid_argument&) {
         refused = true;
     }
@@ -400,7 +400,7 @@ int main() {
     proofless.path = "/nonexistent";
     bool proof_refused = false;
     try {
-        satisfiability::solve(satisfiability::encode_rank_at_most(tensor, 2).formula, proofless,
+        satisfiability::solve(satisfiability::encode_binary_rank_at_most(tensor, 2).formula, proofless,
                               2048, 300, "/tmp/tensor-rank-unwritten.drat");
     } catch (const std::invalid_argument&) {
         proof_refused = true;

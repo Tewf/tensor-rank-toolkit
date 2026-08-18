@@ -31,7 +31,7 @@ namespace bilinear_rank {
 /// `|GL_2(F_2)| = 6`, `|GL_3(F_2)| = 168`, `|GL_4(F_2)| = 20 160`. Enumerated by
 /// walking all `p^(order²)` matrices, so it is refused above a shape the machine
 /// can walk.
-std::vector<Matrix> all_invertible(const Field& field, std::size_t order);
+std::vector<Matrix> general_linear_group(const Field& field, std::size_t order);
 
 /// Every RP-automorphism of the given shape: all pairs of invertibles.
 ///

@@ -101,11 +101,11 @@ void check_degenerate_shapes(const matrix_sparsification::Field& field) {
         }
         const std::string what = std::to_string(shape.first) + "x" + std::to_string(shape.second);
         const matrix_sparsification::Matrix bottom_up =
-            matrix_sparsification::sparsify_bottom_up(field, operand);
+            matrix_sparsification::sparsify_by_best_corank_one(field, operand);
         const matrix_sparsification::Matrix top_down =
-            matrix_sparsification::sparsify_top_down(field, operand);
+            matrix_sparsification::sparsify_by_descending_support(field, operand);
         const matrix_sparsification::Matrix greedy =
-            matrix_sparsification::greedy_sparsify(field, operand);
+            matrix_sparsification::sparsify_by_rescaling(field, operand);
         check::equal(what + " greedy keeps the shape",
                      static_cast<long long>(greedy.entry_count()),
                      static_cast<long long>(operand.entry_count()));
@@ -150,14 +150,14 @@ int main(int argc, char** argv) {
                      expected.sparsified);
 
         const matrix_sparsification::Matrix bottom_up =
-            linear_algebra::transpose<matrix_sparsification::Field>(matrix_sparsification::sparsify_bottom_up(field, transposed));
+            linear_algebra::transpose<matrix_sparsification::Field>(matrix_sparsification::sparsify_by_best_corank_one(field, transposed));
         check_equivalent(field, original, bottom_up, name + " bottom-up oracle");
         check::equal(name + " bottom-up oracle",
                      static_cast<long long>(linear_algebra::nonzero_count(field, bottom_up)),
                      expected.sparsified);
 
         const matrix_sparsification::Matrix top_down =
-            linear_algebra::transpose<matrix_sparsification::Field>(matrix_sparsification::sparsify_top_down(field, transposed));
+            linear_algebra::transpose<matrix_sparsification::Field>(matrix_sparsification::sparsify_by_descending_support(field, transposed));
         check_equivalent(field, original, top_down, name + " top-down oracle");
         check::equal(name + " top-down oracle",
                      static_cast<long long>(linear_algebra::nonzero_count(field, top_down)),
@@ -168,7 +168,7 @@ int main(int argc, char** argv) {
 
         const matrix_sparsification::Matrix greedy =
             linear_algebra::transpose<matrix_sparsification::Field>(
-                matrix_sparsification::greedy_sparsify(field, transposed));
+                matrix_sparsification::sparsify_by_rescaling(field, transposed));
         check_equivalent(field, original, greedy, name + " greedy");
         check::equal(name + " greedy",
                      static_cast<long long>(linear_algebra::nonzero_count(field, greedy)),

@@ -10,7 +10,7 @@
 #include "candidate_pool.h"
 #include "check.h"
 #include "minimise_rank.h"
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 #include "tensor_file.h"
 
 int main(int argc, char** argv) {
@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 
     const auto started = std::chrono::steady_clock::now();
 
-    std::vector<linear_algebra::ModularMatrix> current = bilinear_rank::smallest_basis(field, tensor.slices);
+    std::vector<linear_algebra::ModularMatrix> current = bilinear_rank::minimum_weight_basis(field, tensor.slices);
     current = bilinear_rank::minimise_rank(
         field, current, bilinear_rank::improving_candidates(
                             field, current, bilinear_rank::rank_one_candidates(field, current)));

@@ -23,7 +23,7 @@ void usage() {
                  "  --target k          the rank to test the candidates against\n"
                  "  --refuter solver|tree\n"
                  "                      solver waits for unsatisfiable on each cube;\n"
-                 "                      tree walks expand_subspace_up_to on the span\n"
+                 "                      tree walks expand_subspace_up_to_symmetry on the span\n"
                  "                      enlarged by the candidate. Default solver\n"
                  "  --candidate-timeout N\n"
                  "                      seconds per candidate on the solver route, 300\n"

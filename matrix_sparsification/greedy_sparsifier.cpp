@@ -75,7 +75,7 @@ std::vector<Element> best_scaling(const Field& field, const std::vector<Element>
     return best;
 }
 
-Matrix greedy_sparsify(const Field& field, Matrix rows) {
+Matrix sparsify_by_rescaling(const Field& field, Matrix rows) {
     if (rows.rows() == 0) return rows;
 
     // The article's objective is nnz + nns, so a vector is better when it has

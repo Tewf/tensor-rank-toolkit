@@ -135,8 +135,8 @@ int run(int argc, char** argv) {
                   << " flips and " << report.reductions << " reductions, " << cli::elapsed_seconds(started)
                   << " s\n";
     }
-    const std::size_t bound = bilinear_rank::starting_target(field, tensor.slices);
-    std::cout << "best over " << seeds << " seeds: " << bilinear_rank::gap_report(best, bound)
+    const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
+    std::cout << "best over " << seeds << " seeds: " << bilinear_rank::require_bound_consistent(best, bound)
               << "\n";
     return 0;
 }

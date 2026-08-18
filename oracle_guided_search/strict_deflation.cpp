@@ -24,7 +24,7 @@ namespace {
 /// candidate sets would measure the sets.
 std::vector<Matrix> candidates_of(const Field& field, const std::vector<std::size_t>& shape) {
     if (shape.size() != 3) return {};
-    return matrix_multiplication_pool_orbits(field, shape[0], shape[1], shape[2]);
+    return matrix_multiplication_orbit_representatives(field, shape[0], shape[1], shape[2]);
 }
 
 void verify_or_throw(const Field& field, const linear_algebra::Tensor& tensor, StrictStep& step) {
@@ -51,7 +51,7 @@ StrictStep by_solver(const linear_algebra::Tensor& tensor, std::size_t products,
     approach.probe_seconds = 0;
     if (settings.matmul_shape.size() == 3 && tensor.characteristic == 2) {
         const satisfiability::BinaryEncoding numbering =
-            satisfiability::encode_rank_at_most(tensor, products);
+            satisfiability::encode_binary_rank_at_most(tensor, products);
         const Field field(tensor.characteristic);
         approach.cubes = orbit_cubes(field, tensor.slices, settings.matmul_shape[0],
                                      settings.matmul_shape[1], settings.matmul_shape[2],

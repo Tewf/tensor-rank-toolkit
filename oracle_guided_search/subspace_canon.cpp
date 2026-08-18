@@ -20,7 +20,7 @@ std::size_t pivot_of(const Field& field, const std::vector<Element>& row) {
 }  // namespace
 
 SubspaceCode subspace_code(const Field& field, const std::vector<Matrix>& generators) {
-    const Span span = linear_algebra::span_of(field, generators);
+    const ReducedBasis span = linear_algebra::span_of(field, generators);
     std::vector<std::vector<Element>> rows = span.rows();
     std::sort(rows.begin(), rows.end(),
               [&field](const std::vector<Element>& left, const std::vector<Element>& right) {

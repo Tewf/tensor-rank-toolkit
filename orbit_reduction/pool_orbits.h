@@ -66,7 +66,7 @@ std::vector<Matrix> rank_one_orbit_representatives(const Field& field,
 /// Counting those triples gives 5 for `⟨2,2,2⟩` and 13 for `⟨3,3,3⟩`, which is
 /// what the general computation returns. No group is built, no vector list is
 /// walked, and nothing is enumerated: the answer is a triple loop.
-std::vector<Matrix> matrix_multiplication_pool_orbits(const Field& field, std::size_t rows,
+std::vector<Matrix> matrix_multiplication_orbit_representatives(const Field& field, std::size_t rows,
                                                       std::size_t inner, std::size_t columns);
 
 /// The same representatives as the two vectors whose outer product they are.

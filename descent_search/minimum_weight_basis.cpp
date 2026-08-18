@@ -1,4 +1,4 @@
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 
 #include <algorithm>
 
@@ -9,11 +9,11 @@
 
 namespace bilinear_rank {
 
-std::vector<Matrix> basis_with(const Field& field, const std::vector<Matrix>& slices,
+std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vector<Matrix>& slices,
                                const Matrix& candidate, const std::vector<std::size_t>& known) {
     std::vector<Matrix> enlarged = slices;
     enlarged.push_back(candidate);
-    return smallest_basis(field, enlarged, known);
+    return minimum_weight_basis(field, enlarged, known);
 }
 
 std::vector<std::size_t> span_element_ranks(const Field& field,
@@ -31,7 +31,7 @@ std::vector<std::size_t> span_element_ranks(const Field& field,
     return ranks;
 }
 
-std::vector<Matrix> smallest_basis(const Field& field, const std::vector<Matrix>& slices,
+std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
                                    const std::vector<std::size_t>& ranks_without_last) {
     const std::size_t width = linear_algebra::flattened_width<Field>(slices);
     const std::size_t dimension = linear_algebra::span_of(field, slices).dimension();
@@ -73,7 +73,7 @@ std::vector<Matrix> smallest_basis(const Field& field, const std::vector<Matrix>
               });
 
     std::vector<Matrix> basis;
-    Span span(field, width);
+    ReducedBasis span(field, width);
     for (const Candidate& candidate : candidates) {
         if (basis.size() == dimension) break;
         Matrix element = combine(

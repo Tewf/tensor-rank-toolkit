@@ -108,7 +108,7 @@ optimisation::IntegerProgramme interpolation_programme_of(const std::vector<Poin
     return programme;
 }
 
-Programme minimise_interpolation_bound_by_solver(const std::vector<PointSupply>& supply,
+BoundResult minimise_interpolation_bound_by_solver(const std::vector<PointSupply>& supply,
                                                  std::size_t divisor_degree,
                                                  SolverChoice choice) {
     // The degenerate cases the model cannot state: a programme with no columns is
@@ -129,7 +129,7 @@ Programme minimise_interpolation_bound_by_solver(const std::vector<PointSupply>&
     // built-in ever says it: `solve()` treats an outside solver's infeasibility as
     // one more decline and carries on, so an Infeasible reaching here is exact.
     if (answer.status == optimisation::Status::Infeasible) {
-        Programme refused;
+        BoundResult refused;
         refused.solved_by = answer.solved_by.empty() ? "built-in" : answer.solved_by;
         refused.optimum_proved = true;
         return refused;
@@ -144,7 +144,7 @@ Programme minimise_interpolation_bound_by_solver(const std::vector<PointSupply>&
     // way to learn that one did.
     if (answer.status != optimisation::Status::Optimal ||
         answer.values.size() < model.variables.size()) {
-        Programme fallen_back = minimise_interpolation_bound(supply, divisor_degree);
+        BoundResult fallen_back = minimise_interpolation_bound(supply, divisor_degree);
         fallen_back.solved_by = "dynamic programme, after " +
                                 (answer.solved_by.empty() ? std::string("the chain")
                                                           : answer.solved_by) +
@@ -152,7 +152,7 @@ Programme minimise_interpolation_bound_by_solver(const std::vector<PointSupply>&
         return fallen_back;
     }
 
-    Programme programme;
+    BoundResult programme;
     programme.solved = true;
     programme.degree_used = divisor_degree;
     programme.solved_by = answer.solved_by.empty() ? "built-in" : answer.solved_by;

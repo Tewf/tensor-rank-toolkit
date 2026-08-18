@@ -133,7 +133,7 @@ bool recover_algorithm(const Field& field, const std::vector<Matrix>& target,
            recover_decoder(field, target, products, algorithm.decode);
 }
 
-std::vector<Matrix> computed_map(const Field& field, const Algorithm& algorithm) {
+std::vector<Matrix> map_computed_by(const Field& field, const Algorithm& algorithm) {
     const std::vector<Matrix> products =
         encoded_products(field, algorithm.left, algorithm.right);
 
@@ -156,7 +156,7 @@ std::vector<Matrix> computed_map(const Field& field, const Algorithm& algorithm)
 bool recovers_map(const Field& field, const std::vector<Matrix>& target,
                   const std::vector<Matrix>& products, Algorithm& algorithm) {
     if (!recover_algorithm(field, target, products, algorithm)) return false;
-    return linear_algebra::spans_all(field, computed_map(field, algorithm), target);
+    return linear_algebra::spans_all(field, map_computed_by(field, algorithm), target);
 }
 
 }  // namespace bilinear_rank

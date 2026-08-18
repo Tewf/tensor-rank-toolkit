@@ -21,7 +21,7 @@ using PositionsByDepth = std::vector<std::vector<std::uint32_t>>;
 /// `candidates` is `H` as pool indices in increasing order, `residual` is `U` as
 /// indices into the group, and every element of `residual` stabilises `span` by
 /// induction, which is what makes the descent below a single containment test.
-bool expand_up_to_impl(const Field& field, Span span, const std::vector<Matrix>& pool,
+bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<Matrix>& pool,
                        const Permutations& action,
                        const std::vector<std::uint32_t>& candidates,
                        const std::vector<std::uint32_t>& residual, std::size_t target,
@@ -73,7 +73,7 @@ bool expand_up_to_impl(const Field& field, Span span, const std::vector<Matrix>&
 
         if (span.contains(pool[chosen], scratch)) continue;
 
-        Span extended = span;
+        ReducedBasis extended = span;
         extended.try_add(pool[chosen]);
 
         // `residual` already stabilises `span`, so `(span + φ)∘σ = span + φ∘σ`
@@ -105,7 +105,7 @@ bool expand_up_to_impl(const Field& field, Span span, const std::vector<Matrix>&
 
 }  // namespace
 
-bool expand_subspace_up_to(const Field& field, const std::vector<Matrix>& subspace,
+bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
                            const std::vector<Matrix>& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products) {
@@ -114,14 +114,14 @@ bool expand_subspace_up_to(const Field& field, const std::vector<Matrix>& subspa
     // Filtered, never trusted: an element that does not stabilise the target is
     // the one way this search can report a `NO` that is false.
     const std::vector<Automorphism> stabiliser = stabiliser_of(field, subspace, group);
-    const Permutations action = action_on(field, stabiliser, pool);
+    const Permutations action = permutation_action_on(field, stabiliser, pool);
 
     std::vector<std::uint32_t> candidates(pool.size());
     std::iota(candidates.begin(), candidates.end(), std::uint32_t(0));
     std::vector<std::uint32_t> residual(stabiliser.size());
     std::iota(residual.begin(), residual.end(), std::uint32_t(0));
 
-    const Span root = linear_algebra::span_of(field, subspace);
+    const ReducedBasis root = linear_algebra::span_of(field, subspace);
     const std::size_t levels = target > root.dimension() ? target - root.dimension() + 1 : 1;
     PositionsByDepth positions(levels, std::vector<std::uint32_t>(pool.size(), kNotHere));
 

@@ -38,7 +38,7 @@ std::vector<int> term_variables(const BinaryEncoding& encoding, std::size_t term
 std::size_t variable_budget() { return budget; }
 void set_variable_budget(std::size_t variables) { budget = variables; }
 
-BinaryEncoding encode_rank_at_most(const linear_algebra::Tensor& tensor, std::size_t products,
+BinaryEncoding encode_binary_rank_at_most(const linear_algebra::Tensor& tensor, std::size_t products,
                                    bool break_symmetry, bool first_term_pinned) {
     if (tensor.characteristic != 2) {
         throw std::invalid_argument(

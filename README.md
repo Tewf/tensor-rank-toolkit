@@ -33,6 +33,11 @@ guarantee for reach.
 | F2 4×7 | 28 | **16** | no solution at 14 |
 | F3 3×6 | 18 | **10** | 10, `[bdez2012]` |
 
+Step 1 is exact, by Rado-Edmonds, and the descent's guarantees are proved in
+[`descent_search/correctness.md`](descent_search/correctness.md): soundness, a
+termination bound, 1-opt over the whole pool, and why the orbit quotient loses
+nothing.
+
 **[Rank by exhaustion](exhaustive_search/)**, the expensive direction, which
 proves things. It settles small maps outright, reproducing Karatsuba's 3, the
 classical 3 and 6 for GF(4) and GF(8), and **rank ⟨2,2,2⟩ = 7** decided from the

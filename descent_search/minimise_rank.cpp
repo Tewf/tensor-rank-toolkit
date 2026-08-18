@@ -5,7 +5,7 @@
 #include "candidate_pool.h"
 #include "measures.h"
 #include "parallel.h"
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 #include "span_basis.h"
 
 namespace bilinear_rank {
@@ -15,7 +15,7 @@ namespace {
 /// The trial bases the walk has not reached yet, computed on the other cores.
 ///
 /// This is the whole of the parallelism here, and it is safe for one reason:
-/// `basis_with` reads only the map, which does not move while candidates are
+/// `minimum_weight_basis_with` reads only the map, which does not move while candidates are
 /// being tried, and the candidate itself. So the walk stays exactly sequential,
 /// with the same order, the same adoptions, the same pruning and the same
 /// answer, while the answers it is about to need are prepared behind it.
@@ -43,7 +43,7 @@ void prefetch(const Field& field, const std::vector<Matrix>& slices,
     }
     parallel_for(wanted.size(), [&](std::size_t slot) {
         const std::size_t candidate = wanted[slot];
-        trials.basis[candidate] = basis_with(field, slices, candidates[candidate], known);
+        trials.basis[candidate] = minimum_weight_basis_with(field, slices, candidates[candidate], known);
         trials.ready[candidate] = 1;
     });
 }
@@ -60,7 +60,7 @@ const std::vector<Matrix>& trial_for(const Field& field, const std::vector<Matri
         prefetch(field, slices, known, candidates, queue, step, trials);
     }
     if (!trials.ready[candidate]) {
-        trials.basis[candidate] = basis_with(field, slices, candidates[candidate], known);
+        trials.basis[candidate] = minimum_weight_basis_with(field, slices, candidates[candidate], known);
         trials.ready[candidate] = 1;
     }
     return trials.basis[candidate];
@@ -81,7 +81,7 @@ std::vector<std::size_t> survivors_after(const Field& field, const std::vector<M
                                          const std::vector<Matrix>& candidates,
                                          const std::vector<std::size_t>& queue, std::size_t step,
                                          Trials& trials) {
-    Span reached = linear_algebra::span_of(field, attempt);
+    ReducedBasis reached = linear_algebra::span_of(field, attempt);
     for (const Matrix& kept : also_reached) reached.try_add(kept);
 
     for (std::size_t gone = 0; gone <= step; ++gone) trials.forget(queue[gone]);
@@ -116,7 +116,7 @@ std::vector<Matrix> improving_candidates(const Field& field, const std::vector<M
     std::vector<std::size_t> remaining = all_of(candidates.size());
 
     for (;;) {
-        Span span = linear_algebra::span_of(field, slices);
+        ReducedBasis span = linear_algebra::span_of(field, slices);
         for (const Matrix& kept : selected) span.try_add(kept);
 
         bool pruned = false;
@@ -151,7 +151,7 @@ std::vector<Matrix> minimise_rank(const Field& field, std::vector<Matrix> slices
         // Recomputed whenever the map moves, which is once per improvement
         // adopted, against once per candidate tried.
         std::vector<std::size_t> known = span_element_ranks(field, slices);
-        Span span = linear_algebra::span_of(field, slices);
+        ReducedBasis span = linear_algebra::span_of(field, slices);
         bool pruned = false;
 
         for (std::size_t step = 0; step < remaining.size(); ++step) {
@@ -181,7 +181,7 @@ std::vector<Matrix> minimise_rank(const Field& field, std::vector<Matrix> slices
 }
 
 std::vector<Matrix> descend_from_own_basis(const Field& field, const std::vector<Matrix>& slices) {
-    const std::vector<Matrix> basis = smallest_basis(field, slices);
+    const std::vector<Matrix> basis = minimum_weight_basis(field, slices);
     return minimise_rank(field, basis,
                          improving_candidates(field, basis, rank_one_candidates(field, basis)));
 }

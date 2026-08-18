@@ -12,7 +12,7 @@ namespace {
 /// The pool elements lying inside `span(generators)`.
 std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matrix>& pool,
                                      const std::vector<Matrix>& generators) {
-    const Span span = linear_algebra::span_of(field, generators);
+    const ReducedBasis span = linear_algebra::span_of(field, generators);
     std::vector<std::size_t> inside;
     std::vector<Element> scratch;
     for (std::size_t index = 0; index < pool.size(); ++index) {
@@ -74,7 +74,7 @@ std::vector<std::vector<Matrix>> candidate_parents(const Field& field,
         if (linear_algebra::span_of(field, candidate).dimension() != wanted) continue;
 
         std::vector<Matrix> reachable = base;
-        const Span span = linear_algebra::span_of(field, candidate);
+        const ReducedBasis span = linear_algebra::span_of(field, candidate);
         std::vector<Element> scratch;
         for (const std::size_t index : inside) {
             if (span.contains(pool[index], scratch)) reachable.push_back(pool[index]);

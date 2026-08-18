@@ -26,7 +26,7 @@ namespace bilinear_rank {
 ///
 /// Reported by the commands so a run says how much room is left between what a
 /// finder reached and what nothing can go below.
-std::size_t starting_target(const Field& field, const std::vector<Matrix>& base);
+std::size_t flattening_floor(const Field& field, const std::vector<Matrix>& base);
 
 /// `10 products, rank bound 8, gap 2`: the sentence every finder ends
 /// with, and the room a better one still has above the bound.
@@ -36,9 +36,9 @@ std::size_t starting_target(const Field& field, const std::vector<Matrix>& base)
 /// reporting a bug; a negative gap printed as zero would bury the one failure
 /// nothing downstream catches, a lower bound that is not one. Every command
 /// turns a thrown refusal into a line and exits non-zero.
-std::string gap_report(std::size_t products_found, std::size_t bound);
+std::string require_bound_consistent(std::size_t products_found, std::size_t bound);
 
-/// Sweep `k` upward from `starting_target`. The first hit is the fewest products
+/// Sweep `k` upward from `flattening_floor`. The first hit is the fewest products
 /// reachable from `base`.
 ///
 /// Trustworthy but slow: it makes no assumption about how the answer behaves
@@ -66,7 +66,7 @@ std::pair<std::vector<Matrix>, std::vector<Matrix>> lowest_rank_partition(
 ///
 /// This is the from-scratch variant, so its answer is not conditioned on a
 /// heuristic's output, though it is also the most expensive approach.
-bool build_bottom_up(const Field& field, const std::vector<Matrix>& map,
+bool fewest_products_from_scratch(const Field& field, const std::vector<Matrix>& map,
                      const std::vector<Matrix>& pool, SearchBudget& budget,
                      std::vector<Matrix>& products);
 

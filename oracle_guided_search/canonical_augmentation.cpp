@@ -58,7 +58,7 @@ void emit_if_solution(Walk& walk, const std::vector<Matrix>& child) {
 /// behaviour. With it, one candidate per orbit of the current subspace's stabiliser,
 /// recomputed here because the object has moved and a quotient taken earlier is stale.
 std::vector<std::size_t> augmentations(const Walk& walk, const std::vector<Matrix>& current,
-                                       const Span& span, std::size_t from) {
+                                       const ReducedBasis& span, std::size_t from) {
     const Field& field = *walk.field;
     const std::vector<Matrix>& pool = *walk.pool;
     std::vector<Element> scratch;
@@ -76,10 +76,10 @@ std::vector<std::size_t> augmentations(const Walk& walk, const std::vector<Matri
         if (!span.contains(pool[index], scratch)) outside.push_back(index);
     }
     const std::vector<Automorphism> stabiliser = stabiliser_of(field, current, *walk.group);
-    const std::vector<std::vector<std::uint32_t>> action = action_on(field, stabiliser, pool);
+    const std::vector<std::vector<std::uint32_t>> action = permutation_action_on(field, stabiliser, pool);
 
     std::vector<std::size_t> representatives;
-    for (const std::uint32_t index : one_per_orbit(action, outside)) {
+    for (const std::uint32_t index : orbit_representatives(action, outside)) {
         representatives.push_back(index);
     }
     return representatives;
@@ -95,7 +95,7 @@ void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimensi
 
     const Field& field = *walk.field;
     const std::vector<Matrix>& pool = *walk.pool;
-    const Span span = linear_algebra::span_of(field, current);
+    const ReducedBasis span = linear_algebra::span_of(field, current);
     const SubspaceCode current_code = subspace_code(field, current);
 
     for (const std::size_t index : augmentations(walk, current, span, from)) {

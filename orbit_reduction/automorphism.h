@@ -70,17 +70,17 @@ std::vector<Automorphism> stabiliser_of(const Field& field, const std::vector<Ma
 /// The pool must be closed under the group, which `all_rank_one_maps` is and
 /// `rank_one_candidates` is not; an image that is not in the pool is an error
 /// rather than something to skip quietly.
-std::vector<std::vector<std::uint32_t>> action_on(const Field& field,
+std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field,
                                                   const std::vector<Automorphism>& group,
                                                   const std::vector<Matrix>& pool);
 
 /// One representative per orbit of `candidates`, the lowest index of each.
 ///
-/// `action` is what `action_on` returned. Choosing the lowest index matters for
+/// `action` is what `permutation_action_on` returned. Choosing the lowest index matters for
 /// the heuristic: it walks its pool in order and adopts the first candidate that
 /// pays, so the representative it meets is the same element the unquotiented
 /// walk would have met first.
-std::vector<std::uint32_t> one_per_orbit(const std::vector<std::vector<std::uint32_t>>& action,
+std::vector<std::uint32_t> orbit_representatives(const std::vector<std::vector<std::uint32_t>>& action,
                                          const std::vector<std::uint32_t>& candidates);
 
 }  // namespace bilinear_rank

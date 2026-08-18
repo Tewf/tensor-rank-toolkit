@@ -107,7 +107,7 @@ Forms build_forms(const linear_algebra::Tensor& tensor, std::size_t products,
     forms.binary = tensor.characteristic == 2;
     if (forms.binary) {
         forms.boolean_form =
-            encode_rank_at_most(tensor, products, approach.break_symmetry, pinned);
+            encode_binary_rank_at_most(tensor, products, approach.break_symmetry, pinned);
     } else {
         forms.prime_form = encode_prime_rank_at_most(tensor, products, approach.break_symmetry);
     }
@@ -274,7 +274,7 @@ std::string write_question(const linear_algebra::Tensor& tensor, std::size_t pro
 
     const bool binary = tensor.characteristic == 2;
     const linear_algebra::Cnf formula =
-        binary ? encode_rank_at_most(tensor, products, approach.break_symmetry).formula
+        binary ? encode_binary_rank_at_most(tensor, products, approach.break_symmetry).formula
                : encode_prime_rank_at_most(tensor, products, approach.break_symmetry).formula;
 
     const bool native = !approach.plain_cnf;

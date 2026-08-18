@@ -82,7 +82,7 @@ int run(int argc, char** argv) {
     // Cheap next to a search, and it settles every k below it. The sweep starts
     // here rather than at the span dimension, and a target underneath it is
     // refused without a search: that refusal is a proof, not a budget expiring.
-    const std::size_t bound = bilinear_rank::starting_target(field, tensor.slices);
+    const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
     std::cout << path << "\n  rank bound: rank is at least " << bound << "\n";
     if (target >= 0 && static_cast<std::size_t>(target) < bound) {
         std::cout << "  NO: there is no algorithm with " << target
@@ -108,7 +108,7 @@ int run(int argc, char** argv) {
 
     bool found = false;
     if (bottom_up) {
-        found = bilinear_rank::build_bottom_up(field, tensor.slices, pool, budget, products);
+        found = bilinear_rank::fewest_products_from_scratch(field, tensor.slices, pool, budget, products);
     } else if (target >= 0 && symmetry.kind != cli::SymmetryKind::None) {
         // The search needs a group that stabilises what it is searching from, and
         // `anchor` is not always the map: under `--anchor heuristic` it is the
@@ -116,7 +116,7 @@ int run(int argc, char** argv) {
         const std::vector<bilinear_rank::Automorphism> generators = bilinear_rank::stabiliser_of(
             field, anchor, bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry));
         std::cout << "  quotienting by " << generators.size() << " generators\n";
-        found = bilinear_rank::expand_subspace_up_to(field, anchor, pool, generators,
+        found = bilinear_rank::expand_subspace_up_to_symmetry(field, anchor, pool, generators,
                                                      static_cast<std::size_t>(target), budget,
                                                      products);
     } else if (target >= 0) {
@@ -130,7 +130,7 @@ int run(int argc, char** argv) {
     std::cout << "  " << budget.nodes_visited << " nodes in " << seconds << " s\n";
 
     if (found) {
-        std::cout << "  FOUND: " << bilinear_rank::gap_report(products.size(), bound) << "\n";
+        std::cout << "  FOUND: " << bilinear_rank::require_bound_consistent(products.size(), bound) << "\n";
         bilinear_rank::Algorithm algorithm;
         if (!bilinear_rank::recovers_map(field, tensor.slices, products, algorithm)) {
             std::cerr << "FAILED: those products do not compute the map\n";

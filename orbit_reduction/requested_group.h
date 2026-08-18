@@ -47,9 +47,9 @@ inline constexpr double kLargestAmbientGroup = 1e6;
 /// The **ambient** group a choice names, not the stabiliser of any map.
 ///
 /// The distinction matters and the two searches want opposite things.
-/// `minimise_rank_up_to` takes an ambient group and re-derives the stabiliser
+/// `minimise_rank_up_to_symmetry` takes an ambient group and re-derives the stabiliser
 /// every time its map moves, because a quotient taken once goes stale the moment
-/// the map changes. `expand_subspace_up_to` takes a group that already stabilises
+/// the map changes. `expand_subspace_up_to_symmetry` takes a group that already stabilises
 /// the span it is given, and a group that does not is the one way it can report
 /// a false `NO`. So this returns the ambient group and each caller narrows it as
 /// its own search requires; handing the stabiliser to the first would silently

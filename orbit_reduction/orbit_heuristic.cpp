@@ -7,7 +7,7 @@
 
 namespace bilinear_rank {
 
-std::vector<Matrix> minimise_rank_up_to(const Field& field, std::vector<Matrix> slices,
+std::vector<Matrix> minimise_rank_up_to_symmetry(const Field& field, std::vector<Matrix> slices,
                                         const std::vector<Matrix>& pool,
                                         const std::vector<Automorphism>& ambient,
                                         OrbitReport* report) {
@@ -21,7 +21,7 @@ std::vector<Matrix> minimise_rank_up_to(const Field& field, std::vector<Matrix> 
         // with. This is the line that keeps the quotient honest.
         const std::vector<Automorphism> stabiliser = stabiliser_of(field, slices, ambient);
         const std::vector<std::uint32_t> representatives =
-            one_per_orbit(action_on(field, stabiliser, pool), everything);
+            orbit_representatives(permutation_action_on(field, stabiliser, pool), everything);
 
         if (report != nullptr) {
             report->stabiliser_size.push_back(stabiliser.size());

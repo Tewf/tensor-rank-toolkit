@@ -27,7 +27,7 @@ namespace bilinear_rank {
 /// Up to `needed` independent rank-one maps inside `span`. Fewer than `needed`
 /// means there is no such basis.
 /// The shape comes from the pool, which is every rank-one map of it.
-std::vector<Matrix> rank_one_basis_of(const Field& field, const Span& span,
+std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
                                       const std::vector<Matrix>& pool, std::size_t needed,
                                       std::vector<Element>& scratch);
 

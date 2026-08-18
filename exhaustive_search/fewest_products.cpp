@@ -8,7 +8,7 @@
 
 namespace bilinear_rank {
 
-std::size_t starting_target(const Field& field, const std::vector<Matrix>& base) {
+std::size_t flattening_floor(const Field& field, const std::vector<Matrix>& base) {
     if (base.empty()) return 0;
     // The third flattening is the slice space, so its rank is exactly the span
     // dimension this used to start from; the maximum over the three axes can only
@@ -23,7 +23,7 @@ std::size_t starting_target(const Field& field, const std::vector<Matrix>& base)
     return linear_algebra::rank_lower_bound(field, base);
 }
 
-std::string gap_report(std::size_t products_found, std::size_t bound) {
+std::string require_bound_consistent(std::size_t products_found, std::size_t bound) {
     const std::string counted =
         std::to_string(products_found) + " products, rank bound " + std::to_string(bound);
     if (products_found < bound) {
@@ -36,7 +36,7 @@ bool fewest_products_by_sweep(const Field& field, const std::vector<Matrix>& bas
                               const std::vector<Matrix>& pool, SearchBudget& budget,
                               std::vector<Matrix>& products) {
     if (base.empty()) return false;
-    const std::size_t lowest = starting_target(field, base);
+    const std::size_t lowest = flattening_floor(field, base);
     const std::size_t highest = linear_algebra::multiplication_count(field, base);
 
     for (std::size_t target = lowest; target <= highest; ++target) {
@@ -50,7 +50,7 @@ bool fewest_products_by_bisection(const Field& field, const std::vector<Matrix>&
                                   const std::vector<Matrix>& pool, SearchBudget& budget,
                                   std::vector<Matrix>& products) {
     if (base.empty()) return false;
-    std::size_t low = starting_target(field, base);
+    std::size_t low = flattening_floor(field, base);
     std::size_t high = linear_algebra::multiplication_count(field, base);
 
     std::vector<Matrix> best;
@@ -95,7 +95,7 @@ std::pair<std::vector<Matrix>, std::vector<Matrix>> lowest_rank_partition(
     return {lowest, rest};
 }
 
-bool build_bottom_up(const Field& field, const std::vector<Matrix>& map,
+bool fewest_products_from_scratch(const Field& field, const std::vector<Matrix>& map,
                      const std::vector<Matrix>& pool, SearchBudget& budget,
                      std::vector<Matrix>& products) {
     // Absorb the map's slices in rank order, cheapest first, minimising after

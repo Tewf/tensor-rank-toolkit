@@ -53,7 +53,7 @@
 /// comes.
 ///
 /// Related and deliberately not this: `[covanov2019]` Algorithm 3, implemented as
-/// `expand_subspace_up_to` in [the quotiented search](../orbit_reduction/orbit_search.h),
+/// `expand_subspace_up_to_symmetry` in [the quotiented search](../orbit_reduction/orbit_search.h),
 /// which is complete and exponential. Keys are [references.md](../references.md).
 namespace bilinear_rank {
 

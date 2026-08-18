@@ -33,7 +33,7 @@ long long matches(const Field& field, const matrix_sparsification::Element& valu
 /// is stored transposed on.
 Matrix sparsified(const Field& field, const Matrix& operator_) {
     return linear_algebra::transpose<Field>(
-        matrix_sparsification::greedy_sparsify(field, linear_algebra::transpose<Field>(operator_)));
+        matrix_sparsification::sparsify_by_rescaling(field, linear_algebra::transpose<Field>(operator_)));
 }
 
 }  // namespace

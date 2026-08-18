@@ -51,7 +51,7 @@ void check_from_scratch(const std::string& directory, const std::string& name,
     }
     bilinear_rank::Algorithm algorithm;
     if (!bilinear_rank::recover_algorithm(field, tensor.slices, products, algorithm) ||
-        !linear_algebra::spans_all(field, bilinear_rank::computed_map(field, algorithm),
+        !linear_algebra::spans_all(field, bilinear_rank::map_computed_by(field, algorithm),
                                    tensor.slices)) {
         std::cout << "  FAIL  " << name << ": the products do not compute the map\n";
         ++check::failure_count;

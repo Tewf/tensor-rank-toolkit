@@ -27,7 +27,7 @@
 /// alone it does win, on `f2_5x5`, 9 against 8.
 ///
 /// Callers wire this in rather than a single method by name:
-/// `exhaustive_search/fewest_products.cpp::starting_target` and the SAT command's
+/// `exhaustive_search/fewest_products.cpp::flattening_floor` and the SAT command's
 /// floor both go through it.
 namespace linear_algebra {
 

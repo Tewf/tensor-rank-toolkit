@@ -35,12 +35,12 @@ The relevant subgroup is `Stab(T) = { σ : span(T) ∘ σ = span(T) }`. Note thi
 is the **setwise** stabiliser of the span, not of the slice tuple: the search
 only ever reads `span(T)`, so any change of basis among the slices is free.
 
-## Why it is sound, and why `one_per_row_space` is not
+## Why it is sound, and why `row_space_representatives` is not
 
 For `σ ∈ Stab(T)`, `S_r(T) ∘ σ = S_r(T)`: the solution set is closed under the
 group, so enumerating one representative per orbit loses nothing (Covanov
 Prop. 2.6). [`candidate_pool.h`](../descent_search/candidate_pool.h) already says its
-`one_per_row_space` must not be wired in, and it is right, because that quotients by
+`row_space_representatives` must not be wired in, and it is right, because that quotients by
 row space alone, which fixes almost no span. It is not a weaker version of this;
 it is a different equivalence.
 
