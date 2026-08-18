@@ -1,10 +1,12 @@
 {
   "task": "Deciding tensor rank as a satisfiability question: is there a decomposition of T into k rank-one terms?",
-  "source": "Produced by `decide-rank-by-sat fixtures/<name>.tensor --target k --break-symmetry --plain-cnf`. The exhaustive column is the same question answered by `decide-rank`, which enumerates subspaces instead.",
+  "source": "Produced by `reproduce/measure.py`, which asks every question below of both instruments: `decide-rank-by-sat <fixture> --target k --break-symmetry --plain-cnf` for the solver columns, and `decide-rank <fixture> --target k` for the exhaustive ones, which answer the same question by enumerating subspaces. Each row carries the invocation that produced it, and the provenance block at the end names the commit, the compiler, the Givaro version, the solvers on PATH and the defaults in force.",
+  "covered": "`measure.py --check` re-derives `found_at`, `ruled_out_at` and `exhaustive_nodes`, and stops the run rather than reporting drift if a verdict has flipped. It carries `field`, `known_rank`, the notes and the `*_under_cryptominisat` second opinions untouched, because those are a literature fact, prose and another solver's answer rather than measurements this driver makes. It re-derives no timing, for the reason MEASURING.md gives. It covers every figure here except one, the GF(16) exhaustive node count, and it prints a SKIPPED line naming that one on every run.",
   "why": "Hastad proved in 1990 that tensor rank is NP-complete over every finite field. NP-completeness cuts both ways: a decomposition is a certificate, so the question can be handed to a solver rather than enumerated.",
   "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz, 2026-08-16. Every timing is the fastest of three runs on an otherwise quiet machine, because the spread between runs is larger than several of the values.",
+  "timings": "Every `*_seconds` field is the 2026-08-16 run described under `machine`, and no `--check` reads one. They are rewritten only by a full `measure.py` run on a quiet machine, under the protocol in MEASURING.md; the counts beside them are re-derived on every push.",
   "solver": "kissat 4.0.4, and every `*_seconds` field is kissat unless its name says otherwise. Some of these were previously cryptominisat timings under a heading that said kissat, which is why the solver is now named per column: `*_under_cryptominisat` fields are the second opinion and the evidence for preferring kissat, kept rather than deleted because without them the preference has nothing behind it.",
-  "solver_choice": "Native XOR clauses are worth nothing on these instances, 1.559 s against 1.563 s on the same question. Raw strength is worth 134x on the dearest find here, GF(16) at 9 products: 0.270 s against 36.19 s. See `choices.md`.",
+  "solver_choice": "Native XOR clauses are worth nothing on these instances, 1.559 s against 1.563 s on the same question. Raw strength is worth 134x on the dearest find here, GF(16) at 9 products: 0.270 s against 36.19 s. See `choices/`.",
   "methods": [
     "GF(2): Boolean variables per coordinate, Tseitin conjunctions in two stages, one parity constraint per tensor entry.",
     "GF(p) one-hot: p Booleans per unknown with exactly one true, and the field's multiplication and addition tables written out as implications.",
@@ -18,8 +20,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0052,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x2.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
-      "ruled_out_seconds": 0.0027
+      "ruled_out_seconds": 0.0027,
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x2.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "f2_2x3",
@@ -27,8 +31,10 @@
       "known_rank": 5,
       "found_at": 5,
       "found_seconds": 0.0113,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x3.tensor --target 5 --break-symmetry --plain-cnf",
       "ruled_out_at": 4,
-      "ruled_out_seconds": 0.0101
+      "ruled_out_seconds": 0.0101,
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_2x3.tensor --target 4 --break-symmetry --plain-cnf"
     },
     {
       "name": "gf4_multiplication",
@@ -36,8 +42,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0028,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf4_multiplication.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
-      "ruled_out_seconds": 0.0027
+      "ruled_out_seconds": 0.0027,
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf4_multiplication.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "gf8_multiplication",
@@ -45,10 +53,12 @@
       "known_rank": 6,
       "found_at": 6,
       "found_seconds": 0.0422,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf8_multiplication.tensor --target 6 --break-symmetry --plain-cnf",
       "ruled_out_at": 5,
       "ruled_out_seconds": 0.0378,
       "ruled_out_seconds_under_cryptominisat": 0.0357,
-      "note": "The 4.13 s recorded here for ruling out 5 could not be reproduced by anything tried: 0.0378 s with the term ordering, 0.534 s without it, 0.0357 s under cryptominisat. It is replaced rather than explained, and said so here so the next reader does not inherit the same puzzle. `search.md` was the file that was right: its gf8 floor of 0.085 s is the sum of these two questions."
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf8_multiplication.tensor --target 5 --break-symmetry --plain-cnf",
+      "note": "The 4.13 s recorded here for ruling out 5 could not be reproduced by anything tried: 0.0378 s with the term ordering, 0.534 s without it, 0.0357 s under cryptominisat. It is replaced rather than explained, and said so here so the next reader does not inherit the same puzzle. `search/` was the file that was right: its gf8 floor of 0.085 s is the sum of these two questions."
     },
     {
       "name": "w_state",
@@ -56,8 +66,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0044,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/w_state.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
-      "ruled_out_seconds": 0.0027
+      "ruled_out_seconds": 0.0027,
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/w_state.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "matmul_2x2x2",
@@ -66,10 +78,13 @@
       "found_at": 7,
       "found_seconds": 0.177,
       "found_seconds_under_cryptominisat": 0.469,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x2.tensor --target 7 --break-symmetry --plain-cnf",
       "ruled_out_at": 6,
       "ruled_out_seconds": 0.311,
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x2.tensor --target 6 --break-symmetry --plain-cnf",
+      "exhaustive_nodes": 25399,
       "exhaustive_ruled_out_seconds": 0.41,
-      "exhaustive_nodes": 25399
+      "exhaustive_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/exhaustive_search/decide-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x2.tensor --target 6"
     },
     {
       "name": "matmul_2x2x3",
@@ -77,8 +92,11 @@
       "known_rank": 11,
       "ruled_out_at": 8,
       "ruled_out_seconds": 34.26,
-      "exhaustive_ruled_out_seconds": 53.1,
-      "exhaustive_nodes": 446923
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x3.tensor --target 8 --break-symmetry --plain-cnf",
+      "exhaustive_nodes": 0,
+      "exhaustive_ruled_out_seconds": null,
+      "exhaustive_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/exhaustive_search/decide-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/matmul_2x2x3.tensor --target 8",
+      "exhaustive_note": "The tree search opens no node here any more, and that is a real change rather than a lost measurement. `rank_lower_bound` is the maximum over the flattening rank and `[yang2025]`'s two rank sums, and it puts this tensor at 9, so `decide-rank --target 8` refutes the target by Gaussian elimination and returns before the search opens a node. There is therefore no search time to report. The 446 923 nodes and 53.1 s this row carried before were what the same command produced when the flattening rank was the only bound it had; no invocation of the shipped binary produces them now."
     },
     {
       "name": "gf16_multiplication",
@@ -87,10 +105,13 @@
       "found_at": 9,
       "found_seconds": 0.27,
       "found_seconds_under_cryptominisat": 36.19,
+      "found_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf16_multiplication.tensor --target 9 --break-symmetry --plain-cnf",
       "ruled_out_at": 8,
       "ruled_out_seconds": 108.0,
+      "ruled_out_command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/satisfiability/decide-rank-by-sat /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
+      "exhaustive_nodes": 105600301,
       "exhaustive_ruled_out_seconds": 2328,
-      "exhaustive_nodes": 105600301
+      "exhaustive_nodes_not_reproducible": "The `--node-limit` this run was given was never written down. 105 600 301 nodes is twenty-one times the default ceiling of 5 000 000 (`search_node_limit`, `tunables.conf`), so the run cannot have been made at the default, and the number it was raised to is recorded nowhere; the 2328 s beside it came off the same unrecorded run. `reproduce/measure.py` therefore does not re-derive either, and prints a SKIPPED line naming this figure on every run, `--check` included, rather than passing over it in silence. Re-deriving it is roughly forty minutes of one core at the rate the shipped binary visits nodes. Whoever runs it should write the flag into `exhaustive_command`, delete this key, and let the driver own the figure."
     },
     {
       "name": "f2_5x5",
@@ -99,20 +120,62 @@
       "known_rank_note": "Not known. The bound established in this repository is 12 <= rank <= 14: 11 products ruled out exhaustively, 14 reached by the heuristic.",
       "ruled_out_at": null,
       "ruled_out_seconds": null,
-      "note": "Unresolved here. No answer in 700 s of one core, and no proof written. The exhaustive search has not run k=12 either; its 7 h figure is an extrapolation from k=11, not a measurement.",
       "exhaustive_ruled_out_seconds": null,
-      "exhaustive_nodes": null
+      "exhaustive_nodes": null,
+      "note": "Unresolved here. No answer in 700 s of one core, and no proof written. The exhaustive search has not run k=12 either; its 7 h figure is an extrapolation from k=11, not a measurement."
     }
   ],
   "prime_field_backends": {
     "note": "Ground truth from the exhaustive search. Every verdict both backends produced agrees, which is what the second backend is for.",
     "comparison": [
-      { "name": "gf9_multiplication", "field": 3, "known_rank": 3, "question": "find 3", "one_hot_seconds": 0.01, "field_theory_seconds": 5.44 },
-      { "name": "gf9_multiplication", "field": 3, "known_rank": 3, "question": "rule out 2", "one_hot_seconds": 0.0075, "field_theory_seconds": 0.085 },
-      { "name": "f3_2x2", "field": 3, "known_rank": 3, "question": "find 3", "one_hot_seconds": 0.014, "field_theory_seconds": 3.0 },
-      { "name": "f3_2x2", "field": 3, "known_rank": 3, "question": "rule out 2", "one_hot_seconds": 0.011, "field_theory_seconds": 0.022 },
-      { "name": "f3_2x3", "field": 3, "known_rank": 4, "question": "find 4", "one_hot_seconds": 0.051, "field_theory_seconds": null },
-      { "name": "f3_2x3", "field": 3, "known_rank": 4, "question": "rule out 3", "one_hot_seconds": 0.099, "field_theory_seconds": 2.22 }
+      {
+        "name": "gf9_multiplication",
+        "field": 3,
+        "known_rank": 3,
+        "question": "find 3",
+        "one_hot_seconds": 0.01,
+        "field_theory_seconds": 5.44
+      },
+      {
+        "name": "gf9_multiplication",
+        "field": 3,
+        "known_rank": 3,
+        "question": "rule out 2",
+        "one_hot_seconds": 0.0075,
+        "field_theory_seconds": 0.085
+      },
+      {
+        "name": "f3_2x2",
+        "field": 3,
+        "known_rank": 3,
+        "question": "find 3",
+        "one_hot_seconds": 0.014,
+        "field_theory_seconds": 3.0
+      },
+      {
+        "name": "f3_2x2",
+        "field": 3,
+        "known_rank": 3,
+        "question": "rule out 2",
+        "one_hot_seconds": 0.011,
+        "field_theory_seconds": 0.022
+      },
+      {
+        "name": "f3_2x3",
+        "field": 3,
+        "known_rank": 4,
+        "question": "find 4",
+        "one_hot_seconds": 0.051,
+        "field_theory_seconds": null
+      },
+      {
+        "name": "f3_2x3",
+        "field": 3,
+        "known_rank": 4,
+        "question": "rule out 3",
+        "one_hot_seconds": 0.099,
+        "field_theory_seconds": 2.22
+      }
     ]
   },
   "symmetry_breaking": {
@@ -124,5 +187,29 @@
     "without_seconds_under_cryptominisat": null,
     "with_seconds_under_cryptominisat": 1.57,
     "cryptominisat_note": "No answer in 120 s without the ordering, 1.57 s with it, which is where the earlier `at least 76x` came from. The pair is kept because it is a lower bound on the same effect from the other solver, and labelled because the file used to present it as kissat's."
+  },
+  "provenance": {
+    "commit": "4efe1aaa9bbe8af210a22172679a21391cbc8750",
+    "tree_clean": false,
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "usage: drat-trim [INPUT] [<PROOF>] [<option> ...]",
+      "cbc": "Welcome to the CBC MILP Solver",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build",
+    "repeats": 3,
+    "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
   }
 }

@@ -1,9 +1,8 @@
 # How a number here was measured
 
 Every timing in this repository, in the READMEs, in the `results.json` files and
-on the published page, was produced the same way. This file states it once so
-that no measurement has to restate it, and so that a reader can tell what a
-number is evidence of.
+on the published page, was produced the same way. This file states it once, so no
+measurement restates it and a reader can tell what a number is evidence of.
 
 ## The protocol
 
@@ -40,8 +39,7 @@ that the band cannot account for them, which is why the ones that appear are 28x
 ## Defaults a published number depends on
 
 Every number here was produced with these in force. A run that changes one is
-measuring a different thing, so **the changed flag must be recorded beside the
-number it produced**.
+measuring a different thing, so **the changed flag belongs beside the number**.
 
 | Flag | Default | Set by |
 |---|---|---|
@@ -55,10 +53,10 @@ same nodes and the heuristic adopts the same candidates in the same order.
 
 **A published node count above 5 000 000 means a non-default `--node-limit` was
 used.** The GF(16) row of `satisfiability/results.json` records 105 600 301
-exhaustive nodes, twenty-one times the default ceiling, so that run cannot have
-been made at the default and the value it was raised to belongs next to the
-figure. A number whose flags are not recorded is not reproducible, whatever
-machine it is run on.
+exhaustive nodes, twenty-one times the default ceiling, and the flag behind it
+was never written down. That row says so in its own `_not_reproducible` key, and
+`reproduce/measure.py` prints a SKIPPED line naming it on every run: the one
+figure the driver does not cover is the one it is loudest about.
 
 ## What is reproducible, and what is not
 
