@@ -18,7 +18,7 @@ candidate pool at all.
 |---|---|
 | the Kronecker structure | **exact**, and checked three ways against itself |
 | rank over the algebraic closure | **exact**, by `[grigoriev1978, Thm. 1]` and `[jaja1979]`, so a **proved lower bound** over GF(p) |
-| rank over GF(p) | **exact** when the pencil is diagonalisable there; a bound otherwise |
+| rank over GF(p) | **exact** when the pencil is diagonalisable there; a bound otherwise, and weaker than `[sumi2009, Thm. 3.5]` allows |
 | the projection bound on a bigger tensor | **sound**, and weaker than `rank_lower_bound` |
 
 The structure is checked rather than trusted. The regular part's size is counted
@@ -71,13 +71,11 @@ The three rows where both fall short share a shape: a block whose size is large
 against the field. `d = 3` and `d = 4` over GF(2) fail, `d = 3` over GF(3)
 does not, and `d = 2` never does.
 
-## What would close it
+## What closes it, and it is published
 
-A per-block cost `c(p^e, q)` proved rather than measured. The measurements are
-consistent with `c` being 1 while the field has enough points for the block and
-larger below that, which is a conjecture and is written here as one. The
-exhaustive search settles any single case up to about 4x4 over GF(2), so a
-proposed `c` can be refuted cheaply, which is the useful half.
+The field-size condition this module was written around is the hypothesis of a
+theorem, and the counterexample is in the same paper, which this repository
+already cited: [`what-the-literature-settles.md`](what-the-literature-settles.md).
 
 ## A second use for the canonical form
 

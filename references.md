@@ -40,7 +40,7 @@ of matrix pencils. It marks where the exhaustive machinery here starts being
 necessary: at two slices the answer is a canonical form, and the searches in
 this repository are for what lies past that.
 
-**`sumi2009`**: T. Sumi, M. Miyata, T. Sakata. *Rank of 3-tensors with 2 slices
+**`sumi2009`**: T. Sumi, M. Miyazaki, T. Sakata. *Rank of 3-tensors with 2 slices
 and Kronecker canonical forms.* Linear Algebra and its Applications (2009),
 [arXiv:0808.1167](https://arxiv.org/abs/0808.1167). The modern treatment of the
 two-slice case, and the warning that comes with it: **the rank of a Kronecker
@@ -55,6 +55,15 @@ setting. **Lemma 2.1** is the Kronecker canonical form, quoted there from
 shows the condition cannot be dropped: `(E_3, A)` over `GF(2)` with `A` the
 companion matrix of `x^3 + x + 1` has rank at least 5, which is the pencil this
 repository's own table settles at exactly 5 against a `GF(q)` count of 4.
+
+**Theorem 3.5 is the one this module should be computing and is not.** With `k`
+the number of invariant polynomials `p_i(A)` that do not factor into *distinct*
+linear factors over `K`, Ja'Ja's Theorem 3.3 gives `rank_K(E^n; A) <= n + k`
+under the cardinality hypothesis, and Sumi, Miyazaki and Sakata prove
+`rank_K(E^n; A) >= n + k` **with no hypothesis at all**, where Ja'Ja' had the
+reverse inequality only when `p_1(A)` splits into linear factors. So `n + k` is a
+proved lower bound over every field, and it is *exact* whenever
+`Card(K) >= deg p_1(A)`, which is a condition a program can check.
 
 **`gantmacher1959`**: F. R. Gantmacher. *The Theory of Matrices*, Vols. 1 and 2.
 Translated by K. A. Hirsch. Chelsea, New York, 1959. Where Kronecker's 1890
