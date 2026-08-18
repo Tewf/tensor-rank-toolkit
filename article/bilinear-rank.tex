@@ -1,0 +1,347 @@
+\documentclass[11pt,reqno]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\GF}{\mathbb{F}}
+\newcommand{\rk}{\operatorname{rank}}
+\newcommand{\spn}{\operatorname{span}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Stab}{\operatorname{Stab}}
+
+\title[Exact bilinear complexity over finite fields]
+      {Exact bilinear complexity over finite fields:\\
+       guarantees for a descent heuristic, and a pool-free solver route}
+\author{Mohamed Ali Tewfik Hamlil}
+\date{\today}
+
+
+\begin{document}
+
+\begin{abstract}
+The rank of a bilinear map is the number of multiplications required to compute
+it, and deciding it over a finite field is NP-complete. We report on an
+implementation that attacks the problem from two directions and prove what each
+one guarantees. For a greedy descent we establish exactness of its first step by
+Rado--Edmonds, an invariant giving soundness, a termination bound, and a pruning
+lemma from which the descent's fixed point is shown to be locally optimal against
+the \emph{entire} candidate pool rather than against the subset it scanned. We
+prove that the improvement predicate is invariant under any subgroup of the
+stabiliser of the current span, which is what makes symmetry reduction sound, and
+observe that the implementation quotients by a subgroup rather than by the full
+stabiliser, so that enlarging it is a question of efficiency and never of
+correctness. Separately we note that the satisfiability route requires no
+enumeration of rank-one maps at any point, so its space is polynomial in the
+input where the combinatorial route is exponential: on $\langle 4,4,4\rangle$
+the pool is $8.2$~TiB and refused, while the formula is $11$~MB and written in
+$1.5$~s. We also record three negative results, since each cost real time to
+establish.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $\GF$ be a field and let $T$ be a bilinear map, presented as a list of
+slices $T_1,\dots,T_k$, each an $n\times m$ matrix over $\GF$. The
+\emph{rank} of $T$, equivalently its \emph{bilinear complexity}, is the least
+$r$ for which
+\[
+  t_{ijl} \;=\; \sum_{s<r} a^{(s)}_i\, b^{(s)}_j\, c^{(s)}_l ,
+\]
+that is, the least number of multiplications sufficient to compute $T$.
+Strassen's seven products in place of eight for $2\times 2$ matrix
+multiplication is the origin of the subject, and determining rank in general is
+open.
+
+Two facts frame everything below. First, over a finite field the decision
+problem ``is $\rk(T)\le r$?'' is NP-\emph{complete}, not merely NP-hard; the
+sharper statement is due to Schaefer and \v{S}tefankovi\v{c}, who show that
+tensor rank over $\GF$ is polynomial-time equivalent to the existential theory
+of $\GF$. Membership in NP is not a technicality here: it is what makes a
+decomposition a certificate of polynomial size, and therefore what makes the
+problem expressible to a solver at all. Over $\mathbb{R}$ or $\mathbb{Q}$ no such
+certificate exists, and over $\mathbb{Q}$ the problem is not known to be
+decidable.
+
+Second, the two natural algorithmic formulations differ in a way that is
+invisible in their statements and decisive in their space usage. Section
+\ref{sec:space} makes this precise.
+
+Our contributions are: proofs for a descent heuristic that previously carried
+measurements and one informal remark (Section~\ref{sec:descent}); the observation
+that the solver formulation is pool-free and therefore polynomial in space
+(Section~\ref{sec:space}); a soundness result for symmetry reduction together
+with the corollary that closes the gap between it and the implementation
+(Section~\ref{sec:symmetry}); and three negative results (Section~\ref{sec:neg}).
+
+\section{Preliminaries}
+
+Write $\cost(X)=\sum_i \rk(X_i)$ for a list $X$ of matrices. A rank-one
+bilinear form is exactly one multiplication, so $\cost$ counts multiplications.
+
+\begin{definition}
+A list $S$ is \emph{feasible} for $T$ if $\spn(S)\supseteq\spn(T)$.
+\end{definition}
+
+Feasibility, rather than equality of spans, is the right notion: $S$ need only
+\emph{generate} $T$, so a larger spanning set of smaller total rank is a better
+answer. Karatsuba's five products for a four-coefficient product is exactly such
+a case, and it is why $|S|$ may exceed $|T|$.
+
+We use throughout that $\spn(T)\setminus\{0\}$ under linear independence is a
+vector matroid, and that $w(M)=\rk(M)$ is a non-negative integer weight on it.
+
+\section{A descent, and what it guarantees}\label{sec:descent}
+
+The method has three steps. Step 1 chooses a basis of $\spn(T)$ of least total
+rank. Steps 2 and 3 relax feasibility from ``basis'' to ``spanning set'' and
+descend over a pool $G$ of candidate rank-one maps, adopting any candidate whose
+addition lowers $\cost$. The two later steps are the same procedure differing
+only in $G$: step 2 uses the rank-one terms of $T$ itself, step 3 every rank-one
+map of the shape, one per scalar class, of which there are
+$(p^{n}-1)(p^{m}-1)/(p-1)^2$.
+
+\begin{theorem}[Step 1 is exact]\label{thm:greedy}
+Sorting $\spn(T)\setminus\{0\}$ by ascending rank and keeping each element that
+preserves independence returns a basis of $\spn(T)$ of minimum total rank.
+\end{theorem}
+
+\begin{proof}
+The procedure is the matroid greedy. By Rado--Edmonds it returns a
+minimum-weight basis of any matroid under any non-negative weight function. The
+matroid is the vector matroid of $\spn(T)$ and the weight is $\rk$.
+\end{proof}
+
+The \emph{value} is therefore independent of how ties are broken, all
+minimum-weight bases of a matroid having equal weight; the \emph{basis} need not
+be. Fixing the enumeration order accordingly buys reproducibility, not
+optimality.
+
+\begin{theorem}[Soundness]\label{thm:sound}
+Every $S$ the descent holds is feasible for $T$.
+\end{theorem}
+
+\begin{proof}
+By induction. The initial $S_0$ is a basis of $\spn(T)$, so $\spn(S_0)=\spn(T)$.
+A step replaces $S$ by a basis of $\spn(S\cup\{\varphi\})$, and
+$\spn(S\cup\{\varphi\})\supseteq\spn(S)\supseteq\spn(T)$ by hypothesis.
+\end{proof}
+
+Consequently a result is never wrong, only possibly large.
+
+\begin{theorem}[Termination]\label{thm:term}
+The descent performs at most $\cost(S_0)-\rk(T)$ adoptions.
+\end{theorem}
+
+\begin{proof}
+A candidate is adopted only when $\cost$ strictly decreases. By
+Theorem~\ref{thm:sound} every intermediate $S$ is feasible, so
+$\cost(S)\ge \rk(T)$. A strictly decreasing sequence of integers bounded below is
+finite, of length at most the initial gap.
+\end{proof}
+
+The next lemma is what licenses the implementation to discard candidates
+permanently rather than for a single pass, and it is the hypothesis of
+Theorem~\ref{thm:oneopt}.
+
+\begin{lemma}[Pruning is sound]\label{lem:prune}
+If $\varphi\in\spn(S)$ then $\varphi$ cannot lower $\cost$, now or at any later
+stage of the descent.
+\end{lemma}
+
+\begin{proof}
+Each $S$ is a minimum-weight basis of its own span, being the output of
+Theorem~\ref{thm:greedy} applied to that span. If $\varphi\in\spn(S)$ then
+$\spn(S\cup\{\varphi\})=\spn(S)$, whose minimum-weight basis has weight
+$\cost(S)$; there is no decrease. By Theorem~\ref{thm:sound} the span only grows,
+so $\varphi\in\spn(S')$ for every later $S'$ and the argument repeats.
+\end{proof}
+
+\begin{theorem}[Local optimality over the whole pool]\label{thm:oneopt}
+At the fixed point, no $\varphi\in G$ lowers $\cost$, including those never
+tested.
+\end{theorem}
+
+\begin{proof}
+Each $\varphi\in G$ was either tested and failed to improve, or discarded, in
+which case Lemma~\ref{lem:prune} shows it could not have improved.
+\end{proof}
+
+Theorem~\ref{thm:oneopt} is strictly stronger than the loop's stopping condition,
+which speaks only of the candidates that survived pruning. It is also the claim
+most exposed to an implementation error, since a defect in the pruning would
+produce a quietly worse answer rather than a visible failure; it is therefore
+asserted directly by a test, which rescans the entire pool at the fixed point.
+
+\begin{remark}
+No approximation ratio follows. Theorem~\ref{thm:oneopt} concerns single
+additions only. A move exchanging two elements at once lies outside the
+neighbourhood and can pay: $\langle 2,2,2\rangle$ sits at a fixed point of cost
+$8$ while its rank is $7$, which is why escaping such plateaus is a separate
+method rather than a parameter of this one.
+\end{remark}
+
+\begin{remark}
+Step 3 cannot do worse than step 2. Step 2's pool consists of rank-one terms of
+$T$, each a scalar multiple of an element of step 3's pool, and $\varphi$ and
+$c\varphi$ span the same line. The ordering of the steps therefore costs time
+and not quality.
+\end{remark}
+
+\section{Symmetry reduction}\label{sec:symmetry}
+
+Let $\sigma=(\mu,\nu)$ with $\mu,\nu$ invertible act on matrices by
+$M\mapsto \mu^{\mathsf T} M\nu$. This is the rank-preserving action under which
+a decomposition of $T$ is carried to another decomposition.
+
+\begin{theorem}[Orbit invariance]\label{thm:orbit}
+If $\sigma(\spn S)=\spn S$ then $\varphi$ lowers $\cost(S)$ if and only if
+$\sigma(\varphi)$ does.
+\end{theorem}
+
+\begin{proof}
+Invertibility of $\mu,\nu$ gives $\rk(\mu^{\mathsf T}M\nu)=\rk(M)$, so $\sigma$
+preserves weights and $\cost(X)=\cost(\sigma(X))$ for every list $X$. Being a
+linear isomorphism fixing $\spn(S)$, it carries $\spn(S\cup\{\varphi\})$ onto
+$\spn(S\cup\{\sigma\varphi\})$. By Theorem~\ref{thm:greedy} minimum weight is a
+function of the span alone, so the two additions have equal cost.
+\end{proof}
+
+Hence one representative per orbit of $\Stab(\spn S)$ suffices. Note that the
+hypothesis concerns the stabiliser of the \emph{current} span and not of $T$: a
+quotient computed once and reused as $S$ moves is unsound, not merely weaker.
+
+\begin{corollary}\label{cor:subgroup}
+The conclusion of Theorem~\ref{thm:orbit} holds for every subgroup
+$H\le \Stab(\spn S)$, with orbits at least as fine.
+\end{corollary}
+
+\begin{proof}
+The proof of Theorem~\ref{thm:orbit} uses only that each element preserves rank
+and fixes $\spn(S)$, which every element of a subgroup does. Finer orbits yield
+more representatives, hence a smaller reduction and never a wrong answer.
+\end{proof}
+
+Corollary~\ref{cor:subgroup} is what reconciles the theory with the
+implementation. On the matrix multiplication path the ambient group is supplied
+as nine generators, and the code retains those that fix the span; the quotient is
+therefore by the subgroup they generate and not by the full stabiliser. The
+corollary shows this is sound, and locates the risk in any future improvement:
+computing a larger subgroup changes performance and cannot change an answer.
+
+\begin{remark}
+The action above is not a symmetry a satisfiability solver can exploit
+internally. Every established SAT symmetry method acts on permutations of
+literals commuting with negation, whereas $\sigma$ mixes coordinates linearly.
+Only the symmetric group on the $r$ summands is expressible in conjunctive normal
+form. Group-based reduction must therefore enter from outside the solver, as a
+partition of the search into independent instances, one per orbit of the first
+term.
+\end{remark}
+
+\section{Two formulations, and why their space differs}\label{sec:space}
+
+The combinatorial formulation searches for a subspace of dimension $r$
+possessing a basis of rank-one maps, choosing successive basis elements from an
+explicit pool. The satisfiability formulation introduces one variable per
+coordinate of each factor and constrains their products to reproduce $T$.
+
+The two decide the same question and their space requirements are not
+comparable. The pool has $(p^{n}-1)(p^{m}-1)/(p-1)^2$ elements, exponential in
+the axis lengths; the formula has $r(n_1+n_2+n_3)+r\,n_1n_2+r\,n_1n_2n_3$
+variables, polynomial in the size of $T$. The rank-one condition in the second is
+imposed by the shape of the formula rather than by selection from a list, so no
+enumeration occurs at any point.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrr}
+\toprule
+$\langle 4,4,4\rangle$ at $r=47$ & combinatorial & satisfiability \\
+\midrule
+objects held      & $4{,}294{,}836{,}225$ & --- \\
+space             & $8.2$ TiB (refused)   & $11$ MB \\
+time to produce   & ---                   & $1.5$ s \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+\caption{The same tensor and the same $r$, both instruments.}
+\end{table}
+
+The distinction is not incidental to the implementations. It follows from the
+formulations: ``choose the $i$-th rank-one map'' presupposes an enumeration,
+while ``these coordinates multiply out to $T$'' does not.
+
+\begin{remark}
+Polynomial space is not tractability. For the combinatorial route a lazily
+generated pool would change space and not time, converting an immediate failure
+into a computation that does not terminate in practice. For the solver route the
+distinction is the whole point, since the search itself is delegated.
+\end{remark}
+
+\begin{remark}
+Membership in FNP is realised literally. On a satisfying assignment the
+implementation reconstructs the rank-one matrices, multiplies them out, and
+compares against $T$, rejecting the answer if they differ. A positive answer
+therefore does not rest on trusting the solver or the encoding. A negative answer
+may be accompanied by a DRAT refutation checked by an independent program.
+\end{remark}
+
+\section{Negative results}\label{sec:neg}
+
+Each of the following cost time to establish and is recorded so that it is not
+established again.
+
+\emph{Fixed-$k$ search with commitment.} A finder that asks only questions it
+expects to be satisfiable was built on an assumed asymmetry between the cost of
+acceptance and refutation, quoted at two orders of magnitude. Measured with
+matched flags, the asymmetry is approximately unity; the original figures
+compared instances encoded with and without symmetry breaking. The method is
+dominated by the descent on every fixture measured.
+
+\emph{Deeper cube splitting.} Partitioning a refutation by orbits of the first
+two terms rather than the first was measured at $2989.8$ s against $108.2$ s for
+the undivided instance, with the longest single part exceeding the whole. Even
+unbounded parallelism does not recover this.
+
+\emph{The expensive step of the descent.} Step 3 improved the answer on two of
+four fixtures, by one product each time, at between $58$ and $184$ times the cost
+of the first two steps combined. Effort spent accelerating it is spent on the
+part that mostly does not pay.
+
+\section{Limitations}
+
+The descent carries no approximation guarantee. The exhaustive route is
+complete but its cost is $\binom{|G|}{\,r-\dim T\,}$, which is prohibitive
+beyond small shapes. Reported timings are machine-dependent and are not
+reproducible in continuous integration; counts are, and are asserted there.
+Nothing here settles the bilinear rank problem.
+
+\begin{thebibliography}{9}
+\bibitem{schaefer} M.~Schaefer and D.~\v{S}tefankovi\v{c},
+  \emph{The complexity of tensor rank}, Theory of Computing Systems, 2018.
+\bibitem{hastad} J.~H\r{a}stad, \emph{Tensor rank is NP-complete},
+  Journal of Algorithms 11 (1990), 644--654.
+\bibitem{bdez} R.~Barbulescu, J.~Detrey, N.~Estibals and P.~Zimmermann,
+  \emph{Finding optimal formulae for bilinear maps}, WAIFI 2012.
+\bibitem{oxley} J.~Oxley, \emph{Matroid Theory}, 2nd ed., Oxford, 2011.
+  (Rado--Edmonds, the matroid greedy.)
+\bibitem{mckay} B.~D.~McKay, \emph{Isomorph-free exhaustive generation},
+  Journal of Algorithms 26 (1998), 306--324.
+\bibitem{givaro} The CASYS team, \emph{Givaro: exact arithmetic over
+  $\GF(p)$ and over the rationals}.
+\end{thebibliography}
+
+\end{document}

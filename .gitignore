@@ -8,3 +8,13 @@ Manifest.toml
 # Python bytecode, from running the frozen original for comparison
 __pycache__/
 *.pyc
+
+# LaTeX intermediates. The PDF is committed; everything else regenerates.
+article/*.aux
+article/*.log
+article/*.out
+article/*.fls
+article/*.fdb_latexmk
+article/*.bbl
+article/*.blg
+article/*.synctex.gz

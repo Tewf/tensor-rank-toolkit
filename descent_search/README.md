@@ -35,7 +35,8 @@ make-tensor        --field 2 1 1 1                 # build GF(4) multiplication
 ```
 
 What it guarantees, proved rather than measured:
-[`correctness.md`](correctness.md).
+[`../article/bilinear-rank.pdf`](../article/bilinear-rank.pdf), and
+[`correctness.md`](correctness.md) for which of those a test would catch.
 
 ## What the heuristic reaches
 

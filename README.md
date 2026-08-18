@@ -33,10 +33,13 @@ guarantee for reach.
 | F2 4×7 | 28 | **16** | no solution at 14 |
 | F3 3×6 | 18 | **10** | 10, `[bdez2012]` |
 
-Step 1 is exact, by Rado-Edmonds, and the descent's guarantees are proved in
-[`descent_search/correctness.md`](descent_search/correctness.md): soundness, a
-termination bound, 1-opt over the whole pool, and why the orbit quotient loses
-nothing.
+The guarantees are proved rather than asserted, in
+[`article/bilinear-rank.pdf`](article/bilinear-rank.pdf): step 1 is exact by
+Rado-Edmonds, the descent is sound and terminates, its fixed point is locally
+optimal against the whole candidate pool and not merely the part it scanned, and
+the orbit quotient is invariant under any subgroup of the stabiliser. Which of
+those a test would catch is recorded in
+[`descent_search/correctness.md`](descent_search/correctness.md).
 
 **[Rank by exhaustion](exhaustive_search/)**, the expensive direction, which
 proves things. It settles small maps outright, reproducing Karatsuba's 3, the
@@ -122,6 +125,7 @@ references.md            every paper cited anywhere here, by the keys the code u
 state-of-the-art.md      where the research front is, and which parts of it are here
 positioning.md           what this library adds to it, and what it does not
 MEASURING.md             how a timing here was taken, and what it does not mean
+article/                 the write-up: definitions, theorems, proofs, negative results
 ```
 
 A folder with something to say carries its own `README.md`; one without says its
