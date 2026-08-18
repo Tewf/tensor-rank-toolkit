@@ -1,0 +1,10 @@
+# Multiplication in GF(2^2), modulus given highest degree first as the original's prompt asked.
+# Naive cost 4 multiplications, written by make-tensor.
+field 2
+shape 2 2 2
+
+0 1
+1 1
+
+1 0
+0 1

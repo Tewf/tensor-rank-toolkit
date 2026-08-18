@@ -1,0 +1,69 @@
+NOTICE: scope of the MIT licence, and credit for material that is not mine
+==========================================================================
+
+The MIT LICENSE in this repository covers **my own work only**: the C++ in
+linear_algebra/, formats/, cli/, testing/, run_limits/, map_construction/,
+descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
+integer_programme/, matrix_sparsification/, satisfiability/, curve_bounds/ and
+oracle_guided_search/, together with the fixtures and the site.
+
+It does **not** cover, and this repository does **not** redistribute, the
+published papers the algorithms come from. **references.md** names every one of
+them, with the numbered result each piece of code implements, and is the only
+place citations live, so that a claim can be checked against its source rather
+than against the code implementing it.
+
+
+Papers the algorithms come from
+-------------------------------
+
+See **references.md**. Every algorithm here is somebody's published result and is
+cited by a key the code uses, so a reader can go from a function to the theorem
+it implements without guessing.
+
+One credit belongs here rather than only in a bibliography, because it is
+**unpublished and was given directly**: the determinant-polynomial feasibility
+test in matrix_sparsification/pattern_feasibility.h, and the operator in
+fixtures/dumas_counterexample_l.matrix, are from a Maple worksheet by
+**Jean-Guillaume Dumas** (cex_poldet, 27 May 2024), supplied by him. The
+construction is his; the C++ and the tests are mine. The fixture keeps his name
+because the name is the credit.
+
+
+Acknowledgements
+----------------
+
+Thanks to **Jean-Guillaume Dumas** for supervising the earlier stage of this
+work.
+
+
+Software this depends on
+------------------------
+
+  * **Givaro**: exact arithmetic over finite fields and over the rationals,
+    developed by the CASYS team at the Laboratoire Jean Kuntzmann, Université
+    Grenoble Alpes. https://casys.gricad-pages.univ-grenoble-alpes.fr/givaro/
+    Used, not vendored: it is installed from the system package manager and no
+    part of it is copied into this repository.
+
+  * **GMP**, on which Givaro's integer and rational arithmetic rests.
+
+FFLAS-FFPACK, from the same team, was used for rank in an earlier revision and
+removed once a reduction against an echelon-form basis measured faster at these
+sizes. It is no longer a dependency.
+
+The solvers this can call, and does not ship, are named where they are used:
+kissat, CryptoMiniSat, CaDiCaL and cvc5 for the satisfiability strand, drat-trim
+for checking its refutations, and CBC, GLPK, lp_solve or Gurobi for the integer
+programme layer. Each is located on PATH at run time, and a run says which one
+answered.
+
+
+Timings
+-------
+
+Every time reported in this repository was measured on a single core of a 12th
+Gen Intel Core i5-12450H at 2.2 GHz. The protocol, the flags a published number
+depends on, and the roughly thirteen per cent this chassis varies from thermal
+throttling alone, are in **MEASURING.md**. Counts are asserted by the test suite
+and reproduce anywhere; timings are not, and are not claimed to.

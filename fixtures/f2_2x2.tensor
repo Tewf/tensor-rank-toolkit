@@ -1,0 +1,14 @@
+# Polynomial multiplication of 2 coefficients by 2, over GF(2).
+# Karatsuba's example: three products instead of four.
+# Small enough that the exact search can decide it from nothing.
+field 2
+shape 3 2 2
+
+1 0
+0 0
+
+0 1
+1 0
+
+0 0
+0 1

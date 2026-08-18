@@ -1,0 +1,323 @@
+{
+  "task": "Fewest multiplications for polynomial multiplication over GF(p), by searching for a spanning set of lower total rank",
+  "source": "Produced by `reproduce/measure.py`, which runs `minimise-rank fixtures/<name>.tensor` once per fixture, sequentially, and records the provenance block below.",
+  "why": "Nothing in the repository could re-derive the published numbers. These are computed from the committed fixtures by code the CI runs, and each result is checked to still generate the map it came from.",
+  "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz, which is the machine Table 1 was measured on.",
+  "warning": "Times are cumulative: step 3 includes steps 1 and 2.",
+  "steps": [
+    "Step 1, greedy smallest basis: walk the span from lowest rank upwards, keeping whatever is not already spanned.",
+    "Step 2, minimise over the rank-one maps already inside the map.",
+    "Step 3, minimise over every rank-one map of the shape."
+  ],
+  "fixtures": [
+    {
+      "name": "f2_5x5",
+      "naive": 25,
+      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_5x5.tensor --steps 3",
+      "step_1": {
+        "multiplications": 16,
+        "seconds": 0.0006
+      },
+      "step_2": {
+        "multiplications": 14,
+        "seconds": 0.0144
+      },
+      "step_3": {
+        "multiplications": 14,
+        "seconds": 1.3273
+      }
+    },
+    {
+      "name": "f2_3x8",
+      "naive": 24,
+      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_3x8.tensor --steps 3",
+      "step_1": {
+        "multiplications": 19,
+        "seconds": 0.0006
+      },
+      "step_2": {
+        "multiplications": 16,
+        "seconds": 0.053
+      },
+      "step_3": {
+        "multiplications": 15,
+        "seconds": 3.0786
+      }
+    },
+    {
+      "name": "f2_4x7",
+      "naive": 28,
+      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f2_4x7.tensor --steps 3",
+      "step_1": {
+        "multiplications": 19,
+        "seconds": 0.0009
+      },
+      "step_2": {
+        "multiplications": 16,
+        "seconds": 0.0487
+      },
+      "step_3": {
+        "multiplications": 16,
+        "seconds": 8.9577
+      }
+    },
+    {
+      "name": "f3_3x6",
+      "naive": 18,
+      "command": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build/descent_search/minimise-rank /home/hamlil/Desktop/Etude/tensor-rank-toolkit/fixtures/f3_3x6.tensor --steps 3",
+      "step_1": {
+        "multiplications": 12,
+        "seconds": 0.0044
+      },
+      "step_2": {
+        "multiplications": 11,
+        "seconds": 0.0582
+      },
+      "step_3": {
+        "multiplications": 10,
+        "seconds": 6.9307
+      }
+    }
+  ],
+  "readings": [
+    "Step 3 improved the answer in two of the four cases, by one product each time: 16 to 15 on f2_3x8 and 11 to 10 on f3_3x6. On f2_5x5 and f2_4x7 it confirmed what step 2 already had.",
+    "Step 3 is where almost all the cost is. It costs between 58 and 184 times what steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay."
+  ],
+  "limits": "Every step is greedy and nothing here proves a result is optimal. The bilinear rank problem is open, and none of this settles it.",
+  "methods": {
+    "heuristic": "Greedy, three steps, no optimality guarantee, except step 1, which is a matroid greedy and therefore gives a minimum-weight basis of span(T).",
+    "exact": "Complete decision: is there an algorithm with exactly k products? An implementation of a pre-existing published algorithm. Exponential, so it decides small maps outright and bounds large ones."
+  },
+  "exact_search": {
+    "note": "Produced by `decide-rank`, searching from the map itself rather than from any heuristic answer, so these are statements about the maps.",
+    "decided": [
+      {
+        "map": "f2_2x2",
+        "naive": 4,
+        "exact": 3,
+        "nodes": 1,
+        "seconds": 7e-06,
+        "why_trustworthy": "Karatsuba's answer, and 2n-1 = 3 is a lower bound, so 3 is optimal."
+      },
+      {
+        "map": "f2_2x3",
+        "naive": 6,
+        "exact": 5,
+        "nodes": 3,
+        "seconds": 2e-05,
+        "why_trustworthy": "A 2x3 product: five products instead of six."
+      },
+      {
+        "map": "gf4_multiplication",
+        "naive": 4,
+        "exact": 3,
+        "nodes": 3,
+        "seconds": 7e-06,
+        "why_trustworthy": "The bilinear complexity of GF(4) over GF(2) is classically 3."
+      },
+      {
+        "map": "gf8_multiplication",
+        "naive": 9,
+        "exact": 6,
+        "nodes": 1606,
+        "seconds": 0.0047,
+        "why_trustworthy": "The bilinear complexity of GF(8) over GF(2) is classically 6."
+      }
+    ],
+    "bounded": [
+      {
+        "map": "f2_5x5",
+        "no_algorithm_with": [
+          9,
+          10,
+          11
+        ],
+        "nodes": [
+          1,
+          959,
+          459239
+        ],
+        "seconds": [
+          0.0003,
+          0.17,
+          77.4
+        ],
+        "conclusion": "No algorithm with 9, 10 or 11 products exists, each ruled out exhaustively, so the rank is at least 12. The heuristic exhibits 14, so this repository proves 12 <= rank <= 14. Table 1 of Barbulescu, Detrey, Estibals and Zimmermann (2012) gives 27 decompositions at 13, so the rank is 13 on their authority and the heuristic's 14 is not optimal.",
+        "not_decided": "whether 12 or 13 products suffice. Ruling out 12 is priced at C(961,3) = 1.47e8 nodes and about seven hours, extrapolated from the k=11 run at 5900 nodes a second, and has not been run. An earlier version of this file recorded that run as done, at 146402553 nodes and 3610.2 s; no such run happened."
+      }
+    ]
+  },
+  "pipeline": {
+    "note": "The rank search emits the encoding operators; the sparsification is what they are for.",
+    "f2_5x5": {
+      "multiplications": "25 -> 14",
+      "left_operator_nonzeros": "31 -> 27"
+    }
+  },
+  "famous_tensors": {
+    "note": "The tensors the complexity literature argues about, run through both searches over GF(2). A bilinear map is an order-3 tensor, so they need a constructor and nothing else: make-tensor --matmul n m k and --cyclic n. Prose: famous_tensors.md.",
+    "runs": [
+      {
+        "tensor": "<2,2,2> matrix multiplication",
+        "naive": 8,
+        "heuristic": {
+          "step_1": 8,
+          "step_2": 8,
+          "step_3": 8,
+          "step_3_shortlist": 0
+        },
+        "exact": {
+          "ruled_out": [
+            5,
+            6
+          ],
+          "found": 7,
+          "nodes_to_rule_out_6": 25399,
+          "seconds_to_rule_out_6": 0.41,
+          "nodes_to_find_7": 7436,
+          "seconds_to_find_7": 0.14
+        },
+        "known": 7,
+        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. The heuristic cannot move at all."
+      },
+      {
+        "tensor": "<2,2,3> matrix multiplication",
+        "naive": 12,
+        "heuristic": {
+          "step_1": 12,
+          "step_2": 12,
+          "step_3": 12,
+          "step_3_shortlist": 0
+        },
+        "exact": {
+          "ruled_out": [
+            7,
+            8
+          ],
+          "nodes_to_rule_out_8": 446923,
+          "seconds_to_rule_out_8": 53.1
+        },
+        "known": 11,
+        "reading": "Rank >= 9 here. Ruling out 9 is about 1.4e8 nodes, some 4.6 hours, and was not run."
+      },
+      {
+        "tensor": "<2,3,3> matrix multiplication",
+        "naive": 18,
+        "heuristic": {
+          "step_1": 18,
+          "step_2": 18,
+          "step_3": 18,
+          "step_3_shortlist": 0,
+          "step_3_pool": 32193,
+          "step_3_seconds": 153.6
+        },
+        "known": 15,
+        "exact": {
+          "attempted": 10,
+          "outcome": "stopped after 100 minutes",
+          "why": "its span has dimension 6, so target 10 is C(32193, 4) = 4.5e16 leaves. The depth is the gap between the span and the target, and four levels over a pool this size is not a long run, it is never."
+        }
+      },
+      {
+        "tensor": "<3,3,3> matrix multiplication",
+        "naive": 27,
+        "heuristic": {
+          "step_1": 27,
+          "step_2": 27,
+          "step_3": "stopped at 45 minutes; projected 4.2 hours from the measured 2x3x3 scan, and one independent test per candidate, so it parallelises"
+        },
+        "known": "open: 19 <= rank <= 23, and >= 20 over F2 since 2026",
+        "reading": "Out of reach exactly: ruling out 10 is 2.6e5 nodes against a pool of 261121, about 10 hours."
+      },
+      {
+        "tensor": "W state",
+        "naive": 3,
+        "heuristic": {
+          "step_1": 3
+        },
+        "exact": {
+          "ruled_out": [
+            2
+          ],
+          "found": 3
+        },
+        "known": "rank 3, border rank 2",
+        "reading": "Decided exactly. The border rank of 2 is invisible to this search, which is why it is worth listing."
+      },
+      {
+        "tensor": "cyclic convolution, length 5",
+        "naive": 25,
+        "heuristic": {
+          "step_1": 17,
+          "step_2": 12,
+          "step_3": 10
+        },
+        "exact": {
+          "ruled_out": [
+            6,
+            7
+          ],
+          "nodes_to_rule_out_7": 461251,
+          "seconds_to_rule_out_7": 51.4
+        },
+        "reading": "8 <= rank <= 10. The heuristic works here, unlike on matrix multiplication."
+      },
+      {
+        "tensor": "GF(16) over GF(2)",
+        "naive": 16,
+        "heuristic": {
+          "step_1": 16,
+          "step_2": 11,
+          "step_3": 9,
+          "step_3_shortlist": 4
+        },
+        "exact": {
+          "ruled_out": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "nodes_to_rule_out_7": 1897576,
+          "seconds_to_rule_out_7": 34.5,
+          "nodes_to_rule_out_8": 105600301,
+          "seconds_to_rule_out_8": 2325.7,
+          "decided": 9
+        },
+        "known": ">= 8 by de Groote, since 2n-1 is attained only for n <= q/2 + 1",
+        "reading": "Decided exactly: 9. The exact search ruled out everything below by exhaustion, the heuristic supplied the 9, and neither method could have done it alone."
+      }
+    ],
+    "refused": {
+      "tensor": "<4,4,4>, where AlphaTensor found 47 products over Z2",
+      "pool": 4294836225,
+      "bytes": "8.2 TiB, as the tool reports when refusing",
+      "reading": "Refused by the memory budget rather than attempted. This is the allocation that had no guard."
+    },
+    "finding": "The heuristic and the exact search fail on different tensors. On every matrix multiplication tensor whose pool scan can finish the heuristic does not improve the naive count at all, with an empty shortlist out of 225, 945 and 32193 candidates, and the tool says why: not one of the 225 rank-one maps improves <2,2,2>, so a first-improvement greedy has nowhere to step. Step 1 is a matroid greedy and therefore optimal over bases of span(T), which is exactly the ceiling: 8 is the true minimum over those bases, and Strassen's 7 products are not a basis of span(T) but a rank-one basis of a 7-dimensional space containing it. The exact search finds that in 0.14 s."
+  },
+  "provenance": {
+    "commit": null,
+    "tree_clean": null,
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "usage: drat-trim [INPUT] [<PROOF>] [<option> ...]",
+      "cbc": "Welcome to the CBC MILP Solver",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "/home/hamlil/Desktop/Etude/tensor-rank-toolkit/build",
+    "repeats": 3,
+    "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
+  }
+}

@@ -1,0 +1,13 @@
+# Strassen's encoding operator for the left factor of a 2x2 product.
+#
+# Row i says which entries of A go into the i-th of the seven products; the
+# columns are A11 A12 A21 A22. This is the U of the MS problem: find an
+# invertible V minimising nnz(U V).
+shape 7 4
+ 1  0  0  1
+ 0  0  1  1
+ 1  0  0  0
+ 0  0  0  1
+ 1  1  0  0
+-1  0  1  0
+ 0  1  0 -1

@@ -1,0 +1,201 @@
+/* tewf.github.io. Same tokens as the project sites under this domain, so
+   moving between them feels like one place. The signature here is different:
+   the work is about counting operations and reducing them, so the hero is a
+   set of reductions rather than a board. */
+
+:root {
+  --paper:   #F4F6F9;
+  --surface: #FFFFFF;
+  --sunken:  #ECEFF4;
+  --ink:     #0F1B2A;
+  --muted:   #5A6B80;
+  --line:    #D7DEE7;
+  --teal:    #10707E;
+  --gold:    #B4820E;
+
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+
+  --w: 1000px;
+  --r: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:   #0B131E;
+    --surface: #121D2A;
+    --sunken:  #0F1926;
+    --ink:     #E7EEF6;
+    --muted:   #93A5BA;
+    --line:    #23334699;
+    --teal:    #4FC3D0;
+    --gold:    #E0B93F;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 16px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: var(--w); margin: 0 auto; padding: 0 24px; }
+
+h1, h2, h3 { line-height: 1.15; letter-spacing: -0.025em; font-weight: 700; }
+h1 { font-size: clamp(2rem, 5.5vw, 3.2rem); margin: 0 0 .5em; letter-spacing: -0.04em; }
+h2 { font-size: clamp(1.3rem, 2.5vw, 1.6rem); margin: 2.8rem 0 .8rem; }
+h3 { font-size: 1.02rem; margin: 1.7rem 0 .4rem; }
+
+.eyebrow {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--muted); margin: 0 0 .8rem;
+}
+.lede { font-size: 1.14rem; color: var(--muted); max-width: 62ch; }
+p { max-width: 72ch; }
+a { color: var(--teal); text-underline-offset: 2px; }
+code, .num { font-family: var(--mono); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- chrome ---------- */
+
+.site-head {
+  border-bottom: 1px solid var(--line); background: var(--surface);
+  position: sticky; top: 0; z-index: 20;
+}
+.site-head .wrap { display: flex; align-items: center; gap: 1rem; min-height: 56px; flex-wrap: wrap; }
+.site-head a { text-decoration: none; }
+.brand { font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.crumbs { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
+.crumbs a { color: var(--muted); }
+.crumbs a:hover { color: var(--teal); }
+.crumbs .sep { opacity: .5; padding: 0 .35rem; }
+.site-head .spacer { flex: 1; }
+.site-head .repo { font-family: var(--mono); font-size: .8rem; }
+
+.site-foot {
+  margin-top: 4rem; border-top: 1px solid var(--line);
+  padding: 1.6rem 0 3rem; color: var(--muted); font-size: .88rem;
+}
+
+/* ---------- the signature: reductions ---------- */
+
+.reductions { border-top: 1px solid var(--line); margin: 2.5rem 0; }
+.red {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: .4rem 1.5rem; align-items: baseline;
+  padding: 1rem 0; border-bottom: 1px solid var(--line);
+}
+.red .what { font-size: .98rem; }
+.red .what b { font-weight: 650; }
+.red .src { display: block; font-family: var(--mono); font-size: .7rem; color: var(--muted); margin-top: .2rem; overflow-wrap: anywhere; }
+.red .pair { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 1.25rem; }
+.red .from { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; opacity: .8; }
+.red .arrow { color: var(--muted); padding: 0 .45rem; }
+.red .to { font-weight: 650; color: var(--gold); }
+@media (max-width: 620px) {
+  .red { grid-template-columns: 1fr; }
+  .red .pair { font-size: 1.4rem; }
+}
+
+/* ---------- the hover preview ---------- */
+
+.showcase { margin: 2.6rem 0 0; }
+
+.preview {
+  position: sticky; top: 68px; z-index: 5;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: .85rem;
+  margin-bottom: 1.1rem;
+}
+.pv-frame { min-height: 152px; display: grid; place-items: center; }
+.pv-shelf {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: .6rem; width: 100%;
+  animation: pv-in .22s ease-out;
+}
+/* contain, not cover: most of these are charts, and cropping one turns a
+   result into wallpaper */
+.pv-shelf img {
+  width: 100%; height: 152px; object-fit: contain; object-position: center;
+  border-radius: 3px; background: var(--sunken); display: block;
+  border: 1px solid var(--line); padding: 4px;
+}
+@keyframes pv-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+.preview[data-state="rest"] .pv-shelf img { opacity: .5; filter: saturate(.55); }
+.preview[data-state="rest"] .pv-cap { opacity: .75; }
+
+.pv-cap {
+  font-family: var(--mono); font-size: .74rem; color: var(--muted);
+  margin: .7rem .15rem 0; line-height: 1.5;
+}
+
+/* no pointer, no hover: the panel stays on its resting montage and the cards
+   are ordinary links */
+@media (hover: none) {
+  .preview { position: static; }
+  .pv-frame { min-height: 0; }
+  .pv-shelf img { height: 118px; }
+}
+@media (max-width: 620px) {
+  .pv-shelf { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, 1fr); }
+  .pv-shelf img { height: 104px; }
+}
+
+/* ---------- cards ---------- */
+
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin: 1.2rem 0; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  padding: 1.05rem 1.15rem; display: block; text-decoration: none; color: inherit;
+  transition: border-color .12s, transform .12s;
+}
+a.card:hover { border-color: var(--teal); transform: translateY(-2px); }
+.card .t { font-weight: 650; display: block; margin-bottom: .25rem; }
+.card .d { color: var(--muted); font-size: .9rem; }
+.card .tag {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--teal); display: block; margin-bottom: .45rem;
+}
+
+.meta {
+  font-family: var(--mono); font-size: .78rem; color: var(--muted);
+  margin: -.2rem 0 1.4rem; line-height: 1.7;
+}
+
+.caveat {
+  border-left: 3px solid var(--gold); background: var(--sunken);
+  padding: .9rem 1.1rem; border-radius: 0 var(--r) var(--r) 0; margin: 1.4rem 0; font-size: .93rem;
+}
+.caveat h3 { margin: 0 0 .4rem; font-size: .95rem; }
+
+.tw { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--line); }
+th {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+}
+td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tbody tr:hover { background: var(--sunken); }
+
+figure { margin: 1.4rem 0; }
+figcaption { color: var(--muted); font-size: .84rem; margin-top: .6rem; max-width: 72ch; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+svg text.val { fill: var(--ink); }
+svg .bar { fill: var(--teal); }
+svg .bar.alt { fill: var(--gold); }
+svg .grid-line { stroke: var(--line); stroke-width: 1; }
+
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition-duration: .01ms !important; } }
+
+/* On a project's own page the panel is a header rather than a chooser: it does
+   not follow the scroll, and its resting state is the subject, not a hint, so
+   it is shown at full strength. */
+.preview.head { position: static; }
+.preview.head[data-state="rest"] .pv-shelf img { opacity: 1; filter: none; }
+.preview.head[data-state="rest"] .pv-cap { opacity: 1; }

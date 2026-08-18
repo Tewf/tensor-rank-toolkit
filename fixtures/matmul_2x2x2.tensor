@@ -1,0 +1,24 @@
+# Matrix multiplication <2,2,2>, over GF(2).
+# Naive cost 8 multiplications, written by make-tensor.
+field 2
+shape 4 4 4
+
+1 0 0 0
+0 0 1 0
+0 0 0 0
+0 0 0 0
+
+0 1 0 0
+0 0 0 1
+0 0 0 0
+0 0 0 0
+
+0 0 0 0
+0 0 0 0
+1 0 0 0
+0 0 1 0
+
+0 0 0 0
+0 0 0 0
+0 1 0 0
+0 0 0 1

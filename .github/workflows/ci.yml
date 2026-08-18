@@ -1,0 +1,217 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    name: Build and reproduce the table
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Givaro, from the CASYS team at the LJK: exact arithmetic over GF(p) and
+      # over the rationals. It is the only build dependency.
+      #
+      # CryptoMiniSat is not a dependency and is never linked; it is installed so
+      # the solver steps below actually run. Without it they took their own
+      # `command -v` branch and printed "skipping", which is a green tick over an
+      # untested strand. It ships in the Ubuntu archive under the binary name
+      # `cryptominisat5` with a `cryptominisat` symlink, which is the name
+      # `find_sat_solver` probes for. It has a second job now: it is the solver
+      # that writes no DRAT proof, so it is what the refusal of `--proof` is
+      # asserted against.
+      #
+      # CBC and GLPK are here for the same reason. The curve strand's default route
+      # is the built-in now, so nothing reaches an outside solver unless a run asks
+      # for it; the `--route` loop below asks for the chain by name, and with
+      # nothing installed that chain would fall straight through to the built-in
+      # and `external_solver.cpp` would never run under CI. That is the file that
+      # used to leak solvers, which makes it the last one worth leaving untested.
+      - name: Install Givaro, and the solvers so no step skips itself
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgivaro-dev ninja-build \
+            cryptominisat coinor-cbc glpk-utils
+
+      # Neither of these is in the Ubuntu archive, and that absence is why the
+      # proof step has been verifying nothing since it was written: with only
+      # CryptoMiniSat installed, `--proof` reached a solver that writes none.
+      # Kissat is the solver this repository prefers by measurement and the only
+      # one here that writes a DRAT refutation; drat-trim is what checks it, and a
+      # refutation nobody checks leaves a lower bound resting on the solver's word.
+      # Both are cloned at `--depth 1` of the default branch, unpinned, so a
+      # failure here is upstream moving rather than this repository drifting.
+      - name: Build kissat and drat-trim, which the archive does not carry
+        run: |
+          git clone --depth 1 https://github.com/arminbiere/kissat
+          cd kissat && ./configure && make -j2
+          sudo install build/kissat /usr/local/bin/
+          cd ..
+          git clone --depth 1 https://github.com/marijnheule/drat-trim
+          make -C drat-trim drat-trim
+          sudo install drat-trim/drat-trim /usr/local/bin/
+          kissat --version
+          command -v drat-trim
+
+      - name: Configure and build
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+
+      # Everything, including the three expensive searches and the exhaustions
+      # behind `12 <= rank(F2 5x5)`. Two minutes here, which is the whole point,
+      # so nothing is excluded from CI.
+      - name: Reproduce every published number
+        run: ctest --test-dir build --output-on-failure -j2
+
+      # The counts in the results files, re-derived and compared. Timings are
+      # deliberately not checked: a shared runner cannot reproduce one, and the
+      # last wrong number in this repository got in by being typed into a
+      # results file rather than measured. --check reads counts only.
+      - name: The published counts still reproduce
+        run: python3 reproduce/measure.py --build build --check
+
+      # The two strands are one pipeline: the rank search emits the encoding
+      # operators, and the sparsification is what those are for.
+      - name: The pipeline, end to end
+        run: |
+          ./build/descent_search/minimise-rank fixtures/f2_5x5.tensor --steps 2 \
+            --emit-operators /tmp/f2_5x5
+          ./build/matrix_sparsification/sparsify-operator /tmp/f2_5x5_L.sms
+          ./build/matrix_sparsification/sparsify-operator /tmp/f2_5x5_R.sms
+
+      # The exact search on maps whose answers are known independently:
+      # Karatsuba, a 2x3 product, GF(4), GF(8), and Strassen.
+      - name: The exact search reaches the classical answers
+        run: |
+          ./build/exhaustive_search/decide-rank fixtures/f2_2x2.tensor
+          ./build/exhaustive_search/decide-rank fixtures/f2_2x3.tensor
+          ./build/map_construction/make-tensor --field 2 1 1 1 > /tmp/gf4.tensor
+          ./build/exhaustive_search/decide-rank /tmp/gf4.tensor
+          ./build/exhaustive_search/decide-rank fixtures/gf8_multiplication.tensor
+          ./build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7
+
+      # A run that does not fit says so and stops, rather than reaching the
+      # allocator. The pool for 4x4 matrix multiplication is 4.3e9 rank-one
+      # maps, 8.2 TiB, which is what this guards.
+      - name: An impossible run is refused, not attempted
+        run: |
+          ./build/map_construction/make-tensor --matmul 2 4 4 4 > /tmp/matmul_4x4x4.tensor
+          if ./build/exhaustive_search/decide-rank /tmp/matmul_4x4x4.tensor --target 47; then
+            echo "the 4x4x4 pool was not refused"; exit 1
+          fi
+
+      # Hastad's theorem in both directions, and neither needs a solver
+      # installed: the reduction's witness is checked against the tensor it
+      # decomposes, and the encoding is checked by writing the question out.
+      - name: Tensor rank and satisfiability are the same problem
+        run: |
+          ./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+            --target 7 --emit-cnf /tmp/strassen_k7.cnf
+          head -1 /tmp/strassen_k7.cnf
+          ./build/satisfiability/decide-rank-by-sat fixtures/f3_3x6.tensor \
+            --target 10 --backend smt --emit-cnf /tmp/f3_k10.smt2
+          head -3 /tmp/f3_k10.smt2
+
+      # The finder, from a tensor and nothing else, and the lower bound checked by
+      # a program that shares no code with the solver that claimed it.
+      #
+      # Nothing here is conditional, which is the point. This step used to pass
+      # `--proof` to whatever was installed and tolerate a proof not appearing;
+      # with only CryptoMiniSat on the machine that meant no refutation was ever
+      # written and the step said so nowhere. It now asserts the words
+      # "refutation verified", so a missing kissat or a missing drat-trim fails
+      # the build and the message says which.
+      #
+      # The second half asserts the other side of the same guard: `--proof` under a
+      # solver that writes none is refused, not dropped. The question asked there
+      # answers yes, so exiting non-zero can only be the refusal.
+      - name: A rank from a tensor alone, with the refusal verified
+        run: |
+          ./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+            --break-symmetry --plain-cnf --proof /tmp/strassen.drat | tee /tmp/strassen.txt
+          grep -Eq "refutations? verified" /tmp/strassen.txt || {
+            echo "no refutation was verified: kissat writes the proof and drat-trim checks it"
+            exit 1
+          }
+          test -s /tmp/strassen.drat || { echo "--proof wrote no refutation"; exit 1; }
+          if ./build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 \
+               --solver cryptominisat --proof /tmp/never_written.drat; then
+            echo "a proof was asked of a solver that writes none, and not refused"; exit 1
+          fi
+
+      # The one mistake here that nothing downstream catches. A group that does
+      # not stabilise the span it is handed makes the exact search report a false
+      # NO, and a cube set that misses a first term does the same to the solver.
+      # Neither is visible in the answer, so the only defence is asking the same
+      # question two ways and demanding one answer. `test_symmetry_agreement` does
+      # that for the tree search and is named here rather than left inside the
+      # blanket ctest, because it is the check most worth seeing fail.
+      - name: The orbit quotient agrees with no quotient
+        run: |
+          ctest --test-dir build --output-on-failure -R '^symmetry_agreement$'
+          whole=$(./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+                    --break-symmetry --plain-cnf | tail -1)
+          cubes=$(./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+                    --break-symmetry --plain-cnf --symmetry matmul 2 2 2 | tail -1)
+          echo "whole formula: $whole"
+          echo "orbit cubes:   $cubes"
+          test "$whole" = "rank is exactly 7" || { echo "wrong whole answer"; exit 1; }
+          test "$cubes" = "$whole" || { echo "the cube split changed the answer"; exit 1; }
+
+      # The flip graph, whose guarantee is different from both searches': it moves
+      # a scheme that already works, so it gives upper bounds only and never runs
+      # out of moves. Karatsuba's 3 is reached from the naive 4, and --from asks
+      # the heuristic for a starting point and refuses when it cannot reach one.
+      - name: A walk on the flip graph reaches the classical answer
+        run: |
+          ./build/flip_graph/walk-scheme fixtures/f2_2x2.tensor --flips 2000 | tee /tmp/walk.txt
+          grep -q "best over 8 seeds: 3 products" /tmp/walk.txt
+          ./build/flip_graph/walk-scheme fixtures/f3_3x6.tensor --flips 2000 --seeds 2 --from 10
+
+      # The curve strand, which had no entry point at all until it got one. The
+      # two answers asserted here are the two the unit test computes by hand, so
+      # this checks the command agrees with the library rather than re-deriving
+      # anything, and the refusal is the third case: a degree that cannot be made
+      # from the supply at any published price.
+      - name: Bounds from curves, step 3 of the roadmap
+        run: |
+          ./build/integer_programme/list-solvers
+          ./build/curve_bounds/curve-bounds --table
+          # Every route on the same two questions, because the point of having
+          # three is that they agree. The two numbers are the ones the unit test
+          # computes by hand, so this checks the command against the library
+          # rather than re-deriving anything.
+          for route in enumeration built-in chain; do
+            ./build/curve_bounds/curve-bounds --degree 5 --points 1:8 --route $route \
+              | tee /tmp/rational.txt
+            grep -q "mu_sym_2(m) <= 5" /tmp/rational.txt
+            ./build/curve_bounds/curve-bounds --degree 5 --points 1:1 --points 2:4 \
+              --route $route | tee /tmp/mixed.txt
+            grep -q "mu_sym_2(m) <= 7" /tmp/mixed.txt
+          done
+          # A degree no supply can assemble is a real answer, and exits 1.
+          if ./build/curve_bounds/curve-bounds --degree 20 --points 11:5; then
+            echo "an unpriceable supply was not refused"; exit 1
+          fi
+          # And nothing of ours is left running after the chain has been used,
+          # which is what the fork-and-kill-the-group rewrite is for.
+          for solver in cbc glpsol lp_solve; do
+            if pgrep -x "$solver" >/dev/null; then
+              echo "a leaked $solver outlived the run"; exit 1
+            fi
+          done
+
+      - name: Show the results the README quotes
+        run: |
+          for fixture in f2_5x5 f2_3x8 f2_4x7 f3_3x6; do
+            ./build/descent_search/minimise-rank fixtures/$fixture.tensor
+          done
+          for operator in strassen_u strassen_v alternative_basis_u; do
+            ./build/matrix_sparsification/sparsify-operator fixtures/$operator.matrix
+          done
