@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <mutex>
+#include <optional>
 
 #include "parallel.h"
 
@@ -16,12 +17,15 @@ std::vector<Matrix> independent_rank_one_maps_in(const Field& field,
                                               const ReducedBasis& reachable,
                                               std::size_t width, const Candidates& pool,
                                               std::size_t needed,
-                                              std::vector<Element>& scratch) {
+                                              std::vector<Element>& scratch,
+                                              SearchBudget* budget) {
     std::vector<Matrix> found;
     ReducedBasis independent(field, width);
     for (std::size_t index = 0; index < pool.size(); ++index) {
         // Once what is left cannot reach the target, the answer is already no.
         if (found.size() + (pool.size() - index) < needed) break;
+        // Whereas this break withdraws the answer rather than giving one.
+        if (budget != nullptr && !budget->may_examine(index)) break;
         const Matrix& map = pool[index];
         if (!reachable.contains(map, scratch)) continue;
         if (independent.try_add(map)) {
@@ -43,10 +47,11 @@ std::vector<Matrix> rank_one_maps_within(const Field& field, const std::vector<M
 
 template std::vector<Matrix> independent_rank_one_maps_in(const Field&, const ReducedBasis&,
                                                       std::size_t, const std::vector<Matrix>&,
-                                                      std::size_t, std::vector<Element>&);
+                                                      std::size_t, std::vector<Element>&,
+                                                      SearchBudget*);
 template std::vector<Matrix> independent_rank_one_maps_in(const Field&, const ReducedBasis&,
                                                       std::size_t, const Addressed&, std::size_t,
-                                                      std::vector<Element>&);
+                                                      std::vector<Element>&, SearchBudget*);
 
 namespace {
 
@@ -60,14 +65,14 @@ template <typename Candidates>
 bool expand_subspace_impl(const Field& field, ReducedBasis span,
                           std::size_t width, const Candidates& pool, std::size_t from,
                           std::size_t target, SearchBudget& budget, std::vector<Element>& scratch,
-                          std::vector<Matrix>& products) {
+                          const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products) {
     if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = span.dimension();
     if (dimension > target) return false;
     if (dimension == target) {
         std::vector<Matrix> within =
-            rank_one_basis_of(field, span, pool, target, scratch);
+            rank_one_basis_of(field, span, pool, target, scratch, &budget, binary);
         if (within.size() != target) return false;
         products = std::move(within);  // a rank-one basis of the span: the products
         return true;
@@ -79,7 +84,7 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
         ReducedBasis extended = span;
         extended.try_add(map);
         if (expand_subspace_impl(field, std::move(extended), width, pool, index + 1, target, budget,
-                                 scratch, products)) {
+                                 scratch, binary, products)) {
             return true;
         }
         if (!budget.exhausted) return false;  // gave up rather than ruled out
@@ -101,9 +106,20 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
     const std::size_t width = linear_algebra::flattened_width<Field>(subspace);
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
 
+    // The GF(2) case of the leaf test, built once for the whole search and read
+    // by every worker. Over any other field it is never built and every leaf
+    // takes the path it always took. The pool is packed here rather than by the
+    // caller because this is the one scope that outlives no leaf and outlasts
+    // every one of them.
+    std::optional<Gf2Leaf<Candidates>> binary;
+    if (pool.size() != 0 && gf2_leaf_applies(field, pool[0].columns())) {
+        binary.emplace(pool, pool[0].rows(), pool[0].columns());
+    }
+    const Gf2Leaf<Candidates>* leaf = binary ? &binary.value() : nullptr;
+
     if (worker_count() <= 1) {
         std::vector<Element> scratch;
-        return expand_subspace_impl(field, root, width, pool, from, target, budget, scratch,
+        return expand_subspace_impl(field, root, width, pool, from, target, budget, scratch, leaf,
                                     products);
     }
 
@@ -120,7 +136,7 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
         // A leaf at the root: one pool scan, nothing to spread over cores.
         std::vector<Element> scratch;
         std::vector<Matrix> within =
-            independent_rank_one_maps_in(field, root, width, pool, target, scratch);
+            independent_rank_one_maps_in(field, root, width, pool, target, scratch, &budget);
         if (within.size() != target) return false;
         products = std::move(within);
         return true;
@@ -141,7 +157,7 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
 
         std::vector<Matrix> mine;
         if (!expand_subspace_impl(field, std::move(extended), width, pool, index + 1, target, budget,
-                                  scratch, mine)) {
+                                  scratch, leaf, mine)) {
             return;
         }
         const std::lock_guard<std::mutex> keep(handover);

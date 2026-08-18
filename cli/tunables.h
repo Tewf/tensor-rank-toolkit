@@ -60,6 +60,14 @@ struct Tunables {
     /// --node-limit` and `deflate-strictly --node-limit`.
     std::size_t search_node_limit = 5'000'000;
 
+    /// Elements one leaf of an exhaustive search may examine before it gives up
+    /// on that leaf, which is likewise a budget and never a refutation. Fills
+    /// `SearchBudget::leaf_element_limit`
+    /// (`exhaustive_search/exhaustive_search.h`), from `decide-rank
+    /// --leaf-limit`. The node limit bounds how many leaves are reached and
+    /// nothing inside one, which is what this is for.
+    std::size_t search_leaf_limit = 100'000'000;
+
     /// Nodes the built-in branch and bound may open. Fills
     /// `curve_bounds::set_solver_node_limit`
     /// (`curve_bounds/interpolation_by_solver.h`), from `curve-bounds
@@ -107,6 +115,7 @@ struct Tunables {
 inline const std::vector<std::pair<std::string, std::size_t Tunables::*>>& counted_tunables() {
     static const std::vector<std::pair<std::string, std::size_t Tunables::*>> table{
         {"search_node_limit", &Tunables::search_node_limit},
+        {"search_leaf_limit", &Tunables::search_leaf_limit},
         {"ilp_node_limit", &Tunables::ilp_node_limit},
         {"plateau_state_budget", &Tunables::plateau_state_budget},
         {"sat_memory_megabytes", &Tunables::sat_memory_megabytes},

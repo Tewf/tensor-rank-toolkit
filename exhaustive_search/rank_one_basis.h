@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "bilinear_rank_aliases.h"
+#include "exhaustive_search.h"
+#include "gf2_leaf.h"
 
 /// Does this subspace have a basis made of rank-one maps?
 ///
@@ -36,9 +38,27 @@ namespace bilinear_rank {
 /// Note that the cheaper of the two routes above, walking the subspace, touches
 /// the pool only for the shape and the size. So the leaf is already pool-free
 /// wherever it is the route taken, and an addressed pool costs nothing there.
+///
+/// **`binary` is the GF(2) case of both routes**, in
+/// [`gf2_leaf.h`](gf2_leaf.h), which is where the search spends its life over
+/// the field most fixtures here are written over. Passing `nullptr` is the
+/// general path, unchanged and answering for every other field; the choice
+/// between the two routes is made here either way, so the two fields cannot
+/// come to disagree about what a leaf is. It defaults to `nullptr` so that a
+/// caller which has not built one, such as
+/// [the quotiented search](../orbit_reduction/orbit_search.h), reads the same
+/// as it did.
+///
+/// **`budget` is what stops a leaf**, and both routes are unbounded without it.
+/// Whichever is taken here is the search's whole cost at a large shape, and the
+/// node limit bounds neither: see `SearchBudget::leaf_element_limit` in
+/// [`exhaustive_search.h`](exhaustive_search.h) for the measurement that says by
+/// how much.
 template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
                                       const Candidates& pool, std::size_t needed,
-                                      std::vector<Element>& scratch);
+                                      std::vector<Element>& scratch,
+                                      SearchBudget* budget = nullptr,
+                                      const Gf2Leaf<Candidates>* binary = nullptr);
 
 }  // namespace bilinear_rank

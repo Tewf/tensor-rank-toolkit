@@ -159,5 +159,36 @@ int main(int argc, char** argv) {
         check::equal("a spent budget reports itself", budget.exhausted ? 1 : 0, 0);
     }
 
+    // The same, for the other limit, and the reason it exists: the node limit
+    // bounds how many leaves are reached and nothing inside one, so a leaf big
+    // enough was unbounded by anything the command line could say. A leaf given
+    // one element must abandon that leaf, and abandoning it must withdraw the
+    // answer rather than report "no solution": returning fewer maps than the
+    // target reads to the caller exactly as a refutation would, and the only
+    // thing keeping the two apart is `exhausted`.
+    {
+        const linear_algebra::Tensor tensor =
+            linear_algebra::read_tensor_file(directory + "/f2_5x5.tensor");
+        const bilinear_rank::Field field(tensor.characteristic);
+        const std::vector<bilinear_rank::Matrix> pool =
+            bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
+
+        bilinear_rank::SearchBudget budget{/*node_limit=*/1'000'000, /*leaf_limit=*/1};
+        std::vector<bilinear_rank::Matrix> products;
+        const bool found =
+            bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, 11, budget, products);
+        check::equal("a leaf given one element finds nothing", found ? 1 : 0, 0);
+        check::equal("and says the leaf limit stopped it", budget.leaf_abandoned ? 1 : 0, 1);
+        check::equal("so the run is undecided, not a refutation", budget.exhausted ? 1 : 0, 0);
+
+        // And the guard is off the moment the leaf can afford itself: 11 is
+        // refuted on this fixture, and that answer has to survive the change.
+        bilinear_rank::SearchBudget whole{/*node_limit=*/1'000'000, /*leaf_limit=*/1'000'000};
+        std::vector<bilinear_rank::Matrix> none;
+        bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, 11, whole, none);
+        check::equal("an affordable leaf still refutes", whole.exhausted ? 1 : 0, 1);
+        check::equal("and reports no leaf abandoned", whole.leaf_abandoned ? 1 : 0, 0);
+    }
+
     return check::report("exhaustive search");
 }
