@@ -12,6 +12,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}
+\newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\GF}{\mathbb{F}}
@@ -299,6 +300,67 @@ therefore does not rest on trusting the solver or the encoding. A negative answe
 may be accompanied by a DRAT refutation checked by an independent program.
 \end{remark}
 
+\section{Two slices: a theorem that does not survive the field}\label{sec:pencil}
+
+A tensor with two slices is a matrix pencil $A + xB$, and Kronecker's theory
+classifies such a pencil up to strict equivalence by its \emph{minimal indices}
+$\varepsilon_i, \eta_j$ and the \emph{elementary divisors} of its regular part.
+Ja'Ja' \cite{jaja1979}, and independently Grigoriev \cite{grigoriev1978}, give
+the rank from that data: over an algebraically closed field,
+\begin{equation}\label{eq:jaja}
+  R(T) \;=\; \sum_{\varepsilon_i > 0}(\varepsilon_i + 1)
+          \;+\; \sum_{\eta_j > 0}(\eta_j + 1)
+          \;+\; r \;+\; \delta,
+\end{equation}
+where $r$ is the size of the regular part and $\delta$ counts the elementary
+divisors of degree at least two. All of the data in \eqref{eq:jaja} is
+computable over $\mathrm{GF}(p)$ in polynomial time, which is what
+\texttt{pencil\_rank/} does: the singular structure from the ranks of one block
+system, the divisors from a Smith diagonal over $\mathrm{GF}(p)[x]$ taken twice,
+forwards for the finite divisors and reversed for those at infinity.
+
+\begin{remark}[The mistake worth recording]
+Applying \eqref{eq:jaja} with the elementary divisors computed \emph{over
+$\mathrm{GF}(p)$} yields neither side. It is not the rank over the closure,
+where an irreducible of degree $d$ splits into $d$ distinct linear forms and
+stops contributing to $\delta$; and it is not the rank over $\mathrm{GF}(p)$.
+For $(I_4, C)$ over $\mathrm{GF}(2)$ with $C$ the companion matrix of $x^4 + x +
+1$, that reading gives $5$. An exhaustive search proves no decomposition with
+five products exists, walking $1\,897\,576$ nodes to the end of the tree, and
+exhibits one with six.
+\end{remark}
+
+\begin{proposition}\label{prop:closure}
+Let $T$ be a two-slice tensor over $\mathrm{GF}(q)$. Then $R_{\mathrm{GF}(q)}(T)
+\ge R_{\overline{\mathrm{GF}(q)}}(T)$, and the right-hand side is given exactly
+by \eqref{eq:jaja} with the elementary divisors taken over the closure. If
+moreover $T$ is diagonalisable over $\mathrm{GF}(q)$, meaning it has no minimal
+indices and every elementary divisor is a linear form of multiplicity one, the
+inequality is an equality.
+\end{proposition}
+
+\begin{proof}
+A decomposition over $\mathrm{GF}(q)$ is a decomposition over any extension, so
+enlarging the field cannot raise the rank; the value over the closure is
+\eqref{eq:jaja} by \cite{jaja1979}. For the second claim, diagonalisability
+gives $P, Q$ over $\mathrm{GF}(q)$ with $P A Q$ and $P B Q$ both diagonal, and
+the $r$ matrices $e_i e_i^{\mathsf T}$ are rank one, rational over
+$\mathrm{GF}(q)$, and span a space containing both. So $R \le r$, and $r$ is the
+value of \eqref{eq:jaja} here.
+\end{proof}
+
+The gap is a field-size effect rather than a defect in \eqref{eq:jaja}. The
+construction attaining the classical bound interpolates through more points than
+$\mathbb{P}^1(\mathrm{GF}(q))$ contains, which is the condition Winograd
+identified for polynomial multiplication over small fields. Twelve pencils
+settled by exhaustion bear this out: \eqref{eq:jaja} is short on exactly three,
+each a block large against its field, while $d = 3$ over $\mathrm{GF}(3)$ and
+$d = 2$ over every field measured are attained. The per-block cost
+$c(p^e, q)$ that would close \eqref{eq:jaja} over a finite field is left as a
+conjecture, stated with its measurements in the module's documentation. It is a
+conjecture of the useful kind: any proposed $c$ is refutable in seconds on
+shapes up to $4 \times 4$ over $\mathrm{GF}(2)$.
+
 \section{Negative results}\label{sec:neg}
 
 Each of the following cost time to establish and is recorded so that it is not
@@ -336,6 +398,10 @@ Nothing here settles the bilinear rank problem.
   Journal of Algorithms 11 (1990), 644--654.
 \bibitem{bdez} R.~Barbulescu, J.~Detrey, N.~Estibals and P.~Zimmermann,
   \emph{Finding optimal formulae for bilinear maps}, WAIFI 2012.
+\bibitem{jaja1979} J.~Ja'Ja', \emph{Optimal evaluation of pairs of bilinear
+  forms}, SIAM Journal on Computing 8 (1979), 443--462.
+\bibitem{grigoriev1978} D.~Yu.~Grigoriev, \emph{Some new bounds on tensor rank},
+  LOMI preprint, 1978.
 \bibitem{oxley} J.~Oxley, \emph{Matroid Theory}, 2nd ed., Oxford, 2011.
   (Rado--Edmonds, the matroid greedy.)
 \bibitem{mckay} B.~D.~McKay, \emph{Isomorph-free exhaustive generation},
