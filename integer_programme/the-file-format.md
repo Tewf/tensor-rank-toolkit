@@ -12,7 +12,10 @@ silent. All three were found by running the solvers, not by reading about them.
   Every variable states both bounds, `PL` and `MI` included.
 - **The integrality markers belong in fields 3 and 5**, not 4 and 6, and free-form
   MPS is not an escape: CBC parses `BOUNDS` by character position whatever the
-  rest of the file looks like.
+  rest of the file looks like. This one is now checked against IBM as well as
+  measured: `[oslmps]` puts the keyword in field 5 and says field 4 *"must be
+  blank"*, and the reason CPLEX's manual says field 4 is that it counts tokens,
+  not columns. [`mps_format.h`](mps_format.h) has the whole of it.
 - **MPS has no direction.** The objective row is always minimised, so a
   maximisation is written negated. Without that every maximisation comes back at
   its minimum, which is feasible, and therefore passes every check except
