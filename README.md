@@ -79,6 +79,17 @@ improves only 1.6×, because finding a canonical code by walking the whole group
 spends most of the saving on itself, and that is measured rather than glossed
 ([`deduplication-cost.md`](oracle_guided_search/deduplication-cost.md)).
 
+**[Two slices, without a search](pencil_rank/).** A tensor with two slices is a
+matrix pencil, and Kronecker's theory gives its minimal indices and elementary
+divisors by exact linear algebra in **polynomial time, with no candidate pool**.
+What it will not give is a rank: Ja'Ja's formula is a theorem over an
+algebraically closed field, and on `(I_4, C)` over GF(2) it says 5 where the
+exhaustive search **proves** 6. So the module reports a proved lower bound, a
+sharper count marked provisional, and *exact* only where the pencil is
+diagonalisable over the field. Twelve pencils settled by exhaustion, three of
+which the classical formula gets wrong, are tabulated in
+[`pencil_rank/README.md`](pencil_rank/README.md).
+
 ## The finding worth stating on its own
 
 **The expensive step is priced badly.** Step 3 of the descent enumerates the
@@ -115,6 +126,8 @@ map_construction/        building the maps every method runs on
 orbit_reduction/         quotienting all three searches by symmetry
 flip_graph/              moving a decomposition sideways instead of building one
 oracle_guided_search/    fixed-k search, tree refutation, canonical augmentation
+pencil_rank/             two slices, where the answer is read off a canonical
+                         form instead of searched for
 matrix_sparsification/   fewest nonzeros in an operator
 satisfiability/          the same rank question put to a SAT or SMT solver
 curve_bounds/            bounds from interpolation on an algebraic curve
@@ -134,7 +147,7 @@ A folder with something to say carries its own `README.md`; one without says its
 purpose at the top of its `CMakeLists.txt`. Each method folder holds the code,
 its `tests/`, and where it has an entry point a `commands/`.
 
-**Eleven command-line tools.** Three ask how few multiplications a map needs and
+**Twelve command-line tools.** Three ask how few multiplications a map needs and
 disagree about what they can prove: `minimise-rank` (descent), `decide-rank`
 (complete), `walk-scheme` (a walk that moves sideways). `decide-rank-by-sat` puts
 that question to somebody else's solver and `list-solvers` says which backends
@@ -142,7 +155,8 @@ this machine has. `find-at-rank`, `deflate-strictly` and `enumerate-subspaces`
 are the fixed-k, tree-refutation and isomorph-free routes. `curve-bounds` answers
 a different question, bounding the rank from a curve's points rather than
 searching. Then `sparsify-operator` for the other strand, and `make-tensor` to
-build a map to run any of them on.
+build a map to run any of them on. `decide-rank-by-pencil` is the twelfth and
+the odd one out: it searches for nothing.
 
 Every paper any of it implements is named once, in
 [`references.md`](references.md), and the code cites a key.
