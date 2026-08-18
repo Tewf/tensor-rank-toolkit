@@ -15,11 +15,11 @@ namespace satisfiability {
 namespace {
 
 /// Refuse the combinations that do not mean anything, by name.
-void check_applicable(const linear_algebra::Tensor& tensor, const Approach& approach) {
+void check_applicable(const linear_algebra::Tensor& tensor, const SolveOptions& approach) {
     if (approach.break_symmetry && approach.use_field_theory) {
         throw std::invalid_argument("the field theory encoding has no ordering constraint");
     }
-    // `solve_in_field` has no proof argument to drop, so a request for one here
+    // `run_smt_solver` has no proof argument to drop, so a request for one here
     // was lost a layer earlier than the CNF route lost it, and with the same
     // result: a no reported as though something had checked it. cvc5 can emit
     // proofs, in its own format, which nothing here reads.
@@ -28,7 +28,7 @@ void check_applicable(const linear_algebra::Tensor& tensor, const Approach& appr
             "the field theory backend writes no DRAT refutation, so a no from it rests on cvc5's "
             "word; --proof is what avoids that, and asking for one here would only look like it");
     }
-    // `Approach::cubes` has always said GF(2) only and nothing enforced it. Two
+    // `SolveOptions::cubes` has always said GF(2) only and nothing enforced it. Two
     // ways it goes wrong over a larger prime, both ending in a no that is not a
     // lower bound. A cube is a list of literals numbered for the Boolean
     // encoding, so against a prime encoding numbered differently it pins
@@ -59,10 +59,10 @@ void check_applicable(const linear_algebra::Tensor& tensor, const Approach& appr
 }
 
 Answer from_field_theory(const linear_algebra::Tensor& tensor, std::size_t products,
-                         const Approach& approach) {
+                         const SolveOptions& approach) {
     const auto encoding = encode_field_rank_at_most(tensor, products);
     const auto run =
-        solve_in_field(encoding.problem, approach.memory_megabytes, approach.timeout_seconds);
+        run_smt_solver(encoding.problem, approach.memory_megabytes, approach.timeout_seconds);
     if (!run.solver_found) throw std::runtime_error("no cvc5 on PATH");
 
     Answer answer;
@@ -102,7 +102,7 @@ struct Forms {
 /// does. Read from the same place the unit clauses come from, so the flag and the
 /// cube cannot disagree.
 Forms build_forms(const linear_algebra::Tensor& tensor, std::size_t products,
-                  const Approach& approach, bool pinned) {
+                  const SolveOptions& approach, bool pinned) {
     Forms forms;
     forms.binary = tensor.characteristic == 2;
     if (forms.binary) {
@@ -118,14 +118,14 @@ Forms build_forms(const linear_algebra::Tensor& tensor, std::size_t products,
 /// in what happens to them, so the shape below is written once per stage rather
 /// than once per field.
 Answer answer_from(const linear_algebra::Tensor& tensor, const Forms& forms,
-                   const Approach& approach, const std::vector<int>& cube) {
+                   const SolveOptions& approach, const std::vector<int>& cube) {
     const bool binary = forms.binary;
     linear_algebra::Cnf formula = forms.formula();
     for (int literal : cube) formula.add_clause({literal});
 
     const SatSolver solver =
         find_sat_solver(!approach.plain_cnf && !formula.parities.empty(), approach.solver);
-    const auto run = solve(formula, solver, approach.memory_megabytes, approach.timeout_seconds,
+    const auto run = run_solver(formula, solver, approach.memory_megabytes, approach.timeout_seconds,
                            approach.proof_path, approach.tuning);
     if (!run.solver_found) {
         throw std::runtime_error(
@@ -162,7 +162,7 @@ Answer answer_from(const linear_algebra::Tensor& tensor, const Forms& forms,
 }
 
 Answer from_clauses(const linear_algebra::Tensor& tensor, std::size_t products,
-                    const Approach& approach) {
+                    const SolveOptions& approach) {
     const Forms forms =
         build_forms(tensor, products, approach, !approach.cube_literals.empty());
     return answer_from(tensor, forms, approach, approach.cube_literals);
@@ -171,7 +171,7 @@ Answer from_clauses(const linear_algebra::Tensor& tensor, std::size_t products,
 }  // namespace
 
 Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
-                   const Approach& approach, CubeReport* report) {
+                   const SolveOptions& approach, CubeReport* report) {
     check_applicable(tensor, approach);
     if (approach.use_field_theory) return from_field_theory(tensor, products, approach);
     if (approach.cubes.empty()) return from_clauses(tensor, products, approach);
@@ -209,9 +209,9 @@ namespace {
 /// Walk up from the floor to the first satisfiable rank. False if a question
 /// went unanswered, which moves no bound: an unknown is not a no, and treating
 /// it as one would invent a lower bound.
-bool narrow(const linear_algebra::Tensor& tensor, const Approach& approach, std::size_t budget,
+bool narrow(const linear_algebra::Tensor& tensor, const SolveOptions& approach, std::size_t budget,
             RankBounds& bounds) {
-    Approach limited = approach;
+    SolveOptions limited = approach;
     limited.timeout_seconds = budget;
 
     for (std::size_t k = bounds.lower; k <= bounds.upper; ++k) {
@@ -233,7 +233,7 @@ bool narrow(const linear_algebra::Tensor& tensor, const Approach& approach, std:
 
 }  // namespace
 
-RankBounds find_rank(const linear_algebra::Tensor& tensor, const Approach& approach,
+RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, std::size_t ceiling) {
     RankBounds bounds;
     bounds.lower = floor;
@@ -252,7 +252,7 @@ RankBounds find_rank(const linear_algebra::Tensor& tensor, const Approach& appro
 }
 
 std::string write_question(const linear_algebra::Tensor& tensor, std::size_t products,
-                           const Approach& approach, const std::string& path) {
+                           const SolveOptions& approach, const std::string& path) {
     check_applicable(tensor, approach);
     // A cube split is one question per cube and this writes one file. Dropping
     // the cubes would write a file that answers a different question, and the

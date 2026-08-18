@@ -96,7 +96,7 @@ struct FinderSettings {
 
     /// Passed to the oracle. `timeout_seconds` is overwritten with
     /// `candidate_seconds`, so setting it here has no effect.
-    satisfiability::Approach approach;
+    satisfiability::SolveOptions approach;
 };
 
 /// How one `k` ended. The last two are not the same claim and must not be merged.

@@ -46,7 +46,7 @@ StrictStep by_solver(const linear_algebra::Tensor& tensor, std::size_t products,
     StrictStep step;
     step.products = products;
 
-    satisfiability::Approach approach = settings.approach;
+    satisfiability::SolveOptions approach = settings.approach;
     approach.timeout_seconds = settings.candidate_seconds;
     approach.probe_seconds = 0;
     if (settings.matmul_shape.size() == 3 && tensor.characteristic == 2) {

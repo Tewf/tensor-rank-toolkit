@@ -34,7 +34,7 @@ Assignment satisfying_assignment(const Formula& formula) {
     return Assignment();
 }
 
-Clause padded_to_three(const Clause& clause) {
+Clause padded_to_three_literals(const Clause& clause) {
     if (clause.literals.empty()) {
         throw std::invalid_argument("an empty clause cannot be padded, and cannot be satisfied");
     }

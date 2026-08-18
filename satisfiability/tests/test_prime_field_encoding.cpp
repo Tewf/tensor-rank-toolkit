@@ -219,7 +219,7 @@ int main() {
         if (!solver.found) {
             std::cout << "  skip  no SAT solver on PATH, GF(3) symmetry soundness unchecked\n";
         } else {
-            satisfiability::Approach approach;
+            satisfiability::SolveOptions approach;
             approach.break_symmetry = true;
             approach.plain_cnf = true;
             approach.timeout_seconds = 60;
@@ -244,7 +244,7 @@ int main() {
     }
     check::equal("GF(4) is refused, it is not a prime field", threw ? 1 : 0, 1);
 
-    // `Approach::cubes` has always said GF(2) only, and nothing said so at
+    // `SolveOptions::cubes` has always said GF(2) only, and nothing said so at
     // runtime. Over a larger prime the literals index a different encoding, and
     // this encoder orders term 0 against term 1 and normalises its first nonzero
     // entry to 1, neither of which the orbit representative a cube pins need
@@ -252,7 +252,7 @@ int main() {
     // question is refused before any solver runs.
     bool cubes_refused = false;
     try {
-        satisfiability::Approach cubed;
+        satisfiability::SolveOptions cubed;
         cubed.break_symmetry = true;
         cubed.cubes = {{1}, {-1}};
         satisfiability::decide_rank(tensor, 2, cubed);

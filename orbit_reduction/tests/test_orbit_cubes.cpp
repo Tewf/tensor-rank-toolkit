@@ -145,7 +145,7 @@ Verdict solve_with(const satisfiability::SatSolver& solver,
     linear_algebra::Cnf formula = encoding.formula;
     for (const int literal : cube) formula.add_clause({literal});
 
-    const satisfiability::SolverRun run = satisfiability::solve(formula, solver, 2048, 120);
+    const satisfiability::SolverRun run = satisfiability::run_solver(formula, solver, 2048, 120);
     if (!run.answered) return Verdict::Unknown;
     return run.satisfiable ? Verdict::Yes : Verdict::No;
 }

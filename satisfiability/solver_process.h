@@ -119,12 +119,12 @@ struct SolverRun {
 /// nothing here becomes a default without a measurement behind it.
 enum class Tuning { None, Satisfiable, Unsatisfiable };
 
-SolverRun solve(const linear_algebra::Cnf& formula, const SatSolver& solver,
+SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver,
                 std::size_t memory_megabytes = 2048, std::size_t timeout_seconds = 300,
                 const std::string& proof_path = "", Tuning tuning = Tuning::None);
 
 /// The same for an SMT problem in the theory of finite fields.
-SolverRun solve_in_field(const linear_algebra::SmtProblem& problem,
+SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem,
                          std::size_t memory_megabytes = 2048,
                          std::size_t timeout_seconds = 300);
 

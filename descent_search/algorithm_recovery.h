@@ -33,7 +33,7 @@ struct Algorithm {
 ///
 /// False when there is none, which doubles as a rank-one check: the rows of a
 /// rank-one matrix are all multiples of each other.
-bool scalar_multiple(const Field& field, const std::vector<Element>& from,
+bool is_scalar_multiple(const Field& field, const std::vector<Element>& from,
                      const std::vector<Element>& to, Element& scalar);
 
 /// The rank-one map each pair of rows encodes: slice `j` is the outer product

@@ -121,7 +121,7 @@ int main() {
     // vetted, before any solver is looked for, so no cvc5 is needed to check it.
     bool proof_refused = false;
     try {
-        satisfiability::Approach certified;
+        satisfiability::SolveOptions certified;
         certified.use_field_theory = true;
         certified.proof_path = "/tmp/tensor-rank-unwritten.drat";
         satisfiability::decide_rank(tensor, 2, certified);

@@ -15,7 +15,7 @@
 namespace bilinear_rank {
 
 /// The linear combination `sum_i coefficients[i] * slices[i]`, reduced.
-Matrix combine(const Field& field, const std::vector<Matrix>& slices,
+Matrix linear_combination(const Field& field, const std::vector<Matrix>& slices,
                const std::vector<int64_t>& coefficients);
 
 /// The coefficient vector at `index`, counting with the first coordinate

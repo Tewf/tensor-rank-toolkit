@@ -22,7 +22,7 @@ std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matri
 }
 
 /// `Σ coefficients[i] · basis[i]`.
-Matrix combine(const Field& field, const std::vector<Matrix>& basis,
+Matrix linear_combination(const Field& field, const std::vector<Matrix>& basis,
                const std::vector<int64_t>& coefficients) {
     Matrix total(basis.front().rows(), basis.front().columns());
     for (std::size_t which = 0; which < coefficients.size(); ++which) {
@@ -69,7 +69,7 @@ std::vector<std::vector<Matrix>> candidate_parents(const Field& field,
             Element ratio;
             field.div(ratio, functional[index], functional[pivot]);
             field.neg(coefficients[pivot], ratio);
-            candidate.push_back(combine(field, added, coefficients));
+            candidate.push_back(linear_combination(field, added, coefficients));
         }
         if (linear_algebra::span_of(field, candidate).dimension() != wanted) continue;
 

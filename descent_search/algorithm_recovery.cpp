@@ -18,7 +18,7 @@ std::size_t first_nonzero_row(const Field& field, const Matrix& matrix) {
 
 }  // namespace
 
-bool scalar_multiple(const Field& field, const std::vector<Element>& from,
+bool is_scalar_multiple(const Field& field, const std::vector<Element>& from,
                      const std::vector<Element>& to, Element& scalar) {
     field.assign(scalar, field.zero);
 
@@ -93,7 +93,7 @@ bool recover_operands(const Field& field, const std::vector<Matrix>& products, M
         field.assign(left(product, leading), field.one);
         for (std::size_t row = leading + 1; row < rows; ++row) {
             Element multiplier;
-            if (!scalar_multiple(field, leading_row, slice.row(row), multiplier)) {
+            if (!is_scalar_multiple(field, leading_row, slice.row(row), multiplier)) {
                 return false;  // not rank one
             }
             left(product, row) = multiplier;

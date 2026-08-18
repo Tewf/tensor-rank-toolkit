@@ -264,7 +264,7 @@ int main() {
         if (!solver.found) {
             std::cout << "  skip  no SAT solver on PATH, symmetry soundness unchecked\n";
         } else {
-            satisfiability::Approach approach;
+            satisfiability::SolveOptions approach;
             approach.break_symmetry = true;
             approach.plain_cnf = true;
             approach.timeout_seconds = 60;
@@ -287,7 +287,7 @@ int main() {
                 const auto pinned = satisfiability::encode_binary_rank_at_most(tensor, 3, true, true);
                 const int first = pinned.left[0];
                 const int second = pinned.left[1];
-                satisfiability::Approach cubed = approach;
+                satisfiability::SolveOptions cubed = approach;
                 cubed.cubes = {{-first, -second}, {-first, second},
                                {first, -second},  {first, second}};
 
@@ -314,7 +314,7 @@ int main() {
                 const auto sum = tensor_from(field, pair, 2, 2, 2);
                 const auto layout = satisfiability::encode_binary_rank_at_most(sum, 2, true, true);
 
-                satisfiability::Approach ordered = approach;
+                satisfiability::SolveOptions ordered = approach;
                 ordered.cubes = {{layout.left[0], layout.left[1], layout.right[0], layout.right[1],
                                   layout.output[0], layout.output[1]}};
                 const auto kept = satisfiability::decide_rank(sum, 2, ordered);
@@ -347,7 +347,7 @@ int main() {
                 check::equal("the search finds the rank exactly",
                              plain.exact && plain.upper == 3 ? 1 : 0, 1);
 
-                satisfiability::Approach laddered = approach;
+                satisfiability::SolveOptions laddered = approach;
                 laddered.probe_seconds = 1;
                 const auto stepped = satisfiability::find_rank(tensor, laddered, 1, 8);
                 check::equal("and the probe budget does not change the answer",
@@ -355,7 +355,7 @@ int main() {
             }
 
             if (solver.writes_proofs) {
-                satisfiability::Approach certified = approach;
+                satisfiability::SolveOptions certified = approach;
                 certified.proof_path = "/tmp/tensor-rank-test.drat";
                 const auto proved = satisfiability::decide_rank(tensor, 2, certified);
                 check::equal("the refusal comes with a refutation",
@@ -400,7 +400,7 @@ int main() {
     proofless.path = "/nonexistent";
     bool proof_refused = false;
     try {
-        satisfiability::solve(satisfiability::encode_binary_rank_at_most(tensor, 2).formula, proofless,
+        satisfiability::run_solver(satisfiability::encode_binary_rank_at_most(tensor, 2).formula, proofless,
                               2048, 300, "/tmp/tensor-rank-unwritten.drat");
     } catch (const std::invalid_argument&) {
         proof_refused = true;

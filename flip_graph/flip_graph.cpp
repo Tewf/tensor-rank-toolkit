@@ -29,7 +29,7 @@ std::vector<Element>& part(Term& term, Mode mode) {
 /// that choice is wrong for whichever mode the next flip happens to share.
 bool aligned(const Field& field, const std::vector<Element>& first,
              const std::vector<Element>& second, Element& factor) {
-    return scalar_multiple(field, first, second, factor) && !field.isZero(factor);
+    return is_scalar_multiple(field, first, second, factor) && !field.isZero(factor);
 }
 
 void scale(const Field& field, std::vector<Element>& into, const Element& factor) {
