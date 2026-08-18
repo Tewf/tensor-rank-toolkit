@@ -42,6 +42,25 @@ this repository is, and the front is much closer to us:
   re-deriving it.** Both rank-sum bounds are now
   [`linear_algebra/tensor_rank_sum.h`](../linear_algebra/tensor_rank_sum.h):
   `ranksum` and `lask`, the latter being Laskowski's bound, Theorem 3 of the
-  thesis. `rref` is not ported. Note that none of the three is in the Theorem-1
-  implementation either, which contains no pruner at all, so the paper's own
-  timings are unpruned and no implementation anywhere combines the two halves.
+  thesis. Note that neither is in the Theorem-1 implementation either, which
+  contains no pruner at all, so the paper's own timings are unpruned and no
+  implementation anywhere combines the two halves.
+
+  **`rref` is not ported, and it is the one worth porting.** Read from the
+  author's own repository (`coolcomputery/tensor-cpd-search`, the notebook
+  `other/k-th order rref pruning.ipynb`) rather than from the paper, whose
+  abstract does not mention it. It is **not** a reduction of the rank-one pool,
+  which is what the name suggests and what two readers here guessed: it is a
+  **higher-order lower bound**. Contract the tensor with `k`-tuples of vectors,
+  wedge them, and if the resulting `k`-planes fail to span enough of the
+  Grassmannian then no CPD of that rank exists. The author's own headline use of
+  it is proving the Strassen tensor has **no rank-6 CPD over GF(2)**, with no
+  search.
+
+  That is precisely where this repository still pays a search.
+  `rank_lower_bound` gives `⟨2,2,2⟩` a floor of **6**, and ruling out 6 costs
+  `decide-rank` **25 399 nodes and 0.65 s** of exhaustion. A ported `rref` would
+  settle the same step in polynomial time, and 6 is not a number any bound here
+  reaches by another route. It belongs beside the rank sums in
+  [`rank_lower_bound.h`](../linear_algebra/rank_lower_bound.h), whose docstring
+  already takes the maximum over every bound it has.
