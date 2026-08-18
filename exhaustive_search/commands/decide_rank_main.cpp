@@ -106,16 +106,24 @@ int run(int argc, char** argv) {
                   << linear_algebra::multiplication_count(field, anchor) << " multiplications\n";
     }
 
-    // Considered for `RankOnePool` and deliberately left materialised. Every
-    // route below carries a pool index down a recursion rather than scanning
-    // once: `expand_subspace` takes `from` and resumes there, and the two sweeps
-    // do the same underneath. An addressed pool rebuilds a map every time an
-    // index is revisited, which here is once per node instead of once per run,
-    // so the conversion would trade the memory for the search.
-    const std::vector<bilinear_rank::Matrix> pool =
-        bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
-    std::cout << "  pool: " << pool.size() << " rank-one maps of shape " << tensor.rows()
-              << "x" << tensor.columns() << "\n";
+    // Materialise the pool where it fits and address it where it does not.
+    //
+    // The recursion carries an index down and resumes from it, so an addressed
+    // pool rebuilds a map once per node that reaches it rather than once per run.
+    // That is a real cost and it is why the materialised pool stays the default.
+    // It is also plainly the right trade when the alternative is refusing to
+    // start: at `⟨4,4,4⟩` the pool is 4.3e9 maps and 8.2 TiB, and a slower search
+    // beats no search. This is the odometer of `[yang2025]`, whose whole
+    // difference from `[bdez2012]` Algorithm 1 is that it never holds the pool.
+    const bilinear_rank::RankOnePool addressed(field, tensor.rows(), tensor.columns());
+    const bool fits = bilinear_rank::bytes_per_matrix(tensor.rows() * tensor.columns()) <=
+                      bilinear_rank::memory_budget() / addressed.size();
+    std::cout << "  pool: " << addressed.size() << " rank-one maps of shape " << tensor.rows()
+              << "x" << tensor.columns() << (fits ? ", materialised" : ", addressed by index")
+              << "\n";
+
+    std::vector<bilinear_rank::Matrix> pool;
+    if (fits) pool = bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
     bilinear_rank::SearchBudget budget{node_limit};
     std::vector<bilinear_rank::Matrix> products;
@@ -134,6 +142,13 @@ int run(int argc, char** argv) {
         found = bilinear_rank::expand_subspace_up_to_symmetry(field, anchor, pool, generators,
                                                      static_cast<std::size_t>(target), budget,
                                                      products);
+    } else if (target >= 0 && !fits) {
+        // Only the plain route has an addressed form. The quotiented search keys
+        // orbit tables by pool position and the sweeps index down a recursion in
+        // parallel, so neither is converted, and a `--symmetry` or sweep request
+        // on a shape this large is refused above rather than answered wrongly.
+        found = bilinear_rank::expand_subspace(field, anchor, addressed, 0,
+                                              static_cast<std::size_t>(target), budget, products);
     } else if (target >= 0) {
         found = bilinear_rank::expand_subspace(field, anchor, pool, 0,
                                                static_cast<std::size_t>(target), budget, products);

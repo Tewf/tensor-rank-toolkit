@@ -43,13 +43,30 @@ std::vector<std::vector<int64_t>> normalised_vectors(const Field& field, std::si
 /// has a second overload for: on the 9x9 slices of `⟨3,3,3⟩` that is 16.7 MB of
 /// resident memory against 189.4 MB, measured both ways at the same cut-off.
 ///
-/// The rest still materialise, and for a reason rather than for want of the
-/// conversion. The exact search carries a pool index down its recursion,
-/// canonical augmentation reads one again on the way back up, and the quotiented
-/// step 3 keys its orbit tables by pool position, so all three revisit an index
-/// and would rebuild a map once per visit instead of once per run. What this
-/// buys is a caller that visits the pool in order without asking for room it has
-/// not got.
+/// **The exact search now walks it too**, and the objection that kept it from doing
+/// so turned out to be worth about a fifth. It carries a pool index down its
+/// recursion and resumes from it, so an addressed pool rebuilds a map once per
+/// node that reaches an index rather than once per run, and that was predicted
+/// here to "trade the memory for the search". Measured on `⟨3,3,3⟩` at target 23
+/// with the same 300-node cut-off, one core:
+///
+/// | pool | time | peak resident |
+/// |---|---|---|
+/// | materialised | **93.6 s** | 181 880 kB |
+/// | addressed | 112.9 s | **4 776 kB** |
+///
+/// **38x less memory for 1.21x the time.** So `decide-rank` keeps the
+/// materialised pool where it fits, which reproduces every published timing
+/// exactly, and addresses it where the materialised one would be refused
+/// outright: at `⟨4,4,4⟩` that is the difference between a search and a refusal
+/// in milliseconds. This is `[yang2025]`'s odometer, whose whole difference from
+/// `[bdez2012]` Algorithm 1 is that it never holds the pool.
+///
+/// Two callers still materialise unconditionally and are not converted: canonical
+/// augmentation reads an index again on the way back up for its parent test, and
+/// the quotiented step 3 keys its orbit tables by pool position. Both would need
+/// the index to mean the same thing after a rebuild, which it does, but both
+/// revisit far more often than the plain recursion does.
 class RankOnePool {
    public:
     RankOnePool(const Field& field, std::size_t rows, std::size_t columns);
@@ -74,6 +91,31 @@ class RankOnePool {
 /// Written as a walk over `RankOnePool` rather than a second copy of the outer
 /// product, so the addressed and the materialised pool cannot drift apart.
 std::vector<Matrix> all_rank_one_maps(const Field& field, std::size_t rows, std::size_t columns);
+
+/// Where a search's candidates come from, so a walk is written once and works
+/// against either pool.
+///
+/// A materialised pool hands back its own matrix and an addressed one builds the
+/// matrix on the spot, and `const Matrix& map = candidates[index]` is correct for
+/// both: the first aliases, the second extends the temporary's lifetime to the end
+/// of the enclosing scope. Nothing in a walk can tell them apart, which is the
+/// point of the two structs being this small.
+///
+/// They live here rather than in either search because both use them, and the
+/// alternative was one copy each.
+struct Materialised {
+    const std::vector<Matrix>& maps;
+
+    std::size_t size() const { return maps.size(); }
+    const Matrix& operator[](std::size_t index) const { return maps[index]; }
+};
+
+struct Addressed {
+    const RankOnePool& pool;
+
+    std::size_t size() const { return pool.size(); }
+    Matrix operator[](std::size_t index) const { return pool.at(index); }
+};
 
 /// Whether the row space of `inner` sits inside that of `outer`.
 ///
