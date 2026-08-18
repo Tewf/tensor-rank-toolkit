@@ -18,8 +18,15 @@
 /// two more, and two solver preference orders written as literals inside the
 /// functions that walk them. A copy is not a tunable. Changing the SAT timeout
 /// meant finding three places and hoping there were three, and the plateau
-/// state cap could not be changed at all: no flag reaches it, so the only way to
-/// move it was to edit `minimise_rank_main.cpp` and rebuild.
+/// state cap could not be changed at all: no flag reached it, so the only way to
+/// move it was to edit `minimise_rank_main.cpp` and rebuild. It now has
+/// `--plateau-states`, and every other field here reaches the code it names.
+///
+/// **Precedence, strongest first: an explicit flag, then this file, then the
+/// compiled default.** A command reads these into its settings before it walks
+/// its arguments, so a flag that was given always overwrites what the file said,
+/// and a flag that was not leaves it standing. The whole table, per tool, is
+/// [`OPTIONS.md`](../OPTIONS.md).
 ///
 /// Every default here is the number that was compiled in before, so a machine
 /// with no file behaves exactly as it did. That is deliberate: a config file
@@ -38,37 +45,61 @@ inline constexpr const char* tunables_variable = "BILINEAR_TUNABLES";
 inline constexpr const char* tunables_filename = "tunables.conf";
 
 /// What a run may spend, and which solver it asks first.
+///
+/// Each field names the library setting it fills in and the commands that fill
+/// it. **The command reads the file; the library never does.** A header that
+/// opened `tunables.conf` would bind every caller to a working directory, so
+/// each of these is passed down as the settings or budget argument the library
+/// already takes, and the literal beside that argument stays as the compiled
+/// default a caller who passes nothing still gets.
 struct Tunables {
     /// Nodes an exhaustive search may visit before it gives up, which is a
-    /// budget and never a refutation. `exhaustive_search.h`, `decide-rank`.
+    /// budget and never a refutation. Fills `SearchBudget::node_limit`
+    /// (`exhaustive_search/exhaustive_search.h`) and `StrictSettings::node_limit`
+    /// (`oracle_guided_search/strict_deflation.h`), from `decide-rank
+    /// --node-limit` and `deflate-strictly --node-limit`.
     std::size_t search_node_limit = 5'000'000;
 
-    /// Nodes the built-in branch and bound may open. `decide-rank-by-ilp`,
-    /// `curve_bounds`.
+    /// Nodes the built-in branch and bound may open. Fills
+    /// `curve_bounds::set_solver_node_limit`
+    /// (`curve_bounds/interpolation_by_solver.h`), from `curve-bounds
+    /// --node-limit`. It bounds the built-in only, whichever route asks.
     std::size_t ilp_node_limit = 200'000;
 
     /// Distinct subspaces a plateau crossing may visit. PROVISIONAL: never
-    /// measured, and until now unreachable from the command line, so no run has
-    /// ever tried another value. `flip_graph/plateau_search.h`.
+    /// measured. Fills `cross_plateaus`'s `state_budget`
+    /// (`flip_graph/plateau_search.h`), from `minimise-rank --plateau-states`.
     std::size_t plateau_state_budget = 200'000;
 
-    /// What a SAT solver may take before it is killed, per question.
-    /// `satisfiability/solver_process.h`, `rank_question.h`.
+    /// What a SAT solver may take before it is killed, per question. Fills
+    /// `SolveOptions::memory_megabytes` and `::timeout_seconds`
+    /// (`satisfiability/rank_question.h`), which `run_solver`
+    /// (`satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
+    /// --max-memory` and `--timeout`, and from the same two flags on
+    /// `find-at-rank` and `deflate-strictly`.
     std::size_t sat_memory_megabytes = 2048;
     std::size_t sat_timeout_seconds = 300;
 
-    /// What an outside integer programme solver may take, per programme.
-    /// `integer_programme/solver_chain.h`.
+    /// What an outside integer programme solver may take, per programme. Fills
+    /// `optimisation::set_solver_time_limit`
+    /// (`integer_programme/solver_chain.h`), from `curve-bounds
+    /// --solver-timeout`. It does not reach the built-in, which has no clock.
     std::size_t ilp_time_limit_seconds = 300;
 
     /// Which SAT solver is asked first, of those on `PATH`. kissat leads
     /// because it is the strongest on unsatisfiable instances, and an
-    /// unsatisfiable instance is where a lower bound lives.
+    /// unsatisfiable instance is where a lower bound lives. Fills
+    /// `SolveOptions::solver_order`, which `find_sat_solver`
+    /// (`satisfiability/solver_process.h`) walks. `--solver <name>` pins one
+    /// outright and so overrides the order rather than reordering it.
     std::vector<std::string> sat_solver_order{"kissat", "cryptominisat", "cadical"};
 
     /// Which integer programme backend is asked first, of those on `PATH`. The
     /// built-in trails because it is the slowest, and it is also the only one
     /// whose `infeasible` is believed without being checked against the model.
+    /// Fills `optimisation::set_backend_order`
+    /// (`integer_programme/solver_chain.h`), from `curve-bounds` and from
+    /// `list-solvers`, which prints the order that would actually run.
     std::vector<std::string> ilp_backend_order{"gurobi", "cbc", "glpk", "lp_solve", "built-in"};
 };
 

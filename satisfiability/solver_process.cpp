@@ -65,7 +65,19 @@ std::filesystem::path scratch_file(const std::string& extension) {
 
 }  // namespace
 
-SatSolver find_sat_solver(bool prefer_xor, const std::string& named) {
+const std::vector<std::string>& default_solver_order() {
+    // Kissat first, whatever the parities look like. The reasoning that put
+    // CryptoMiniSat ahead was that native XOR must be worth something on a
+    // formula that is mostly parities; the measurement says it is worth
+    // nothing here, 1.559 s against 1.563 s on the same question, while
+    // Kissat's raw strength is worth five times: 0.31 s on that question and
+    // 34.2 s against 167.9 s on the next one up.
+    static const std::vector<std::string> order = {"kissat", "cryptominisat", "cadical"};
+    return order;
+}
+
+SatSolver find_sat_solver(bool prefer_xor, const std::string& named,
+                          const std::vector<std::string>& order) {
     const auto describe = [](const std::string& name, const std::string& path) {
         SatSolver solver;
         solver.found = !path.empty();
@@ -78,17 +90,12 @@ SatSolver find_sat_solver(bool prefer_xor, const std::string& named) {
 
     if (!named.empty()) return describe(named, on_path(named));
 
-    // Kissat first, whatever the parities look like. The reasoning that put
-    // CryptoMiniSat ahead was that native XOR must be worth something on a
-    // formula that is mostly parities; the measurement says it is worth
-    // nothing here, 1.559 s against 1.563 s on the same question, while
-    // Kissat's raw strength is worth five times: 0.31 s on that question and
-    // 34.2 s against 167.9 s on the next one up. `prefer_xor` is kept because
-    // the encoding still has to know whether to write `x` lines, but it no
-    // longer decides which solver runs.
+    // `prefer_xor` is kept because the encoding still has to know whether to
+    // write `x` lines, but it no longer decides which solver runs: the order
+    // does, and `default_solver_order` records the measurement behind it.
     static_cast<void>(prefer_xor);
-    const std::vector<std::string> order = {"kissat", "cryptominisat", "cadical"};
-    for (const std::string& name : order) {
+    const std::vector<std::string>& asked = order.empty() ? default_solver_order() : order;
+    for (const std::string& name : asked) {
         const std::string path = on_path(name);
         if (!path.empty()) return describe(name, path);
     }
