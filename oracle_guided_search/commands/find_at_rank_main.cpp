@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 
+#include "arguments.h"
 #include "descending_sweep.h"
 #include "exit_code.h"
+#include "rank_lower_bound.h"
 #include "symmetry_argument.h"
 #include "tensor_file.h"
-#include "tensor_flattening.h"
+#include "tunables.h"
 
 /// Producing an upper bound without ever buying a refutation.
 ///
@@ -33,6 +35,8 @@ void usage() {
                  "                      that exhausts it is passed over, never refuted\n"
                  "  --floor N           a lower bound proved elsewhere; the flattening\n"
                  "                      bound is used when this is not given\n"
+                 "  --max-memory 2G     cap on the solver, from sat_memory_megabytes in\n"
+                 "                      tunables.conf when this is not given\n"
                  "  --solver <name>     pin a SAT solver instead of taking the best fit\n"
                  "  --break-symmetry    order terms 1 onward; sound beside a cube, which\n"
                  "                      pins term 0 and orders nothing\n"
@@ -94,6 +98,13 @@ int run(int argc, char** argv) {
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
     bilinear_rank::FinderSettings settings;
+    // The file first, so every flag below overwrites what it said. Not the SAT
+    // timeout: `candidate_seconds` is deliberately smaller than a question's own
+    // budget, because a candidate that exhausts it is passed over rather than
+    // refuted, and `--candidate-timeout` is the flag that moves it.
+    const cli::Tunables& tunables = cli::tunables();
+    settings.approach.memory_megabytes = tunables.sat_memory_megabytes;
+    settings.approach.solver_order = tunables.sat_solver_order;
     cli::Symmetry symmetry;
     long long target = -1;
     long long ceiling = -1;
@@ -109,9 +120,12 @@ int run(int argc, char** argv) {
         } else if (option == "--descend") {
             descend = true;
         } else if (option == "--candidate-timeout" && argument + 1 < argc) {
-            settings.candidate_seconds = std::stoull(argv[++argument]);
+            settings.candidate_seconds = cli::parse_count(option, argv[++argument]);
+        } else if (option == "--max-memory" && argument + 1 < argc) {
+            settings.approach.memory_megabytes =
+                cli::parse_memory_size(option, argv[++argument]) / (1024 * 1024);
         } else if (option == "--floor" && argument + 1 < argc) {
-            settings.floor = std::stoull(argv[++argument]);
+            settings.floor = cli::parse_count(option, argv[++argument]);
             floor_given = true;
         } else if (option == "--solver" && argument + 1 < argc) {
             settings.approach.solver = argv[++argument];
@@ -135,9 +149,14 @@ int run(int argc, char** argv) {
 
     const bilinear_rank::Field field(tensor.characteristic);
     if (!floor_given) {
-        settings.floor = linear_algebra::flattening_lower_bound(field, tensor.slices);
+        // rank_lower_bound, not flattening_lower_bound: it takes the maximum of
+        // the flattening bound and both rank sums, and the flattening bound
+        // never wins on any fixture here. Using the weaker one alone put this
+        // command's floor at 4 on GF(16) where its siblings start at 8, which
+        // is four solver calls thrown away.
+        settings.floor = linear_algebra::rank_lower_bound(field, tensor.slices);
     }
-    std::cout << "  floor: " << settings.floor << (floor_given ? " (given)" : " (flattening)")
+    std::cout << "  floor: " << settings.floor << (floor_given ? " (given)" : " (computed)")
               << "\n";
     if (!settings.matmul_shape.empty() && tensor.characteristic != 2) {
         std::cout << "  no commitment: a cube is GF(2) only, so this asks one unrestricted\n"
@@ -182,6 +201,11 @@ int main(int argc, char** argv) {
     } catch (const cli::CheckFailed& failure) {
         std::cerr << "find-at-rank: " << failure.what() << "\n";
         return cli::exit_status(cli::ExitCode::Unverified);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line, or a line of tunables.conf, that could not
+        // be read: the run never started, so Usage rather than Error.
+        std::cerr << "find-at-rank: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& error) {
         std::cerr << "find-at-rank: " << error.what() << "\n";
         return cli::exit_status(cli::ExitCode::Error);

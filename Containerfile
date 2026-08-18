@@ -19,14 +19,17 @@
 
 FROM ubuntu:24.04
 
-# PROVISIONAL: both of these must be filled with real pinned SHAs before release.
 # Kissat and drat-trim are not in the Ubuntu archive, so CI clones the default
 # branch at --depth 1 and a failure there is upstream moving. That is the right
 # trade for CI and the wrong one here: an image whose point is reproducing a
 # published number cannot have its solver change under it, so the commit is named
 # rather than the branch.
-ARG KISSAT_COMMIT=FILL_ME_IN_WITH_A_PINNED_SHA
-ARG DRAT_TRIM_COMMIT=FILL_ME_IN_WITH_A_PINNED_SHA
+#
+# The kissat commit is tag rel-4.0.4, which is the version every solver timing in
+# this repository was taken with; satisfiability/results.json names it. Change it
+# and the numbers in that file stop being the ones this image reproduces.
+ARG KISSAT_COMMIT=8af8e56f174b778aef3aa45af9f739b2a5f492c2
+ARG DRAT_TRIM_COMMIT=2e3b2dc0ecf938addbd779d42877b6ed69d9a985
 
 # Givaro is the only build dependency. The three solvers are installed for the
 # same reason CI installs them: without one on PATH the steps that use it take

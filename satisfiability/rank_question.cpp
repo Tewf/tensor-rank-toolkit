@@ -124,7 +124,8 @@ Answer answer_from(const linear_algebra::Tensor& tensor, const Forms& forms,
     for (int literal : cube) formula.add_clause({literal});
 
     const SatSolver solver =
-        find_sat_solver(!approach.plain_cnf && !formula.parities.empty(), approach.solver);
+        find_sat_solver(!approach.plain_cnf && !formula.parities.empty(), approach.solver,
+                        approach.solver_order);
     const auto run = run_solver(formula, solver, approach.memory_megabytes, approach.timeout_seconds,
                            approach.proof_path, approach.tuning);
     if (!run.solver_found) {
@@ -244,6 +245,15 @@ RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& a
     // it, so the large budget is spent on a bracket rather than on a guess.
     if (approach.probe_seconds > 0 && approach.probe_seconds < approach.timeout_seconds) {
         narrow(tensor, approach, approach.probe_seconds, bounds);
+
+        // A probe that reached the rank has already answered the question, and
+        // asking it again at the full budget is a free call spent re-deriving a
+        // yes that is in hand. A probe that only ran out of time has settled
+        // nothing and the pass below still owes every question from here up.
+        if (bounds.lower == bounds.upper && !bounds.decomposition.empty()) {
+            bounds.exact = true;
+            return bounds;
+        }
     }
 
     bounds.exact = narrow(tensor, approach, approach.timeout_seconds, bounds) &&
