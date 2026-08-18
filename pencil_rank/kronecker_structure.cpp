@@ -4,6 +4,7 @@
 #include <string>
 
 #include "minimal_indices.h"
+#include "sumi_bound.h"
 
 namespace pencil_rank {
 
@@ -137,8 +138,17 @@ PencilRank pencil_rank_of(const ModularField& field, const std::vector<ModularMa
                                      ? slices[1]
                                      : ModularMatrix(slices[0].rows(), slices[0].columns());
     const KroneckerStructure structure = kronecker_structure(field, slices[0], second);
-    return PencilRank{rank_over_closure(structure), rank_over_the_field(structure),
-                      diagonalisable_over_the_field(structure)};
+    const std::size_t closure = rank_over_closure(structure);
+
+    // Sumi's count applies only to a regular pencil with an invertible member,
+    // and where it does it is both stronger and provable: it is a lower bound
+    // over every field, and the rank whenever the field is large enough.
+    const SumiBound sumi = sumi_bound(field, slices);
+    const std::size_t proved =
+        sumi.applies && sumi.bound > closure ? sumi.bound : closure;
+
+    return PencilRank{closure, rank_over_the_field(structure), proved,
+                      diagonalisable_over_the_field(structure) || (sumi.applies && sumi.exact)};
 }
 
 }  // namespace pencil_rank

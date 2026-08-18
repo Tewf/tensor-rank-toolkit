@@ -6,6 +6,7 @@
 #include "field.h"
 #include "matrix.h"
 #include "pencil_divisors.h"
+#include "sumi_bound.h"
 
 namespace pencil_rank {
 
@@ -66,17 +67,33 @@ struct PencilRank {
     /// count of 4.
     std::size_t over_the_field = 0;
 
+    /// The best **proved** lower bound this module has: the larger of
+    /// `over_closure` and `[sumi2009, Thm. 3.5]`'s `n + k` where that applies.
+    ///
+    /// Strictly better than `over_closure` alone. On GF(4) multiplication the
+    /// closure value is 2 and this is 3, which is the rank; on `(I_4, C)` over
+    /// GF(2) with `C` the companion of `x^4 + x + 1` the closure value is 4 and
+    /// this is 5, against a rank of 6.
+    std::size_t proved = 0;
+
     /// Whether `over_closure` is also the rank over GF(p).
     ///
     /// True only in the case this module can prove: no minimal indices, and
     /// every elementary divisor a linear form of multiplicity one. Then the
     /// pencil is simultaneously diagonalisable over GF(p) and the `r` matrices
-    /// `e_i e_i^T` in that basis are rank one, rational over GF(p), and span
-    /// it, so the bound is attained.
+    ///
+    /// True in two cases now. The first is the one this module could always
+    /// prove: no minimal indices, and every elementary divisor a linear form of
+    /// multiplicity one, so the pencil is simultaneously diagonalisable over
+    /// GF(p) and the `r` matrices `e_i e_i^T` attain the bound. The second is
+    /// `[sumi2009, Thm. 3.3]`, which settles the regular case outright whenever
+    /// `Card(K) >= deg p_1(A)`, and which covers pencils the first misses: GF(4)
+    /// multiplication is not diagonalisable over GF(2) and is exact here.
     ///
     /// False does **not** mean the bound is loose. It means this module has not
     /// proved it tight, and over a small field it frequently is not: see the
-    /// measured table in [`README.md`](README.md).
+    /// measured table in
+    /// [`the-measured-gap.md`](the-measured-gap.md).
     bool exact = false;
 };
 

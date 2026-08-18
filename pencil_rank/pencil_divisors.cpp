@@ -108,7 +108,54 @@ std::size_t multiplicity_of_x(const ModularField& field, const Polynomial& polyn
     return 0;
 }
 
+/// Turn a bare diagonalisation into a divisibility chain.
+///
+/// Repeatedly replace a pair that does not divide by `(gcd, lcm)`, which keeps
+/// the product and the module and forces the chain. The pass is run until it
+/// settles; each swap strictly lowers the degree of the earlier entry, so it
+/// does settle.
+void into_a_chain(const ModularField& field, std::vector<Polynomial>& diagonal) {
+    bool moved = true;
+    while (moved) {
+        moved = false;
+        for (std::size_t index = 0; index + 1 < diagonal.size(); ++index) {
+            const Polynomial& earlier = diagonal[index];
+            const Polynomial& later = diagonal[index + 1];
+            if (is_zero(earlier) || is_zero(later)) continue;
+            if (is_zero(remainder_of(field, later, earlier))) continue;  // already divides
+
+            const Polynomial common = greatest_common_divisor(field, earlier, later);
+            const Polynomial product = multiply(field, earlier, later);
+            diagonal[index + 1] = quotient_of(field, product, common);
+            diagonal[index] = common;
+            moved = true;
+        }
+    }
+}
+
 }  // namespace
+
+std::vector<Polynomial> invariant_factors(const ModularField& field,
+                                          const ModularMatrix& square) {
+    // `x I - square`, which is the characteristic matrix Ja'Ja' takes invariant
+    // polynomials of, written in this file's `constant + x linear` convention.
+    ModularMatrix negated(square.rows(), square.columns());
+    for (std::size_t entry = 0; entry < negated.entry_count(); ++entry) {
+        field.neg(negated.data()[entry], square.data()[entry]);
+    }
+    ModularMatrix identity(square.rows(), square.columns());
+    for (std::size_t index = 0; index < square.rows(); ++index) identity(index, index) = 1;
+
+    std::vector<Polynomial> diagonal =
+        diagonal_form(field, pencil_over_polynomials(field, negated, identity));
+    into_a_chain(field, diagonal);
+
+    std::vector<Polynomial> factors;
+    for (const Polynomial& entry : diagonal) {
+        if (!is_zero(entry) && degree(entry) > 0) factors.push_back(entry);
+    }
+    return factors;
+}
 
 PencilDivisors elementary_divisors(const ModularField& field, const ModularMatrix& first,
                                    const ModularMatrix& second) {

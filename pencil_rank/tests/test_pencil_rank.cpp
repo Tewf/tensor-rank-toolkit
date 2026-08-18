@@ -18,19 +18,20 @@ struct Fixture {
     const char* name;
     long long rank;         ///< over GF(p), settled by exhaustion
     long long closure;      ///< what Ja'Ja's formula gives over the closure
-    bool diagonalisable;    ///< and so provably tight
+    long long proved;       ///< the best proved bound, closure or `[sumi2009, Thm. 3.5]`
+    bool settled;           ///< and whether it is proved to be the rank
 };
 
 /// Every two-slice tensor in `fixtures/`. Where `rank` exceeds `closure` the
 /// field is too small for the classical construction, and the module says so
 /// rather than reporting the smaller number as an answer.
 constexpr Fixture kFixtures[] = {
-    {"gf4_multiplication", 3, 2, false},
-    {"w_state", 3, 3, false},
-    {"pencil_nilpotent_f2_3", 4, 4, false},
-    {"pencil_split_f3_3", 3, 3, true},
-    {"pencil_singular_f2_2x3", 3, 3, false},
-    {"pencil_irreducible_f2_4", 6, 4, false},
+    {"gf4_multiplication", 3, 2, 3, true},
+    {"w_state", 3, 3, 3, true},
+    {"pencil_nilpotent_f2_3", 4, 4, 4, false},
+    {"pencil_split_f3_3", 3, 3, 3, true},
+    {"pencil_singular_f2_2x3", 3, 3, 3, false},
+    {"pencil_irreducible_f2_4", 6, 4, 5, false},
 };
 
 }  // namespace
@@ -47,16 +48,23 @@ int main(int argc, char** argv) {
         const pencil_rank::PencilRank reported = pencil_rank::pencil_rank_of(field, tensor.slices);
         check::equal(label + ": the closure bound",
                      static_cast<long long>(reported.over_closure), fixture.closure);
-        check::equal(label + ": whether it is provably tight",
-                     reported.exact ? 1 : 0, fixture.diagonalisable ? 1 : 0);
+        check::equal(label + ": the best proved bound",
+                     static_cast<long long>(reported.proved), fixture.proved);
+        check::equal(label + ": whether it is proved to be the rank",
+                     reported.exact ? 1 : 0, fixture.settled ? 1 : 0);
+
+        // Soundness is the property that must never break: a proved bound above
+        // the rank is a false refutation, and nothing downstream would catch it.
+        check::equal(label + ": and the proved bound does not exceed the rank",
+                     static_cast<long long>(reported.proved) <= fixture.rank ? 1 : 0, 1);
 
         // The claim that makes the bound worth reporting. A bound above the rank
         // would be a wrong answer wearing the word "bound".
         check::equal(label + ": and it does not exceed the rank",
                      static_cast<long long>(reported.over_closure) <= fixture.rank ? 1 : 0, 1);
         if (reported.exact) {
-            check::equal(label + ": when tight, it is the rank",
-                         static_cast<long long>(reported.over_closure), fixture.rank);
+            check::equal(label + ": when settled, it is the rank",
+                         static_cast<long long>(reported.proved), fixture.rank);
         }
 
         // The structure has to add up as well as produce a number. Both

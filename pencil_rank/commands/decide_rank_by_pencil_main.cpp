@@ -102,13 +102,12 @@ int main(int argc, char** argv) {
                   << "\n";
 
         if (reported.exact) {
-            std::cout << "rank: " << reported.over_closure
-                      << " (exact: the pencil is diagonalisable over GF(" << tensor.characteristic
-                      << "))\n";
+            std::cout << "rank: " << reported.proved << " (exact over GF("
+                      << tensor.characteristic << "))\n";
         } else {
-            std::cout << "rank: at least " << reported.over_closure
-                      << " (proved: the rank over the algebraic closure, which GF("
-                      << tensor.characteristic << ") can only exceed)\n";
+            std::cout << "rank: at least " << reported.proved << " (proved)\n";
+            std::cout << "  over the algebraic closure it is " << reported.over_closure
+                      << ", which GF(" << tensor.characteristic << ") can only exceed\n";
             std::cout << "  and likely at least " << reported.over_the_field
                       << " (the same count over GF(" << tensor.characteristic
                       << ") itself, PROVISIONAL)\n";
