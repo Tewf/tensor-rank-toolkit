@@ -35,11 +35,37 @@ namespace bilinear_rank {
 /// `Status::Exhausted` is the budget running out. Same name, opposite sense, and
 /// no relation: that one is a different struct in a different namespace.
 struct SearchBudget {
-    explicit SearchBudget(std::size_t limit = 5'000'000) : node_limit(limit) {}
+    explicit SearchBudget(std::size_t limit = 5'000'000,
+                          std::size_t leaf_limit = 100'000'000)
+        : node_limit(limit), leaf_element_limit(leaf_limit) {}
 
     std::size_t node_limit;
     std::atomic<std::size_t> nodes_visited{0};
-    std::atomic<bool> exhausted{true};  // false once the limit is hit
+    std::atomic<bool> exhausted{true};  // false once either limit is hit
+
+    /// What one leaf may examine before the search abandons it.
+    ///
+    /// The node limit bounds how many leaves are reached and bounds nothing
+    /// inside one, and a leaf is a whole scan of the pool or a whole walk of the
+    /// subspace. That was invisible while the pool had to be materialised,
+    /// because a pool too large to scan was refused by `require_room` before any
+    /// leaf saw it. An addressed pool removed the refusal, and with it the only
+    /// thing that was bounding the leaf: at `<4,4,4>` a single leaf is
+    /// 4 294 836 225 maps rebuilt one at a time, **measured at 785 ns each, so
+    /// 0.9 hours**, and `--node-limit 1` could not make the run return.
+    ///
+    /// PROVISIONAL at 100 000 000, which is 78 s of that scan and 7.8 s of a
+    /// subspace walk (measured at 78 ns an element on `<4,4,4>` at dimension
+    /// 27). It is 383x the largest leaf any published run here reaches, the
+    /// 261 121-map pool of `<3,3,3>`, so no measurement in this repository moves.
+    /// `--leaf-limit` changes it per run.
+    std::size_t leaf_element_limit;
+
+    /// Which of the two limits withdrew the answer, for the report only. Both
+    /// clear `exhausted` and a run that gives up needs to say which to raise,
+    /// because raising the other one changes nothing and looks like the tool
+    /// ignoring the flag.
+    std::atomic<bool> leaf_abandoned{false};
 
     /// Atomic because workers share one budget, and written as a compare and
     /// exchange rather than a fetch and add so that a refused node is not
@@ -55,6 +81,20 @@ struct SearchBudget {
         } while (!nodes_visited.compare_exchange_weak(seen, seen + 1, std::memory_order_relaxed));
         return true;
     }
+
+    /// Whether a leaf that has already examined `examined` may examine another.
+    ///
+    /// Marks the answer inconclusive when it may not, which is the whole of what
+    /// makes this sound: an abandoned leaf hands back fewer maps than the target
+    /// and so reads to its caller as "no rank-one basis here", which would be a
+    /// refutation nobody proved. `exhausted` false turns the run's verdict into
+    /// GAVE UP, so the only thing an abandoned leaf can do is withdraw a NO.
+    bool may_examine(std::size_t examined) {
+        if (examined < leaf_element_limit) return true;
+        leaf_abandoned.store(true, std::memory_order_relaxed);
+        exhausted.store(false, std::memory_order_relaxed);
+        return false;
+    }
 };
 
 /// The rank-one maps of `pool` inside a span already built, taken greedily so
@@ -69,10 +109,15 @@ struct SearchBudget {
 /// existing caller passes one unchanged; `Addressed` in
 /// [`candidate_pool.h`](../descent_search/candidate_pool.h) satisfies them by
 /// building each map on demand. Instantiated for exactly those two in the source.
+///
+/// `budget` bounds the scan, and `nullptr` leaves it unbounded for the callers
+/// that have no budget to give: a pool small enough to hold is small enough to
+/// scan, so the bound matters only where the pool is addressed.
 template <typename Candidates>
 std::vector<Matrix> independent_rank_one_maps_in(const Field& field, const ReducedBasis& reachable,
                                                  std::size_t width, const Candidates& pool,
-                                                 std::size_t needed, std::vector<Element>& scratch);
+                                                 std::size_t needed, std::vector<Element>& scratch,
+                                                 SearchBudget* budget = nullptr);
 
 /// The rank-one maps of `pool` lying inside the span of `subspace`, taken
 /// greedily so they stay independent.

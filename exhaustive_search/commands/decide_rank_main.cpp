@@ -31,7 +31,8 @@ namespace {
 
 void usage() {
     std::cerr << "usage: decide-rank <tensor-file> [--target k] [--anchor map|heuristic]\n"
-                 "                   [--node-limit N] [--bottom-up] [--max-memory 2G]\n"
+                 "                   [--node-limit N] [--leaf-limit N] [--bottom-up]\n"
+                 "                   [--max-memory 2G]\n"
                  "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                  "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                  "\n"
@@ -42,7 +43,11 @@ void usage() {
                  "                      among algorithms containing that subspace\n"
                  "  --node-limit N      nodes the search may visit, from search_node_limit\n"
                  "                      in tunables.conf when this is not given. Reaching\n"
-                 "                      it is exit 3 and proves nothing either way\n";
+                 "                      it is exit 3 and proves nothing either way\n"
+                 "  --leaf-limit N      elements one leaf may examine, from search_leaf_limit.\n"
+                 "                      The node limit bounds how many leaves are reached and\n"
+                 "                      nothing inside one; this is what bounds one. Reaching\n"
+                 "                      it is exit 3 too, and proves nothing either way\n";
 }
 
 /// The tool proper. main only turns a thrown refusal into a line.
@@ -60,6 +65,7 @@ int run(int argc, char** argv) {
     // was given always wins over tunables.conf, and one that was not leaves the
     // file's number standing.
     std::size_t node_limit = cli::tunables().search_node_limit;
+    std::size_t leaf_limit = cli::tunables().search_leaf_limit;
     cli::Symmetry symmetry;
 
     for (int argument = 2; argument < argc; ++argument) {
@@ -77,6 +83,8 @@ int run(int argc, char** argv) {
             bilinear_rank::set_memory_budget(cli::parse_memory_size(option, argv[++argument]));
         } else if (option == "--node-limit" && argument + 1 < argc) {
             node_limit = cli::parse_count(option, argv[++argument]);
+        } else if (option == "--leaf-limit" && argument + 1 < argc) {
+            leaf_limit = cli::parse_count(option, argv[++argument]);
         } else if (option == "--bottom-up") {
             bottom_up = true;
         } else {
@@ -125,7 +133,7 @@ int run(int argc, char** argv) {
     std::vector<bilinear_rank::Matrix> pool;
     if (fits) pool = bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
-    bilinear_rank::SearchBudget budget{node_limit};
+    bilinear_rank::SearchBudget budget{node_limit, leaf_limit};
     std::vector<bilinear_rank::Matrix> products;
     const auto started = cli::Clock::now();
 
@@ -174,8 +182,11 @@ int run(int argc, char** argv) {
     }
 
     if (!budget.exhausted) {
-        std::cout << "  GAVE UP: the node limit was reached, so nothing is decided.\n"
-                     "           Raise --node-limit to search further.\n";
+        const bool leaf = budget.leaf_abandoned.load();
+        std::cout << "  GAVE UP: the " << (leaf ? "leaf" : "node")
+                  << " limit was reached, so nothing is decided.\n"
+                     "           Raise --"
+                  << (leaf ? "leaf" : "node") << "-limit to search further.\n";
         // Was 2, the same code the two usage errors above return, so a script
         // could not tell a mistyped flag from a search that ran and gave up.
         // A spent budget decides nothing, which is exactly what 3 is for.

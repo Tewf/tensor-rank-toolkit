@@ -44,6 +44,7 @@ different numbers in one run.
 | Tunable | Reaches | Flag that beats it |
 |---|---|---|
 | `search_node_limit` | `decide-rank`, `deflate-strictly` | `--node-limit` |
+| `search_leaf_limit` | `decide-rank` | `--leaf-limit` |
 | `ilp_node_limit` | `curve-bounds` | `--node-limit` |
 | `plateau_state_budget` | `minimise-rank` | `--plateau-states` |
 | `sat_memory_megabytes` | `decide-rank-by-sat`, `deflate-strictly` | `--max-memory` |
