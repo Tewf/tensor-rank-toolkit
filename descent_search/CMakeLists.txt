@@ -1,7 +1,7 @@
 # A descent heuristic for finding bilinear map rank, corrected and extended.
 # Three steps: a matroid greedy that is exact for the basis it picks, then two
 # that relax the constraint it works under and guarantee nothing.
-add_library(descent_search STATIC span_enumeration.cpp smallest_basis.cpp
+add_library(descent_search STATIC span_enumeration.cpp minimum_weight_basis.cpp
                                        minimise_rank.cpp algorithm_recovery.cpp
                                        candidate_pool.cpp)
 target_include_directories(descent_search PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

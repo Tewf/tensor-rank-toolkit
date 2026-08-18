@@ -4,7 +4,7 @@
 /// improves the map, improving is invariant under the map's own stabiliser, so no
 /// member of the whole pool improves it either, and the quotiented walk therefore
 /// has the same stopping condition as the plain one. That is the whole
-/// justification for the quotient, and nothing ran it. `minimise_rank_up_to` had
+/// justification for the quotient, and nothing ran it. `minimise_rank_up_to_symmetry` had
 /// no test of any kind.
 ///
 /// Only two fixtures can be asked. The quotient needs an ambient group, and
@@ -46,7 +46,7 @@ std::vector<Matrix> quotiented(const Field& field, const std::vector<Matrix>& sl
     const std::vector<Matrix> start = bilinear_rank::descend_from_own_basis(field, slices);
     const std::vector<bilinear_rank::Automorphism> ambient = bilinear_rank::all_automorphisms(
         field, slices.front().rows(), slices.front().columns());
-    return bilinear_rank::minimise_rank_up_to(field, start, pool, ambient, report);
+    return bilinear_rank::minimise_rank_up_to_symmetry(field, start, pool, ambient, report);
 }
 
 struct Fixture {

@@ -6,7 +6,7 @@
 
 #include "measures.h"
 #include "span_queries.h"
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 #include "span_basis.h"
 
 namespace bilinear_rank {
@@ -21,7 +21,7 @@ namespace {
 /// remembering where it had been. A collision costs one skipped state in a
 /// method that guarantees nothing anyway, and at 64 bits it will not happen.
 std::uint64_t fingerprint(const Field& field, const std::vector<Matrix>& slices) {
-    const Span span = linear_algebra::span_of(field, slices);
+    const ReducedBasis span = linear_algebra::span_of(field, slices);
     std::string bytes;
     for (const std::vector<Element>& row : span.rows()) {
         bytes.append(reinterpret_cast<const char*>(row.data()), row.size() * sizeof(Element));
@@ -53,7 +53,7 @@ std::vector<Matrix> worth_trying(const Field& field, const std::vector<Matrix>& 
     }
 
     std::vector<Matrix> quotiented;
-    for (const std::uint32_t index : one_per_orbit(here, everything)) {
+    for (const std::uint32_t index : orbit_representatives(here, everything)) {
         quotiented.push_back(pool[index]);
     }
     return quotiented;
@@ -86,7 +86,7 @@ struct Plateau {
         const std::vector<Matrix> candidates =
             worth_trying(field, slices, pool, ambient, ambient_action, everything);
         const std::vector<std::size_t> known = span_element_ranks(field, slices);
-        const Span span = linear_algebra::span_of(field, slices);
+        const ReducedBasis span = linear_algebra::span_of(field, slices);
 
         // Downhill first, and a strict improvement earns a fresh depth: the
         // plateau it may now be standing on is a different one.
@@ -94,7 +94,7 @@ struct Plateau {
         for (const Matrix& candidate : candidates) {
             if (span.contains(candidate)) continue;
 
-            std::vector<Matrix> attempt = basis_with(field, slices, candidate, known);
+            std::vector<Matrix> attempt = minimum_weight_basis_with(field, slices, candidate, known);
             const std::size_t reached = linear_algebra::multiplication_count(field, attempt);
             if (reached > cost) continue;
 
@@ -131,7 +131,7 @@ std::vector<Matrix> cross_plateaus(const Field& field, const std::vector<Matrix>
                     pool,
                     ambient,
                     ambient.empty() ? std::vector<std::vector<std::uint32_t>>{}
-                                    : action_on(field, ambient, pool),
+                                    : permutation_action_on(field, ambient, pool),
                     std::move(everything),
                     state_budget,
                     {},

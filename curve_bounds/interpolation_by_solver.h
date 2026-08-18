@@ -20,7 +20,7 @@
 /// envelope, never a wrong one. Contrast a rank refutation, where an early stop
 /// would be a false lower bound. The caveat is therefore claim strength, not
 /// correctness, and it is discharged by recording provenance: see
-/// `Programme::solved_by` and `Programme::optimum_proved`.
+/// `BoundResult::solved_by` and `BoundResult::optimum_proved`.
 ///
 /// **This is a separate library target from `curve_bounds`.** A static library
 /// propagates even a private dependency as a link requirement, so folding the
@@ -74,7 +74,7 @@ optimisation::IntegerProgramme interpolation_programme_of(const std::vector<Poin
 /// `Backend::BuiltIn` is unconditionally available and `solve()` ends there, so
 /// the chain cannot be empty. What can happen is a budget running out, which is
 /// `Exhausted`, and that is a different thing from infeasible.
-Programme minimise_interpolation_bound_by_solver(const std::vector<PointSupply>& supply,
+BoundResult minimise_interpolation_bound_by_solver(const std::vector<PointSupply>& supply,
                                                  std::size_t divisor_degree,
                                                  SolverChoice choice = SolverChoice::Chain);
 

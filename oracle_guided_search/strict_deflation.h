@@ -28,7 +28,7 @@
 /// - **The solver.** `decide_rank` on the cube, waiting for unsatisfiable. At
 ///   `⟨2,2,2⟩` and `k = 6`, 0.29 to 0.35 s per candidate with `break_symmetry`, and
 ///   1.63 to 2.67 s without, so the ordering alone is worth about 7x here.
-/// - **The quotiented tree.** `expand_subspace_up_to` (`[covanov2019]` Algorithm 3)
+/// - **The quotiented tree.** `expand_subspace_up_to_symmetry` (`[covanov2019]` Algorithm 3)
 ///   on `span(T) + t`, with the stabiliser recomputed for that enlarged span.
 ///   **0.0085 to 0.0099 s per candidate, 45 to 72 nodes**, which is 34x the whole
 ///   pinned solver sweep and 27x the whole-instance refutation.
@@ -51,7 +51,7 @@ namespace bilinear_rank {
 enum class Refuter {
     /// `decide_rank` on the cube, waiting for unsatisfiable.
     Solver,
-    /// `expand_subspace_up_to` on the span enlarged by the candidate.
+    /// `expand_subspace_up_to_symmetry` on the span enlarged by the candidate.
     QuotientedTree,
 };
 

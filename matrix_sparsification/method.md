@@ -66,7 +66,7 @@ Column subsets one smaller than the row count: any larger and the only vector
 orthogonal to all of them is zero.
 
 ```
-sparsify_bottom_up(rows):
+sparsify_by_best_corank_one(rows):
     viable ← { S ⊆ [b] : |S| = a−1, rank(rows[:,S]) = a−1 }
     settled ← ∅
     repeat a times:
@@ -89,7 +89,7 @@ by one forced on fewer, so the first hit is the best and there is nothing to
 gain by looking further.
 
 ```
-sparsify_top_down(rows):
+sparsify_by_descending_support(rows):
     settled ← ∅
     repeat a times:
         for size s = b−1 down to a−1:

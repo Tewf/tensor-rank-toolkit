@@ -64,12 +64,12 @@ int run(int argc, char** argv) {
            cli::elapsed_seconds(started), show_matrix);
 
     started = cli::Clock::now();
-    const Matrix exhaustive = matrix_sparsification::sparsify_bottom_up(field, transposed);
+    const Matrix exhaustive = matrix_sparsification::sparsify_by_best_corank_one(field, transposed);
     report(field, "exact oracle, bottom-up", operator_matrix,
            linear_algebra::transpose<Field>(exhaustive), cli::elapsed_seconds(started), show_matrix);
 
     started = cli::Clock::now();
-    const Matrix top_down = matrix_sparsification::sparsify_top_down(field, transposed);
+    const Matrix top_down = matrix_sparsification::sparsify_by_descending_support(field, transposed);
     report(field, "exact oracle, top-down", operator_matrix,
            linear_algebra::transpose<Field>(top_down), cli::elapsed_seconds(started), show_matrix);
 

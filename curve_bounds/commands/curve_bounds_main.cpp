@@ -145,7 +145,7 @@ int run(int argc, char** argv) {
     std::cout << "\ndivisor degree: " << divisor_degree << ", spent exactly\n";
 
     const std::size_t degree = static_cast<std::size_t>(divisor_degree);
-    const curve_bounds::Programme programme =
+    const curve_bounds::BoundResult programme =
         route == Route::Enumeration
             ? curve_bounds::minimise_interpolation_bound(supply, degree)
             : curve_bounds::minimise_interpolation_bound_by_solver(

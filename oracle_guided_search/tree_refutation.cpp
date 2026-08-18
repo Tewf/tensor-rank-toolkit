@@ -27,7 +27,7 @@ CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& 
     const cli::Clock::time_point started = cli::Clock::now();
     CandidateVerdict verdict;
 
-    // `expand_subspace_up_to` wants a group that already stabilises the span it is
+    // `expand_subspace_up_to_symmetry` wants a group that already stabilises the span it is
     // given, and the span here is the map's enlarged by the candidate, so the
     // stabiliser is taken of that. This is the recomputation
     // `orbit_reduction/orbit_heuristic.h` explains: a quotient of the map's own
@@ -40,7 +40,7 @@ CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& 
     SearchBudget budget(node_limit);
     std::vector<Matrix> found;
     const bool reached =
-        expand_subspace_up_to(field, subspace, pool, group, products, budget, found);
+        expand_subspace_up_to_symmetry(field, subspace, pool, group, products, budget, found);
 
     verdict.nodes = budget.nodes_visited.load();
     verdict.seconds = cli::elapsed_seconds(started);

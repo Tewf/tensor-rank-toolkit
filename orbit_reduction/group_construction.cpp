@@ -149,7 +149,7 @@ std::vector<Automorphism> matrix_multiplication_symmetry_generators(const Field&
     return generators;
 }
 
-std::vector<Matrix> all_invertible(const Field& field, std::size_t order) {
+std::vector<Matrix> general_linear_group(const Field& field, std::size_t order) {
     const std::size_t candidates = matrices_of_order(field, order);
 
     std::vector<Matrix> invertible;
@@ -162,8 +162,8 @@ std::vector<Matrix> all_invertible(const Field& field, std::size_t order) {
 
 std::vector<Automorphism> all_automorphisms(const Field& field, std::size_t rows,
                                             std::size_t columns) {
-    const std::vector<Matrix> lefts = all_invertible(field, rows);
-    const std::vector<Matrix> rights = all_invertible(field, columns);
+    const std::vector<Matrix> lefts = general_linear_group(field, rows);
+    const std::vector<Matrix> rights = general_linear_group(field, columns);
 
     require_room("every automorphism of that shape", lefts.size() * rights.size(),
                  bytes_per_matrix(rows * rows) + bytes_per_matrix(columns * columns));
@@ -179,9 +179,9 @@ std::vector<Automorphism> all_automorphisms(const Field& field, std::size_t rows
 std::vector<Automorphism> matrix_multiplication_symmetries(const Field& field, std::size_t rows,
                                                            std::size_t inner,
                                                            std::size_t columns) {
-    const std::vector<Matrix> on_rows = all_invertible(field, rows);
-    const std::vector<Matrix> on_inner = all_invertible(field, inner);
-    const std::vector<Matrix> on_columns = all_invertible(field, columns);
+    const std::vector<Matrix> on_rows = general_linear_group(field, rows);
+    const std::vector<Matrix> on_inner = general_linear_group(field, inner);
+    const std::vector<Matrix> on_columns = general_linear_group(field, columns);
 
     const std::size_t count = on_rows.size() * on_inner.size() * on_columns.size();
     require_room("the symmetries of that matrix product", count,

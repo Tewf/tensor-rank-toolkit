@@ -7,7 +7,7 @@
 #include "algorithm_recovery.h"
 #include "candidate_pool.h"
 #include "check.h"
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 #include "tensor_file.h"
 
 namespace {
@@ -32,7 +32,7 @@ bool same_map(const bilinear_rank::Field& field, const std::vector<bilinear_rank
 void check_round_trip(const bilinear_rank::Field& field,
                       const std::vector<bilinear_rank::Matrix>& map, const std::string& what,
                       long long expected_products = -1) {
-    const std::vector<bilinear_rank::Matrix> basis = bilinear_rank::smallest_basis(field, map);
+    const std::vector<bilinear_rank::Matrix> basis = bilinear_rank::minimum_weight_basis(field, map);
     const std::vector<bilinear_rank::Matrix> products =
         bilinear_rank::rank_one_candidates(field, basis);
 
@@ -52,7 +52,7 @@ void check_round_trip(const bilinear_rank::Field& field,
                      static_cast<long long>(algorithm.product_count()), expected_products);
     }
 
-    if (!same_map(field, bilinear_rank::computed_map(field, algorithm), map)) {
+    if (!same_map(field, bilinear_rank::map_computed_by(field, algorithm), map)) {
         std::cout << "  FAIL  " << what << ": the recovered algorithm computes a different map\n";
         ++check::failure_count;
     }

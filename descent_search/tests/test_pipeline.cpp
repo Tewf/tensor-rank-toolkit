@@ -8,7 +8,7 @@
 #include "check.h"
 #include "fewest_products.h"
 #include "minimise_rank.h"
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 #include "span_basis.h"
 #include "tensor_file.h"
 
@@ -22,7 +22,7 @@ struct Expectation {
     long long rank_bound;
 };
 
-/// The bound column is `starting_target`, which is the maximum over the flattening
+/// The bound column is `flattening_floor`, which is the maximum over the flattening
 /// ranks and the two rank sums of `[yang2025]`. Every one of the four rose: 9 to
 /// 10, 10 to 14, 10 to 14, 8 to 9. On `f2_3x8` that leaves a gap of one against
 /// the known rank of 15, where it used to be five.
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
                      expected.naive);
 
         auto started = std::chrono::steady_clock::now();
-        const std::vector<linear_algebra::ModularMatrix> step_1 = bilinear_rank::smallest_basis(field, tensor.slices);
+        const std::vector<linear_algebra::ModularMatrix> step_1 = bilinear_rank::minimum_weight_basis(field, tensor.slices);
         const double step_1_seconds = seconds_since(started);
 
         check::equal(name + " after step 1",
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
         // A lower bound sitting above a decomposition somebody reached is a false
         // lower bound, and nothing downstream catches one: `decide-rank` refuses
         // every target under this number without searching at all.
-        const std::size_t bound = bilinear_rank::starting_target(field, tensor.slices);
+        const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
         check::equal(name + " rank bound", static_cast<long long>(bound),
                      expected.rank_bound);
         if (bound > linear_algebra::multiplication_count(field, step_2)) {

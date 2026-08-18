@@ -15,7 +15,7 @@ Every claim below is one of the four earning or failing to earn its keep.
 
 | | Guarantee | Provenance |
 |---|---|---|
-| [`smallest_basis.*`](smallest_basis.h) | Step 1, and provably optimal for the basis it chooses: a matroid greedy (see below) | New here |
+| [`minimum_weight_basis.*`](minimum_weight_basis.h) | Step 1, and provably optimal for the basis it chooses: a matroid greedy (see below) | New here |
 | [`minimise_rank.*`](minimise_rank.h) | Steps 2 and 3. None. First-improvement, irreversible pruning | New here |
 | [`exhaustive_search.*`](../exhaustive_search/exhaustive_search.h) | Complete. A "no" that ran to exhaustion is a fact about the problem | An implementation of a pre-existing published algorithm |
 | [`fewest_products.*`](../exhaustive_search/fewest_products.h) | Inherits the exact search's: sweep, bisection, or from the flattening bound | Which `k` to ask it about |
@@ -33,6 +33,9 @@ decide-rank        fixtures/f2_5x5.tensor --target 11  # exact: is there one thi
 walk-scheme        fixtures/f3_3x6.tensor --from 10 # walk on from the heuristic's answer
 make-tensor        --field 2 1 1 1                 # build GF(4) multiplication
 ```
+
+What it guarantees, proved rather than measured:
+[`correctness.md`](correctness.md).
 
 ## What the heuristic reaches
 

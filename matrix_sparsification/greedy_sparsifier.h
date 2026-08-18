@@ -39,7 +39,7 @@ std::vector<Element> best_scaling(const Field& field, const std::vector<Element>
 /// Algorithm 6, on the transposed operator the oracles also work on.
 ///
 /// Takes and returns `rows`, so it is interchangeable with
-/// `sparsify_bottom_up` and `sparsify_top_down` at the call site.
-Matrix greedy_sparsify(const Field& field, Matrix rows);
+/// `sparsify_by_best_corank_one` and `sparsify_by_descending_support` at the call site.
+Matrix sparsify_by_rescaling(const Field& field, Matrix rows);
 
 }  // namespace matrix_sparsification

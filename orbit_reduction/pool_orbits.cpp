@@ -226,7 +226,7 @@ matrix_multiplication_orbit_vectors(const Field& field, std::size_t rows, std::s
     return representatives;
 }
 
-std::vector<Matrix> matrix_multiplication_pool_orbits(const Field& field, std::size_t rows,
+std::vector<Matrix> matrix_multiplication_orbit_representatives(const Field& field, std::size_t rows,
                                                       std::size_t inner, std::size_t columns) {
     std::vector<Matrix> representatives;
     for (const auto& [left, right] :

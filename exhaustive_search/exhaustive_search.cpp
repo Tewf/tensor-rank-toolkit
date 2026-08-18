@@ -11,12 +11,12 @@
 namespace bilinear_rank {
 
 std::vector<Matrix> independent_rank_one_maps_in(const Field& field,
-                                              const Span& reachable,
+                                              const ReducedBasis& reachable,
                                               std::size_t width, const std::vector<Matrix>& pool,
                                               std::size_t needed,
                                               std::vector<Element>& scratch) {
     std::vector<Matrix> found;
-    Span independent(field, width);
+    ReducedBasis independent(field, width);
     for (std::size_t index = 0; index < pool.size(); ++index) {
         // Once what is left cannot reach the target, the answer is already no.
         if (found.size() + (pool.size() - index) < needed) break;
@@ -46,7 +46,7 @@ namespace {
 /// the span again inside the candidate loop, and a full scan of the pool. Only
 /// the last is needed, and only at a node that has reached the target
 /// dimension. Removing the other two is what makes the depth reachable.
-bool expand_subspace_impl(const Field& field, Span span,
+bool expand_subspace_impl(const Field& field, ReducedBasis span,
                           std::size_t width, const std::vector<Matrix>& pool, std::size_t from,
                           std::size_t target, SearchBudget& budget, std::vector<Element>& scratch,
                           std::vector<Matrix>& products) {
@@ -64,7 +64,7 @@ bool expand_subspace_impl(const Field& field, Span span,
 
     for (std::size_t index = from; index < pool.size(); ++index) {
         if (span.contains(pool[index], scratch)) continue;
-        Span extended = span;
+        ReducedBasis extended = span;
         extended.try_add(pool[index]);
         if (expand_subspace_impl(field, std::move(extended), width, pool, index + 1, target, budget,
                                  scratch, products)) {
@@ -82,7 +82,7 @@ bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
                      SearchBudget& budget, std::vector<Matrix>& products) {
     if (subspace.empty()) return false;
     const std::size_t width = linear_algebra::flattened_width<Field>(subspace);
-    const Span root = linear_algebra::span_of(field, subspace);
+    const ReducedBasis root = linear_algebra::span_of(field, subspace);
 
     if (worker_count() <= 1) {
         std::vector<Element> scratch;
@@ -119,7 +119,7 @@ bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
         std::vector<Element> scratch;
         if (root.contains(pool[index], scratch)) return;
 
-        Span extended = root;
+        ReducedBasis extended = root;
         extended.try_add(pool[index]);
 
         std::vector<Matrix> mine;

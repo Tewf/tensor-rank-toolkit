@@ -59,7 +59,7 @@ Verdict quotiented(const Field& field, const std::vector<Matrix>& slices,
 
     bilinear_rank::SearchBudget budget{2'000'000};
     std::vector<Matrix> products;
-    if (bilinear_rank::expand_subspace_up_to(field, slices, pool, group, target, budget, products)) {
+    if (bilinear_rank::expand_subspace_up_to_symmetry(field, slices, pool, group, target, budget, products)) {
         return Verdict::Found;
     }
     return budget.exhausted ? Verdict::Refuted : Verdict::Undecided;

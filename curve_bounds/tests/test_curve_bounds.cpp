@@ -54,7 +54,7 @@ void check_table() {
 void check_programme() {
     // Rational points only: every point has degree 1, so spending g degree
     // units on g distinct points costs g * mu_sym_2(1,1) = g.
-    const curve_bounds::Programme rational =
+    const curve_bounds::BoundResult rational =
         curve_bounds::minimise_interpolation_bound({{1, 8}}, 5);
     check::equal("rational points solve", rational.solved ? 1 : 0, 1);
     check::equal("rational points bound", static_cast<long long>(rational.bound), 5);
@@ -64,7 +64,7 @@ void check_programme() {
     // to come from raising multiplicities, and mu_sym_2(1,l) is 1, 3, 5, 8, 11
     // -- superadditive, so spreading over points is cheaper than stacking.
     // 5 units on 3 points: 3 + 1 + 1 costs 5 + 1 + 1 = 7.
-    const curve_bounds::Programme scarce =
+    const curve_bounds::BoundResult scarce =
         curve_bounds::minimise_interpolation_bound({{1, 3}}, 5);
     check::equal("scarce points bound", static_cast<long long>(scarce.bound), 7);
     check::equal("scarce points degree", static_cast<long long>(scarce.degree_used), 5);
@@ -72,18 +72,18 @@ void check_programme() {
     // A degree-2 point costs 3 for 2 units of degree, while two degree-1 points
     // cost 2 for the same, so the programme must prefer the rational ones when
     // it has them and fall back when it does not.
-    const curve_bounds::Programme mixed =
+    const curve_bounds::BoundResult mixed =
         curve_bounds::minimise_interpolation_bound({{1, 1}, {2, 4}}, 5);
     check::equal("mixed supply solves", mixed.solved ? 1 : 0, 1);
     check::equal("mixed supply bound", static_cast<long long>(mixed.bound), 7);
 
     // No supply at all is not a bound of zero, it is no answer.
-    const curve_bounds::Programme empty = curve_bounds::minimise_interpolation_bound({}, 5);
+    const curve_bounds::BoundResult empty = curve_bounds::minimise_interpolation_bound({}, 5);
     check::equal("no points is unsolved", empty.solved ? 1 : 0, 0);
     check::equal("no points has no bound", static_cast<long long>(empty.bound), 0);
 
     // Points whose cost the table does not publish cannot be spent.
-    const curve_bounds::Programme unpriced =
+    const curve_bounds::BoundResult unpriced =
         curve_bounds::minimise_interpolation_bound({{11, 5}}, 20);
     check::equal("unpriceable points are unsolved", unpriced.solved ? 1 : 0, 0);
 }

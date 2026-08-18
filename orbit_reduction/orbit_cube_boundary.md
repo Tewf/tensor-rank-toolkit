@@ -116,7 +116,7 @@ second five for five in 65.4 s.** It is the only test that links both sides of t
 boundary, because the question needs both.
 
 **The ordering-on rows are the ones that matter and they were missing until the
-merge.** The test called `encode_rank_at_most(tensor, products)` with
+merge.** The test called `encode_binary_rank_at_most(tensor, products)` with
 `break_symmetry` false, so it compared cubes against a formula carrying no
 ordering: silent about exactly the conjunction this file exists to keep apart. A
 cube run now encodes with `first_term_pinned` and the whole run without it, and the

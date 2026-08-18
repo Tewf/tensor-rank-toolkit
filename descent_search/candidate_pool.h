@@ -75,7 +75,7 @@ std::vector<Matrix> all_rank_one_maps(const Field& field, std::size_t rows, std:
 bool row_space_contains(const Field& field, const Matrix& outer, const Matrix& inner);
 
 /// Whether any of `known` has a row space containing `candidate`'s.
-bool has_equivalent(const Field& field, const std::vector<Matrix>& known, const Matrix& candidate);
+bool has_same_row_space(const Field& field, const std::vector<Matrix>& known, const Matrix& candidate);
 
 /// One representative per row-space class of a pool of rank-one maps.
 ///
@@ -85,6 +85,6 @@ bool has_equivalent(const Field& field, const std::vector<Matrix>& known, const 
 /// its class only preserves the answer if the same automorphism is applied to
 /// the map being decomposed. Measuring the reduction is useful on its own, and
 /// [`tests/test_candidate_pool.cpp`](tests/test_candidate_pool.cpp) reports it.
-std::vector<Matrix> one_per_row_space(const Field& field, const std::vector<Matrix>& pool);
+std::vector<Matrix> row_space_representatives(const Field& field, const std::vector<Matrix>& pool);
 
 }  // namespace bilinear_rank

@@ -26,7 +26,7 @@ namespace bilinear_rank {
 /// `p^(k)` elements whose coefficient on the candidate is zero are the same
 /// elements every single time. Handing them over skips both the combination and
 /// the rank for that half of the enumeration.
-std::vector<Matrix> smallest_basis(const Field& field, const std::vector<Matrix>& slices,
+std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
                                    const std::vector<std::size_t>& ranks_without_last = {});
 
 /// The basis of `slices` with one more map thrown in: the answer to "what would
@@ -34,7 +34,7 @@ std::vector<Matrix> smallest_basis(const Field& field, const std::vector<Matrix>
 ///
 /// Both walks over a candidate pool ask exactly this, so it lives here with the
 /// step it calls rather than twice in the two callers.
-std::vector<Matrix> basis_with(const Field& field, const std::vector<Matrix>& slices,
+std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vector<Matrix>& slices,
                                const Matrix& candidate,
                                const std::vector<std::size_t>& known = {});
 

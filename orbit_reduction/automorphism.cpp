@@ -120,7 +120,7 @@ Matrix normalised(const Field& field, Matrix matrix) {
 
 }  // namespace
 
-std::vector<std::vector<std::uint32_t>> action_on(const Field& field,
+std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field,
                                                   const std::vector<Automorphism>& group,
                                                   const std::vector<Matrix>& pool) {
     std::unordered_map<std::string, std::uint32_t> index_of;
@@ -153,7 +153,7 @@ std::vector<std::vector<std::uint32_t>> action_on(const Field& field,
     return permutations;
 }
 
-std::vector<std::uint32_t> one_per_orbit(const std::vector<std::vector<std::uint32_t>>& action,
+std::vector<std::uint32_t> orbit_representatives(const std::vector<std::vector<std::uint32_t>>& action,
                                          const std::vector<std::uint32_t>& candidates) {
     if (action.empty()) return candidates;
 

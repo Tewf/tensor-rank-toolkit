@@ -51,7 +51,7 @@ int main() {
                      static_cast<long long>(disagreements), 0);
 
         const std::vector<bilinear_rank::Matrix> representatives =
-            bilinear_rank::one_per_row_space(field, pool);
+            bilinear_rank::row_space_representatives(field, pool);
         check::equal("one per row space", static_cast<long long>(representatives.size()),
                      shape.reduced);
     }

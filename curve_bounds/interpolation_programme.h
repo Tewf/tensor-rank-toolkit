@@ -53,7 +53,7 @@ struct Selection {
     std::size_t count = 0;
 };
 
-struct Programme {
+struct BoundResult {
     bool solved = false;
     /// `Σ µ_sym_q(dᵢ, uᵢ)`, the right-hand side of Theorem 2.
     std::size_t bound = 0;
@@ -90,7 +90,7 @@ struct Programme {
 ///
 /// Multiplicities are capped by what the bound table knows: a point whose
 /// `µ_sym_q(d, u)` is unpublished cannot be costed, so it is not offered.
-Programme minimise_interpolation_bound(const std::vector<PointSupply>& supply,
+BoundResult minimise_interpolation_bound(const std::vector<PointSupply>& supply,
                                        std::size_t divisor_degree);
 
 }  // namespace curve_bounds

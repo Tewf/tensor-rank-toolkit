@@ -73,7 +73,7 @@ std::vector<std::vector<int>> commitment_cubes(const linear_algebra::Tensor& ten
     // `satisfiability/tests/test_binary_encoding.cpp` rather than read off the
     // loop.
     const satisfiability::BinaryEncoding numbering =
-        satisfiability::encode_rank_at_most(tensor, products);
+        satisfiability::encode_binary_rank_at_most(tensor, products);
     const Field field(tensor.characteristic);
     return orbit_cubes(field, tensor.slices, settings.matmul_shape[0], settings.matmul_shape[1],
                        settings.matmul_shape[2], numbering.left, numbering.right);

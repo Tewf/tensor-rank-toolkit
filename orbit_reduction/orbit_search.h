@@ -29,8 +29,8 @@ namespace bilinear_rank {
 ///   is false, and a false `NO` is the only claim here that nothing downstream
 ///   can catch: a `FOUND` is checked against the map it must compute.
 /// - **`pool` must be closed under `group`**, which `all_rank_one_maps` is.
-///   `action_on` throws if an image leaves it.
-bool expand_subspace_up_to(const Field& field, const std::vector<Matrix>& subspace,
+///   `permutation_action_on` throws if an image leaves it.
+bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
                            const std::vector<Matrix>& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products);

@@ -76,7 +76,7 @@ void write_row(Matrix& rows, std::size_t index, const std::vector<Element>& entr
 
 }  // namespace
 
-Matrix sparsify_bottom_up(const Field& field, Matrix rows) {
+Matrix sparsify_by_best_corank_one(const Field& field, Matrix rows) {
     if (rows.rows() == 0) return rows;
 
     // Column subsets one smaller than the number of rows: any larger and the
@@ -113,7 +113,7 @@ Matrix sparsify_bottom_up(const Field& field, Matrix rows) {
     return rows;
 }
 
-Matrix sparsify_top_down(const Field& field, Matrix rows) {
+Matrix sparsify_by_descending_support(const Field& field, Matrix rows) {
     if (rows.rows() == 0) return rows;
 
     std::vector<std::size_t> settled;

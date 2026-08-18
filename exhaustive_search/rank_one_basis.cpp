@@ -9,7 +9,7 @@ namespace bilinear_rank {
 namespace {
 
 /// Every element of the subspace, each tested for rank one.
-std::vector<Matrix> by_walking_the_subspace(const Field& field, const Span& span,
+std::vector<Matrix> by_walking_the_subspace(const Field& field, const ReducedBasis& span,
                                             std::size_t rows, std::size_t columns,
                                             std::size_t needed, std::size_t elements) {
     const auto characteristic = static_cast<std::size_t>(field.characteristic());
@@ -17,7 +17,7 @@ std::vector<Matrix> by_walking_the_subspace(const Field& field, const Span& span
     const std::size_t width = rows * columns;
 
     std::vector<Matrix> found;
-    Span independent(field, width);
+    ReducedBasis independent(field, width);
     std::vector<Element> combination(width);
 
     for (std::size_t index = 1; index < elements; ++index) {
@@ -59,7 +59,7 @@ std::size_t elements_of(const Field& field, std::size_t dimension, std::size_t c
 
 }  // namespace
 
-std::vector<Matrix> rank_one_basis_of(const Field& field, const Span& span,
+std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
                                       const std::vector<Matrix>& pool, std::size_t needed,
                                       std::vector<Element>& scratch) {
     if (pool.empty()) return {};

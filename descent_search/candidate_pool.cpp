@@ -85,17 +85,17 @@ bool row_space_contains(const Field& field, const Matrix& outer, const Matrix& i
     return true;
 }
 
-bool has_equivalent(const Field& field, const std::vector<Matrix>& known, const Matrix& candidate) {
+bool has_same_row_space(const Field& field, const std::vector<Matrix>& known, const Matrix& candidate) {
     for (const Matrix& seen : known) {
         if (row_space_contains(field, seen, candidate)) return true;
     }
     return false;
 }
 
-std::vector<Matrix> one_per_row_space(const Field& field, const std::vector<Matrix>& pool) {
+std::vector<Matrix> row_space_representatives(const Field& field, const std::vector<Matrix>& pool) {
     std::vector<Matrix> representatives;
     for (const Matrix& candidate : pool) {
-        if (!has_equivalent(field, representatives, candidate)) representatives.push_back(candidate);
+        if (!has_same_row_space(field, representatives, candidate)) representatives.push_back(candidate);
     }
     return representatives;
 }

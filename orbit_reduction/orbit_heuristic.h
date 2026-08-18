@@ -38,7 +38,7 @@ struct OrbitReport {
 
 /// Steps 2 and 3, quotiented. `ambient` is the group to take the map's
 /// stabiliser from, and `pool` must be closed under it.
-std::vector<Matrix> minimise_rank_up_to(const Field& field, std::vector<Matrix> slices,
+std::vector<Matrix> minimise_rank_up_to_symmetry(const Field& field, std::vector<Matrix> slices,
                                         const std::vector<Matrix>& pool,
                                         const std::vector<Automorphism>& ambient,
                                         OrbitReport* report);

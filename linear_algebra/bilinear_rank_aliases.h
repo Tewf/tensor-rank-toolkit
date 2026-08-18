@@ -6,7 +6,7 @@
 ///
 /// Three kinds of thing live here, and the filenames say which is which:
 ///
-/// - [`smallest_basis.h`](../descent_search/smallest_basis.h): step 1, a matroid greedy,
+/// - [`minimum_weight_basis.h`](../descent_search/minimum_weight_basis.h): step 1, a matroid greedy,
 ///   provably optimal for what it does. Choosing a minimum-rank basis of a fixed span is
 ///   a matroid problem, so the greedy is exact there.
 /// - [`minimise_rank.h`](../descent_search/minimise_rank.h): steps 2 and 3, a heuristic
@@ -25,6 +25,6 @@ using Element = Field::Element;
 /// A span of slices, spelled once. Written out in full it is
 /// `linear_algebra::SpanBasis<linear_algebra::ModularField>`, which appeared
 /// five times in one function and said nothing the alias does not.
-using Span = linear_algebra::SpanBasis<Field>;
+using ReducedBasis = linear_algebra::SpanBasis<Field>;
 
 }  // namespace bilinear_rank

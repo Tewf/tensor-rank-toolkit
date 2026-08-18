@@ -8,7 +8,7 @@
 
 /// Refuting a pinned rank question with the quotiented tree instead of a solver.
 ///
-/// `[covanov2019]` Algorithm 3, as `expand_subspace_up_to`, asked about the map's
+/// `[covanov2019]` Algorithm 3, as `expand_subspace_up_to_symmetry`, asked about the map's
 /// span **enlarged by the candidate**. It decides the same thing the cube does and
 /// prices it very differently: unpinned at `⟨2,2,2⟩` and `k = 6` the tree and kissat
 /// are comparable, 0.41 s against 0.31 s, but **pinned the tree takes 0.0085 to

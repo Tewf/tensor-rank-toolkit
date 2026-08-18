@@ -19,7 +19,7 @@
 #include "plateau_search.h"
 #include "size_argument.h"
 #include "requested_group.h"
-#include "smallest_basis.h"
+#include "minimum_weight_basis.h"
 #include "symmetry_argument.h"
 #include "tensor_file.h"
 #include "timing.h"
@@ -99,7 +99,7 @@ int run(int argc, char** argv) {
     report("naive", linear_algebra::multiplication_count(field, tensor.slices), tensor.slices.size(), 0.0,
            as_json);
 
-    std::vector<bilinear_rank::Matrix> current = bilinear_rank::smallest_basis(field, tensor.slices);
+    std::vector<bilinear_rank::Matrix> current = bilinear_rank::minimum_weight_basis(field, tensor.slices);
     if (!verify(field, current, tensor.slices, "step 1")) return 1;
     if (as_json) std::cout << ",";
     report("step 1", linear_algebra::multiplication_count(field, current), current.size(),
@@ -140,7 +140,7 @@ int run(int argc, char** argv) {
             std::cerr << "step 3 ambient generators: " << ambient.size() << "\n";
 
             bilinear_rank::OrbitReport orbits;
-            current = bilinear_rank::minimise_rank_up_to(field, current, everything, ambient,
+            current = bilinear_rank::minimise_rank_up_to_symmetry(field, current, everything, ambient,
                                                          &orbits);
             if (plateau_budget > 0) {
                 bilinear_rank::PlateauReport crossing;
@@ -176,8 +176,8 @@ int run(int argc, char** argv) {
     // What is left to win. A heuristic cannot say whether its answer is optimal,
     // but the flattenings say how much room there is underneath it, and a gap of
     // zero means the run is finished and nothing exponential need follow it.
-    const std::size_t bound = bilinear_rank::starting_target(field, tensor.slices);
-    std::cerr << "algorithm: " << bilinear_rank::gap_report(algorithm.product_count(), bound)
+    const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
+    std::cerr << "algorithm: " << bilinear_rank::require_bound_consistent(algorithm.product_count(), bound)
               << ", L is "
               << algorithm.left.rows() << "x" << algorithm.left.columns() << ", R is "
               << algorithm.right.rows() << "x" << algorithm.right.columns() << ", P is "

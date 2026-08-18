@@ -59,7 +59,7 @@ bool recover_algorithm(const Field& field, const std::vector<Matrix>& target,
 
 /// The map an algorithm actually computes. Compare with the input to check a
 /// recovery.
-std::vector<Matrix> computed_map(const Field& field, const Algorithm& algorithm);
+std::vector<Matrix> map_computed_by(const Field& field, const Algorithm& algorithm);
 
 /// Recover the algorithm and check it: does what it computes still generate
 /// `target`?

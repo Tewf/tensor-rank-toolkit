@@ -42,7 +42,7 @@ a hang is worse than a refusal that names the alternative.
 ## The one mistake nothing downstream catches
 
 A group that does not stabilise the span it is handed makes
-`expand_subspace_up_to` report a false `NO`, which is a false lower bound.
+`expand_subspace_up_to_symmetry` report a false `NO`, which is a false lower bound.
 Nothing further down the pipeline can tell. So `test_symmetry_agreement` asserts
 that the quotiented search and the unquotiented one answer the same question the
 same way, on every fixture where both terminate, and it is the test to look at

@@ -24,7 +24,7 @@
 namespace {
 
 using curve_bounds::PointSupply;
-using curve_bounds::Programme;
+using curve_bounds::BoundResult;
 using curve_bounds::SolverChoice;
 
 std::string named(const std::vector<PointSupply>& supply, std::size_t degree) {
@@ -86,7 +86,7 @@ void check_the_model_states_the_same_question() {
 /// `bound` must match. `chosen` need not: ties are real, and the two routes break
 /// them differently. What `chosen` must do is re-cost to `bound`, spend exactly
 /// the degree, and respect each entry's supply of distinct points.
-bool selection_is_consistent(const Programme& programme, const std::vector<PointSupply>& supply,
+bool selection_is_consistent(const BoundResult& programme, const std::vector<PointSupply>& supply,
                             std::size_t degree) {
     std::size_t cost = 0;
     std::size_t spent = 0;
@@ -129,8 +129,8 @@ void check_the_two_routes_agree() {
     std::size_t disagreed = 0;
     for (const std::vector<PointSupply>& supply : supplies) {
         for (std::size_t degree = 1; degree <= 14; ++degree) {
-            const Programme enumerated = curve_bounds::minimise_interpolation_bound(supply, degree);
-            const Programme proved = curve_bounds::minimise_interpolation_bound_by_solver(
+            const BoundResult enumerated = curve_bounds::minimise_interpolation_bound(supply, degree);
+            const BoundResult proved = curve_bounds::minimise_interpolation_bound_by_solver(
                 supply, degree, SolverChoice::BuiltInOnly);
             ++compared;
 
@@ -173,7 +173,7 @@ void check_the_two_routes_agree() {
 void check_a_refusal_is_not_a_budget_running_out() {
     // Degree 5 cannot be assembled from points of degree 2, at any price.
     const std::vector<PointSupply> even{{2, 4}};
-    const Programme refused =
+    const BoundResult refused =
         curve_bounds::minimise_interpolation_bound_by_solver(even, 5, SolverChoice::BuiltInOnly);
     check::equal("an impossible degree is refused, not fallen back from",
                  refused.solved ? 1 : 0, 0);
@@ -186,11 +186,11 @@ void check_a_refusal_is_not_a_budget_running_out() {
     const std::vector<PointSupply> plenty{{1, 4}, {2, 4}, {3, 4}};
     const std::size_t generous = curve_bounds::solver_node_limit();
     curve_bounds::set_solver_node_limit(1);
-    const Programme fallen =
+    const BoundResult fallen =
         curve_bounds::minimise_interpolation_bound_by_solver(plenty, 11, SolverChoice::BuiltInOnly);
     curve_bounds::set_solver_node_limit(generous);
 
-    const Programme enumerated = curve_bounds::minimise_interpolation_bound(plenty, 11);
+    const BoundResult enumerated = curve_bounds::minimise_interpolation_bound(plenty, 11);
     check::equal("an exhausted budget falls back and still answers", fallen.solved ? 1 : 0,
                  enumerated.solved ? 1 : 0);
     check::equal("with the enumeration's number", static_cast<long long>(fallen.bound),
@@ -210,9 +210,9 @@ void check_the_chain_is_never_better_than_the_proof() {
     std::size_t impossible = 0;
     for (const std::vector<PointSupply>& supply : supplies) {
         for (std::size_t degree = 3; degree <= 9; ++degree) {
-            const Programme proved = curve_bounds::minimise_interpolation_bound_by_solver(
+            const BoundResult proved = curve_bounds::minimise_interpolation_bound_by_solver(
                 supply, degree, SolverChoice::BuiltInOnly);
-            const Programme chained = curve_bounds::minimise_interpolation_bound_by_solver(
+            const BoundResult chained = curve_bounds::minimise_interpolation_bound_by_solver(
                 supply, degree, SolverChoice::Chain);
             if (proved.solved != chained.solved) {
                 std::cout << "  FAIL  " << named(supply, degree)

@@ -22,7 +22,7 @@ using bilinear_rank::Term;
 /// The map a scheme actually computes, which is the only thing a walk is
 /// allowed to leave alone.
 std::vector<Matrix> map_of(const Field& field, const Scheme& scheme) {
-    return bilinear_rank::computed_map(field, bilinear_rank::algorithm_of(scheme));
+    return bilinear_rank::map_computed_by(field, bilinear_rank::algorithm_of(scheme));
 }
 
 bool same_map(const Field& field, const std::vector<Matrix>& left,

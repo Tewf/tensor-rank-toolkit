@@ -107,7 +107,7 @@ SupplyPlan plan_for(const PointSupply& supply, std::size_t degree_budget) {
 
 }  // namespace
 
-Programme minimise_interpolation_bound(const std::vector<PointSupply>& supply,
+BoundResult minimise_interpolation_bound(const std::vector<PointSupply>& supply,
                                        std::size_t divisor_degree) {
     const std::size_t degree_budget = divisor_degree;
     std::vector<SupplyPlan> plans;
@@ -144,7 +144,7 @@ Programme minimise_interpolation_bound(const std::vector<PointSupply>& supply,
         }
     }
 
-    Programme programme;
+    BoundResult programme;
     if (divisor_degree == 0 || best[supply.size()][divisor_degree] == kUnreachable) return programme;
     programme.solved = true;
     programme.bound = best[supply.size()][divisor_degree];

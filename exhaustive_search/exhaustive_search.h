@@ -63,7 +63,7 @@ struct SearchBudget {
 /// is a solution exactly when this returns that many. Exported so [the
 /// quotiented search](../orbit_reduction/orbit_search.h) tests leaves the same way rather than
 /// writing a second copy of it.
-std::vector<Matrix> independent_rank_one_maps_in(const Field& field, const Span& reachable,
+std::vector<Matrix> independent_rank_one_maps_in(const Field& field, const ReducedBasis& reachable,
                                                  std::size_t width, const std::vector<Matrix>& pool,
                                                  std::size_t needed, std::vector<Element>& scratch);
 
