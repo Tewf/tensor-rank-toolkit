@@ -12,15 +12,42 @@ search **proved** there is no algorithm with 5 products, walking 1 897 576 nodes
 to the end of the tree, then exhibited one with 6.
 
 The classical formula is a theorem over an algebraically closed field. Over a
-small one it is a lower bound, because the construction that attains it wants to
-evaluate at more points than `P^1(GF(q))` has. That is Winograd's condition,
-the same one that governs polynomial multiplication over small fields.
+small one it is only a lower bound, because the construction that attains it
+interpolates and a small field does not carry the points it wants to evaluate
+at. The published statement of that, for this tensor, is `[sumi2009, Thm. 3.3]`:
+Ja'Ja's count holds under `Card(K) >= deg p_1(A)` and the theorem claims
+nothing without it.
 
-**None of that is this repository's discovery.** `[sumi2009, Thm. 3.3]` carries
-Ja'Ja's count only under `|F| >= deg p_1(A)`, and `[sumi2009, Prop. 3.4]` is the
-published counterexample when it fails: `(I_3, C)` with `C` the companion of
-`x^3 + x + 1` over GF(2) has rank at least 5. That pencil is in the table below,
-where exhaustion gives exactly 5 against a GF(q) count of 4.
+**None of that is this repository's discovery.** `[sumi2009, Prop. 3.4]` is the
+published counterexample when the hypothesis fails: `(I_3, C)` with `C` the
+companion of `x^3 + x + 1` over GF(2) has rank at least 5. That pencil is in the
+table below, where exhaustion gives exactly 5 against a GF(q) count of 4.
+
+**This page called it "Winograd's condition" with no key. The name turns out to
+be fair; the word that was wrong is *same*.** `[lsw1983]` p. 287 item (ii) has
+Winograd himself as an author and credits to his 1977 paper both the structure
+of every optimal algorithm and the consequence drawn from it in the same breath:
+a length-`2n-1` algorithm for the product of two polynomials of `n` coefficients
+multiplies `(b_i·x(a_i))·(c_i·y(a_i))` at distinct `a_i`, so *"at least 2n − 2
+distinct elements from F (namely, the a_i) are needed ... and if |F| < 2n − 2
+then μ(r) ⩾ 2n"*. `[kaminskibshouty1989]` p. 150 puts it in the words this page
+reached for on its own, citing the same paper: an optimal algorithm *"must
+evaluate the multiplicands at a minimum of 2n distinct points, multiply the
+samples, and interpolate the result. However, in finite fields, this method
+fails if 2n exceeds the number of field elements."* So the mechanism, and
+crediting the mechanism to Winograd, were both right.
+
+**What is wrong is that it is not the same condition.** Winograd's threshold is
+`2n-2`, and it is about multiplying two polynomials of `n` coefficients, or
+that product modulo a `P` of degree `n`, which is `[lsw1983]` item (iii) and
+needs his 1979 *On multiplication in algebraic extension fields* on top. A
+pencil is multiplication by a polynomial of degree `≤ 1`: two slices, not `n`,
+and its threshold is `deg p_1(A)`. The two are analogues across different
+tensors, and the one this module needs is `[sumi2009]`'s.
+
+`[winograd1977]` is **not read** and no numbered result of its own is quoted
+here, because nothing reachable gives its internal numbering. It is named
+through `[lsw1983]`, the way `[gabriel1972]` is named through `[brion2008]`.
 
 Twelve pencils, all settled by exhaustion, with both counts this module reports:
 

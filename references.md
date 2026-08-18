@@ -586,10 +586,62 @@ Its four-step roadmap in §1; Theorem 2 is the bound an interpolation system
 gives; Algorithm 3 is `bdez2012`'s search restricted to symmetric forms; Tables
 1 and 2 are the published bounds on `µ_sym`.
 
-**`ballet2021`**: S. Ballet et al. *On the Tensor Rank of Multiplication in
-Finite Extensions of Finite Fields and Related Issues in Algebraic Geometry.*
-Russian Mathematical Surveys **76** (2021), no. 1, 29-89. The survey the bound
+**`ballet2021`**: S. Ballet, J. Chaumine, J. Pieltant, M. Rambaud,
+H. Randriambololona, R. Rolland. *On the Tensor Rank of Multiplication in Finite
+Extensions of Finite Fields and Related Issues in Algebraic Geometry.* Russian
+Mathematical Surveys **76** (2021), no. 1, 29-89,
+[arXiv:1906.07456](https://arxiv.org/abs/1906.07456). The survey the bound
 tables are taken from.
+
+Its §2, *Old classical results*, is also the small-field story for polynomial
+multiplication, and its **Theorem 2.1** restates the field-size statement: if
+`Card(F) < 2n-2`, every algorithm for `R(u)S(u) mod P(u)` has bilinear
+complexity `> 2n-1`. It is `[lsw1983]` p. 287 item (iii), and `[lsw1983]` is the
+better citation for it because Winograd is one of its authors.
+
+**`winograd1977`**: S. Winograd. *Some bilinear forms whose multiplicative
+complexity depends on the field of constants.* Mathematical Systems Theory
+**10** (1976/77), 169-180,
+[doi:10.1007/BF01683270](https://doi.org/10.1007/BF01683270). Where the
+small-field obstruction to attaining `2n-1` products comes from. **Not read**:
+it is behind Springer's paywall, no open copy was found, and its internal
+theorem numbering is therefore unknown here. **Nothing cites it directly**; it
+is reached through `[lsw1983]`, exactly as `[gabriel1972]` is reached through
+`[brion2008]`, and a `[winograd1977, Thm. n]` anywhere in this repository would
+be an invention.
+
+**`lsw1983`**: A. Lempel, G. Seroussi, S. Winograd. *On the complexity of
+multiplication in finite fields.* Theoretical Computer Science **22** (1983),
+285-296. Read. **This is the authority on what `[winograd1977]` proved, because
+Winograd co-wrote it.** Page 287 summarises the large-field results as three
+unnumbered items:
+
+- **(i)**, credited to Fiduccia-Zalcstein, Toom and `[winograd1977]`: over any
+  field `μ(r) ⩾ 2n-1` and `μ(r_P) ⩾ 2n-1`, and *"if |F| ⩾ 2n − 2, these lower
+  bounds are tight"*.
+- **(ii)**, credited to `[winograd1977]` **alone**: every length-`2n-1`
+  algorithm for the plain product multiplies `(b_i x(a_i))·(c_i y(a_i))` at
+  distinct `a_i`, so *"at least 2n − 2 distinct elements from F (namely, the
+  a_i) are needed ... and if |F| < 2n − 2 then μ(r) ⩾ 2n"*. **The cardinality
+  consequence is drawn inside the item credited to the 1977 paper**, which is
+  why calling the effect Winograd's is fair.
+- **(iii)**, credited to Winograd's 1979 *On multiplication in algebraic
+  extension fields*: the same for the product **modulo `P`**.
+
+`r` is the product of two polynomials of `n` coefficients and `r_P` is that
+product in `F[u]/(P)` with `deg P = n`. **Neither is a pencil**, which is the
+whole of why
+[`pencil_rank/the-measured-gap.md`](pencil_rank/the-measured-gap.md) cites
+`[sumi2009, Thm. 3.3]` and not this.
+
+**`kaminskibshouty1989`**: M. Kaminski, N. H. Bshouty. *Multiplicative
+complexity of polynomial multiplication over finite fields.* Journal of the ACM
+**36** (1989), no. 1, 150-170. Read for its introduction only, p. 150, which
+states the mechanism in the plainest form found anywhere and attributes it to
+`[winograd1977]`: an optimal algorithm *"must evaluate the multiplicands at a
+minimum of 2n distinct points, multiply the samples, and interpolate the result.
+However, in finite fields, this method fails if 2n exceeds the number of field
+elements."* A second witness to (ii), independent of `[lsw1983]`.
 
 **`rousseau2021`**: É. Rousseau. *Arithmétique Efficace des Extensions de Corps
 Finis.* Thèse, Institut Polytechnique de Paris, 2021. NNT 2021IPPAT013,
