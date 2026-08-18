@@ -300,7 +300,19 @@ of its rank-sum bounds are
 `lask`, which is **Laskowski's, Theorem 3 of this thesis**, as
 `total_rank_sum_lower_bound_on_axis`: it sums the same counting inequality over
 every projective point instead of along one line, and costs `|F|^n_d` against the
-line bound's `|F|^(2 n_d)`. `rref` is **not ported**.
+line bound's `|F|^(2 n_d)`.
+
+**`rref` is not ported, and it is not what its name suggests.** Read from the
+author's repository, `coolcomputery/tensor-cpd-search`, notebook `other/k-th order
+rref pruning.ipynb`, because the paper's abstract does not mention it. It is a
+**higher-order lower bound** rather than any reduction of the rank-one pool:
+contract the tensor with `k`-tuples of vectors, wedge them, and refuse the rank
+when the resulting `k`-planes fail to span enough of the Grassmannian. Its
+headline use there is proving the Strassen tensor has no rank-6 CPD over GF(2)
+without a search, which is the one step
+[`exhaustive_search`](exhaustive_search/exhaustive_search.h) here still pays
+25 399 nodes for. See
+[`state-of-the-art/lower-bounds.md`](state-of-the-art/lower-bounds.md).
 
 **`heule2024`**: *Ruling Out Low-rank Matrix Multiplication Tensor
 Decompositions with Symmetries via SAT.*
