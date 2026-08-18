@@ -69,25 +69,11 @@ believed, which is why it is both the last resort and the arbiter.
 
 `node_limit` bounds the tree. Reaching it returns `Exhausted` carrying the best
 point found, which bounds the optimum without proving it; `Optimal` is a proof.
-
 ## What the file format cost
 
-Everything reaches a solver as fixed-column MPS, and three of its traps are
-silent. All three were found by running the solvers, not by reading about them.
-
-- **An integer variable with no stated upper bound is binary** to CBC and to
-  GLPK, and unbounded to lp_solve. The same file is then two different problems.
-  Every variable states both bounds, `PL` and `MI` included.
-- **The integrality markers belong in fields 3 and 5**, not 4 and 6, and free-form
-  MPS is not an escape: CBC parses `BOUNDS` by character position whatever the
-  rest of the file looks like.
-- **MPS has no direction.** The objective row is always minimised, so a
-  maximisation is written negated. Without that every maximisation comes back at
-  its minimum, which is feasible, and therefore passes every check except
-  comparison with the right answer.
-
-Rows are scaled by the lowest common denominator of their own entries, so
-coefficients and bounds arrive as integers and nothing is lost on the way in.
+MPS is fixed-column, and the integer markers go in fields 3 and 5 rather than 4
+and 6, which is where a whitespace-token reading puts them:
+[`the-file-format.md`](the-file-format.md).
 
 ## Verified here
 

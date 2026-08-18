@@ -183,8 +183,10 @@ ways of asking it per call because neither is cheap.
 Algorithm 1 is the search over subspaces rather than subsets, which
 [`exhaustive_search/exhaustive_search.h`](exhaustive_search/exhaustive_search.h)
 implements. Its Tables 1-4 are the published ranks the fixtures are checked
-against. §4.5 says duplicate subspaces up to the group have to be removed and does
-not say how; `[mckay1998]` is how.
+against. §4.5 says only that *"duplicates have to be detected and removed"*, plain
+duplicates and not duplicates up to the group, which this entry claimed for a
+while; it is the paper's **Conclusion** that names using the symmetries of the
+problem, and neither place says how. `[mckay1998]` is how.
 
 **`mckay1998`**: B. D. McKay. *Isomorph-free exhaustive generation.* J. Algorithms
 26(2):306-324, 1998.

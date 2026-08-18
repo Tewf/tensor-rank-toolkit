@@ -53,9 +53,8 @@ partie qui, le plus souvent, ne paie pas, et
 
 ## Une seule chaîne
 
-La recherche de rang reconstruit les opérateurs d'encodage ⟨L, R, P⟩ à partir de
-sa décomposition et les écrit ; le creusement est précisément ce à quoi ils
-servent.
+La recherche de rang reconstruit les opérateurs ⟨L, R, P⟩ et les écrit ; le
+creusement est ce à quoi ils servent.
 
 ```sh
 minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 multiplications
@@ -69,23 +68,20 @@ Douze modules et douze outils, détaillés dans
 répond à quelle question. Chaque option, sa valeur par défaut et la mesure qui
 l'a choisie : [`OPTIONS.md`](OPTIONS.md). Chaque article implémenté est nommé une
 seule fois, dans [`references.md`](references.md), et le code en cite la clé.
-
 ## Compilation
 
-Demande un compilateur C++20, CMake ≥ 3.22 et **Givaro** (`sudo apt install
-libgivaro-dev`). Givaro est la seule dépendance de compilation ; chaque solveur
-est facultatif et localisé dans le `PATH` à l'exécution.
+Il faut un compilateur C++20, CMake >= 3.22 et **Givaro** (`sudo apt install
+libgivaro-dev`), seule dependance de compilation ; tous les solveurs sont
+optionnels et cherches sur le `PATH` a l'execution.
 
 ```sh
 cmake -B build -G Ninja && cmake --build build
 ctest --test-dir build            # tout, environ deux minutes
-ctest --test-dir build -LE slow   # sans les recherches coûteuses
+ctest --test-dir build -LE slow   # sans les recherches couteuses
 ```
 
-`ccache` est utilisé automatiquement s'il est installé et ignoré sinon : il
-raccourcit une recompilation sans devenir une seconde dépendance. Un
-environnement figé pour reproduire un nombre publié se trouve dans
-[`Containerfile`](Containerfile).
+[`Containerfile`](Containerfile) fixe un environnement pour reproduire un nombre
+publie.
 
 ## Citation
 
