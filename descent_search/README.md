@@ -70,7 +70,8 @@ and on F2 4×7, 8.96 seconds confirming 16.
 This library narrows 5×5 from both sides without closing it: the exhaustive search rules out 11 products,
 which puts the rank at 12 or more, and the heuristic exhibits 14. **Ruling out 12
 has not been run.** It is priced at `C(961,3)` = 1.47×10⁸ nodes and about seven
-hours in [`method.md`](method.md), and that is an extrapolation from the k=11 run,
+hours in [`method/exact-search.md`](method/exact-search.md), and that is an
+extrapolation from the k=11 run,
 not a measurement.
 
 This paragraph previously reported that run as done, at "146 402 553 nodes and
@@ -92,8 +93,9 @@ is not optimal.
 upper one; closing it means deciding 15, which neither side has done. That lower
 bound reads their `k` column by its stated convention rather than from prose
 naming the map, and their 7×4 row carries no timing, so verify it against the
-paper before quoting it as a bound. [`method.md`](method.md) says where the cost
-is and what would cut it.
+paper before quoting it as a bound.
+[`method/exact-search.md`](method/exact-search.md) says where the cost is and
+what would cut it.
 
 ## Step 1 is not a heuristic
 
@@ -114,8 +116,8 @@ rebuilt and compared against the input map.
 ## Beyond polynomial multiplication
 
 The same two searches, run on the tensors the complexity literature argues
-about: **[`../famous_tensors.md`](../famous_tensors.md)**. The short version is that
-rank ⟨2,2,2⟩ = 7 is decided here in half a second, Strassen and Winograd both,
+about: **[`../famous_tensors/`](../famous_tensors/README.md)**. The short version
+is that rank ⟨2,2,2⟩ = 7 is decided here in half a second, Strassen and Winograd both,
 and that no single rank-one map strictly improves a matrix multiplication
 tensor: the step 3 shortlist is 0 of 225 candidates on `⟨2,2,2⟩`, so this
 descent cannot take a first step. A walk that may cross equal-cost maps can,

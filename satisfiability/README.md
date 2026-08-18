@@ -17,7 +17,7 @@ agree, on every fixture, in both directions, which is what makes them worth
 keeping together: a disagreement would mean one of them is wrong, and neither
 can check a "no" after the fact on its own. Numbers in
 [`measurements.md`](measurements.md); the encodings in
-[`method.md`](method.md).
+[`method/`](method/README.md).
 
 ```sh
 decide-rank-by-sat fixtures/matmul_2x2x2.tensor               # rank exactly 7
@@ -48,7 +48,7 @@ arithmetic that would otherwise be mine alone, reachable with `--backend smt`.
 The one-hot encoder's tables and addition chain are hand-written, and an
 encoding sharing none of them agreeing on every verdict is the best evidence
 available that they are right. Why it won:
-[`choices.md`](choices.md).
+[`choices/the-gf-p-backend.md`](choices/the-gf-p-backend.md).
 
 ## What is checked, and how
 
@@ -76,12 +76,13 @@ not reproduce the tensor.
 
 What each claim rests on, and which are checked rather than argued:
 [`correctness.md`](correctness.md). How the rank is located between the free
-bounds, and the four searches measured to decide it: [`search.md`](search.md).
+bounds, and the four searches measured to decide it: [`search/`](search/README.md).
 
 Symmetry breaking ships off by default, because an over-strong constraint would
 turn a satisfiable instance into UNSAT and a wrong "no" is a wrong lower bound.
 **Turn it on for any question expected to answer no**, where it is worth at
-least seventy-six times. What it does and does not rescue: [`choices.md`](choices.md).
+least seventy-six times. What it does and does not rescue:
+[`choices/two-defaults-that-were-wrong.md`](choices/two-defaults-that-were-wrong.md).
 
 Nothing here decides rank over the rationals, and nothing could: over `ℚ` the
 problem is `∃ℚ`-complete and **not known to be decidable**. That the difficulty

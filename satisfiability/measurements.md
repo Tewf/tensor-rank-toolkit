@@ -3,7 +3,7 @@
 Every number here was produced on 2026-08-16 on one core of an i5-12450H, by
 the commands in [the README](README.md), against the exhaustive searches in
 [`../exhaustive_search/`](../exhaustive_search/) on the same fixtures. How the encodings
-work is [`method.md`](method.md); this is only what they cost.
+work is [`method/`](method/README.md); this is only what they cost.
 
 ## The rank itself, not one `k` at a time
 
@@ -47,7 +47,7 @@ find 9 was 36.7 s against 0.27 s. Solver by solver, per column, in
 The last row is open on both sides, and the earlier version of it was wrong in
 this repository's worst way: it gave the exhaustive column "146 402 553 nodes,
 3610 s on 8 threads", which is not a measurement. No such run happened. That
-column was an extrapolation from `descent_search/method.md`, where k=12 is priced
+column was an extrapolation from `descent_search/method/`, where k=12 is priced
 at `C(961,3)` and about seven hours and is labelled extrapolated, and it arrived
 here as a time and a node count in a table headed "Measured". What this repository
 proves by itself is **12 ≤ rank ≤ 14**, with 11 ruled out exhaustively and 14
@@ -73,4 +73,4 @@ lesson:
 
 Which backend, which solver and which flags produced these numbers, and
 the reasoning that measurement overturned to get there:
-[`choices.md`](choices.md).
+[`choices/`](choices/README.md).

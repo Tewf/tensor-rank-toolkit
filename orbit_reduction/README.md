@@ -16,9 +16,9 @@ map, not a second copy of one.
 | [`orbit_cubes.h`](orbit_cubes.h) | The first term fixed to one representative per orbit, for a solver to split on |
 
 Two documents rather than a third table. Why the family is arranged this way:
-[`orbit_plan.md`](orbit_plan.md). What the cubes promise the SAT encoder, stated
-as a contract because the two sides are compiled apart:
-[`orbit_cube_boundary.md`](orbit_cube_boundary.md).
+[`orbit_plan/`](orbit_plan/README.md). What the cubes promise the SAT encoder,
+stated as a contract because the two sides are compiled apart:
+[`orbit_cube_boundary/`](orbit_cube_boundary/README.md).
 
 `requested_group.h` sits here too but outside the library target: it turns a
 `--symmetry` word typed at a shell into a group, and the library has no business

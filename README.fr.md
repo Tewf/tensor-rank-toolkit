@@ -125,8 +125,8 @@ integer_programme/       la couche programme linéaire et entier dont se sert le
 fixtures/                les applications et opérateurs sur lesquels tout est exécuté
 reproduce/               régénère chaque nombre publié, avec sa provenance
 references.md            tout article cité ici, par les clés que le code emploie
-state-of-the-art.md      où en est le front de recherche, et quelles parties sont ici
-positioning.md           ce que cette bibliothèque y ajoute, et ce qu'elle n'y ajoute pas
+state-of-the-art/        où en est le front de recherche, et quelles parties sont ici
+positioning/             ce que cette bibliothèque y ajoute, et ce qu'elle n'y ajoute pas
 MEASURING.md             comment une mesure de temps est prise ici, et ce qu'elle ne dit pas
 ```
 

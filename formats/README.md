@@ -47,4 +47,5 @@ known to matter, is [`sms_file.h`](sms_file.h).
 It is worth exchanging files with somebody only if you have checked that you can.
 Both directions have been run against PLinOpt's own binaries, and his checker
 confirms the published 14 products on `f2_5x5` and 10 on `f3_3x6` from our
-operators alone: [`plinopt_interoperability.md`](plinopt_interoperability.md).
+operators alone:
+[`plinopt_interoperability/`](plinopt_interoperability/README.md).

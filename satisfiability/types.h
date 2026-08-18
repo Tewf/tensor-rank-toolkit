@@ -19,7 +19,7 @@
 ///
 /// The second is why this exists at all. The
 /// [exhaustive search](../exhaustive_search/exhaustive_search.h) is complete and
-/// pays for it: its own `method.md` costs F₂ 5×5 at twelve products at seven
+/// pays for it: its own `method/` costs F₂ 5×5 at twelve products at seven
 /// hours. A solver answers questions of that shape for a living.
 namespace satisfiability {
 

@@ -165,11 +165,12 @@ for recording that linear UNSAT-SAT has no known MaxSAT implementation while bei
 this module's default. **Not for a verdict against binary search:** its own
 assessment at §7 p. 520 puts BIN ahead of linear UNSAT-SAT, 261 solved against
 185. The review positioning the strand against it is
-[`satisfiability/search-in-the-literature.md`](satisfiability/search-in-the-literature.md).
+[`satisfiability/search-in-the-literature/`](satisfiability/search-in-the-literature/README.md).
 
 **`heras2011`**: F. Heras, A. Morgado, J. Marques-Silva. *Core-guided binary
 search algorithms for maximum satisfiability.* AAAI 2011, 36-41. Where the verdict
-quoted in [`satisfiability/search-in-the-literature.md`](satisfiability/search-in-the-literature.md)
+quoted in
+[`satisfiability/search-in-the-literature/what-the-survey-says.md`](satisfiability/search-in-the-literature/what-the-survey-says.md)
 originates: binary search "is optimal in terms of the number of calls to a SAT
 oracle" yet "has seldom been used in practical MaxSAT solvers", because relaxing
 every clause makes the cardinality constraints complex enough to hurt the solver
@@ -179,7 +180,7 @@ in the survey at all, so the verdict must be cited here or not at all. This pape
 is also about *core-guided* binary search, BIN-C and BIN-C-D; plain binary search
 is Fu and Malik, SAT 2006, LNCS 4121:252-265, credited at `morgado2013` §1.3
 p. 482. Its Theta(log W) call count is the bound the measurement in
-[`satisfiability/search.md`](satisfiability/search.md) does not contradict and
+[`satisfiability/search/`](satisfiability/search/README.md) does not contradict and
 does not benefit from.
 
 ## Proving that no smaller decomposition exists
@@ -261,7 +262,7 @@ The Brent equations solved by constraint programming. The 2x2 and 3x3 cases are
 MIPLIB 2017 benchmarks, so the formulation is standard and nothing here is new.
 This repository stated the same equations for a MILP solver, measured them
 against the SAT strand and the tree search, and retired the encoding:
-[`state-of-the-art.md`](state-of-the-art.md).
+[`state-of-the-art/rank-as-a-milp.md`](state-of-the-art/rank-as-a-milp.md).
 
 **`alphaevolve2025`**: Google DeepMind. *AlphaEvolve: A Coding Agent for
 Scientific and Algorithmic Discovery.* 2025. `⟨4,4,4⟩` in 48 multiplications over
@@ -390,7 +391,7 @@ Context, not implemented here.
 ## Walking a decomposition
 
 Where this repository stands against all of these:
-[`positioning.md`](positioning.md).
+[`positioning/`](positioning/README.md).
 
 **`kauers2023`**: M. Kauers, J. Moosbauer. *Flip graphs for matrix
 multiplication.* Proc. ISSAC'23, 381-388. arXiv:2212.01175. The method
@@ -436,7 +437,7 @@ LIPIcs vol. 280. arXiv:2306.01097. The Brent equations solved by constraint
 programming. The 2x2 and 3x3 cases are MIPLIB 2017 benchmarks, so the formulation
 is standard and nothing here is new. This repository stated the same equations for
 a MILP solver, measured them against the SAT strand and the tree search, and
-retired the encoding: [`state-of-the-art.md`](state-of-the-art.md).
+retired the encoding: [`state-of-the-art/rank-as-a-milp.md`](state-of-the-art/rank-as-a-milp.md).
 
 ## The algorithms everything is measured against
 

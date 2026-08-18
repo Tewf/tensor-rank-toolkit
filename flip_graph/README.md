@@ -30,4 +30,4 @@ A walk gives upper bounds only, and a plateau crossing is not a proof of
 anything. Nothing here decides a rank; that is
 [`../exhaustive_search/`](../exhaustive_search/). And the published flip-graph
 results are far ahead of this implementation, which
-[`../positioning.md`](../positioning.md) states with the numbers.
+[`../positioning.md`](../positioning/README.md) states with the numbers.

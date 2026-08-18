@@ -13,7 +13,8 @@ sparsification oracles still walk column subsets and could be next.
 here as a MILP so a third instrument could answer beside the SAT solvers and the
 tree search; it was measured, it lost by two to three orders of magnitude, and it
 is retired. The numbers and the argument:
-[`../state-of-the-art.md`](../state-of-the-art.md). So this folder is a layer the
+[`../state-of-the-art/rank-as-a-milp.md`](../state-of-the-art/rank-as-a-milp.md).
+So this folder is a layer the
 curve strand uses and not a strand of its own.
 
 ## The chain
