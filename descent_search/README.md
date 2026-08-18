@@ -15,7 +15,7 @@ Every claim below is one of the four earning or failing to earn its keep.
 
 | | Guarantee | Provenance |
 |---|---|---|
-| [`minimum_weight_basis.*`](minimum_weight_basis.h) | Step 1, and provably optimal for the basis it chooses: a matroid greedy (see below) | New here |
+| [`minimum_weight_basis.*`](minimum_weight_basis.h) | Step 1, and provably optimal for the basis it chooses: a matroid greedy (see below) | `[nakatsukasa2017]` §2, Algorithm 1 and Theorem 2.1. The `GF(p)` instantiation is new here; the algorithm and its proof are not |
 | [`minimise_rank.*`](minimise_rank.h) | Steps 2 and 3. None. First-improvement, irreversible pruning | New here |
 | [`exhaustive_search.*`](../exhaustive_search/exhaustive_search.h) | Complete. A "no" that ran to exhaustion is a fact about the problem | An implementation of a pre-existing published algorithm |
 | [`fewest_products.*`](../exhaustive_search/fewest_products.h) | Inherits the exact search's: sweep, bisection, or from the flattening bound | Which `k` to ask it about |

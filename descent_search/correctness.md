@@ -11,7 +11,7 @@ does not.
 
 | | Result | Checked by |
 |---|---|---|
-| Thm 3.1 | Step 1 returns a minimum-weight basis | argued only, being a theorem about the greedy |
+| Thm 3.1 | Step 1 returns a minimum-weight basis | not ours: `[nakatsukasa2017]` Thm 2.1, whose Cor. 1 is stronger |
 | Thm 3.2 | Soundness: the result always generates the map | `descent_guarantees`, and `verify` in the tool after every step |
 | Thm 3.3 | Termination in at most `cost(S₀) − rank(T)` adoptions | argued only: the adoption count is not exposed |
 | Lem 3.4 | A candidate inside the span can never improve | `descent_guarantees`, by way of Theorem 3.5 |
@@ -40,6 +40,10 @@ are covered by `symmetry_agreement` instead.
 
 ## What no test can establish
 
-There is no approximation ratio, so nothing here is checking one. Theorem 3.5
+There is no approximation ratio, so nothing here is checking one, **and there is
+a published reason no heuristic here will ever have a good one**: approximating
+3-tensor rank within `1 + 1/1852` is NP-hard over any field, `[swernofsky2018]`,
+which includes `GF(p)`. That bounds every method in this repository at once, so
+the absence below is structural rather than an omission. Theorem 3.5
 concerns single additions: `⟨2,2,2⟩` sits at a 1-opt fixed point of cost 8 while
 its rank is 7, which is a fact about the neighbourhood and not a defect.

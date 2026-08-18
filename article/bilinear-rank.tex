@@ -114,7 +114,7 @@ only in $G$: step 2 uses the rank-one terms of $T$ itself, step 3 every rank-one
 map of the shape, one per scalar class, of which there are
 $(p^{n}-1)(p^{m}-1)/(p-1)^2$.
 
-\begin{theorem}[Step 1 is exact]\label{thm:greedy}
+\begin{theorem}[Step 1 is exact; \cite{nakatsukasa2017}, Theorem 2.1]\label{thm:greedy}
 Sorting $\spn(T)\setminus\{0\}$ by ascending rank and keeping each element that
 preserves independence returns a basis of $\spn(T)$ of minimum total rank.
 \end{theorem}
@@ -124,6 +124,21 @@ The procedure is the matroid greedy. By Rado--Edmonds it returns a
 minimum-weight basis of any matroid under any non-negative weight function. The
 matroid is the vector matroid of $\spn(T)$ and the weight is $\rk$.
 \end{proof}
+
+\begin{remark}[Attribution, and a stronger statement]
+Theorem~\ref{thm:greedy} is not new and is stated here only because everything
+below depends on it. Nakatsukasa, Soma and Uschmajew pose exactly this
+minimisation, give exactly this greedy as their Algorithm~1, and make the matroid
+observation in the same words, calling it a greedy algorithm for an infinite
+matroid of finite rank \cite{nakatsukasa2017}. Their Corollary~1 is stronger than
+the remark below: not only is the optimal \emph{value} independent of tie-breaks,
+but any other basis of lowest total rank takes the same ranks up to permutation,
+so the whole multiset is an invariant of $\spn(T)$. They also record the caveat
+that the greedy's oracle, finding a lowest-rank element outside the span so far,
+is itself \textsc{NP}-hard, so exactness of the \emph{choice} is not tractability
+of the \emph{problem}. What is new here is the instantiation of that oracle over
+$\GF(p)$ by enumeration, which their nuclear-norm route has no analogue for.
+\end{remark}
 
 The \emph{value} is therefore independent of how ties are broken, all
 minimum-weight bases of a matroid having equal weight; the \emph{basis} need not
@@ -385,9 +400,12 @@ part that mostly does not pay.
 
 \section{Limitations}
 
-The descent carries no approximation guarantee. The exhaustive route is
-complete but its cost is $\binom{|G|}{\,r-\dim T\,}$, which is prohibitive
-beyond small shapes. Reported timings are machine-dependent and are not
+The descent carries no approximation guarantee, and \cite{swernofsky2018} is
+why it is unlikely to acquire a good one: approximating the rank of a
+three-tensor within $1 + 1/1852$ is \textsc{NP}-hard \emph{over any field}, so
+the obstruction is not an artefact of working over $\GF(p)$ and it bounds every
+method here at once. The exhaustive route is complete but its cost is
+$\binom{|G|}{\,r-\dim T\,}$, which is prohibitive beyond small shapes. Reported timings are machine-dependent and are not
 reproducible in continuous integration; counts are, and are asserted there.
 Nothing here settles the bilinear rank problem.
 
@@ -402,6 +420,12 @@ Nothing here settles the bilinear rank problem.
   forms}, SIAM Journal on Computing 8 (1979), 443--462.
 \bibitem{grigoriev1978} D.~Yu.~Grigoriev, \emph{Some new bounds on tensor rank},
   LOMI preprint, 1978.
+\bibitem{nakatsukasa2017} Y.~Nakatsukasa, T.~Soma, A.~Uschmajew,
+  \emph{Finding a low-rank basis in a matrix subspace}, Mathematical
+  Programming \textbf{162} (2017), 325--361.
+\bibitem{swernofsky2018} J.~Swernofsky, \emph{Tensor rank is hard to
+  approximate}, APPROX/RANDOM 2018, LIPIcs \textbf{116}, 26:1--26:9.
+  (Factor $1 + 1/1852$, over any field.)
 \bibitem{oxley} J.~Oxley, \emph{Matroid Theory}, 2nd ed., Oxford, 2011.
   (Rado--Edmonds, the matroid greedy.)
 \bibitem{mckay} B.~D.~McKay, \emph{Isomorph-free exhaustive generation},
