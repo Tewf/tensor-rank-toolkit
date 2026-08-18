@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "fixed_rank_finder.h"
+#include "candidate_outcome.h"
 
-/// The same commitment as [the finder](fixed_rank_finder.h), with the acceptance
+/// The same commitment as the fixed-`k` finder had, with the acceptance
 /// test strengthened until it is minimality-preserving, and priced.
 ///
 /// The finder passes a candidate over when its budget runs out. This one insists
@@ -20,7 +20,7 @@
 /// inside. Neither number survives matched flags: the whole-instance refutation of
 /// `⟨2,2,2⟩` at `k = 6` costs **1.32 s** and the five pinned refutations cost
 /// **1.65 s** together. Full table in
-/// [`refutation-prices.md`](refutation-prices.md).
+/// [`refutation-prices/README.md`](refutation-prices/README.md).
 ///
 /// **The real result is which machine buys the refutation.** Two of them, asked
 /// about the same candidates in the same order:

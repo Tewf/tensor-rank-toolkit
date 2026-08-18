@@ -11,7 +11,7 @@
 
 /// Pricing the refutation-based version of the same commitment.
 ///
-/// [`find-at-rank`](find_at_rank_main.cpp) passes a candidate over when its budget
+/// The fixed-`k` finder passed a candidate over when its budget
 /// runs out. This one waits for a proof, which is what makes it
 /// minimality-preserving and what makes it dear. The command exists to *measure*
 /// that: `--refuter` picks which machine buys the refutation, and both are asked
