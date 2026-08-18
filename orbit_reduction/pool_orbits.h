@@ -11,6 +11,10 @@
 /// The orbits of the rank-one pool, found on the vectors rather than on their
 /// products.
 ///
+/// The group is `[covanov2019, Def. 7]`'s action and the orbits are lossless to
+/// quotient by because it preserves rank, `[covanov2019, Prop. 9]`; keys are
+/// [`../references.md`](../references.md).
+///
 /// The pool is every outer product `u·vᵀ` of a normalised left vector with a
 /// normalised right vector, so it is a grid: `(p^rows − 1)/(p−1)` by
 /// `(p^columns − 1)/(p−1)`. And the action never mixes the two sides,
@@ -56,12 +60,22 @@ std::vector<Matrix> rank_one_orbit_representatives(const Field& field,
 /// The same orbits for a matrix multiplication tensor, written down instead of
 /// computed.
 ///
-/// Covanov's Corollary 18: under the stabiliser, elements of a given rank lie in
-/// one orbit. A rank-one map of `⟨n,m,k⟩` is a pair `(U, V)` with `U` an `n×m`
-/// matrix and `V` an `m×k` one, and the group acts by change of basis on each
-/// side, sharing the middle. So an orbit is fixed by three numbers: `rank U`,
-/// `rank V`, and `rank UV`, the last constrained by
-/// `max(0, rU+rV−m) ≤ t ≤ min(rU, rV)`.
+/// **This closed form is this repository's own, and the citation it used to
+/// carry was wrong.** `[covanov2019, Cor. 18]` says that elements *of the
+/// target subspace* `T` of a given rank lie in one orbit, and the pool is not
+/// inside `T`: a slice of `⟨n,m,k⟩` has rank `m`, so for `m > 1` nothing in `T`
+/// is rank one at all. What is taken from the paper is the group and nothing
+/// else, `[covanov2019, Thm. 17]`, the stabiliser as the pairs
+/// `(P ⊗ Rᵀ, Q ⊗ R⁻¹)`.
+///
+/// The rest is derived here and asserted by the tests rather than cited. A
+/// rank-one map of `⟨n,m,k⟩` is a pair `(U, V)`, `U` an `n×m` matrix and `V` an
+/// `m×k` one, and that group acts by change of basis on each side sharing the
+/// middle: `U ↦ P U R` and `V ↦ R⁻¹ V Q`. So `rank U`, `rank V` and `rank UV`
+/// are all invariant, the middle basis cancelling in the product. That those
+/// three are a *complete* invariant, with `rank UV` confined to
+/// `max(0, rU+rV−m) ≤ t ≤ min(rU, rV)`, is the claim the closed form rests on
+/// and it is stated nowhere but here.
 ///
 /// Counting those triples gives 5 for `⟨2,2,2⟩` and 13 for `⟨3,3,3⟩`, which is
 /// what the general computation returns. No group is built, no vector list is

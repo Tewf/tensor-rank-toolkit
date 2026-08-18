@@ -11,7 +11,7 @@ does not.
 
 | | Result | Checked by |
 |---|---|---|
-| Thm 3.1 | Step 1 returns a minimum-weight basis | not ours: `[nakatsukasa2017]` Thm 2.1, whose Cor. 1 is stronger |
+| Thm 3.1 | Step 1 returns a minimum-weight basis | not ours: `[nakatsukasa2017, Thm. 2.1]`, whose `Cor. 1` is stronger; `[oxley, Lem. 1.8.3]` is the general matroid form |
 | Thm 3.2 | Soundness: the result always generates the map | `descent_guarantees`, and `verify` in the tool after every step |
 | Thm 3.3 | Termination in at most `cost(S₀) − rank(T)` adoptions | argued only: the adoption count is not exposed |
 | Lem 3.4 | A candidate inside the span can never improve | `descent_guarantees`, by way of Theorem 3.5 |

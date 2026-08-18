@@ -6,6 +6,32 @@ need be visited. Six modules, because the group, the orbits and each consumer of
 them are separate jobs, and the header is the authority in every case: this is a
 map, not a second copy of one.
 
+## Whose work this is
+
+Almost all of it is `[covanov2019]`'s. `[bdez2012]` is where the want of it
+shows twice and neither time as a method: **§4.5** ends by saying only that
+duplicate solution subspaces *"have to be detected and removed"*, and the
+**Conclusion** lists *"using the symmetries of the problem"* among the things
+someone wanting to go further would have to do. Keys are
+[`../references.md`](../references.md).
+
+| Result | What rests on it |
+|---|---|
+| `[covanov2019, Def. 7]` | the action `(a, b) ↦ Φ(μa, νb)`, which is `Automorphism` |
+| `[covanov2019, Prop. 8]` | that it is a group action and every element invertible |
+| `[covanov2019, Prop. 9]` | that it preserves the rank of a form and of a subspace, which is why a quotient is lossless |
+| `[covanov2019, Def. 13]` | the setwise stabiliser `Stab(T)`, which is the group actually used |
+| `[covanov2019, Prop. 14]` | that a decomposition meeting an orbit is equivalent to one containing its representative: the cubes |
+| `[covanov2019, Alg. 3]` | `BDEZStab`, which [`orbit_search.h`](orbit_search.h) implements |
+| `[covanov2019, Thm. 17]` | the closed-form stabiliser of a matrix multiplication tensor |
+
+**One thing here is not published and is marked as such.** The closed-form
+orbits of the rank-one pool in [`pool_orbits.h`](pool_orbits.h), the triple loop
+over `rank U`, `rank V` and `rank UV`, are this repository's own; the header
+carries the derivation and says where it stops. They used to be attributed to
+`[covanov2019, Cor. 18]`, which is a statement about elements of the target
+subspace and not about the pool.
+
 | File | Role |
 |---|---|
 | [`automorphism.h`](automorphism.h) | The group itself: the rank-preserving action, and the stabiliser of a subspace |

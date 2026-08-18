@@ -66,10 +66,13 @@ spent budget does and does not mean:
 ## Step 1 is not a heuristic
 
 Choosing a basis of `span(T)` with the least total rank is a **matroid** problem,
-so greedy-by-ascending-weight gives a minimum-weight basis (Rado-Edmonds). The
-`16, 19, 19, 12` are the minima over all bases of those spans and no tie-break
-changes them. What is heuristic is the *constraint* that the answer be a basis of
-`span(T)` at all, which is what steps 2 and 3 relax. Proofs:
+so greedy-by-ascending-weight gives a minimum-weight basis (Rado-Edmonds):
+`[oxley, Prop. 1.1.1]` for the matroid and `[oxley, Lem. 1.8.3]` for the greedy,
+keys in [`../references.md`](../references.md); the table above says who states
+the same thing for this problem in particular. The `16, 19, 19, 12` are the
+minima over all bases of those spans and no tie-break changes them. What is
+heuristic is the *constraint* that the answer be a basis of `span(T)` at all,
+which is what steps 2 and 3 relax. Proofs:
 [`../article/bilinear-rank.pdf`](../article/bilinear-rank.pdf).
 
 ## What makes a result trustworthy

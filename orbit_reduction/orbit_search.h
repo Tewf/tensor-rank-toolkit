@@ -9,10 +9,18 @@
 
 /// The exact search with its tree quotiented by a group of automorphisms.
 ///
-/// Covanov 2018, Algorithm 3 (BDEZStab). The plain search
-/// ([`exhaustive_search.h`](../exhaustive_search/exhaustive_search.h)) is Algorithm 1 of Barbulescu,
-/// Detrey, Estibals and Zimmermann; this is the same decision, visiting one
-/// branch per orbit instead of one per candidate.
+/// `[covanov2019, Alg. 3]`, `BDEZStab`, which recurses on a target subspace,
+/// its stabiliser and a target rank, and returns one representative per
+/// equivalence class. The plain search
+/// ([`exhaustive_search.h`](../exhaustive_search/exhaustive_search.h)) is
+/// `[bdez2012, Alg. 1]`; this is the same decision, visiting one branch per
+/// orbit instead of one per candidate. Keys are
+/// [`../references.md`](../references.md).
+///
+/// What makes the quotient lossless is `[covanov2019, Prop. 14]`: if a rank-`r`
+/// decomposition of `T` meets the orbit `φ ∘ Stab(T)` at all, then some
+/// decomposition equivalent to it contains `φ` itself. So a branch per orbit
+/// misses no decomposition, only repetitions of one.
 ///
 /// The saving is the size of the group, and the group is large exactly where
 /// the questions are open: 216 elements for `⟨2,2,2⟩` over GF(2), about four for

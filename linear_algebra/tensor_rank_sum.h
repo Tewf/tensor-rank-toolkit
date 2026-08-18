@@ -46,7 +46,7 @@
 ///
 /// > `sum_{v} rk(v ·_d T)  <=  R (|F|^n_d - |F|^(n_d - 1))`
 ///
-/// This is Laskowski's bound, `yang2025thesis` Theorem 3, and the author's Java
+/// This is Laskowski's bound, `[yang2025thesis, Thm. 3]`, and the author's Java
 /// calls it `lask`. It is one *aggregate* test rather than an existential, and it
 /// costs only the table, `O(|F|^n_d)`.
 ///
@@ -160,8 +160,8 @@ std::vector<std::size_t> contraction_ranks(const Field& field,
 /// Laskowski's bound from one axis, given its rank table: the whole table summed,
 /// over the number of vectors a single term can survive.
 ///
-/// `yang2025thesis` Theorem 3. Costs a pass over the table and nothing else, which
-/// is why it is computed for every axis whose table was affordable at all.
+/// `[yang2025thesis, Thm. 3]`. Costs a pass over the table and nothing else,
+/// which is why it is computed for every axis whose table was affordable.
 inline std::size_t total_rank_sum_lower_bound_on_axis(const std::vector<std::size_t>& ranks,
                                                      std::size_t characteristic,
                                                      std::size_t length) {

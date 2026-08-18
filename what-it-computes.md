@@ -18,10 +18,11 @@ guarantee for reach.
 
 The guarantees are proved rather than asserted, in
 [`article/bilinear-rank.pdf`](article/bilinear-rank.pdf): step 1 is exact by
-Rado-Edmonds, the descent is sound and terminates, its fixed point is locally
-optimal against the whole candidate pool and not merely the part it scanned, and
-the orbit quotient is invariant under any subgroup of the stabiliser. Which of
-those a test would catch is recorded in
+Rado-Edmonds (`[oxley, Lem. 1.8.3]` in general, `[nakatsukasa2017, Thm. 2.1]`
+for this problem by name), the descent is sound and terminates, its fixed point
+is locally optimal against the whole candidate pool and not merely the part it
+scanned, and the orbit quotient is invariant under any subgroup of the
+stabiliser. Which of those a test would catch is recorded in
 [`descent_search/correctness.md`](descent_search/correctness.md).
 
 **[Rank by exhaustion](exhaustive_search/)**, the expensive direction, which

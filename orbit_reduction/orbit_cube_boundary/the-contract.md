@@ -27,13 +27,15 @@ referenced.
 ## What a representative is
 
 A rank-one term of `⟨n,m,k⟩` is a pair `(U, V)`, `U` an `n×m` matrix and `V` an
-`m×k` one. The stabiliser acts by change of basis on each side, sharing the
-middle, and by Covanov's Corollary 18 an orbit is fixed by exactly three
-numbers: `rank U`, `rank V`, and `rank UV`, the last confined to
-`max(0, rU+rV−m) ≤ t ≤ min(rU, rV)`. So the list is a triple loop over
-`rU ≥ 1`, `rV ≥ 1`, `t`. No group is built and nothing is enumerated: 5
-representatives for `⟨2,2,2⟩`, 13 for `⟨3,3,3⟩`, 26 for `⟨4,4,4⟩`, against
-261 121 and 4 294 836 225 first terms.
+`m×k` one. The stabiliser is `[covanov2019, Thm. 17]`, and it acts by change of
+basis on each side sharing the middle, so `rank U`, `rank V` and `rank UV` are
+invariant. That those three numbers fix an orbit exactly, with the last confined
+to `max(0, rU+rV−m) ≤ t ≤ min(rU, rV)`, is **this repository's own claim and not
+a published one**: [`pool_orbits.h`](../pool_orbits.h) carries the derivation,
+and the tests are what check it. So the list is a triple loop over `rU ≥ 1`,
+`rV ≥ 1`, `t`. No group is built and nothing is enumerated: 5 representatives
+for `⟨2,2,2⟩`, 13 for `⟨3,3,3⟩`, 26 for `⟨4,4,4⟩`, against 261 121 and
+4 294 836 225 first terms.
 
 Why `rU ≥ 1, rV ≥ 1` loses nothing: the group carries any decomposition of `T`
 to another, and the terms are a set, so a decomposition can be permuted to put a

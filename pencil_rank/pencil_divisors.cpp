@@ -35,7 +35,8 @@ PolynomialMatrix pencil_over_polynomials(const ModularField& field, const Modula
 
 /// Diagonalise over `GF(p)[x]`, returning the nonzero diagonal entries, monic.
 ///
-/// The usual Smith form also normalises the diagonal into a divisibility chain.
+/// The usual Smith form also normalises the diagonal into a divisibility chain,
+/// which is what `[gantmacher1959, Vol. 1, Ch. VI §3, Thm. 3]` asserts exists.
 /// That step is skipped: it costs another sweep and the only thing read off the
 /// result is the multiset of prime powers, which the chain does not change.
 ///
