@@ -10,6 +10,7 @@
 #include "candidate_pool.h"
 #include "check.h"
 #include "exhaustive_search.h"
+#include "gf2_leaf.h"
 #include "parallel.h"
 #include "fewest_products.h"
 #include "tensor_file.h"
@@ -226,6 +227,51 @@ int main(int argc, char** argv) {
         check::equal("the root really is a leaf here", at_the_root, std::size_t(2));
         check::equal("one thread takes the cheap leaf route", abandoned[0], 0);
         check::equal("and four threads take the same one", abandoned[1], abandoned[0]);
+    }
+
+    // The two leaf tests must answer alike, and nothing asserted it.
+    //
+    // The bit-packed GF(2) leaf is where 90% or more of a run goes, and it was
+    // measured against the general path but never checked by the suite. A leaf
+    // that disagreed would not crash: it would decide a rank wrongly, in either
+    // direction, and every number downstream would inherit it. `--general-leaf`
+    // exists so the same question can be asked both ways, so the suite asks it.
+    {
+        struct Question {
+            const char* fixture;
+            std::size_t target;
+        };
+        // One refutation and one witness on each of two shapes, since the two
+        // leaf routes are chosen by dimension and both must be exercised.
+        const Question questions[] = {
+            {"f2_2x2", 3}, {"f2_2x2", 2}, {"matmul_2x2x2", 7}, {"matmul_2x2x2", 6},
+        };
+
+        for (const Question& question : questions) {
+            const linear_algebra::Tensor tensor =
+                linear_algebra::read_tensor_file(directory + "/" + question.fixture + ".tensor");
+            const bilinear_rank::Field field(tensor.characteristic);
+            const std::vector<bilinear_rank::Matrix> pool =
+                bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
+
+            std::vector<int> found_at;
+            std::vector<long long> nodes_at;
+            for (const bool offered : {true, false}) {
+                bilinear_rank::set_gf2_leaf_offered(offered);
+                bilinear_rank::SearchBudget budget;
+                std::vector<bilinear_rank::Matrix> products;
+                const bool found = bilinear_rank::expand_subspace(field, tensor.slices, pool, 0,
+                                                                  question.target, budget, products);
+                found_at.push_back(found ? static_cast<int>(products.size()) : -1);
+                nodes_at.push_back(static_cast<long long>(budget.nodes_visited.load()));
+            }
+            bilinear_rank::set_gf2_leaf_offered(true);  // process-wide: leave it on
+
+            const std::string label =
+                std::string(question.fixture) + " at " + std::to_string(question.target);
+            check::equal(label + ": both leaves give the same verdict", found_at[1], found_at[0]);
+            check::equal(label + ": and visit the same nodes", nodes_at[1], nodes_at[0]);
+        }
     }
 
     return check::report("exhaustive search");
