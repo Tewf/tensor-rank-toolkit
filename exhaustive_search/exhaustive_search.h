@@ -69,8 +69,15 @@ struct SearchBudget {
 
     /// Atomic because workers share one budget, and written as a compare and
     /// exchange rather than a fetch and add so that a refused node is not
-    /// counted: the node totals this repository publishes have to mean the same
-    /// thing on one thread and on twelve.
+    /// counted.
+    ///
+    /// **Sharing one budget is what makes a thread count visible in an answer.**
+    /// A refutation spends the same nodes whoever spends them, so its total is
+    /// exact at any thread count. A witness stops the search early, and the
+    /// workers that were already running spend against this same counter, so the
+    /// total is an upper bound and a tight limit can be exhausted before the
+    /// winner reports. That is measured in `MEASURING.md`, and it is why
+    /// `expand_subspace_impl` tests `found` before consuming a node.
     bool try_consume_node() {
         std::size_t seen = nodes_visited.load(std::memory_order_relaxed);
         do {

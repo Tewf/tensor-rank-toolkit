@@ -11,11 +11,17 @@
 ///
 /// **The default is one worker**, so a run reproduces exactly what this
 /// repository has always published, and `--threads` opts in. What changes with
-/// more threads is wall-clock time, never a count: the exact search still
-/// visits the same nodes and the heuristic still adopts the same candidates in
-/// the same order. The one thing that can differ is *which* decomposition a
-/// successful exact search hands back, since threads race to find one, and any
-/// of them computes the map.
+/// more threads is wall-clock time, and **on a satisfiable question also a
+/// count**, which this comment used to deny. Ruling a `k` out visits the whole
+/// tree whoever visits it, so a refutation's node total is exact at any thread
+/// count; finding a witness stops early, and workers dispatch subtrees a
+/// depth-first walk would never have reached, so that total is an upper bound
+/// that grows with the workers.
+/// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md) carries
+/// the measurement and the consequence, which is that a tight `--node-limit` can
+/// turn a proof into an undecided. The heuristic still adopts the same candidates in the same order.
+/// Which decomposition a successful search hands back also differs, since
+/// threads race to find one, and any of them computes the map.
 namespace bilinear_rank {
 
 /// Workers a search may use. One by default; `set_worker_count(0)` asks for as
