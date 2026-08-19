@@ -98,7 +98,7 @@
 /// **What they are worth here**:
 /// [`what-each-is-worth.md`](what-each-is-worth.md), which has the table on every
 /// fixture. Kruskal's bound never beats what this repository already had; the
-/// Griesmer form does, once, and [`the-edit-not-made.md`](the-edit-not-made.md) is
+/// Griesmer form does, once, and [`joining-the-shared-floor.md`](joining-the-shared-floor.md) is
 /// what it would take for a caller to get that for free.
 namespace rank_metric_bound {
 
