@@ -6,10 +6,10 @@ search at all. Precedence and `BILINEAR_TUNABLES`:
 
 ## `decide-rank-by-pencil`
 
-Takes a tensor path and nothing else. The Kronecker canonical form of a
-two-slice tensor, exactly and in polynomial time, and the rank bound it gives.
+Takes a tensor path and `--help`. The Kronecker canonical form of a two-slice
+tensor, exactly and in polynomial time, and the rank bound it gives.
 
-There are no flags to choose, which is the point: there is no budget, no
+There is nothing else to choose, which is the point: there is no budget, no
 schedule and no pool, so nothing is tunable. On a 4x4 pencil it answers in about
 50 microseconds.
 

@@ -3,7 +3,6 @@
 ///
 /// Takes a file and optionally --show flag to control output, enabling scripted
 /// runs without interactive prompts.
-#include <iostream>
 #include <stdexcept>
 #include <string>
 
@@ -14,6 +13,7 @@
 #include "heuristic_sparsifier.h"
 #include "linear_algebra.h"
 #include "oracle_sparsifier.h"
+#include "report.h"
 #include "sms_file.h"
 #include "timing.h"
 
@@ -22,6 +22,15 @@ namespace {
 using matrix_sparsification::Field;
 using matrix_sparsification::Matrix;
 
+void usage() {
+    cli::note() << "usage: sparsify-operator <matrix-file|.sms> [--show] [--help]\n"
+                   "\n"
+                   "  Runs every method on one operator and reports what each reached, so\n"
+                   "  the output is the comparison and nothing here is chosen for you.\n"
+                   "  --show  print the sparsified matrix as well as its count\n"
+                   "  --help  print this and stop, as exit 2";
+}
+
 /// Report a result only once it is known to be the same operator. Sparsity is
 /// trivial to improve by returning something else entirely.
 void report(const Field& field, const std::string& method,
@@ -29,10 +38,10 @@ void report(const Field& field, const std::string& method,
             double seconds, bool show_matrix) {
     const bool equivalent = linear_algebra::same_row_space(field, linear_algebra::transpose<Field>(original),
                                                   linear_algebra::transpose<Field>(sparsified));
-    std::cout << "  " << method << ": " << linear_algebra::nonzero_count(field, sparsified)
-              << " nonzeros, " << seconds << " s"
-              << (equivalent ? "" : "   *** NOT THE SAME OPERATOR ***") << "\n";
-    if (show_matrix) std::cout << linear_algebra::to_string(sparsified);
+    cli::result() << "  " << method << ": " << linear_algebra::nonzero_count(field, sparsified)
+                  << " nonzeros, " << seconds << " s"
+                  << (equivalent ? "" : "   *** NOT THE SAME OPERATOR ***") << "\n";
+    if (show_matrix) cli::result() << linear_algebra::to_string(sparsified);
 }
 
 /// The tool proper. main only turns a thrown refusal into a line.
@@ -48,7 +57,10 @@ int run(int argc, char** argv) {
     cli::Arguments arguments(argc, argv);
     bool show_matrix = false;
     while (arguments.next_flag()) {
-        if (arguments.is("--show")) {
+        if (arguments.is("--help", "-h")) {
+            usage();
+            return cli::exit_status(cli::ExitCode::Usage);
+        } else if (arguments.is("--show")) {
             show_matrix = true;
         } else {
             arguments.refuse();
@@ -56,7 +68,7 @@ int run(int argc, char** argv) {
     }
     // No file named, and nothing here reads a map on stdin.
     if (arguments.reads_stdin()) {
-        std::cerr << "usage: sparsify-operator <matrix-file|.sms> [--show]\n";
+        usage();
         return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string path = arguments.filename();
@@ -73,9 +85,9 @@ int run(int argc, char** argv) {
                : linear_algebra::read_rational_matrix_file(path);
     const Matrix transposed = linear_algebra::transpose<Field>(operator_matrix);
 
-    std::cout << path << "\n  as given: " << linear_algebra::nonzero_count(field, operator_matrix)
-              << " nonzeros, " << operator_matrix.rows() << "x" << operator_matrix.columns()
-              << "\n";
+    cli::result() << path << "\n  as given: "
+                  << linear_algebra::nonzero_count(field, operator_matrix) << " nonzeros, "
+                  << operator_matrix.rows() << "x" << operator_matrix.columns() << "\n";
 
     auto started = cli::Clock::now();
     const Matrix sparsifier = matrix_sparsification::row_basis_sparsifier(field, operator_matrix);
@@ -117,13 +129,13 @@ int main(int argc, char** argv) {
         // A word on the command line that could not be read. The run never
         // started, so Usage and not Error: this used to reach the handler below
         // and leave as 5, reporting a bad flag as a tool that could not run.
-        std::cerr << "sparsify-operator: " << problem.what() << "\n";
+        cli::note() << "sparsify-operator: " << problem.what();
         return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& problem) {
         // An unreadable file, or a run that would not fit the memory budget.
         // Reported as a line, not as a terminate. Was 1, which this command has
         // no use for anyway: it sparsifies an operator, it refutes nothing.
-        std::cerr << "sparsify-operator: " << problem.what() << "\n";
+        cli::note() << "sparsify-operator: " << problem.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

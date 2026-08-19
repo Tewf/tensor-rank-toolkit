@@ -19,15 +19,19 @@
 /// output that is readable by external tools is the point of this layer, and
 /// this is the half of it that costs one character.
 ///
-/// Today the writers in [`formats/`](../formats/) already do this, commenting
+/// The writers in [`formats/`](../formats/) have always done this, commenting
 /// every header line they emit (`sms_file.cpp`, `tensor_file.cpp`,
-/// `dense_matrix_file.cpp`), while no command does: `minimise-rank` splits the
-/// streams but writes its commentary bare. That second half is the fault:
-/// merging the two streams (`2>&1`, which is what a CI log does) then produces a
-/// file no reader can parse, because it stops at the first line that does not
-/// look like data, and a bare progress line looks exactly like data. So the
-/// convention is not new here, it is the file writers' practice made available
-/// to the eleven commands.
+/// `dense_matrix_file.cpp`). The commands did not: `minimise-rank` split the
+/// streams and wrote its commentary bare, and that half was the fault. Merging
+/// the two streams (`2>&1`, which is what a CI log does) then produced a file no
+/// reader can parse, because it stops at the first line that does not look like
+/// data, and a bare progress line looks exactly like data. So the convention is
+/// not new here, it is the file writers' practice now kept by all twelve
+/// commands: every `std::cerr` in a `*/commands/*_main.cpp` comes through
+/// `note()`, usage blocks included, and every result through `result()`.
+/// `cli/tests/check_argument_grammar.sh` asks the built commands rather than
+/// this header, because a check on the header passed throughout the period when
+/// nothing called it.
 namespace cli {
 
 /// One piece of commentary, on stderr, with `#` in front of every line of it.

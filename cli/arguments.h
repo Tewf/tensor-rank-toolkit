@@ -171,9 +171,23 @@ class Arguments {
     /// own: `arguments.parsed_by(cli::parse_symmetry)`. It leaves the cursor on
     /// the last word it consumed, which is what `symmetry_argument.h` already
     /// does for a hand-rolled loop, so that parser is used here unchanged.
+    ///
+    /// Its refusal is passed on with its wording untouched, because that parser
+    /// names the flag and quotes the word already and a prefix here would say
+    /// `--symmetry` twice. What does change is the type, and with it the exit
+    /// code: it throws `std::runtime_error`, which every command turns into 5,
+    /// so `-s` with nothing after it and `-s matmol 2 2 2` were both reported as
+    /// tools that could not run rather than as lines that did not parse. That is
+    /// the same fault `parse_memory_size` above exists to remove.
     template <class Parser>
     auto parsed_by(Parser parser) {
-        return parser(word_count_, words_, cursor_);
+        try {
+            return parser(word_count_, words_, cursor_);
+        } catch (const ArgumentError&) {
+            throw;
+        } catch (const std::exception& problem) {
+            throw ArgumentError(problem.what());
+        }
     }
 
     /// What the loop's last branch does. The wording is the one the commands

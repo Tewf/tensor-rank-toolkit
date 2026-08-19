@@ -8,7 +8,6 @@
 /// What the number means is [`../README.md`](../README.md), and it is weaker than
 /// it looks: this reports the best the method could give **if** a curve with that
 /// supply exists and admits an interpolation system, and neither is checked here.
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -17,6 +16,7 @@
 #include "exit_code.h"
 #include "interpolation_by_solver.h"
 #include "interpolation_programme.h"
+#include "report.h"
 #include "solver_chain.h"
 #include "symmetric_bound_table.h"
 #include "tunables.h"
@@ -24,35 +24,37 @@
 namespace {
 
 void usage() {
-    std::cerr << "usage: curve-bounds --degree G --points d:n [--points d:n ...]\n"
-                 "       curve-bounds --table\n"
-                 "\n"
-                 "  --degree G      the divisor's degree, spent exactly and not as a budget.\n"
-                 "                  Every point costs something, so minimising over smaller\n"
-                 "                  divisors too would always answer 'one rational point,\n"
-                 "                  cost 1', which is a bound on nothing.\n"
-                 "  --points d:n    n distinct closed points of degree d are available. Repeat\n"
-                 "                  for each degree. This is step 2's output, and step 2 is\n"
-                 "                  not in this repository.\n"
-                 "  --table         print [rambaud2014, Table 1] as transcribed, and stop\n"
-                 "  --route built-in|chain|enumeration\n"
-                 "                  which minimiser answers. built-in is the default: exact\n"
-                 "                  branch and bound in rationals, whose optimum is a proof,\n"
-                 "                  and the fastest of the three at every size measured.\n"
-                 "                  chain asks the first installed MILP backend, whose point\n"
-                 "                  the model accepts but whose optimality it cannot check.\n"
-                 "                  enumeration is the dynamic programme, exact and the\n"
-                 "                  cross-check.\n"
-                 "  --node-limit N  nodes the built-in branch and bound may open, from\n"
-                 "                  ilp_node_limit in tunables.conf when this is not given.\n"
-                 "                  Reaching it falls back to the dynamic programme\n"
-                 "  --solver-timeout N\n"
-                 "                  seconds an outside solver may run, from\n"
-                 "                  ilp_time_limit_seconds in tunables.conf when this is not\n"
-                 "                  given. --route chain only: the built-in has no clock\n"
-                 "\n"
-                 "  The result is an envelope, not a bound on mu_sym_q(m): steps 2 and 4 of\n"
-                 "  the roadmap are absent, so nothing here checks that such a curve exists.\n";
+    cli::note() << "usage: curve-bounds --degree G --points d:n [--points d:n ...]\n"
+                   "       curve-bounds --table\n"
+                   "       curve-bounds --help\n"
+                   "\n"
+                   "  --degree G      the divisor's degree, spent exactly and not as a budget.\n"
+                   "                  Every point costs something, so minimising over smaller\n"
+                   "                  divisors too would always answer 'one rational point,\n"
+                   "                  cost 1', which is a bound on nothing.\n"
+                   "  --points d:n    n distinct closed points of degree d are available. Repeat\n"
+                   "                  for each degree. This is step 2's output, and step 2 is\n"
+                   "                  not in this repository.\n"
+                   "  --table         print [rambaud2014, Table 1] as transcribed, and stop\n"
+                   "  --route built-in|chain|enumeration\n"
+                   "                  which minimiser answers. built-in is the default: exact\n"
+                   "                  branch and bound in rationals, whose optimum is a proof,\n"
+                   "                  and the fastest of the three at every size measured.\n"
+                   "                  chain asks the first installed MILP backend, whose point\n"
+                   "                  the model accepts but whose optimality it cannot check.\n"
+                   "                  enumeration is the dynamic programme, exact and the\n"
+                   "                  cross-check.\n"
+                   "  --node-limit N  nodes the built-in branch and bound may open, from\n"
+                   "                  ilp_node_limit in tunables.conf when this is not given.\n"
+                   "                  Reaching it falls back to the dynamic programme\n"
+                   "  --solver-timeout N\n"
+                   "                  seconds an outside solver may run, from\n"
+                   "                  ilp_time_limit_seconds in tunables.conf when this is not\n"
+                   "                  given. --route chain only: the built-in has no clock\n"
+                   "  --help          print this and stop, as exit 2\n"
+                   "\n"
+                   "  The result is an envelope, not a bound on mu_sym_q(m): steps 2 and 4 of\n"
+                   "  the roadmap are absent, so nothing here checks that such a curve exists.\n";
 }
 
 /// `d:n`, refused rather than guessed at. `std::stoull` reads a flag as zero and
@@ -80,16 +82,16 @@ curve_bounds::PointSupply parse_supply(const std::string& text) {
 /// entry with the two equal, and a dot where nothing is published. A zero lower
 /// is the absence of a lower bound and is never printed as a zero.
 void print_table() {
-    std::cout << "[rambaud2014, Table 1] as transcribed. Rows are l, columns m.\n"
-                 "l = 1 is multiplication in GF(2^m) itself. '.' is unpublished,\n"
-                 "and an entry shown as '- U' has an upper bound only.\n\n";
-    std::cout << "  l \\ m ";
+    cli::result() << "[rambaud2014, Table 1] as transcribed. Rows are l, columns m.\n"
+                     "l = 1 is multiplication in GF(2^m) itself. '.' is unpublished,\n"
+                     "and an entry shown as '- U' has an upper bound only.\n\n";
+    cli::result() << "  l \\ m ";
     for (std::size_t degree = 1; degree <= 10; ++degree) {
-        std::cout << "     " << degree << (degree < 10 ? " " : "");
+        cli::result() << "     " << degree << (degree < 10 ? " " : "");
     }
-    std::cout << "\n";
+    cli::result() << "\n";
     for (std::size_t truncation = 1; truncation <= 10; ++truncation) {
-        std::cout << "  " << (truncation < 10 ? " " : "") << truncation << "    ";
+        cli::result() << "  " << (truncation < 10 ? " " : "") << truncation << "    ";
         for (std::size_t degree = 1; degree <= 10; ++degree) {
             const curve_bounds::Bound bound = curve_bounds::symmetric_bound(degree, truncation);
             std::string cell = ".";
@@ -100,9 +102,10 @@ void print_table() {
             } else if (bound.known) {
                 cell = "-" + std::to_string(bound.upper);
             }
-            std::cout << "  " << cell << std::string(cell.size() < 5 ? 5 - cell.size() : 0, ' ');
+            cli::result() << "  " << cell
+                          << std::string(cell.size() < 5 ? 5 - cell.size() : 0, ' ');
         }
-        std::cout << "\n";
+        cli::result() << "\n";
     }
 }
 
@@ -128,23 +131,28 @@ int run(int argc, char** argv) {
                                  unrecognised + "'");
     }
 
-    for (int argument = 1; argument < argc; ++argument) {
-        const std::string option = argv[argument];
-        if (option == "--table") {
+    // Walked by `cli/arguments.h` rather than by hand, so `--degree abc` names the
+    // flag and the word rather than leaving as 5 saying `stoll`. `--points d:n`
+    // keeps its own parser and its own exit code: an unreadable supply is not a
+    // flag this command failed to recognise.
+    cli::Arguments arguments(argc, argv);
+    while (arguments.next_flag()) {
+        if (arguments.is("--help", "-h")) {
+            usage();
+            return cli::exit_status(cli::ExitCode::Usage);
+        } else if (arguments.is("--table")) {
             print_table();
             return cli::exit_status(cli::ExitCode::Yes);
-        }
-        if (option == "--degree" && argument + 1 < argc) {
-            divisor_degree = std::stoll(argv[++argument]);
-        } else if (option == "--points" && argument + 1 < argc) {
-            supply.push_back(parse_supply(argv[++argument]));
-        } else if (option == "--node-limit" && argument + 1 < argc) {
-            curve_bounds::set_solver_node_limit(cli::parse_count(option, argv[++argument]));
-        } else if (option == "--solver-timeout" && argument + 1 < argc) {
-            optimisation::set_solver_time_limit(
-                static_cast<unsigned>(cli::parse_count(option, argv[++argument])));
-        } else if (option == "--route" && argument + 1 < argc) {
-            const std::string wanted = argv[++argument];
+        } else if (arguments.is("--degree")) {
+            divisor_degree = arguments.whole_number();
+        } else if (arguments.is("--points")) {
+            supply.push_back(parse_supply(arguments.text()));
+        } else if (arguments.is("--node-limit")) {
+            curve_bounds::set_solver_node_limit(arguments.count());
+        } else if (arguments.is("--solver-timeout")) {
+            optimisation::set_solver_time_limit(static_cast<unsigned>(arguments.count()));
+        } else if (arguments.is("--route")) {
+            const std::string wanted = arguments.text();
             if (wanted == "chain") {
                 route = Route::Chain;
             } else if (wanted == "built-in") {
@@ -156,9 +164,16 @@ int run(int argc, char** argv) {
                 return cli::exit_status(cli::ExitCode::Usage);
             }
         } else {
-            usage();
-            return cli::exit_status(cli::ExitCode::Usage);
+            arguments.refuse();
         }
+    }
+    // The one command here with no input file: the whole input is the degree and
+    // the supply. A word that is not a flag was silently dropped by the walk, and
+    // `curve-bounds --degree 5 --points 1:8 stray` would then have printed a bound
+    // as though the line had been understood.
+    if (!arguments.filename().empty()) {
+        throw cli::ArgumentError("nothing here reads a file, and '" + arguments.filename() +
+                                 "' is not a flag");
     }
 
     if (divisor_degree < 0 || supply.empty()) {
@@ -166,11 +181,11 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Usage);
     }
 
-    std::cout << "supply:";
+    cli::result() << "supply:";
     for (const curve_bounds::PointSupply& one : supply) {
-        std::cout << " " << one.available << " of degree " << one.degree;
+        cli::result() << " " << one.available << " of degree " << one.degree;
     }
-    std::cout << "\ndivisor degree: " << divisor_degree << ", spent exactly\n";
+    cli::result() << "\ndivisor degree: " << divisor_degree << ", spent exactly\n";
 
     const std::size_t degree = static_cast<std::size_t>(divisor_degree);
     const curve_bounds::BoundResult programme =
@@ -184,27 +199,28 @@ int run(int argc, char** argv) {
     // Not solved is a real answer and not a failure: an effective divisor of that
     // degree cannot be assembled from that supply at prices the table publishes.
     if (!programme.solved) {
-        std::cout << "no divisor [" << programme.solved_by << "]: degree " << divisor_degree
-                  << " cannot be made from this supply at any price the table publishes\n";
+        cli::result() << "no divisor [" << programme.solved_by << "]: degree " << divisor_degree
+                      << " cannot be made from this supply at any price the table publishes\n";
         return cli::exit_status(cli::ExitCode::No);
     }
 
-    std::cout << "bound [" << programme.solved_by << "]: mu_sym_2(m) <= " << programme.bound
-              << ", using";
+    cli::result() << "bound [" << programme.solved_by << "]: mu_sym_2(m) <= " << programme.bound
+                  << ", using";
     for (const curve_bounds::Selection& piece : programme.chosen) {
-        std::cout << " " << piece.count << "x(degree " << piece.degree << ", multiplicity "
-                  << piece.multiplicity << ")";
+        cli::result() << " " << piece.count << "x(degree " << piece.degree << ", multiplicity "
+                      << piece.multiplicity << ")";
     }
-    std::cout << "\n";
+    cli::result() << "\n";
     // Two different weaknesses, and collapsing them would lose the one that can
     // be fixed by asking again. The envelope caveat is the method's and is
     // permanent here; an uncertified optimum is only this backend's, and
     // `--route built-in` settles it.
     if (!programme.optimum_proved) {
-        std::cout << "  feasible, not certified optimal: this backend's answer passed the model's"
-                  << " own\n  checks, which cannot check optimality. --route built-in proves it.\n";
+        cli::result() << "  feasible, not certified optimal: this backend's answer passed the"
+                      << " model's own\n  checks, which cannot check optimality. --route built-in"
+                      << " proves it.\n";
     }
-    std::cout << "  an envelope, not a bound: no curve with this supply was shown to exist\n";
+    cli::result() << "  an envelope, not a bound: no curve with this supply was shown to exist\n";
     return cli::exit_status(cli::ExitCode::Yes);
 }
 
@@ -216,10 +232,10 @@ int main(int argc, char** argv) {
     } catch (const cli::ArgumentError& problem) {
         // A word on the command line, or a line of tunables.conf, that could not
         // be read: the run never started, so Usage rather than Error.
-        std::cerr << "curve-bounds: " << problem.what() << "\n";
+        cli::note() << "curve-bounds: " << problem.what();
         return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& problem) {
-        std::cerr << "curve-bounds: " << problem.what() << "\n";
+        cli::note() << "curve-bounds: " << problem.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

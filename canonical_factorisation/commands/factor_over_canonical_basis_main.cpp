@@ -5,7 +5,6 @@
 /// and the statement that their product is the tensor. A reader with a matrix
 /// library and no trust in this repository can check the answer in one line.
 #include <exception>
-#include <iostream>
 #include <string>
 
 #include "arguments.h"
@@ -14,71 +13,67 @@
 #include "memory_budget.h"
 #include "parallel.h"
 #include "factorisation.h"
+#include "report.h"
 #include "tensor_file.h"
 #include "timing.h"
 #include "tunables.h"
 
 namespace {
 
+void usage() {
+    cli::note() << "usage: factor-over-canonical-basis <tensor-file> [--floor k]\n"
+                   "                                   [--node-limit n] [--symmetry none]\n"
+                   "                                   [--route auto|exhaustive|sat|canonical]\n"
+                   "                                   [--threads N] [--max-memory N] [--help]\n"
+                << cli::symmetry_usage()
+                << "  Writes A over the canonical basis, every row a rank-one matrix, and\n"
+                   "  the C with C A equal to the tensor's slices. The number of rows of A\n"
+                   "  is the rank when the sweep below it was complete.\n"
+                   "  --help  print this and stop, as exit 2";
+}
+
 void write_matrix(const char* label, const linear_algebra::ModularMatrix& matrix) {
-    std::cout << label << ": " << matrix.rows() << "x" << matrix.columns() << "\n";
+    cli::result() << label << ": " << matrix.rows() << "x" << matrix.columns() << "\n";
     for (std::size_t row = 0; row < matrix.rows(); ++row) {
-        std::cout << " ";
+        cli::result() << " ";
         for (std::size_t column = 0; column < matrix.columns(); ++column) {
-            std::cout << " " << matrix(row, column);
+            cli::result() << " " << matrix(row, column);
         }
-        std::cout << "\n";
+        cli::result() << "\n";
     }
 }
 
 }  // namespace
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
-        std::cerr << "usage: factor-over-canonical-basis <tensor-file> [--floor k]\n"
-                  << "                                   [--node-limit n] [--symmetry none]\n"
-                  << "                                   [--route auto|exhaustive|sat|canonical]\n"
-                  << "                                   [--threads N] [--max-memory N]\n"
-                  << cli::symmetry_usage()
-                  << "  Writes A over the canonical basis, every row a rank-one matrix, and\n"
-                  << "  the C with C A equal to the tensor's slices. The number of rows of A\n"
-                  << "  is the rank when the sweep below it was complete.\n";
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-
-    // A flag where the tensor should be is a bad invocation, not an unreadable
-    // file. Without this, `--route bogus` reports that it cannot read a file
-    // called `--route`, which names the wrong thing to fix and exits 5 where a
-    // script watching for 2 would not see it.
-    if (cli::looks_like_flag(argv[1])) {
-        std::cerr << "factor-over-canonical-basis: expected a tensor file, not '" << argv[1] << "'\n";
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-
     try {
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(argv[1]);
-        const linear_algebra::ModularField field(tensor.characteristic);
-
         canonical_factorisation::FactorisationSettings settings;
         settings.node_limit = cli::tunables().search_node_limit;
-        for (int argument = 2; argument < argc; ++argument) {
-            const std::string option = argv[argument];
-            if (option == "--floor" && argument + 1 < argc) {
-                settings.floor = cli::parse_count(option, argv[++argument]);
-            } else if (option == "--node-limit" && argument + 1 < argc) {
-                settings.node_limit = cli::parse_count(option, argv[++argument]);
-            } else if (option == "--threads" && argument + 1 < argc) {
+        // Walked by `cli/arguments.h` rather than by hand. The walker is also
+        // where the hand-written test for a flag where the tensor belongs went,
+        // and the file is read after the line is understood rather than before:
+        // `--help` cannot open a tensor, and `--route bogus` names the flag to fix
+        // rather than a file called `--route` that nobody meant to open.
+        cli::Arguments arguments(argc, argv);
+        while (arguments.next_flag()) {
+            if (arguments.is("--help", "-h")) {
+                usage();
+                return cli::exit_status(cli::ExitCode::Usage);
+            } else if (arguments.is("--floor")) {
+                settings.floor = arguments.count();
+            } else if (arguments.is("--node-limit")) {
+                settings.node_limit = arguments.count();
+            } else if (arguments.is("--threads")) {
                 // Only the pool routes have anything to spread: `expand_subspace`
                 // runs one subtree per pool element. The solver route is one
                 // process and the canonical route recurses through a shared
                 // parent test, so neither reads this and both say so rather than
                 // appearing to accept it.
-                bilinear_rank::set_worker_count(cli::parse_count(option, argv[++argument]));
-            } else if (option == "--max-memory" && argument + 1 < argc) {
-                bilinear_rank::set_memory_budget(
-                    cli::parse_memory_size(option, argv[++argument]));
-            } else if (option == "--route" && argument + 1 < argc) {
-                const std::string named = argv[++argument];
+                bilinear_rank::set_worker_count(arguments.count());
+            } else if (arguments.is("--max-memory")) {
+                bilinear_rank::set_memory_budget(arguments.memory_size());
+            } else if (arguments.is("--route")) {
+                const std::string named = arguments.text();
                 if (named == "auto") {
                     settings.route = canonical_factorisation::Route::Automatic;
                 } else if (named == "exhaustive") {
@@ -88,43 +83,51 @@ int main(int argc, char** argv) {
                 } else if (named == "canonical") {
                     settings.route = canonical_factorisation::Route::CanonicalAugmentation;
                 } else {
-                    std::cerr << "factor-over-canonical-basis: --route takes auto, exhaustive, "
-                                 "sat or canonical, not '" << named << "'\n";
+                    cli::note() << "factor-over-canonical-basis: --route takes auto, exhaustive, "
+                                   "sat or canonical, not '" << named << "'";
                     return cli::exit_status(cli::ExitCode::Usage);
                 }
-            } else if (option == "--symmetry" || option == "-s") {
-                settings.symmetry = cli::parse_symmetry(argc, argv, argument);
+            } else if (arguments.is("--symmetry", "-s")) {
+                settings.symmetry = arguments.parsed_by(cli::parse_symmetry);
             } else {
-                std::cerr << "factor-over-canonical-basis: unrecognised option '" << option
-                          << "'\n";
-                return cli::exit_status(cli::ExitCode::Usage);
+                arguments.refuse();
             }
         }
+        // No file named, and nothing here reads a tensor on stdin.
+        if (arguments.reads_stdin()) {
+            usage();
+            return cli::exit_status(cli::ExitCode::Usage);
+        }
+        const std::string path = arguments.filename();
+
+        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+        const linear_algebra::ModularField field(tensor.characteristic);
 
         const cli::Clock::time_point started = cli::Clock::now();
         const canonical_factorisation::Factorisation factorisation =
             canonical_factorisation::factor_over_canonical_basis(field, tensor.slices, settings);
 
-        std::cerr << "# " << cli::elapsed_seconds(started) << " s\n";
+        cli::note() << cli::elapsed_seconds(started) << " s";
 
         if (factorisation.components == 0 && !tensor.slices.empty()) {
-            std::cerr << "factor-over-canonical-basis: no factorisation found up to the ceiling\n";
+            cli::note() << "factor-over-canonical-basis: no factorisation found up to the "
+                           "ceiling";
             return cli::exit_status(cli::ExitCode::Undecided);
         }
 
         // Checked before it is printed. An answer this command has not verified
         // is worth less than no answer, because it looks exactly the same.
         if (!canonical_factorisation::recovers_slices(field, tensor.slices, factorisation)) {
-            std::cerr << "factor-over-canonical-basis: C A does not give the slices back\n";
+            cli::note() << "factor-over-canonical-basis: C A does not give the slices back";
             return cli::exit_status(cli::ExitCode::Unverified);
         }
 
-        std::cout << "tensor: " << argv[1] << ", GF(" << tensor.characteristic << "), "
-                  << tensor.slices.size() << " slices of " << tensor.rows() << "x"
-                  << tensor.columns() << "\n";
-        std::cout << "floor: " << factorisation.floor << " (proved)\n";
+        cli::result() << "tensor: " << path << ", GF(" << tensor.characteristic << "), "
+                      << tensor.slices.size() << " slices of " << tensor.rows() << "x"
+                      << tensor.columns() << "\n";
+        cli::result() << "floor: " << factorisation.floor << " (proved)\n";
         if (!factorisation.symmetry_refusal.empty()) {
-            std::cerr << "# no symmetry: " << factorisation.symmetry_refusal << "\n";
+            cli::note() << "no symmetry: " << factorisation.symmetry_refusal;
         }
         const char* route_name = "exhaustion over the materialised pool";
         if (factorisation.route == canonical_factorisation::Route::Satisfiability) {
@@ -132,30 +135,31 @@ int main(int argc, char** argv) {
         } else if (factorisation.route == canonical_factorisation::Route::CanonicalAugmentation) {
             route_name = "exhaustion with canonical augmentation";
         }
-        std::cout << "route: " << route_name
-                  << ", where the pool would be " << factorisation.pool_size << " matrices\n";
+        cli::result() << "route: " << route_name << ", where the pool would be "
+                      << factorisation.pool_size << " matrices\n";
         if (factorisation.route != canonical_factorisation::Route::Satisfiability) {
-            std::cout << "symmetry: quotiented by " << factorisation.group_size
-                      << " automorphisms, " << factorisation.nodes_visited
-                      << " nodes over the sweep\n";
+            cli::result() << "symmetry: quotiented by " << factorisation.group_size
+                          << " automorphisms, " << factorisation.nodes_visited
+                          << " nodes over the sweep\n";
         }
         write_matrix("A, over the canonical basis", factorisation.chosen);
         write_matrix("C, the recovery", factorisation.recovery);
-        std::cout << "checked: every row of A has rank 1, and C A is the tensor\n";
-        std::cout << "components: " << factorisation.components
-                  << (factorisation.minimal ? " (the rank)" : " (an upper bound: a budget ran out)")
-                  << "\n";
+        cli::result() << "checked: every row of A has rank 1, and C A is the tensor\n";
+        cli::result() << "components: " << factorisation.components
+                      << (factorisation.minimal ? " (the rank)"
+                                                : " (an upper bound: a budget ran out)")
+                      << "\n";
 
         return cli::exit_status(factorisation.minimal ? cli::ExitCode::Yes
                                                       : cli::ExitCode::Undecided);
     } catch (const cli::ArgumentError& error) {
-        std::cerr << "factor-over-canonical-basis: " << error.what() << "\n";
+        cli::note() << "factor-over-canonical-basis: " << error.what();
         return cli::exit_status(cli::ExitCode::Usage);
     } catch (const cli::CheckFailed& error) {
-        std::cerr << "factor-over-canonical-basis: " << error.what() << "\n";
+        cli::note() << "factor-over-canonical-basis: " << error.what();
         return cli::exit_status(cli::ExitCode::Unverified);
     } catch (const std::exception& error) {
-        std::cerr << "factor-over-canonical-basis: " << error.what() << "\n";
+        cli::note() << "factor-over-canonical-basis: " << error.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

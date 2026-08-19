@@ -22,8 +22,10 @@ with an answer**, and all agreed.
 
 ## `list-solvers`
 
-No flags. It prints the integer programme backends in preference order and
-whether each is on `PATH`.
+No flags but `--help`. It prints the integer programme backends in preference
+order and whether each is on `PATH`. Anything else on the line is refused as
+exit 2: `main` took no arguments at all, so every word was dropped in silence
+and `list-solvers --help` printed the table and left as 0.
 
 It reads `ilp_backend_order` from `tunables.conf`, because this command's whole
 output **is** the ranking: printing the compiled order while the file had moved
