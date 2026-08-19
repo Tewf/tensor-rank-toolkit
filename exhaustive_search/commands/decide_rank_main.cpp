@@ -15,6 +15,7 @@
 #include "exhaustive_search.h"
 #include "exit_code.h"
 #include "fewest_products.h"
+#include "gf2_leaf.h"
 #include "group_construction.h"
 #include "memory_budget.h"
 #include "minimise_rank.h"
@@ -32,7 +33,7 @@ namespace {
 void usage() {
     std::cerr << "usage: decide-rank <tensor-file> [--target k] [--anchor map|heuristic]\n"
                  "                   [--node-limit N] [--leaf-limit N] [--bottom-up]\n"
-                 "                   [--max-memory 2G]\n"
+                 "                   [--max-memory 2G] [--general-leaf]\n"
                  "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                  "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                  "\n"
@@ -47,7 +48,11 @@ void usage() {
                  "  --leaf-limit N      elements one leaf may examine, from search_leaf_limit.\n"
                  "                      The node limit bounds how many leaves are reached and\n"
                  "                      nothing inside one; this is what bounds one. Reaching\n"
-                 "                      it is exit 3 too, and proves nothing either way\n";
+                 "                      it is exit 3 too, and proves nothing either way\n"
+                 "  --general-leaf      answer every leaf by the general field path, even over\n"
+                 "                      GF(2) where the bit-packed one applies. Same tree, same\n"
+                 "                      nodes, same answer, and slower: it is here so the two\n"
+                 "                      can be timed on one question rather than on two\n";
 }
 
 /// The tool proper. main only turns a thrown refusal into a line.
@@ -87,6 +92,8 @@ int run(int argc, char** argv) {
             leaf_limit = cli::parse_count(option, argv[++argument]);
         } else if (option == "--bottom-up") {
             bottom_up = true;
+        } else if (option == "--general-leaf") {
+            bilinear_rank::set_gf2_leaf_offered(false);
         } else {
             usage();
             return cli::exit_status(cli::ExitCode::Usage);
@@ -128,6 +135,15 @@ int run(int argc, char** argv) {
                       bilinear_rank::memory_budget() / addressed.size();
     std::cout << "  pool: " << addressed.size() << " rank-one maps of shape " << tensor.rows()
               << "x" << tensor.columns() << (fits ? ", materialised" : ", addressed by index")
+              << "\n";
+
+    // Which leaf test answered, printed for the same reason the pool line is:
+    // a timing whose route is not on the line beside it is a timing of an
+    // unknown thing, and `--general-leaf` is here precisely to move this.
+    std::cout << "  leaf: "
+              << (bilinear_rank::gf2_leaf_applies(field, tensor.columns())
+                      ? "GF(2), one bit per entry"
+                      : "general field path")
               << "\n";
 
     std::vector<bilinear_rank::Matrix> pool;
