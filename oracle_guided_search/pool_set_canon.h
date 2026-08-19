@@ -59,6 +59,20 @@ namespace bilinear_rank {
 std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matrix>& pool,
                                      const std::vector<Matrix>& generators);
 
+/// The largest pool `[permlib]` was verified to build a group on here.
+///
+/// **Measured, because the optimistic reading was wrong.** Presenting the group
+/// on the pool was expected to scale with the degree, and it does not: PermLib's
+/// `construct` segfaults at `⟨3,3,3⟩`'s 261 121 points, with a 512 MB stack as
+/// well as the default one, so it is not recursion depth. What was verified to
+/// work: 225 (`⟨2,2,2⟩`), 945 (`⟨2,2,3⟩`) and 32 193 (`⟨2,3,3⟩`).
+///
+/// The true boundary is somewhere in between and is **not located**. This is the
+/// largest degree that ran, so a shape past it is refused rather than attempted,
+/// and a crash is not offered as an alternative to a refusal. Whoever narrows the
+/// boundary should raise this and say what they measured.
+inline constexpr std::size_t kLargestVerifiedPool = 32193;
+
 class PoolSetCanon {
    public:
     /// Built from **generators**, which is the point. `rows` and `columns` are the
@@ -98,6 +112,33 @@ class PoolSetCanon {
     /// and it is the group's choice rather than an arbitrary basis's.
     std::vector<std::size_t> canonical_with_marked(const std::vector<std::size_t>& indices,
                                                    std::size_t marked) const;
+
+    /// Generators of the subgroup fixing `indices` setwise, as permutations of
+    /// the pool.
+    ///
+    /// **This is the last `|G|` dependency the canonical route had.**
+    /// `stabiliser_of` filtered a group held as a list, so the canonical route
+    /// could not run where the list could not be held: `⟨3,3,3⟩` is 4 741 632
+    /// elements and 6.2 GiB, and it refused. Filtering *generators* instead is not
+    /// an option and never was, because the generators that happen to fix a thing
+    /// do not generate its stabiliser, which `pool_orbits.cpp` learned by getting
+    /// 41 orbits where there are 13. A backtrack search does generate it, and
+    /// `[permlib]`'s `setStabilizer` is one.
+    ///
+    /// **Why the setwise stabiliser of the pool content is the stabiliser of the
+    /// subspace.** The enumerator descends from `span(T)`, so every subspace it
+    /// reaches is `U = span(T) + span(pool ∩ U)`. If `g` fixes `U` it permutes the
+    /// pool and fixes `U`, so it fixes `pool ∩ U`; and if `g` fixes `pool ∩ U` it
+    /// fixes its span, and `g ∈ G = Stab(span T)` fixes `span(T)`, so it fixes the
+    /// sum. The two groups are equal, and this asks for the one that is cheap.
+    ///
+    /// Each generator is returned as a full permutation of the pool, so this is
+    /// `pool.size()` per generator: about a megabyte each at `⟨3,3,3⟩` and not
+    /// affordable at `⟨4,4,4⟩`, where the caller would want the images computed
+    /// rather than stored, as [`pool_orbits.h`](../orbit_reduction/pool_orbits.h)'s
+    /// `PoolAction` does for the ambient group.
+    std::vector<std::vector<std::uint32_t>> stabiliser_generators(
+        const std::vector<std::size_t>& indices) const;
 
    private:
     /// PermLib types stay out of this header: every includer would otherwise

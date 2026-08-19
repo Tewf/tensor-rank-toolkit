@@ -93,9 +93,12 @@ int run(int argc, char** argv) {
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
     std::vector<bilinear_rank::Automorphism> group;
     if (symmetry.kind == cli::SymmetryKind::MatrixMultiplication) {
-        group = bilinear_rank::matrix_multiplication_symmetries(field, symmetry.shape[0],
-                                                               symmetry.shape[1],
-                                                               symmetry.shape[2]);
+        // Generators, not the group as a list. Nothing downstream wants the list
+        // any more: the parent test canonises by least image and the stabiliser
+        // comes from a backtrack, both of which take generators. Asking for the
+        // list refused `<3,3,3>` outright at 4 741 632 elements and 6.2 GiB.
+        group = bilinear_rank::matrix_multiplication_symmetry_generators(
+            field, symmetry.shape[0], symmetry.shape[1], symmetry.shape[2]);
     }
     cli::result() << "  pool: " << pool.size() << " rank-one maps, group: " << group.size()
                   << " elements\n";
