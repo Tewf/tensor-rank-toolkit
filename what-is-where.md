@@ -2,8 +2,10 @@
 
 One folder per subject, grouped by what it serves rather than by file type. A
 folder with something to say carries its own `README.md`; one without says its
-purpose at the top of its `CMakeLists.txt`. Each method folder holds the code,
-its `tests/`, and where it has an entry point a `commands/`.
+purpose at the top of the file that defines it: its `CMakeLists.txt` where it
+builds something, and the script's or stylesheet's own header where it does not.
+Each method folder holds the code, its `tests/`, and where it has an entry point
+a `commands/`.
 
 ```
 linear_algebra/          exact arithmetic over GF(p) and over Q, shared by everything
@@ -22,11 +24,15 @@ oracle_guided_search/    fixed-k search, tree refutation, canonical augmentation
 canonical_factorisation/ the rank as A B, with the receipt that checks it
 pencil_rank/             two slices, where the answer is read off a canonical
                          form instead of searched for
+rank_metric_bound/       two lower bounds from the dimension and the least rank
+                         of a slice space, and from nothing else
 matrix_sparsification/   fewest nonzeros in an operator
 satisfiability/          the same rank question put to a SAT or SMT solver
 curve_bounds/            bounds from interpolation on an algebraic curve
 integer_programme/       the linear and integer programme layer the curve strand uses
 fixtures/                the maps and operators everything is run on
+famous_tensors/          the tensors the literature argues about, and where each
+                         search stops on them
 reproduce/               regenerates every published number, with its provenance
 references.md            every paper cited anywhere here, by the keys the code uses
 state-of-the-art/        where the research front is, and which parts of it are here
@@ -35,6 +41,10 @@ MEASURING.md             how a timing here was taken, and what it does not mean
 OPTIONS.md               every flag of every tool, its default, and what
                          measured that default; links OPTIONS/ for the tables
 article/                 the write-up: definitions, theorems, proofs, negative results
+site/                    the stylesheet, the hand-drawn charts and the shared
+                         navigation index.html is assembled from
+tools/                   scripts that are not part of the build: one asks every
+                         backend the same question and tabulates the cost
 ```
 
 **Twelve command-line tools.** Three ask how few multiplications a map needs and
