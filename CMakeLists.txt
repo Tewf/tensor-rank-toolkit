@@ -50,3 +50,11 @@ add_subdirectory(rank_metric_bound)
 add_subdirectory(oracle_guided_search)
 add_subdirectory(pencil_rank)
 add_subdirectory(canonical_factorisation)
+
+# Only where there is a card to measure. gpu_leaf/README.md is the measurement
+# and stands on its own; the directory builds nothing the rest of the repository
+# links, so a machine without nvcc loses a number and not a capability.
+find_package(CUDAToolkit QUIET)
+if(CUDAToolkit_FOUND)
+  add_subdirectory(gpu_leaf)
+endif()
