@@ -5,12 +5,17 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # Sunday 04:00 UTC, for the one count too dear to re-derive on every push.
+  schedule:
+    - cron: "0 4 * * 0"
 
 jobs:
   checks:
     name: Build and reproduce the table
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 20 covers a push, which runs 2 to 3 minutes. The weekly step adds the
+    # GF(16) exhaustion, so the ceiling has to clear that on a slower runner.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
@@ -75,6 +80,17 @@ jobs:
       # results file rather than measured. --check reads counts only.
       - name: The published counts still reproduce
         run: python3 reproduce/measure.py --build build --check
+
+      # The GF(16) exhaustion, 105 600 301 nodes: 395 s on the reference core and
+      # longer on a shared runner, which is more than every other question in the
+      # driver put together. On every push that would be a fivefold slowdown to
+      # re-derive a deterministic count, and one slow runner from a red tick that
+      # means nothing. Weekly and on demand instead, so the figure still has an
+      # owner: the alternative was leaving it uncovered and silent, which is what
+      # its `_not_reproducible` key used to do.
+      - name: The expensive count, weekly and on demand
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: python3 reproduce/measure.py --build build --check --slow
 
       # The two strands are one pipeline: the rank search emits the encoding
       # operators, and the sparsification is what those are for.
