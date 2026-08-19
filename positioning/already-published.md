@@ -22,7 +22,7 @@ is a contribution to the field; they say the implementation works.
 - **Orbit flip graphs**, `[ikenmeyer2025]`: Strassen's 7 reproved from an order-6
   group action with no calculation. The same intersection of symmetry and flips.
 - **Adaptive flip graphs**, `[arai2024]`, and **meta flip graphs**,
-  `[kauers2025meta]` and `[perminov2026]`.
+  `[kauers2025]` and `[perminov2026]`.
 - **An open-source C++ flip graph framework**, `[perminov2026]`, MIT licensed,
   bit-level encoding and OpenMP, 680 formats from `⟨2,2,2⟩` to `⟨16,16,16⟩`, GPU
   variant. **This is the baseline any flip graph result here is measured
