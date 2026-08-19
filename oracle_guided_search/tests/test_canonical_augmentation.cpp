@@ -127,7 +127,18 @@ int main(int argc, char** argv) {
     // the pair of numbers that says what canonical augmentation bought is the one
     // state they should not have been left in.
     check::equal("the plain route pays 1 890 601 nodes for those 36", plain.nodes, 1890601);
-    check::equal("and the canonical route 954 for the 1", canonical.nodes, 954);
+    // 83, and it was 954 while the parent test named an orbit by walking the whole
+    // group. A canonical form is not unique: any function constant on orbits and
+    // distinguishing them will do, and a different one accepts a different single
+    // representative per class, so it walks a different tree. What may not change
+    // is the answer, and it does not: 36 subspaces in 1 orbit above, 1 found here,
+    // 0 at target 6. Losing solutions would show up as a smaller count too, which
+    // is why the count alone is not the check and `distinct` is asserted beside it.
+    check::equal("and the canonical route 83 for the 1", canonical.nodes, 83);
+    // Zero, and it is the point rather than an omission: no group element is
+    // walked any more. `canonisations` is what replaced the count.
+    check::equal("having walked no group elements at all", canonical.group_visits,
+                 std::size_t(0));
 
     // Threads change no count here, and that is a claim about this enumeration
     // rather than about searches in general: it counts instead of stopping, so
