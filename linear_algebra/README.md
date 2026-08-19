@@ -13,9 +13,12 @@ over `Q`.
 | [`measures.h`](measures.h) | What a thing costs: rank, multiplications, nonzeros |
 | [`span_queries.h`](span_queries.h) | What a span contains: `spans_all`, `raises_rank`, `same_row_space` |
 | [`solver.h`](solver.h) | Exact solve in a row space, and the inverse built on it |
+| [`row_space_coordinates.h`](row_space_coordinates.h) | Every row of a matrix over a maximal independent subset of its rows |
 | [`matrix_ops.h`](matrix_ops.h) | Transpose, product, row and column selection |
 | [`decomposition.h`](decomposition.h) | A matrix as a sum of rank-one matrices |
 | [`tensor_flattening.h`](tensor_flattening.h) | The three flattenings of a tensor, the rank lower bound `max_d rank(T⁽ᵈ⁾)`, and conciseness |
+| [`rank_decomposition.h`](rank_decomposition.h) | A tensor as rank-one terms, three factor matrices with one row each, and the tensor they rebuild |
+| [`tensor_compression.h`](tensor_compression.h) | The concise core of a tensor, and a decomposition of the core carried back to it |
 | [`tensor_contraction.h`](tensor_contraction.h) | Collapsing one axis of a tensor by a vector, which the bounds below are built from |
 | [`tensor_rank_sum.h`](tensor_rank_sum.h) | Two rank-sum lower bounds out of one table of contraction ranks: over one affine line, and over every vector |
 | [`rank_lower_bound.h`](rank_lower_bound.h) | The largest bound the three methods give, which is what callers wire in |

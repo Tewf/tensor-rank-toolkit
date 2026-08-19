@@ -14,16 +14,22 @@
 /// - [`measures.h`](measures.h)           rank, multiplications, nonzeros
 /// - [`span_queries.h`](span_queries.h)   what a span contains, and the invariants
 /// - [`solver.h`](solver.h)               exact solve, and inversion
+/// - [`row_space_coordinates.h`](row_space_coordinates.h) every row over an independent subset of them
 /// - [`matrix_ops.h`](matrix_ops.h)       transpose, product, row and column selection
 /// - [`decomposition.h`](decomposition.h) a matrix as rank-one pieces
 /// - [`tensor_flattening.h`](tensor_flattening.h) the three flattenings, and the rank bound they give
+/// - [`rank_decomposition.h`](rank_decomposition.h) a tensor as rank-one terms, and the tensor they rebuild
+/// - [`tensor_compression.h`](tensor_compression.h) the concise core, and a decomposition of it carried back
 
 #include "decomposition.h"
 #include "field.h"
 #include "matrix.h"
 #include "matrix_ops.h"
 #include "measures.h"
+#include "rank_decomposition.h"
+#include "row_space_coordinates.h"
 #include "solver.h"
 #include "span_basis.h"
 #include "span_queries.h"
+#include "tensor_compression.h"
 #include "tensor_flattening.h"

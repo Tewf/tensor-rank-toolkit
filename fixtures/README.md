@@ -50,3 +50,16 @@ disagrees with this table is a visible disagreement rather than a silent one.
 Every step-3 target is asserted, including `f3_3x6`'s 10; the four are tagged
 `slow` so a developer can skip them with `ctest -LE slow`, and CI runs them
 anyway.
+
+## The one that is not concise
+
+Every other `.tensor` here has all three flattenings at full rank, so it is
+concise and there is nothing for
+[`tensor_compression.h`](../linear_algebra/tensor_compression.h) to compress
+away. `nonconcise_matmul_2x2x2.tensor` is the exception, and it exists so that
+the compression is tested on a tensor it actually changes rather than only on the
+identity map. It is `matmul_2x2x2` with one dependent row, two dependent columns
+and three dependent slices appended: `7 x 5 x 6` on the outside, flattening ranks
+`(4, 4, 4)`, and compressing it gives `matmul_2x2x2` back byte for byte, so the
+core's rank is the 7 that fixture is known to have. The file's own comment block
+says which combination each appended position is.

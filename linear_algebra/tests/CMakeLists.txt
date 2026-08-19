@@ -22,3 +22,10 @@ add_test(NAME flattening COMMAND test_flattening ${PROJECT_SOURCE_DIR}/fixtures)
 add_executable(test_rank_sum test_rank_sum.cpp)
 target_link_libraries(test_rank_sum PRIVATE formats project_warnings testing)
 add_test(NAME rank_sum COMMAND test_rank_sum ${PROJECT_SOURCE_DIR}/fixtures)
+
+# Compression to the concise core and back. The round trip is the property, so the
+# test is written around it rather than around either half: compress, decompose
+# the core, expand, and compare with the tensor it started from.
+add_executable(test_tensor_compression test_tensor_compression.cpp)
+target_link_libraries(test_tensor_compression PRIVATE formats project_warnings testing)
+add_test(NAME tensor_compression COMMAND test_tensor_compression ${PROJECT_SOURCE_DIR}/fixtures)
