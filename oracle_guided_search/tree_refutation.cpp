@@ -23,7 +23,7 @@ CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& 
                               std::size_t products, const Matrix& candidate,
                               const std::vector<Matrix>& pool,
                               const std::vector<Automorphism>& ambient, std::size_t node_limit,
-                              std::vector<Matrix>& decomposition) {
+                              std::vector<Matrix>& decomposition, bool spread_over_cores) {
     const cli::Clock::time_point started = cli::Clock::now();
     CandidateVerdict verdict;
 
@@ -40,7 +40,8 @@ CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& 
     SearchBudget budget(node_limit);
     std::vector<Matrix> found;
     const bool reached =
-        expand_subspace_up_to_symmetry(field, subspace, pool, group, products, budget, found);
+        expand_subspace_up_to_symmetry(field, subspace, pool, group, products, budget, found,
+                                       spread_over_cores);
 
     verdict.nodes = budget.nodes_visited.load();
     verdict.seconds = cli::elapsed_seconds(started);

@@ -1,6 +1,7 @@
 #include <string>
 
 #include "arguments.h"
+#include "parallel.h"
 #include "candidate_pool.h"
 #include "canonical_augmentation.h"
 #include "exit_code.h"
@@ -25,6 +26,9 @@ void usage() {
                    "  --plain             orderings deduplicated only, the existing behaviour\n"
                    "  --canonical         McKay canonical augmentation, one per orbit\n"
                    "                      (both passes run when neither is named)\n"
+                   "  --threads N         N workers, 0 for every core, 1 by default. This\n"
+                   "                      walk counts rather than stops, so every number it\n"
+                   "                      reports is the same at any worker count\n"
                    "  --help              print this and stop, as exit 2\n"
                 << cli::symmetry_usage()
                 << "\n"
@@ -56,6 +60,8 @@ int run(int argc, char** argv) {
             target = arguments.whole_number();
         } else if (arguments.is("--plain")) {
             plain = true;
+        } else if (arguments.is("--threads")) {
+            bilinear_rank::set_worker_count(arguments.count());
         } else if (arguments.is("--canonical")) {
             canonical = true;
         } else if (arguments.is("--symmetry", "-s")) {

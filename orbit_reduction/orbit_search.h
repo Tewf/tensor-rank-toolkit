@@ -38,9 +38,35 @@ namespace bilinear_rank {
 ///   can catch: a `FOUND` is checked against the map it must compute.
 /// - **`pool` must be closed under `group`**, which `all_rank_one_maps` is.
 ///   `permutation_action_on` throws if an image leaves it.
+///
+/// **`worker_count()` above one spreads the subtrees over cores, and the split
+/// leaves both preconditions alone.** The group is filtered by `stabiliser_of`
+/// once, before any worker exists, and the permutation action is read-only from
+/// then on, so the one way this search can report a false `NO` is not something a
+/// worker can reach. What the workers do share is the budget, and that is
+/// visible: a refutation walks the same tree whoever walks it, so its node total
+/// is exact at any thread count, while a witness stops the search early and the
+/// subtrees already in flight spend against the same counter, so that total is an
+/// upper bound and a tight `--node-limit` can turn a proof into an undecided.
+/// Measured, with the mitigation this search now carries too:
+/// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md).
+///
+/// The split cannot be at the root the way the plain search's is. The plain
+/// search has one first choice per pool element, 225 at `⟨2,2,2⟩`; the quotient
+/// leaves one per orbit, which is 5, and collapsing them is the entire point of
+/// being here. So the frontier is widened a node at a time until it is at least as
+/// wide as the worker count.
+///
+/// `spread_over_cores` off keeps this on one core whatever `worker_count()` says,
+/// for a caller that is **already** spreading work over them. `deflate-strictly
+/// --parallel` asks every candidate at once and each candidate calls this, so
+/// without the switch twelve workers would each start eleven more. The outer level
+/// is the one to keep: it has one branch per candidate and no shared state, where
+/// this one shares a budget and races to a witness.
 bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
                            const std::vector<Matrix>& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
-                           SearchBudget& budget, std::vector<Matrix>& products);
+                           SearchBudget& budget, std::vector<Matrix>& products,
+                           bool spread_over_cores = true);
 
 }  // namespace bilinear_rank

@@ -48,10 +48,15 @@ std::vector<Automorphism> ambient_or_empty(const Field& field,
 ///
 /// `Yes` fills `decomposition`. `No` is a refutation. `Unknown` means the node limit
 /// was hit, which proves nothing in either direction.
+///
+/// `spread_over_cores` is passed straight to the tree and is off when the caller is
+/// already asking every candidate at once, so that the two levels do not both fan
+/// out; [`../orbit_reduction/orbit_search.h`](../orbit_reduction/orbit_search.h)
+/// says why the outer one wins.
 CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& tensor,
                               std::size_t products, const Matrix& candidate,
                               const std::vector<Matrix>& pool,
                               const std::vector<Automorphism>& ambient, std::size_t node_limit,
-                              std::vector<Matrix>& decomposition);
+                              std::vector<Matrix>& decomposition, bool spread_over_cores = true);
 
 }  // namespace bilinear_rank

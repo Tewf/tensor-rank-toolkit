@@ -60,3 +60,8 @@ speedup. That is the next piece of work and it is a substantial one.
 4 741 632, so the canonical route degenerates there to the plain one: an empty group
 makes every object its own orbit. That is reported rather than refused, because it is
 what a caller at that shape actually gets.
+
+## Spreading it over cores
+
+A separate question with a separate answer, and the short version is that no
+number in this file changes: [`enumerating-on-every-core.md`](enumerating-on-every-core.md).

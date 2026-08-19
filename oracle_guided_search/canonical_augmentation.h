@@ -86,6 +86,24 @@ struct EnumerationReport {
 /// stopped early reports numbers that mean nothing. It exists because a rank search
 /// asks only whether the level is empty, and finishing a level it has already
 /// answered is work spent on a question nobody asked.
+///
+/// **`worker_count()` above one spreads the walk's subtrees over cores, and changes
+/// no count.** This is the one search here where that is a fact rather
+/// than a hope: it counts instead of stopping, so there is no witness to race to
+/// and no shared budget to spend against, and every subtree is visited whatever
+/// the thread count. `emitted`, `distinct`, `nodes` and `group_visits` are
+/// therefore identical at one thread and at twelve, asserted in
+/// `tests/test_canonical_augmentation.cpp`; contrast
+/// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md), where
+/// the shared budget makes a thread count visible in a verdict. `stop_at_first`
+/// is excluded and stays sequential, because a walk that stops early is exactly
+/// the case the invariance argument does not cover.
+///
+/// Which decomposition stands for a subspace, and the order `decompositions`
+/// arrives in, do depend on the split: a subspace reached down two branches is
+/// kept once, from the lower-numbered branch. The count does not. What the split
+/// is worth in wall clock, and where it stops paying:
+/// [`enumerating-on-every-core.md`](enumerating-on-every-core.md).
 EnumerationReport enumerate_solution_subspaces(const Field& field,
                                                const linear_algebra::Tensor& tensor,
                                                const std::vector<Matrix>& pool,
