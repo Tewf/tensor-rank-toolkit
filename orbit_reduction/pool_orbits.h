@@ -43,6 +43,45 @@ struct FactoredAction {
 FactoredAction factored_action(const Field& field, const std::vector<Automorphism>& group,
                                std::size_t rows, std::size_t columns);
 
+/// Where an automorphism sends a pool element, answered by arithmetic rather
+/// than by a table.
+///
+/// [`automorphism.h`](automorphism.h)'s `permutation_action_on` answers the same
+/// question from a stored table with **one entry per (automorphism, pool
+/// element)**. That is affordable while the pool is, and it is the reason the
+/// quotiented search cannot run on a shape whose pool is only addressed: at
+/// `⟨4,4,4⟩` the table is tens of gigabytes per automorphism, before any search
+/// begins.
+///
+/// It never needed a table. `[covanov2019, Thm. 17]`'s stabiliser moves the two
+/// factors of a rank-one map on their own sides, so an element's image is one
+/// lookup in each vector list and a multiply. Two lists of 65 535 against a grid
+/// of 4 294 836 225 is **32 768x less** at that shape, and the two agree on every
+/// element: [`tests/test_orbit_cubes.cpp`](tests/test_orbit_cubes.cpp) asserts it
+/// against the table on `⟨2,2,2⟩`, all 48 600 images.
+///
+/// **GPU note.** This is the one lookup an accelerated leaf would need per
+/// candidate, and it is branch-free, allocation-free and reads two small tables
+/// every thread can share. See `positioning/hardware-and-parallelism.md`.
+class PoolAction {
+   public:
+    PoolAction(const Field& field, const std::vector<Automorphism>& group, std::size_t rows,
+               std::size_t columns);
+
+    std::size_t size() const { return factored_.left.size(); }
+
+    /// The image of pool index `index` under automorphism `element`.
+    std::uint32_t image(std::size_t element, std::uint32_t index) const {
+        return static_cast<std::uint32_t>(factored_.left[element][index / right_count_]) *
+                   static_cast<std::uint32_t>(right_count_) +
+               factored_.right[element][index % right_count_];
+    }
+
+   private:
+    FactoredAction factored_;
+    std::size_t right_count_ = 0;
+};
+
 /// One pool index per orbit, as `left_index * right_count + right_index`, which
 /// is the order `all_rank_one_maps` builds the pool in.
 std::vector<std::uint32_t> pool_orbit_representatives(const Field& field,

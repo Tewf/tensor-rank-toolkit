@@ -218,6 +218,37 @@ void check_cubes_do_not_change_the_answer(const satisfiability::SatSolver& solve
 /// The structural checks are seconds and the solver ones are minutes, so the
 /// second half is asked for rather than assumed: `--with-solver` runs it, and
 /// CTest registers that as the slow test.
+/// The table and the arithmetic must send every pool element to the same place.
+///
+/// `permutation_action_on` stores one entry per (automorphism, pool element),
+/// which is what stops the quotiented search running on a shape whose pool is
+/// only addressed. `PoolAction` computes the same image from two vector lists.
+/// This is the check that lets the table go: if they ever disagree, the search
+/// silently visits the wrong candidates and can report a refutation nobody
+/// proved, which is the one failure `orbit_search.h` says nothing downstream
+/// catches.
+void check_the_action_needs_no_table(const bilinear_rank::Field& field) {
+    const std::size_t rows = 4, columns = 4;
+    const std::vector<bilinear_rank::Matrix> pool =
+        bilinear_rank::all_rank_one_maps(field, rows, columns);
+    const std::vector<bilinear_rank::Automorphism> group =
+        bilinear_rank::matrix_multiplication_symmetries(field, 2, 2, 2);
+
+    const auto table = bilinear_rank::permutation_action_on(field, group, pool);
+    const bilinear_rank::PoolAction arithmetic(field, group, rows, columns);
+
+    std::size_t compared = 0;
+    long long disagreed = 0;
+    for (std::size_t element = 0; element < group.size(); ++element) {
+        for (std::uint32_t index = 0; index < pool.size(); ++index) {
+            ++compared;
+            if (arithmetic.image(element, index) != table[element][index]) ++disagreed;
+        }
+    }
+    check::equal("the action agrees with its table on every image", disagreed, 0LL);
+    check::equal("and every image was compared", static_cast<long long>(compared), 48600LL);
+}
+
 int main(int argc, char** argv) {
     const bool with_solver = argc > 1 && std::string(argv[1]) == "--with-solver";
     const bilinear_rank::Field over_two(2);
@@ -227,6 +258,7 @@ int main(int argc, char** argv) {
         check_representatives_partition_the_pool(over_two, 2, 2, 3);
         check_cubes_are_well_formed(over_two);
         check_a_wrong_shape_is_refused(over_two);
+        check_the_action_needs_no_table(over_two);
         return check::report("orbit cubes");
     }
 

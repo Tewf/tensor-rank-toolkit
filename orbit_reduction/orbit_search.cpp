@@ -1,5 +1,7 @@
 #include "orbit_search.h"
 
+#include "pool_orbits.h"
+
 #include <atomic>
 #include <memory>
 #include <mutex>
@@ -13,7 +15,11 @@ namespace bilinear_rank {
 
 namespace {
 
-using Permutations = std::vector<std::vector<std::uint32_t>>;
+// Was `std::vector<std::vector<std::uint32_t>>`, one entry per (automorphism,
+// pool element). `PoolAction` answers the same question by arithmetic on two
+// vector lists, which is 32 768x less at `<4,4,4>` and is what lets this search
+// run at all on a shape whose pool is only addressed.
+using Permutations = PoolAction;
 constexpr std::uint32_t kNotHere = static_cast<std::uint32_t>(-1);
 
 /// Where each candidate sits in the list, one buffer per depth so a node and
@@ -73,7 +79,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
             const std::uint32_t reached = frontier.back();
             frontier.pop_back();
             for (const std::uint32_t element : residual) {
-                const std::uint32_t image = action[element][reached];
+                const std::uint32_t image = action.image(element, reached);
                 const std::uint32_t at = position[image];
                 if (at == kNotHere || struck[at]) continue;
                 struck[at] = 1;
@@ -91,7 +97,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
         // and the whole question is whether that one image landed back inside.
         std::vector<std::uint32_t> narrowed;
         for (const std::uint32_t element : residual) {
-            if (extended.contains(pool[action[element][chosen]], scratch)) {
+            if (extended.contains(pool[action.image(element, chosen)], scratch)) {
                 narrowed.push_back(element);
             }
         }
@@ -186,7 +192,7 @@ bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix
             const std::uint32_t reached = frontier.back();
             frontier.pop_back();
             for (const std::uint32_t element : node.residual) {
-                const std::uint32_t image = action[element][reached];
+                const std::uint32_t image = action.image(element, reached);
                 const std::uint32_t at = position[image];
                 if (at == kNotHere || struck[at]) continue;
                 struck[at] = 1;
@@ -202,7 +208,7 @@ bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix
         Branch child{node.span, list, slot, {}};
         child.span.try_add(pool[chosen]);
         for (const std::uint32_t element : node.residual) {
-            if (child.span.contains(pool[action[element][chosen]], scratch)) {
+            if (child.span.contains(pool[action.image(element, chosen)], scratch)) {
                 child.residual.push_back(element);
             }
         }
@@ -300,7 +306,8 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
     // Filtered, never trusted: an element that does not stabilise the target is
     // the one way this search can report a `NO` that is false.
     const std::vector<Automorphism> stabiliser = stabiliser_of(field, subspace, group);
-    const Permutations action = permutation_action_on(field, stabiliser, pool);
+    const Permutations action(field, stabiliser, subspace.front().rows(),
+                              subspace.front().columns());
 
     std::vector<std::uint32_t> candidates(pool.size());
     std::iota(candidates.begin(), candidates.end(), std::uint32_t(0));

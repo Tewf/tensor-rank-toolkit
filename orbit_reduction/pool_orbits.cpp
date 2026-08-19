@@ -127,6 +127,11 @@ FactoredAction factored_action(const Field& field, const std::vector<Automorphis
             permutations_of(field, rights, normalised_vectors(field, columns))};
 }
 
+PoolAction::PoolAction(const Field& field, const std::vector<Automorphism>& group,
+                       std::size_t rows, std::size_t columns)
+    : factored_(factored_action(field, group, rows, columns)),
+      right_count_(normalised_vectors(field, columns).size()) {}
+
 std::vector<std::uint32_t> pool_orbit_representatives(const Field& field,
                                                       const std::vector<Automorphism>& group,
                                                       const FactoredAction& action,
