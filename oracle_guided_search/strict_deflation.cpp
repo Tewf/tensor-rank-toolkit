@@ -126,8 +126,12 @@ StrictStep by_tree(const linear_algebra::Tensor& tensor, std::size_t products,
     std::vector<char> asked(candidates.size(), 0);
     const auto ask = [&](std::size_t index) {
         std::vector<Matrix> mine;
-        CandidateVerdict verdict = tree_verdict(field, tensor, products, candidates[index], pool,
-                                                ambient, settings.node_limit, mine);
+        // One fan-out, not two: this loop already has the cores when
+        // `parallel_candidates` is on, and the tree inside would otherwise start a
+        // second set of workers per candidate.
+        CandidateVerdict verdict =
+            tree_verdict(field, tensor, products, candidates[index], pool, ambient,
+                         settings.node_limit, mine, !settings.parallel_candidates);
         verdict.candidate = index;
         const std::lock_guard<std::mutex> held(guard);
         verdicts[index] = verdict;

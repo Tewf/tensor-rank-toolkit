@@ -22,6 +22,7 @@
 #include "exhaustive_search.h"
 #include "group_construction.h"
 #include "orbit_search.h"
+#include "parallel.h"
 #include "tensor_file.h"
 
 namespace {
@@ -52,18 +53,36 @@ Verdict plain(const Field& field, const std::vector<Matrix>& slices,
     return budget.exhausted ? Verdict::Refuted : Verdict::Undecided;
 }
 
-Verdict quotiented(const Field& field, const std::vector<Matrix>& slices,
-                   const std::vector<Matrix>& pool, std::size_t target) {
+/// A quotiented run's verdict and what it cost, because the two behave
+/// differently under threads and the difference is the point of the sweep below.
+struct Run {
+    Verdict verdict = Verdict::Undecided;
+    long long nodes = 0;
+};
+
+Run quotiented_on(std::size_t workers, const Field& field, const std::vector<Matrix>& slices,
+                  const std::vector<Matrix>& pool, std::size_t target) {
     const std::vector<bilinear_rank::Automorphism> group = bilinear_rank::stabiliser_of(
         field, slices,
         bilinear_rank::all_automorphisms(field, slices.front().rows(), slices.front().columns()));
 
     bilinear_rank::SearchBudget budget{2'000'000};
     std::vector<Matrix> products;
-    if (bilinear_rank::expand_subspace_up_to_symmetry(field, slices, pool, group, target, budget, products)) {
-        return Verdict::Found;
-    }
-    return budget.exhausted ? Verdict::Refuted : Verdict::Undecided;
+    bilinear_rank::set_worker_count(workers);
+    const bool found = bilinear_rank::expand_subspace_up_to_symmetry(field, slices, pool, group,
+                                                                    target, budget, products);
+    bilinear_rank::set_worker_count(1);
+
+    Run run;
+    run.nodes = static_cast<long long>(budget.nodes_visited.load());
+    run.verdict = found ? Verdict::Found
+                        : (budget.exhausted ? Verdict::Refuted : Verdict::Undecided);
+    return run;
+}
+
+Verdict quotiented(const Field& field, const std::vector<Matrix>& slices,
+                   const std::vector<Matrix>& pool, std::size_t target) {
+    return quotiented_on(1, field, slices, pool, target).verdict;
 }
 
 struct Question {
@@ -111,6 +130,26 @@ int main(int argc, char** argv) {
             ++check::failure_count;
         } else {
             std::cout << "  ok    " << label << ": orbits agree (" << name_of(with) << ")\n";
+        }
+
+        // And the same verdict on every core count, because the quotiented search
+        // now spreads its subtrees the way the plain one does. The node total is
+        // asserted too, but only where the question is a refutation: that walks
+        // the whole tree whoever walks it, so the total is exact. A satisfiable
+        // question stops early and the subtrees in flight when it stops are a
+        // race, so its total is an upper bound and asserting it would be
+        // asserting a race. `../../exhaustive_search/what-threads-change.md` is
+        // where that distinction was measured on the plain search; this is the
+        // same claim for this one.
+        for (const std::size_t workers : {std::size_t(2), std::size_t(4), std::size_t(6),
+                                          std::size_t(12)}) {
+            const Run run = quotiented_on(workers, field, tensor.slices, pool, question.target);
+            check::equal(label + " on " + std::to_string(workers) + " workers, verdict",
+                         static_cast<long long>(run.verdict),
+                         static_cast<long long>(question.expected));
+            if (question.expected != Verdict::Refuted) continue;
+            check::equal(label + " on " + std::to_string(workers) + " workers, nodes", run.nodes,
+                         quotiented_on(1, field, tensor.slices, pool, question.target).nodes);
         }
     }
     // A named shape that is not the tensor's shape must be refused, not used.
