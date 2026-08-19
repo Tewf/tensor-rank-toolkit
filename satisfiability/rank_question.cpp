@@ -1,5 +1,9 @@
 #include "rank_question.h"
 
+#include <atomic>
+
+#include "parallel.h"
+
 #include <fstream>
 #include <stdexcept>
 
@@ -181,13 +185,52 @@ Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
     // clauses, so the part they share is everything else.
     const Forms forms = build_forms(tensor, products, approach, true);
 
+    // The cubes are independent instances of one formula, which is the whole
+    // reason cube-and-conquer exists, so they run on as many cores as the run was
+    // given. Measured on `matmul_2x2x2 --target 6`: five cubes at 0.79, 0.69,
+    // 0.73, 0.52 and 0.63 s sum to 3.36 s sequentially and finish in 0.982 s
+    // together, which is 3.42x against an ideal of 4.25x. For scale the same
+    // question as one undivided formula is 25.8 s, so splitting is already worth
+    // 7.7x before any core is added.
+    //
+    // **Each worker's cap is the shared cap divided by the workers.** The 2 GiB in
+    // `tunables.conf` is per question, so twelve workers at 2 GiB each would be a
+    // 24 GiB ceiling on a 16 GB machine. Dividing keeps the aggregate guarantee
+    // the file already documents, needs no second tunable, and still leaves
+    // 170 MB per solver at twelve workers against a measured peak of 6 MB on
+    // `⟨2,2,2⟩` and 65 MB on a `⟨3,3,3⟩` cube.
+    SolveOptions shared = approach;
+    const std::size_t workers = bilinear_rank::worker_count() < approach.cubes.size()
+                                   ? bilinear_rank::worker_count()
+                                   : approach.cubes.size();
+    if (workers > 1) shared.memory_megabytes = approach.memory_megabytes / workers;
+
     // A yes anywhere is a yes; a no needs every cube to refuse, and a single cube
     // that gave up makes the whole answer unknown, because the decomposition may
     // have been in the part nobody finished.
+    //
+    // Answers are collected by index and reduced afterwards in cube order, so a
+    // refutation is bit-identical to the sequential run: every cube must refuse,
+    // so every cube is asked, and the report lands in the same order. On a
+    // satisfiable question `found` lets a cube not yet started skip, and the
+    // witness may then come from a different cube than the sequential walk would
+    // have returned. Both are decompositions; `run_limits/parallel.h` already
+    // documents that threads change *which* one a search hands back.
+    std::vector<Answer> pieces(approach.cubes.size());
+    std::vector<char> answered(approach.cubes.size(), 0);
+    std::atomic<bool> found(false);
+    bilinear_rank::parallel_for(approach.cubes.size(), [&](std::size_t index) {
+        if (found.load(std::memory_order_relaxed)) return;
+        pieces[index] = answer_from(tensor, forms, shared, approach.cubes[index]);
+        answered[index] = 1;
+        if (pieces[index].verdict == Verdict::Yes) found.store(true, std::memory_order_relaxed);
+    });
+
     Answer combined;
     combined.verdict = Verdict::No;
-    for (const std::vector<int>& cube : approach.cubes) {
-        const Answer piece = answer_from(tensor, forms, approach, cube);
+    for (std::size_t index = 0; index < approach.cubes.size(); ++index) {
+        if (answered[index] == 0) continue;  // skipped once somebody had a witness
+        const Answer& piece = pieces[index];
         combined.solver_name = piece.solver_name;
         combined.seconds += piece.seconds;
         combined.proof_bytes += piece.proof_bytes;
