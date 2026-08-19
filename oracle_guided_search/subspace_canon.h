@@ -16,20 +16,8 @@
 /// result is unique to the subspace rather than to the order its generators arrived
 /// in.
 ///
-/// The **canonical code** goes one step further and is unique to the whole orbit:
-/// the least code over every element of the group. That costs one pass over the
-/// group per call, which is why this only works where the group can be held in a
-/// list. `matrix_multiplication_symmetries` refuses when the list will not fit
-/// the memory budget, and `⟨3,3,3⟩` at 4 741 632 elements is past a 2 GiB
-/// default, so this is a tool for the shapes where the group is small, said here
-/// rather than discovered later.
-///
-/// **Do not reach for `--max-memory` to get past that.** The refusal is a budget,
-/// so raising it works, and what it buys at `⟨3,3,3⟩` is this function walking
-/// 4.7 million elements once per candidate parent. The fix is a canonical form
-/// that takes generators and refines, which is what
-/// [`deduplication-cost.md`](deduplication-cost.md) measures the absence of; it
-/// is not a larger budget.
+/// Naming an **orbit** rather than a subspace is a different question and lives
+/// in [`pool_set_canon.h`](pool_set_canon.h), which answers it from generators.
 namespace bilinear_rank {
 
 /// A subspace's name. `Element` is `int64_t`, so codes compare lexicographically
@@ -40,25 +28,17 @@ using SubspaceCode = std::vector<Element>;
 /// to end. Equal codes mean equal subspaces.
 SubspaceCode subspace_code(const Field& field, const std::vector<Matrix>& generators);
 
-/// The least `subspace_code` over the orbit of `span(generators)` under `group`,
-/// and every group element that attains it.
+/// **The orbit walk that used to live here is gone.** `canonical_subspace` named
+/// an orbit by taking the least code over every element of the group, and
+/// `image_code` served the distinguished-element test that walked the attaining
+/// coset. [`pool_set_canon.h`](pool_set_canon.h) answers both questions by
+/// canonical image under a prescribed permutation group and dominates them on the
+/// same field: measured on `<2,2,2>` at target 7, 954 nodes and 21.9 s became 83
+/// nodes and 3.04 s, and no group element is walked at all.
 ///
-/// The attaining set is returned because the canonical augmentation test needs it:
-/// choosing a distinguished pool element of a subspace means minimising over
-/// exactly those elements that already carry the subspace to its canonical form.
-/// An empty `group` makes this `subspace_code` with the identity, which is the
-/// honest degenerate case rather than an error.
-struct CanonicalSubspace {
-    SubspaceCode code;
-    std::vector<std::size_t> attaining;  // indices into `group`
-};
-
-CanonicalSubspace canonical_subspace(const Field& field,
-                                     const std::vector<Automorphism>& group,
-                                     const std::vector<Matrix>& generators);
-
-/// The matrix `sigma` sends `form` to, flattened, so a distinguished pool element
-/// can be compared under a group element rather than in place.
-SubspaceCode image_code(const Field& field, const Automorphism& sigma, const Matrix& form);
+/// Dominated code goes to the `rejected-experiments` branch rather than staying
+/// here, which is what happened to `find-at-rank`. The evidence stays:
+/// [`deduplication-cost.md`](deduplication-cost.md) carries the before and after,
+/// and this file's history carries the code.
 
 }  // namespace bilinear_rank

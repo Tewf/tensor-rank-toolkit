@@ -2,6 +2,7 @@
 
 #include <optional>
 
+#include "pool_orbits.h"
 #include "pool_set_canon.h"
 
 #include <algorithm>
@@ -92,8 +93,15 @@ std::vector<std::size_t> augmentations(const Walk& walk, const std::vector<Matri
     for (std::uint32_t index = 0; index < pool.size(); ++index) {
         if (!span.contains(pool[index], scratch)) outside.push_back(index);
     }
+    // The stabiliser still comes from the group as a list, and that is the last
+    // `|G|` dependency the canonical route has: filtering a generating set for the
+    // elements that happen to fix `current` does **not** generate the stabiliser,
+    // which `pool_orbits.cpp` learned the hard way (41 orbits where there are 13).
+    // A generator-driven subspace stabiliser is the piece that would let this run
+    // at `<3,3,3>`, where the group is 4 741 632 elements and 6.2 GiB.
     const std::vector<Automorphism> stabiliser = stabiliser_of(field, current, *walk.group);
-    const std::vector<std::vector<std::uint32_t>> action = permutation_action_on(field, stabiliser, pool);
+    // The action itself no longer needs a table, which was the other half.
+    const PoolAction action(field, stabiliser, pool.front().rows(), pool.front().columns());
 
     std::vector<std::size_t> representatives;
     for (const std::uint32_t index : orbit_representatives(action, outside)) {
@@ -121,7 +129,7 @@ void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimensi
         child.push_back(pool[index]);
         if (walk.canonical && !walk.group->empty()) {
             const ParentTest test = is_canonical_augmentation(
-                field, walk.tensor->slices, child, current_code, pool[index], pool, *walk.group,
+                field, walk.tensor->slices, child, current_code, pool[index], pool,
                 *walk.canon);
             walk.report.group_visits += test.group_visits;
             walk.report.canonisations += test.canonisations;
@@ -194,7 +202,7 @@ void expand_one(Walk& walk, const std::vector<Matrix>& root, const Branch& node,
         child.push_back(pool[index]);
         if (walk.canonical && !walk.group->empty()) {
             const ParentTest test = is_canonical_augmentation(
-                field, walk.tensor->slices, child, current_code, pool[index], pool, *walk.group,
+                field, walk.tensor->slices, child, current_code, pool[index], pool,
                 *walk.canon);
             walk.report.group_visits += test.group_visits;
             walk.report.canonisations += test.canonisations;

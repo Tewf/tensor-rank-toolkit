@@ -85,6 +85,16 @@ std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field
 /// the heuristic: it walks its pool in order and adopts the first candidate that
 /// pays, so the representative it meets is the same element the unquotiented
 /// walk would have met first.
+/// Declared rather than included: `pool_orbits.h` includes this file, so naming
+/// the type is all this header may do and the definition arrives in the source.
+class PoolAction;
+
+/// The same, reading the action from `PoolAction` rather than from a stored
+/// table, so no caller has to build one entry per (automorphism, pool element).
+/// [`pool_orbits.h`](pool_orbits.h) says what that costs at `<4,4,4>`.
+std::vector<std::uint32_t> orbit_representatives(const PoolAction& action,
+                                                 const std::vector<std::uint32_t>& candidates);
+
 std::vector<std::uint32_t> orbit_representatives(const std::vector<std::vector<std::uint32_t>>& action,
                                          const std::vector<std::uint32_t>& candidates);
 

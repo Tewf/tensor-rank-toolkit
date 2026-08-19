@@ -80,7 +80,6 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
                                     const std::vector<Matrix>& child,
                                     const SubspaceCode& parent_code, const Matrix& added,
                                     const std::vector<Matrix>& pool,
-                                    const std::vector<Automorphism>& group,
                                     const PoolSetCanon& canon) {
     ParentTest test;
     const std::vector<std::size_t> inside = pool_inside(field, pool, child);

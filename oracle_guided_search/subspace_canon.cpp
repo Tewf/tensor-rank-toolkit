@@ -32,34 +32,4 @@ SubspaceCode subspace_code(const Field& field, const std::vector<Matrix>& genera
     return code;
 }
 
-CanonicalSubspace canonical_subspace(const Field& field,
-                                     const std::vector<Automorphism>& group,
-                                     const std::vector<Matrix>& generators) {
-    CanonicalSubspace best;
-    if (group.empty()) {
-        best.code = subspace_code(field, generators);
-        return best;
-    }
-
-    std::vector<Matrix> moved(generators.size(), Matrix());
-    for (std::size_t index = 0; index < group.size(); ++index) {
-        for (std::size_t which = 0; which < generators.size(); ++which) {
-            moved[which] = act_on(field, group[index], generators[which]);
-        }
-        const SubspaceCode code = subspace_code(field, moved);
-        if (index == 0 || code < best.code) {
-            best.code = code;
-            best.attaining.assign(1, index);
-        } else if (code == best.code) {
-            best.attaining.push_back(index);
-        }
-    }
-    return best;
-}
-
-SubspaceCode image_code(const Field& field, const Automorphism& sigma, const Matrix& form) {
-    const Matrix moved = act_on(field, sigma, form);
-    return SubspaceCode(moved.data(), moved.data() + moved.entry_count());
-}
-
 }  // namespace bilinear_rank
