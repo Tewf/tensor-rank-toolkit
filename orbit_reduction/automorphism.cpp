@@ -1,5 +1,7 @@
 #include "automorphism.h"
 
+#include "pool_orbits.h"
+
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -151,6 +153,49 @@ std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field
         permutations.push_back(std::move(images));
     }
     return permutations;
+}
+
+namespace {
+
+/// One walk, written once, over whichever way the action is presented.
+template <class Action>
+std::vector<std::uint32_t> representatives_under(const Action& next, std::size_t elements,
+                                                 const std::vector<std::uint32_t>& candidates) {
+    if (elements == 0) return candidates;
+
+    std::unordered_set<std::uint32_t> here(candidates.begin(), candidates.end());
+    std::unordered_set<std::uint32_t> spoken_for;
+
+    std::vector<std::uint32_t> representatives;
+    for (const std::uint32_t candidate : candidates) {
+        if (spoken_for.count(candidate) != 0) continue;
+        representatives.push_back(candidate);
+
+        // Breadth first, so the action may be a generating set rather than the
+        // whole group. That is what lets this run at sizes where the group has
+        // millions of elements and only nine of them can be held.
+        std::vector<std::uint32_t> frontier{candidate};
+        spoken_for.insert(candidate);
+        while (!frontier.empty()) {
+            const std::uint32_t reached = frontier.back();
+            frontier.pop_back();
+            for (std::size_t element = 0; element < elements; ++element) {
+                const std::uint32_t image = next(element, reached);
+                if (here.count(image) == 0) continue;
+                if (spoken_for.insert(image).second) frontier.push_back(image);
+            }
+        }
+    }
+    return representatives;
+}
+
+}  // namespace
+
+std::vector<std::uint32_t> orbit_representatives(const PoolAction& action,
+                                                 const std::vector<std::uint32_t>& candidates) {
+    return representatives_under(
+        [&action](std::size_t element, std::uint32_t point) { return action.image(element, point); },
+        action.size(), candidates);
 }
 
 std::vector<std::uint32_t> orbit_representatives(const std::vector<std::vector<std::uint32_t>>& action,

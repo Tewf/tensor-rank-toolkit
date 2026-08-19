@@ -1,4 +1,4 @@
-// Does naming an orbit from generators agree with naming it by walking the group?
+// Does naming an orbit from generators agree with the closed form for it?
 //
 // `canonical_subspace` takes the least subspace code over every element of the
 // group. `PoolSetCanon` takes the least image of the subspace's pool content
@@ -18,7 +18,6 @@
 #include "candidate_pool.h"
 #include "pool_orbits.h"
 #include "pool_set_canon.h"
-#include "subspace_canon.h"
 #include "tensor_file.h"
 
 namespace {
@@ -64,24 +63,27 @@ int main(int argc, char** argv) {
     check::equal("and the pool is 225 points", canon.size(), pool.size());
 
     // The depth-one children of the enumerator: the base plus one pool element.
-    std::vector<bilinear_rank::SubspaceCode> by_walking;
-    std::vector<std::vector<std::size_t>> by_generators;
+    //
+    // The oracle is deliberately **not** the whole-group walk this replaced, which
+    // is retired to `rejected-experiments`. It is the closed form from the A_3
+    // quiver in `../orbit_reduction/pool_orbits.h`, derived from Gabriel's theorem
+    // and needing no group built at all. Two independent routes agreeing is worth
+    // more than a fast one agreeing with the slow one it exists to retire.
+    std::vector<std::vector<std::size_t>> names;
     for (std::size_t index = 0; index < pool.size(); ++index) {
         std::vector<bilinear_rank::Matrix> child = tensor.slices;
         child.push_back(pool[index]);
-
-        by_walking.push_back(bilinear_rank::canonical_subspace(field, whole, child).code);
-        by_generators.push_back(canon.canonical(bilinear_rank::pool_inside(field, pool, child)));
+        names.push_back(canon.canonical(bilinear_rank::pool_inside(field, pool, child)));
     }
 
-    const std::vector<std::size_t> walked = partition_of(by_walking);
-    const std::vector<std::size_t> generated = partition_of(by_generators);
-
-    check::equal("the two agree on every one of the 225 children", generated == walked ? 1 : 0, 1);
-
+    const std::vector<std::size_t> classes = partition_of(names);
     std::size_t orbits = 0;
-    for (const std::size_t label : walked) orbits = label + 1 > orbits ? label + 1 : orbits;
-    std::printf("depth-one orbits: %zu, by both routes\n", orbits);
+    for (const std::size_t label : classes) orbits = label + 1 > orbits ? label + 1 : orbits;
+
+    const std::size_t closed_form =
+        bilinear_rank::matrix_multiplication_orbit_representatives(field, 2, 2, 2).size();
+    check::equal("the closed form says five orbits", closed_form, std::size_t(5));
+    check::equal("and canonising the 225 children finds the same number", orbits, closed_form);
 
     // A marked pair's canonical form must be a function of the pair's orbit, and
     // nothing else. That is the whole contract, so it is checked directly: move
@@ -120,5 +122,5 @@ int main(int argc, char** argv) {
     }
     check::equal("and enough pairs were actually checked", pairs_checked > 20 ? 1 : 0, 1);
 
-    return check::report("pool set canon against the group walk");
+    return check::report("pool set canon against the closed form");
 }
