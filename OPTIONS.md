@@ -73,7 +73,13 @@ against the built command rather than against the parser.
 `decide-rank-by-pencil` and `factor-over-canonical-basis` are documented in
 [`OPTIONS/reading-the-answer-off.md`](OPTIONS/reading-the-answer-off.md).
 
-`find-at-rank` is gone from this branch, and with it the `--descend`,
-`--candidate-timeout` and `--pretest-ceiling` flags. It is on
+`find-at-rank` is gone from this branch, and with it the `--descend` and
+`--pretest-ceiling` flags. **`--candidate-timeout` is not gone**, and this
+sentence used to say it was: `find-at-rank` had a flag of that name and so does
+`deflate-strictly`, which still accepts it and is documented above and in
+[`OPTIONS/committing-to-candidates.md`](OPTIONS/committing-to-candidates.md).
+Checked against the branch rather than guessed:
+`rejected-experiments:oracle_guided_search/commands/find_at_rank_main.cpp` parses
+its own. It is on
 `rejected-experiments`; the numbers that retired it are in
 [`oracle_guided_search/measurements.md`](oracle_guided_search/measurements/README.md).
