@@ -1,10 +1,11 @@
-#include <iostream>
 #include <string>
 
+#include "arguments.h"
 #include "candidate_pool.h"
 #include "canonical_augmentation.h"
 #include "exit_code.h"
 #include "group_construction.h"
+#include "report.h"
 #include "symmetry_argument.h"
 #include "tensor_file.h"
 
@@ -17,60 +18,60 @@
 namespace {
 
 void usage() {
-    std::cerr << "usage: enumerate-subspaces <tensor-file> --target k -s matmul <n> <m> <k>\n"
-                 "\n"
-                 "  --target k          the dimension to enumerate up to, which for a\n"
-                 "                      solution subspace is the product count\n"
-                 "  --plain             orderings deduplicated only, the existing behaviour\n"
-                 "  --canonical         McKay canonical augmentation, one per orbit\n"
-                 "                      (both passes run when neither is named)\n"
-              << cli::symmetry_usage()
-              << "\n"
-                 "  exit: 0 enumerated  2 usage  4 unverified  5 error\n";
+    cli::note() << "usage: enumerate-subspaces <tensor-file> --target k -s matmul <n> <m> <k>\n"
+                   "\n"
+                   "  --target k          the dimension to enumerate up to, which for a\n"
+                   "                      solution subspace is the product count\n"
+                   "  --plain             orderings deduplicated only, the existing behaviour\n"
+                   "  --canonical         McKay canonical augmentation, one per orbit\n"
+                   "                      (both passes run when neither is named)\n"
+                   "  --help              print this and stop, as exit 2\n"
+                << cli::symmetry_usage()
+                << "\n"
+                   "  exit: 0 enumerated  2 usage  4 unverified  5 error";
 }
 
 void report(const char* name, const bilinear_rank::EnumerationReport& pass) {
-    std::cout << "  " << name << ": " << pass.distinct << " distinct subspaces from "
-              << pass.emitted << " paths, " << pass.nodes << " nodes, " << pass.group_visits
-              << " group visits, " << pass.seconds << " s\n";
+    cli::result() << "  " << name << ": " << pass.distinct << " distinct subspaces from "
+                  << pass.emitted << " paths, " << pass.nodes << " nodes, " << pass.group_visits
+                  << " group visits, " << pass.seconds << " s\n";
 }
 
 int run(int argc, char** argv) {
-    if (argc < 2) {
-        usage();
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-    const std::string path = argv[1];
-    if (path.rfind("--", 0) == 0 || path == "-h") {
-        usage();
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
     cli::Symmetry symmetry;
     long long target = -1;
     bool plain = false;
     bool canonical = false;
 
-    for (int argument = 2; argument < argc; ++argument) {
-        const std::string option = argv[argument];
-        if (option == "--target" && argument + 1 < argc) {
-            target = std::stoll(argv[++argument]);
-        } else if (option == "--plain") {
-            plain = true;
-        } else if (option == "--canonical") {
-            canonical = true;
-        } else if (option == "--symmetry" || option == "-s") {
-            symmetry = cli::parse_symmetry(argc, argv, argument);
-        } else {
+    // Walked by `cli/arguments.h` rather than by hand, so `--target abc` names the
+    // flag and the word rather than leaving as 5 saying `stoll`, and the file is
+    // read after the line is understood rather than before: `--help` cannot open
+    // a tensor, and a flag where the path belongs is not a missing file.
+    cli::Arguments arguments(argc, argv);
+    while (arguments.next_flag()) {
+        if (arguments.is("--help", "-h")) {
             usage();
             return cli::exit_status(cli::ExitCode::Usage);
+        } else if (arguments.is("--target")) {
+            target = arguments.whole_number();
+        } else if (arguments.is("--plain")) {
+            plain = true;
+        } else if (arguments.is("--canonical")) {
+            canonical = true;
+        } else if (arguments.is("--symmetry", "-s")) {
+            symmetry = arguments.parsed_by(cli::parse_symmetry);
+        } else {
+            arguments.refuse();
         }
     }
-    if (target < 1) {
+    // No file named, and nothing here reads a tensor on stdin.
+    if (arguments.reads_stdin() || target < 1) {
         usage();
         return cli::exit_status(cli::ExitCode::Usage);
     }
+
+    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
+
     if (!plain && !canonical) {
         plain = true;
         canonical = true;
@@ -90,8 +91,8 @@ int run(int argc, char** argv) {
                                                                symmetry.shape[1],
                                                                symmetry.shape[2]);
     }
-    std::cout << "  pool: " << pool.size() << " rank-one maps, group: " << group.size()
-              << " elements\n";
+    cli::result() << "  pool: " << pool.size() << " rank-one maps, group: " << group.size()
+                  << " elements\n";
 
     const std::size_t products = static_cast<std::size_t>(target);
     if (plain) {
@@ -111,10 +112,16 @@ int main(int argc, char** argv) {
     try {
         return run(argc, argv);
     } catch (const cli::CheckFailed& failure) {
-        std::cerr << "enumerate-subspaces: " << failure.what() << "\n";
+        cli::note() << "enumerate-subspaces: " << failure.what();
         return cli::exit_status(cli::ExitCode::Unverified);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line that could not be read: the run never
+        // started, so Usage rather than Error. Without this catch every refusal
+        // the walker makes would leave as 5, where the loop it replaces left 2.
+        cli::note() << "enumerate-subspaces: " << problem.what();
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& error) {
-        std::cerr << "enumerate-subspaces: " << error.what() << "\n";
+        cli::note() << "enumerate-subspaces: " << error.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

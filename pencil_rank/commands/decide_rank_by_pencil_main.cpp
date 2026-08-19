@@ -6,76 +6,88 @@
 /// count the nonlinear divisors themselves. Nothing else here can be audited by
 /// hand in a minute.
 #include <exception>
-#include <iostream>
 #include <string>
 #include <vector>
 
 #include "arguments.h"
 #include "exit_code.h"
 #include "kronecker_structure.h"
+#include "report.h"
 #include "tensor_file.h"
 #include "timing.h"
 
 namespace {
 
+void usage() {
+    cli::note() << "usage: decide-rank-by-pencil <tensor-file>\n"
+                   "       decide-rank-by-pencil --help\n"
+                   "  The Kronecker canonical form of a tensor with at most two slices, and\n"
+                   "  the rank bound it gives. Polynomial time, and no candidate pool.\n"
+                   "  There is nothing to tune, so --help is the only flag there is.";
+}
+
 void write_indices(const char* label, const std::vector<std::size_t>& indices) {
-    std::cout << "  " << label << ": ";
+    cli::result() << "  " << label << ": ";
     if (indices.empty()) {
-        std::cout << "none\n";
+        cli::result() << "none\n";
         return;
     }
     for (std::size_t position = 0; position < indices.size(); ++position) {
-        std::cout << (position == 0 ? "" : ", ") << indices[position];
+        cli::result() << (position == 0 ? "" : ", ") << indices[position];
     }
-    std::cout << "\n";
+    cli::result() << "\n";
 }
 
 void write_divisors(const std::vector<pencil_rank::ElementaryDivisor>& divisors) {
-    std::cout << "  elementary divisors: ";
+    cli::result() << "  elementary divisors: ";
     if (divisors.empty()) {
-        std::cout << "none\n";
+        cli::result() << "none\n";
         return;
     }
     for (std::size_t position = 0; position < divisors.size(); ++position) {
         const pencil_rank::PrimePower& factor = divisors[position].factor;
-        std::cout << (position == 0 ? "" : ", ");
+        cli::result() << (position == 0 ? "" : ", ");
         if (divisors[position].at_infinity) {
-            std::cout << "the point at infinity";
+            cli::result() << "the point at infinity";
         } else if (factor.base_degree == 1) {
-            std::cout << "a root in the field";
+            cli::result() << "a root in the field";
         } else {
-            std::cout << "an irreducible of degree " << factor.base_degree;
+            cli::result() << "an irreducible of degree " << factor.base_degree;
         }
-        if (factor.multiplicity > 1) std::cout << " to the power " << factor.multiplicity;
-        std::cout << " [degree " << factor.degree() << "]";
+        if (factor.multiplicity > 1) cli::result() << " to the power " << factor.multiplicity;
+        cli::result() << " [degree " << factor.degree() << "]";
     }
-    std::cout << "\n";
+    cli::result() << "\n";
 }
 
 }  // namespace
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
-        std::cerr << "usage: decide-rank-by-pencil <tensor-file>\n"
-                  << "  The Kronecker canonical form of a tensor with at most two slices, and\n"
-                  << "  the rank bound it gives. Polynomial time, and no candidate pool.\n";
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-
-    // A flag where the tensor should be is a bad invocation, not an unreadable
-    // file. Without this, `--route bogus` reports that it cannot read a file
-    // called `--route`, which names the wrong thing to fix and exits 5 where a
-    // script watching for 2 would not see it.
-    if (cli::looks_like_flag(argv[1])) {
-        std::cerr << "decide-rank-by-pencil: expected a tensor file, not '" << argv[1] << "'\n";
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-
     try {
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(argv[1]);
+        // Walked by `cli/arguments.h`, which is where the hand-written test for a
+        // flag where the tensor belongs went: the walker knows a flag from a
+        // filename, so `--route bogus` is refused as a flag this command does not
+        // have rather than reported as a file it cannot open, and `--help` reaches
+        // the usage instead of the reader.
+        cli::Arguments arguments(argc, argv);
+        while (arguments.next_flag()) {
+            if (arguments.is("--help", "-h")) {
+                usage();
+                return cli::exit_status(cli::ExitCode::Usage);
+            }
+            arguments.refuse();
+        }
+        // No file named, and nothing here reads a tensor on stdin.
+        if (arguments.reads_stdin()) {
+            usage();
+            return cli::exit_status(cli::ExitCode::Usage);
+        }
+        const std::string path = arguments.filename();
+
+        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
         if (tensor.slices.size() > 2) {
-            std::cerr << "decide-rank-by-pencil: " << tensor.slices.size()
-                      << " slices, and this decides pencils. Use decide-rank.\n";
+            cli::note() << "decide-rank-by-pencil: " << tensor.slices.size()
+                        << " slices, and this decides pencils. Use decide-rank.";
             return cli::exit_status(cli::ExitCode::Usage);
         }
 
@@ -91,40 +103,46 @@ int main(int argc, char** argv) {
         const pencil_rank::PencilRank reported =
             pencil_rank::pencil_rank_of(field, tensor.slices);
 
-        std::cout << "tensor: " << argv[1] << ", GF(" << tensor.characteristic << "), "
-                  << tensor.slices.size() << " slices of " << tensor.rows() << "x"
-                  << tensor.columns() << "\n";
-        std::cout << "Kronecker canonical form:\n";
+        cli::result() << "tensor: " << path << ", GF(" << tensor.characteristic << "), "
+                      << tensor.slices.size() << " slices of " << tensor.rows() << "x"
+                      << tensor.columns() << "\n";
+        cli::result() << "Kronecker canonical form:\n";
         write_indices("column minimal indices", structure.column_indices);
         write_indices("row minimal indices", structure.row_indices);
         write_divisors(structure.divisors);
-        std::cout << "  regular part: " << structure.regular_size << "x" << structure.regular_size
-                  << "\n";
+        cli::result() << "  regular part: " << structure.regular_size << "x"
+                      << structure.regular_size << "\n";
 
         if (reported.exact) {
-            std::cout << "rank: " << reported.proved << " (exact over GF("
-                      << tensor.characteristic << "))\n";
+            cli::result() << "rank: " << reported.proved << " (exact over GF("
+                          << tensor.characteristic << "))\n";
         } else {
-            std::cout << "rank: at least " << reported.proved << " (proved)\n";
-            std::cout << "  over the algebraic closure it is " << reported.over_closure
-                      << ", which GF(" << tensor.characteristic << ") can only exceed\n";
-            std::cout << "  and likely at least " << reported.over_the_field
-                      << " (the same count over GF(" << tensor.characteristic
-                      << ") itself, PROVISIONAL)\n";
-            std::cout << "  not settled here: this pencil is not diagonalisable over GF("
-                      << tensor.characteristic
-                      << "), and whether either bound is reached\n"
-                      << "  depends on the size of the field. pencil_rank/README.md has the\n"
-                      << "  measured gaps.\n";
+            cli::result() << "rank: at least " << reported.proved << " (proved)\n";
+            cli::result() << "  over the algebraic closure it is " << reported.over_closure
+                          << ", which GF(" << tensor.characteristic << ") can only exceed\n";
+            cli::result() << "  and likely at least " << reported.over_the_field
+                          << " (the same count over GF(" << tensor.characteristic
+                          << ") itself, PROVISIONAL)\n";
+            cli::result() << "  not settled here: this pencil is not diagonalisable over GF("
+                          << tensor.characteristic
+                          << "), and whether either bound is reached\n"
+                          << "  depends on the size of the field. pencil_rank/README.md has the\n"
+                          << "  measured gaps.\n";
         }
-        std::cerr << "# " << cli::elapsed_seconds(started) << " s\n";
+        cli::note() << cli::elapsed_seconds(started) << " s";
 
         // A bound is not a rank. `Undecided` rather than `Yes` so that a script
         // sweeping tensors can tell the ones this settled from the ones it only
         // bounded, without parsing the sentence above.
         return cli::exit_status(reported.exact ? cli::ExitCode::Yes : cli::ExitCode::Undecided);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line that could not be read: the run never
+        // started, so Usage rather than Error, which is the distinction the test
+        // this file used to make by hand was keeping.
+        cli::note() << "decide-rank-by-pencil: " << problem.what();
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& error) {
-        std::cerr << "decide-rank-by-pencil: " << error.what() << "\n";
+        cli::note() << "decide-rank-by-pencil: " << error.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

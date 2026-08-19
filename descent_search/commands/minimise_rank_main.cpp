@@ -2,7 +2,6 @@
 ///
 /// Takes a file and arguments so runs can be scripted, timed, and repeated,
 /// rather than interactive.
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -19,6 +18,7 @@
 #include "orbit_heuristic.h"
 #include "parallel.h"
 #include "plateau_search.h"
+#include "report.h"
 #include "size_argument.h"
 #include "requested_group.h"
 #include "minimum_weight_basis.h"
@@ -34,41 +34,40 @@ namespace {
 bool verify(const bilinear_rank::Field& field, const std::vector<bilinear_rank::Matrix>& current,
             const std::vector<bilinear_rank::Matrix>& original, const std::string& step) {
     if (linear_algebra::spans_all(field, current, original)) return true;
-    std::cerr << "FAILED: after " << step << " the result no longer generates the map\n";
+    cli::note() << "FAILED: after " << step << " the result no longer generates the map";
     return false;
 }
 
 void report(const std::string& step, std::size_t multiplications, std::size_t slices,
             double cumulative_seconds, bool as_json) {
     if (as_json) {
-        std::cout << "  {\"step\": \"" << step << "\", \"multiplications\": " << multiplications
-                  << ", \"slices\": " << slices << ", \"cumulative_seconds\": "
-                  << cumulative_seconds << "}\n";
+        cli::result() << "  {\"step\": \"" << step << "\", \"multiplications\": " << multiplications
+                      << ", \"slices\": " << slices << ", \"cumulative_seconds\": "
+                      << cumulative_seconds << "}\n";
     } else {
-        std::cout << "  " << step << ": " << multiplications << " multiplications, " << slices
-                  << " slices, " << cumulative_seconds << " s cumulative\n";
+        cli::result() << "  " << step << ": " << multiplications << " multiplications, " << slices
+                      << " slices, " << cumulative_seconds << " s cumulative\n";
     }
+}
+
+void usage() {
+    cli::note() << "usage: minimise-rank <tensor-file> [--steps 1|2|3] [--json]"
+                   " [--emit-operators <stem>] [--max-memory 2G]"
+                   " [--threads N] [--help]\n"
+                   "  --emit-operators <stem>   write <stem>_{L,R,P}.sms, the encoding\n"
+                   "                            operators, in the format PLinOpt reads\n"
+                   "  --plateau N               allow N equal-cost steps\n"
+                   "  --plateau-states N        distinct subspaces one crossing may visit,\n"
+                   "                            from plateau_state_budget in tunables.conf\n"
+                   "                            when this is not given. Never measured\n"
+                   "  -s|--symmetry none|auto|matmul <n> <m> <k>\n"
+                   "                            quotient step 3's pool by the map's own\n"
+                   "                            automorphisms: one candidate per orbit\n"
+                   "  --help                    print this and stop, as exit 2";
 }
 
 /// The tool proper. main only turns a thrown refusal into a line.
 int run(int argc, char** argv) {
-    if (argc < 2) {
-        std::cerr << "usage: minimise-rank <tensor-file> [--steps 1|2|3] [--json]"
-                     " [--emit-operators <stem>] [--max-memory 2G]"
-                     " [--threads N]\n"
-                     "  --emit-operators <stem>   write <stem>_{L,R,P}.sms, the encoding\n"
-                     "                            operators, in the format PLinOpt reads\n"
-                     "  --plateau N               allow N equal-cost steps\n"
-                     "  --plateau-states N        distinct subspaces one crossing may visit,\n"
-                     "                            from plateau_state_budget in tunables.conf\n"
-                     "                            when this is not given. Never measured\n"
-                     "  -s|--symmetry none|auto|matmul <n> <m> <k>\n"
-                     "                            quotient step 3's pool by the map's own\n"
-                     "                            automorphisms: one candidate per orbit\n";
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
-
-    std::string path = argv[1];
     int wanted_steps = 3;
     bool as_json = false;
     std::string operator_prefix;
@@ -78,36 +77,51 @@ int run(int argc, char** argv) {
     // flag existed the number was a literal at the two call sites and no run had
     // ever tried another value.
     std::size_t plateau_states = cli::tunables().plateau_state_budget;
-    for (int argument = 2; argument < argc; ++argument) {
-        const std::string option = argv[argument];
-        if (option == "--json") {
-            as_json = true;
-        } else if (option == "--steps" && argument + 1 < argc) {
-            wanted_steps = std::stoi(argv[++argument]);
-        } else if (option == "--plateau" && argument + 1 < argc) {
-            plateau_budget = cli::parse_count(option, argv[++argument]);
-        } else if (option == "--plateau-states" && argument + 1 < argc) {
-            plateau_states = cli::parse_count(option, argv[++argument]);
-        } else if (option == "--symmetry" || option == "-s") {
-            symmetry = cli::parse_symmetry(argc, argv, argument);
-        } else if (option == "--threads" && argument + 1 < argc) {
-            bilinear_rank::set_worker_count(
-                static_cast<std::size_t>(std::stoull(argv[++argument])));
-        } else if (option == "--max-memory" && argument + 1 < argc) {
-            bilinear_rank::set_memory_budget(cli::parse_memory_size(option, argv[++argument]));
-        } else if (option == "--emit-operators" && argument + 1 < argc) {
-            operator_prefix = argv[++argument];
-        } else {
-            std::cerr << "unrecognised option: " << option << "\n";
+    // Walked by `cli/arguments.h` rather than by hand. The loop this replaces
+    // carried both faults that header exists to remove: `--steps abc` left as 5
+    // saying `stoi`, which names the function that threw and not the flag, and
+    // `--steps` with nothing after it was reported as an unrecognised option
+    // when it was recognised and its value was missing.
+    cli::Arguments arguments(argc, argv);
+    while (arguments.next_flag()) {
+        if (arguments.is("--help", "-h")) {
+            usage();
             return cli::exit_status(cli::ExitCode::Usage);
+        } else if (arguments.is("--json")) {
+            as_json = true;
+        } else if (arguments.is("--steps")) {
+            // A range and not a count, because the usage above says 1|2|3 and the
+            // old loop took anything: `--steps 7` ran three steps and `--steps 0`
+            // ran one, each reporting success for a pipeline nobody asked for.
+            wanted_steps = static_cast<int>(arguments.count(1, 3));
+        } else if (arguments.is("--plateau")) {
+            plateau_budget = arguments.count();
+        } else if (arguments.is("--plateau-states")) {
+            plateau_states = arguments.count();
+        } else if (arguments.is("--symmetry", "-s")) {
+            symmetry = arguments.parsed_by(cli::parse_symmetry);
+        } else if (arguments.is("--threads")) {
+            bilinear_rank::set_worker_count(arguments.count());
+        } else if (arguments.is("--max-memory")) {
+            bilinear_rank::set_memory_budget(arguments.memory_size());
+        } else if (arguments.is("--emit-operators")) {
+            operator_prefix = arguments.text();
+        } else {
+            arguments.refuse();
         }
     }
+    // No file named, and nothing here reads a map on stdin.
+    if (arguments.reads_stdin()) {
+        usage();
+        return cli::exit_status(cli::ExitCode::Usage);
+    }
+    const std::string path = arguments.filename();
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
     const bilinear_rank::Field field(tensor.characteristic);
     const auto started = cli::Clock::now();
 
-    std::cout << (as_json ? "[\n" : path + "\n");
+    cli::result() << (as_json ? "[\n" : path + "\n");
     report("naive", linear_algebra::multiplication_count(field, tensor.slices), tensor.slices.size(), 0.0,
            as_json);
 
@@ -118,7 +132,7 @@ int run(int argc, char** argv) {
     if (!verify(field, current, tensor.slices, "step 1")) {
         return cli::exit_status(cli::ExitCode::Unverified);
     }
-    if (as_json) std::cout << ",";
+    if (as_json) cli::result() << ",";
     report("step 1", linear_algebra::multiplication_count(field, current), current.size(),
            cli::elapsed_seconds(started), as_json);
 
@@ -130,7 +144,7 @@ int run(int argc, char** argv) {
         if (!verify(field, current, tensor.slices, "step 2")) {
             return cli::exit_status(cli::ExitCode::Unverified);
         }
-        if (as_json) std::cout << ",";
+        if (as_json) cli::result() << ",";
         report("step 2", linear_algebra::multiplication_count(field, current), current.size(),
                cli::elapsed_seconds(started), as_json);
     }
@@ -141,12 +155,12 @@ int run(int argc, char** argv) {
         // rather than their product in matrices, so the line below is printed
         // before anything has decided whether the grid is needed at all.
         const bilinear_rank::RankOnePool pool(field, tensor.rows(), tensor.columns());
-        std::cerr << "step 3 pool: " << pool.size() << " rank-one maps\n";
+        cli::note() << "step 3 pool: " << pool.size() << " rank-one maps";
 
         if (symmetry.kind == cli::SymmetryKind::None) {
             const std::vector<bilinear_rank::Matrix> shortlist =
                 bilinear_rank::improving_candidates(field, current, pool);
-            std::cerr << "step 3 shortlist: " << shortlist.size() << "\n";
+            cli::note() << "step 3 shortlist: " << shortlist.size();
             current = bilinear_rank::minimise_rank(field, current, shortlist);
             if (plateau_budget > 0) {
                 // Built here and nowhere else on this path. `cross_plateaus`
@@ -157,9 +171,9 @@ int run(int argc, char** argv) {
                 bilinear_rank::PlateauReport crossing;
                 current = bilinear_rank::cross_plateaus(field, current, everything, {},
                                                         plateau_budget, plateau_states, &crossing);
-                std::cerr << "plateau: " << crossing.improvements << " improvements, "
-                          << crossing.sideways << " sideways, " << crossing.states
-                          << " states, best " << crossing.best << "\n";
+                cli::note() << "plateau: " << crossing.improvements << " improvements, "
+                            << crossing.sideways << " sideways, " << crossing.states
+                            << " states, best " << crossing.best;
             }
         } else {
             // Materialised, deliberately. `pool_orbits.h` keys its orbit tables
@@ -171,7 +185,7 @@ int run(int argc, char** argv) {
                 bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
             const std::vector<bilinear_rank::Automorphism> ambient =
                 bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry);
-            std::cerr << "step 3 ambient generators: " << ambient.size() << "\n";
+            cli::note() << "step 3 ambient generators: " << ambient.size();
 
             bilinear_rank::OrbitReport orbits;
             current = bilinear_rank::minimise_rank_up_to_symmetry(field, current, everything, ambient,
@@ -180,20 +194,20 @@ int run(int argc, char** argv) {
                 bilinear_rank::PlateauReport crossing;
                 current = bilinear_rank::cross_plateaus(field, current, everything, ambient,
                                                         plateau_budget, plateau_states, &crossing);
-                std::cerr << "plateau: " << crossing.improvements << " improvements, "
-                          << crossing.sideways << " sideways, " << crossing.states
-                          << " states, best " << crossing.best << "\n";
+                cli::note() << "plateau: " << crossing.improvements << " improvements, "
+                            << crossing.sideways << " sideways, " << crossing.states
+                            << " states, best " << crossing.best;
             }
             for (std::size_t round = 0; round < orbits.orbits.size(); ++round) {
-                std::cerr << "step 3 round " << round + 1 << ": stabiliser "
-                          << orbits.stabiliser_size[round] << ", " << orbits.orbits[round]
-                          << " orbits of " << orbits.pool << "\n";
+                cli::note() << "step 3 round " << round + 1 << ": stabiliser "
+                            << orbits.stabiliser_size[round] << ", " << orbits.orbits[round]
+                            << " orbits of " << orbits.pool;
             }
         }
         if (!verify(field, current, tensor.slices, "step 3")) {
             return cli::exit_status(cli::ExitCode::Unverified);
         }
-        if (as_json) std::cout << ",";
+        if (as_json) cli::result() << ",";
         report("step 3", linear_algebra::multiplication_count(field, current), current.size(),
                cli::elapsed_seconds(started), as_json);
     }
@@ -205,8 +219,8 @@ int run(int argc, char** argv) {
         bilinear_rank::rank_one_candidates(field, current);
     bilinear_rank::Algorithm algorithm;
     if (!bilinear_rank::recovers_map(field, tensor.slices, products, algorithm)) {
-        std::cerr << "FAILED: the decomposition did not turn back into an algorithm "
-                     "that computes the map\n";
+        cli::note() << "FAILED: the decomposition did not turn back into an algorithm "
+                       "that computes the map";
         // The same failure as a rejected verify, one stage later, so the same
         // code: was 1, and an answer that fails its own check is Unverified.
         return cli::exit_status(cli::ExitCode::Unverified);
@@ -215,11 +229,11 @@ int run(int argc, char** argv) {
     // but the flattenings say how much room there is underneath it, and a gap of
     // zero means the run is finished and nothing exponential need follow it.
     const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
-    std::cerr << "algorithm: " << bilinear_rank::require_bound_consistent(algorithm.product_count(), bound)
-              << ", L is "
-              << algorithm.left.rows() << "x" << algorithm.left.columns() << ", R is "
-              << algorithm.right.rows() << "x" << algorithm.right.columns() << ", P is "
-              << algorithm.decode.rows() << "x" << algorithm.decode.columns() << "\n";
+    cli::note() << "algorithm: "
+                << bilinear_rank::require_bound_consistent(algorithm.product_count(), bound)
+                << ", L is " << algorithm.left.rows() << "x" << algorithm.left.columns()
+                << ", R is " << algorithm.right.rows() << "x" << algorithm.right.columns()
+                << ", P is " << algorithm.decode.rows() << "x" << algorithm.decode.columns();
 
     if (!operator_prefix.empty()) {
         // The triple ⟨L, R, P⟩ under one stem, in SMS, because that is what the
@@ -239,10 +253,10 @@ int run(int argc, char** argv) {
         linear_algebra::write_sms_file(operator_prefix + "_P.sms",
                                        origin + " Combines the products into the outputs.",
                                        algorithm.decode);
-        std::cerr << "wrote " << operator_prefix << "_{L,R,P}.sms\n";
+        cli::note() << "wrote " << operator_prefix << "_{L,R,P}.sms";
     }
 
-    if (as_json) std::cout << "]\n";
+    if (as_json) cli::result() << "]\n";
     return cli::exit_status(cli::ExitCode::Yes);
 }
 
@@ -254,13 +268,13 @@ int main(int argc, char** argv) {
     } catch (const cli::ArgumentError& problem) {
         // A word on the command line, or a line of tunables.conf, that could not
         // be read: the run never started, so Usage rather than Error.
-        std::cerr << "minimise-rank: " << problem.what() << "\n";
+        cli::note() << "minimise-rank: " << problem.what();
         return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& problem) {
         // An unreadable file, or a run that would not fit the memory budget.
         // Reported as a line, not as a terminate. Was 1, which said something
         // about the map when the heuristic had not run on it at all.
-        std::cerr << "minimise-rank: " << problem.what() << "\n";
+        cli::note() << "minimise-rank: " << problem.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

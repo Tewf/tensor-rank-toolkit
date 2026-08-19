@@ -14,9 +14,10 @@
 
 namespace {
 
-/// What a command's loop will look like once the commands adopt this, with one
-/// branch of every kind: a bare flag, a string, a signed number, two counts, a
-/// size, and a parser that reads several words of its own.
+/// The loop the commands now write, with one branch of every kind: a bare flag,
+/// a string, a signed number, two counts, a size, and a parser that reads several
+/// words of its own. What the commands do with it is asserted against the built
+/// binaries in `check_argument_grammar.sh`; this file asserts the walk.
 struct Parsed {
     long long target = -1;
     std::size_t threads = 1;
@@ -26,6 +27,7 @@ struct Parsed {
     std::string anchor;
     std::string file;
     bool from_stdin = false;
+    bool wants_help = false;
     cli::Symmetry symmetry;
 };
 
@@ -39,7 +41,9 @@ std::string refusal(std::vector<std::string> words, Parsed& parsed) {
     cli::Arguments arguments(static_cast<int>(argv.size()), argv.data());
     try {
         while (arguments.next_flag()) {
-            if (arguments.is("--json")) {
+            if (arguments.is("--help", "-h")) {
+                parsed.wants_help = true;
+            } else if (arguments.is("--json")) {
                 parsed.as_json = true;
             } else if (arguments.is("--anchor")) {
                 parsed.anchor = arguments.text();
@@ -102,6 +106,22 @@ void check_reads_a_line() {
 
 /// The seam with `symmetry_argument.h`: that parser walks several words itself,
 /// and the walk has to resume after the last one it took.
+/// `--help` is where three commands read a flag as a filename and left as 5,
+/// "could not run at all", when the line had asked a question this header can
+/// answer. Nothing about it is special: it is a flag because it looks like one,
+/// and the branch that prints the usage is the command's.
+void check_help_is_a_flag_and_not_a_filename() {
+    Parsed parsed;
+    check::text("--help is accepted", refusal({"--help"}, parsed), "");
+    check::equal("and reaches its branch", parsed.wants_help, 1);
+    check::text("and is not taken for the file", parsed.file, "");
+
+    Parsed short_form;
+    check::text("-h likewise", refusal({"tensor.sms", "-h"}, short_form), "");
+    check::equal("and reaches the same branch", short_form.wants_help, 1);
+    check::text("leaving the file alone", short_form.file, "tensor.sms");
+}
+
 void check_hands_over_to_the_symmetry_parser() {
     Parsed parsed;
     check::text("a symmetry and a flag after it are both accepted",
@@ -154,6 +174,7 @@ void check_refuses_and_says_why() {
 
 int main() {
     check_reads_a_line();
+    check_help_is_a_flag_and_not_a_filename();
     check_hands_over_to_the_symmetry_parser();
     check_refuses_and_says_why();
     return check::report("arguments");

@@ -8,7 +8,7 @@ about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 
 | Flag | Default | What chose the default |
 |---|---|---|
-| `--steps 1\|2\|3` | `3` | Measured, and the measurement is a warning: step 3 improved the answer in **two of four** polynomial fixtures, by one product each, and cost **58 to 184 times** steps 1 and 2 together (`../README.md`). |
+| `--steps 1\|2\|3` | `3` | Measured, and the measurement is a warning: step 3 improved the answer in **two of four** polynomial fixtures, by one product each, and cost **58 to 184 times** steps 1 and 2 together (`../README.md`). Anything outside 1 to 3 is **refused as exit 2** rather than rounded: `--steps 7` used to run three steps and `--steps 0` one, each answering 0 for a pipeline nobody asked for. |
 | `--plateau N` | `0`, off | **Unmeasured at any value.** What is measured is that a strict descent cannot move at all: **0 of 225** candidates improve `⟨2,2,2⟩`, **0 of 945** `⟨2,2,3⟩`, **0 of 32 193** `⟨2,3,3⟩`, and `⟨2,2,2⟩` needs three sideways steps before the count moves (`../flip_graph/plateau_search.h`). That argues against the default and no run has priced the alternative. |
 | `--plateau-states N` | `plateau_state_budget`, `200000` | **Nothing.** PROVISIONAL: never measured, and until this flag existed the number was a literal at the two call sites, so no run had ever tried another value. |
 | `--json` | off | Nothing to measure: an output shape. |
