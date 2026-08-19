@@ -25,6 +25,9 @@ field, and finds almost nothing.
 | [`the-sparsification-strand.md`](the-sparsification-strand.md) | the other strand, where the finding is an absence, and how narrowly to read it |
 | [`what-this-changes.md`](what-this-changes.md) | the next flip graph run this position implies |
 
+- [What a GPU would take, part by part](what-a-gpu-would-take.md): the two parts
+  the page below never examined, why the `C A` multiply is dead at any speed, and
+  why the same measurement says 4% at one shape and almost everything at another.
 - [What machine this is the right shape for](hardware-and-parallelism.md): why a
   GPU is the wrong instrument for the tree and backwards for the solver, and why
   a GF(2) bitset representation is worth 40x to 64x on the hot loop first.
