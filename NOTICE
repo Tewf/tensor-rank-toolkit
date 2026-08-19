@@ -67,3 +67,14 @@ Gen Intel Core i5-12450H at 2.2 GHz. The protocol, the flags a published number
 depends on, and the roughly thirteen per cent this chassis varies from thermal
 throttling alone, are in **MEASURING.md**. Counts are asserted by the test suite
 and reproduce anywhere; timings are not, and are not claimed to.
+
+PermLib
+-------
+vendor/permlib/ is Thomas Rehn's PermLib, the include/ tree of upstream commit
+2b4e468e24a059e3659bc095293df0cd363a22f5, unmodified. BSD 3-clause; the licence
+and the author list travel with it in vendor/permlib/.
+
+It is here for one function, permlib_api.h's smallestSetImage, which is
+S. A. Linton, "Finding the smallest image of a set", ISSAC 2004, credited in
+PermLib's own include/permlib/search/orbit_lex_min_search.h. The reduction that
+uses it is oracle_guided_search/subspace_canon.h.
