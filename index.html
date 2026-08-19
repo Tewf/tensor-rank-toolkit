@@ -43,7 +43,7 @@
   <figure><div id="times"></div><figcaption>Total search time per map, log scale. One core of an i5-12450H at 2.2 GHz. Source: <code>descent_search/results.json</code>.</figcaption></figure>
 
   <h2>The finding worth stating on its own</h2>
-  <p>The expensive step buys almost nothing. Step 3 of the descent enumerates the full pool of rank-one maps, and across the four polynomial fixtures it improved the answer in <strong>one of four cases</strong> while accounting for essentially all of the cost: on F2 4&times;7 almost the whole of the 8.96 seconds went to returning the rank the previous step already had.</p>
+  <p>The expensive step buys almost nothing. Step 3 of the descent enumerates the full pool of rank-one maps, and across the four polynomial fixtures it improved the answer in <strong>two of four cases</strong>, by one product each time, while accounting for essentially all of the cost: on F2 4&times;7 almost the whole of the 8.96 seconds went to returning the rank the previous step already had.</p>
   <p>So the step that costs essentially everything buys essentially nothing. Any continuation that only makes step 3 faster is optimising the part that mostly does not pay, and the fixtures exist to hold that finding still.</p>
 
   <h2>And now a bound from below</h2>
@@ -125,9 +125,9 @@ beforeAfter(document.getElementById('ranks'), {
 logBars(document.getElementById('times'), {
   rows: [
     { label: 'F2 5x5', value: 1.33, display: '1.3 s', highlight: true },
-    { label: 'F2 3x8', value: 3.08, display: '3.4 s', highlight: true },
-    { label: 'F3 3x6', value: 6.93, display: '7.5 s', highlight: true },
-    { label: 'F2 4x7', value: 8.96, display: '9.7 s', highlight: true },
+    { label: 'F2 3x8', value: 3.08, display: '3.1 s', highlight: true },
+    { label: 'F3 3x6', value: 6.93, display: '6.9 s', highlight: true },
+    { label: 'F2 4x7', value: 8.96, display: '9.0 s', highlight: true },
   ],
   note: 'log scale; one core of an i5-12450H at 2.2 GHz'
 });

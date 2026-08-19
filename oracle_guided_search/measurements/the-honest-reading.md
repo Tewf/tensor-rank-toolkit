@@ -8,8 +8,9 @@ GF(2) is refused at about `10^14` elements, and a polynomial multiplication tens
 has about four, which quotients nothing.
 
 No known answer came out wrong. `⟨2,2,2⟩` gives 7 and `gf16` gives 9, both exact, and
-`f2_5x5` gives 15, which is a true bound on a rank known to be 12 to 14 and simply a
-weak one.
+`f2_5x5` gives 15, which is a true bound and simply a weak one: `[bdez2012]` settled
+that rank at 13, and 12 to 14 is this repository's own bracket rather than what is
+known. [`../../descent_search/known_ranks.md`](../../descent_search/known_ranks.md).
 
 What is worth keeping is not the finder: it is the descending schedule, which hands
 `find_rank` a bracket needing one refutation instead of one per rank, the zero-term
