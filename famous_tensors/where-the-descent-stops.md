@@ -15,8 +15,8 @@ worth measuring.
 It is not bad luck in the search order, and the tool says why:
 
 ```
-step 3 pool: 225 rank-one maps      step 3 pool: 225 rank-one maps
-step 3 shortlist: 0        ⟨2,2,2⟩  step 3 shortlist: 4        GF(16)
+# step 3 pool: 225 rank-one maps      # step 3 pool: 225 rank-one maps
+# step 3 shortlist: 0       ⟨2,2,2⟩   # step 3 shortlist: 4      GF(16)
 ```
 
 **Not one rank-one map of the 225 strictly improves ⟨2,2,2⟩**, so a
