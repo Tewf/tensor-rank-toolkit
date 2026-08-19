@@ -82,13 +82,16 @@ because the enumerator descends from `span(T)`: every subspace it reaches is
 the same condition. Node counts did not move, which is the check that matters:
 83 and one distinct subspace, before and after.
 
-**What that bought, and what it did not.** The route now reaches `⟨2,3,3⟩`, whose
-pool is 32 193, and still refuses `⟨3,3,3⟩` at 261 121 for a different reason:
-`[permlib]`'s group construction **crashes** at that degree, with a 512 MB stack
-as well as the default. Verified working at 225, 945 and 32 193; the boundary
-between 32 193 and 261 121 is not located. So the refusal moved from a memory
-budget to a measured limit of the library, and it is a refusal rather than a
-segfault because `kLargestVerifiedPool` says so.
+**What that bought.** The route now reaches `⟨3,3,3⟩`, whose pool is 261 121 and
+which refused outright this morning: 14 nodes and 101 s at target 10, correctly
+finding nothing. Getting there needed one thing that was not obvious.
+`[permlib]`'s point type is `unsigned short` unless `PERMLIB_DOMAIN_INT` is
+defined, so **a degree past 65 535 wraps and writes out of bounds**. It does not
+refuse and it does not slow down, it segfaults, inside
+`Transversal::foundOrbitElement`, with a healthy stack. Verified by bracketing:
+225, 945 and 32 193 worked and 261 121 crashed, and 65 535 lies between them. With
+the define it presents 261 121 points in 29.8 s and 97 MB. The library scaled all
+along; its default type did not.
 
 **The node count moved, and that is expected rather than alarming.** A canonical
 form is not unique; any function constant on orbits and separating them will do,

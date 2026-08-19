@@ -59,19 +59,18 @@ namespace bilinear_rank {
 std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matrix>& pool,
                                      const std::vector<Matrix>& generators);
 
-/// The largest pool `[permlib]` was verified to build a group on here.
+/// What presenting the group on a pool of `points` costs, near enough.
 ///
-/// **Measured, because the optimistic reading was wrong.** Presenting the group
-/// on the pool was expected to scale with the degree, and it does not: PermLib's
-/// `construct` segfaults at `⟨3,3,3⟩`'s 261 121 points, with a 512 MB stack as
-/// well as the default one, so it is not recursion depth. What was verified to
-/// work: 225 (`⟨2,2,2⟩`), 945 (`⟨2,2,3⟩`) and 32 193 (`⟨2,3,3⟩`).
+/// **Measured rather than derived**: `⟨3,3,3⟩` at 261 121 points with six
+/// generators peaks at 97 MB and takes 29.8 s to present, which is about 370
+/// bytes a point. A permutation itself is only four bytes a point, so the
+/// transversals are almost all of it, and pricing on the permutations alone would
+/// have been out by two orders of magnitude.
 ///
-/// The true boundary is somewhere in between and is **not located**. This is the
-/// largest degree that ran, so a shape past it is refused rather than attempted,
-/// and a crash is not offered as an alternative to a refusal. Whoever narrows the
-/// boundary should raise this and say what they measured.
-inline constexpr std::size_t kLargestVerifiedPool = 32193;
+/// It is priced through `require_room` like every other bulk allocation here, so
+/// a shape too large refuses with the same sentence and `--max-memory` moves it.
+/// At `⟨4,4,4⟩`'s 4 294 836 225 points that is about 1.6 TB and a refusal.
+inline constexpr std::size_t kBytesPerPoolPoint = 370;
 
 class PoolSetCanon {
    public:
