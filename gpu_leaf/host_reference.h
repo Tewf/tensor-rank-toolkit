@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <stdexcept>
 #include <vector>
 
 #include "gf2_bits.h"
@@ -83,6 +84,7 @@ inline bool in_the_span(const LeafQuestion& question, const std::uint64_t* candi
 /// elements.
 inline std::vector<std::uint64_t> scan_pool_on_host(const LeafQuestion& question,
                                                     std::size_t left_begin, std::size_t left_end) {
+    if (left_end > question.left_count) throw std::runtime_error("range past the end of the grid");
     std::vector<std::uint64_t> survivors;
     std::vector<std::uint64_t> candidate(question.words), scratch(question.words);
     for (std::size_t left = left_begin; left < left_end; ++left) {

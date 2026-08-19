@@ -89,16 +89,6 @@ __global__ void scan_kernel(const std::uint32_t* __restrict__ left_masks,
     }
 }
 
-/// Device memory that frees itself, so an exception mid-measurement does not
-/// leak the card.
-struct DeviceBuffer {
-    void* pointer = nullptr;
-    explicit DeviceBuffer(std::size_t bytes) { GPU_LEAF_CHECK(cudaMalloc(&pointer, bytes)); }
-    ~DeviceBuffer() { cudaFree(pointer); }
-    DeviceBuffer(const DeviceBuffer&) = delete;
-    DeviceBuffer& operator=(const DeviceBuffer&) = delete;
-};
-
 /// The span in constant memory, its rows grouped by which word their pivot is
 /// in, which is what lets the kernel index the candidate statically.
 ///
@@ -181,6 +171,7 @@ GpuSurvivors scan_pool_on_gpu(const LeafQuestion& question, std::size_t left_beg
     /// second of kernel and a grid at the 65 535 ceiling of its second
     /// dimension; this keeps both away from the edge.
     constexpr unsigned int kRowsPerLaunch = 2048;
+    if (left_end > question.left_count) throw std::runtime_error("range past the end of the grid");
 
     DeviceBuffer lefts(question.left_masks.size() * sizeof(std::uint32_t));
     DeviceBuffer rights(question.right_masks.size() * sizeof(std::uint32_t));
@@ -193,9 +184,7 @@ GpuSurvivors scan_pool_on_gpu(const LeafQuestion& question, std::size_t left_beg
                               question.right_masks.size() * sizeof(std::uint32_t),
                               cudaMemcpyHostToDevice));
 
-    cudaEvent_t opened, closed;
-    GPU_LEAF_CHECK(cudaEventCreate(&opened));
-    GPU_LEAF_CHECK(cudaEventCreate(&closed));
+    Event opened, closed;
 
     // The timer opens here: the two vector lists above are a search's setup and
     // are uploaded once, where the span below changes at every leaf.
@@ -209,18 +198,16 @@ GpuSurvivors scan_pool_on_gpu(const LeafQuestion& question, std::size_t left_beg
     for (std::size_t row = left_begin; row < left_end; row += kRowsPerLaunch) {
         const unsigned int rows =
             static_cast<unsigned int>(std::min<std::size_t>(kRowsPerLaunch, left_end - row));
-        GPU_LEAF_CHECK(cudaEventRecord(opened));
+        GPU_LEAF_CHECK(cudaEventRecord(opened.handle));
         launch(question, dim3(blocks, rows), kThreadsPerBlock, row,
                static_cast<const std::uint32_t*>(lefts.pointer),
                static_cast<const std::uint32_t*>(rights.pointer),
                static_cast<unsigned long long*>(survivors.pointer),
                static_cast<unsigned int*>(counters.pointer), static_cast<unsigned int>(capacity),
                static_cast<int*>(counters.pointer) + 1);
-        GPU_LEAF_CHECK(cudaEventRecord(closed));
-        GPU_LEAF_CHECK(cudaEventSynchronize(closed));
-        float milliseconds = 0.0f;
-        GPU_LEAF_CHECK(cudaEventElapsedTime(&milliseconds, opened, closed));
-        result.kernel_seconds += milliseconds / 1000.0;
+        GPU_LEAF_CHECK(cudaEventRecord(closed.handle));
+        GPU_LEAF_CHECK(cudaEventSynchronize(closed.handle));
+        result.kernel_seconds += seconds_between(opened, closed);
     }
 
     unsigned int counted[2] = {0, 0};
@@ -236,8 +223,6 @@ GpuSurvivors scan_pool_on_gpu(const LeafQuestion& question, std::size_t left_beg
     std::sort(result.indices.begin(), result.indices.end());
     result.wall_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
-    cudaEventDestroy(opened);
-    cudaEventDestroy(closed);
     return result;
 }
 
