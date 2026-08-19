@@ -36,6 +36,7 @@ about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 
 | Flag | Default | What chose the default |
 |---|---|---|
+| `--threads N` | `1` | **Measured, and the only search here where threading is free.** The seeds are independent walks, each `mt19937_64(seed)` over a start and a field nobody writes, so the answers are bit-identical at any thread count: on `⟨3,3,3⟩ --flips 20000 --seeds 8` the reported scheme, seed, flip and reduction counts agree exactly at 1, 4 and 8 workers, and only the elapsed figures move. Measured **3.2x at 4 workers and 5.4x at 8**, on a machine that was not quiet, so those are floors. Unlike `decide-rank`'s, this speedup costs nothing in counts: no shared budget, no early exit, no race. |
 | `--flips N` | `20000` | **Nothing.** It is the setting the published runs used, not a tuned choice: `⟨3,3,3⟩` reaches 24 products in 38.1 s at `--flips 20000 --seeds 8`. |
 | `--seeds N` | `8` | **Nothing**, for the same reason. |
 | `--from k` | off, walk from naive | Measured: on `f3_3x6`, four seeds of 20 000 flips reach **12** products from the naive scheme and hold the heuristic's **10** when started there (`../flip_graph/README.md`). |
