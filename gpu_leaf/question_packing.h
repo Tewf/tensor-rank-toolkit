@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <stdexcept>
 #include <vector>
 
 #include "bilinear_rank_aliases.h"
@@ -31,6 +32,14 @@ inline std::uint32_t mask_of(const std::vector<std::int64_t>& entries) {
 /// span the leaf was handed.
 inline LeafQuestion packed_question(const bilinear_rank::Field& field, std::size_t rows,
                                     std::size_t columns, const bilinear_rank::ReducedBasis& span) {
+    // `LeafQuestion` carries a vector as the low bits of a `uint32_t`, and
+    // `gf2_leaf_applies` admits 64 columns, so the two disagree above 32 and the
+    // packing would shift by more than the word width. Refused rather than
+    // silently truncated: a wrong mask is a wrong answer that still looks like
+    // one.
+    if (rows > 32 || columns > 32) {
+        throw std::runtime_error("gpu_leaf packs a vector into 32 bits; this shape needs more");
+    }
     LeafQuestion question;
     question.rows = rows;
     question.columns = columns;

@@ -41,6 +41,16 @@ using bilinear_rank::SearchBudget;
 
 constexpr std::size_t kSurvivorCapacity = 1u << 22;
 
+/// Where a timed host run puts its answer, so that no compiler is entitled to
+/// notice nobody reads it.
+///
+/// The two host reference routes are inline in a header and their result is a
+/// local vector, which is exactly the shape a compiler may delete outright. It
+/// did not, and the seconds in the tables are far too long for a deleted loop,
+/// but a row that depends on an optimiser declining an opportunity is not a
+/// measurement of anything.
+volatile std::size_t survivors_found = 0;
+
 /// One question, held in both representations, so the two sides are asked the
 /// same thing and not merely the same shape.
 class Question {
@@ -205,7 +215,8 @@ double packed_scan(const gpu_leaf::LeafQuestion& packed, std::size_t left_rows,
     return fastest_of_three([&] {
         std::vector<std::thread> workers;
         for (std::size_t worker = 0; worker < threads; ++worker) {
-            workers.emplace_back([&] { gpu_leaf::scan_pool_on_host(packed, 0, left_rows); });
+            workers.emplace_back(
+                [&] { survivors_found = gpu_leaf::scan_pool_on_host(packed, 0, left_rows).size(); });
         }
         for (std::thread& worker : workers) worker.join();
     });
@@ -216,7 +227,9 @@ double packed_walk(const gpu_leaf::LeafQuestion& packed, std::uint64_t elements,
     return fastest_of_three([&] {
         std::vector<std::thread> workers;
         for (std::size_t worker = 0; worker < threads; ++worker) {
-            workers.emplace_back([&] { gpu_leaf::walk_subspace_on_host(packed, 1, elements); });
+            workers.emplace_back([&] {
+                survivors_found = gpu_leaf::walk_subspace_on_host(packed, 1, elements).size();
+            });
         }
         for (std::thread& worker : workers) worker.join();
     });
@@ -248,6 +261,12 @@ void measure_the_scan(std::size_t shipped_rows, std::size_t packed_rows) {
     const Question question(16, 16, 47, false);
     const gpu_leaf::LeafQuestion& packed = question.packed();
     const double per_row = static_cast<double>(packed.right_count);
+    // Refused rather than clamped. A row count past the end of the grid would
+    // read off both the host's mask table and the card's, and a run that quietly
+    // scanned fewer elements than it divided by would publish a wrong rate.
+    if (shipped_rows > packed.left_count || packed_rows > packed.left_count) {
+        throw std::runtime_error("asked for more rows of the grid than there are");
+    }
 
     report_header("The pool scan at 16x16 over GF(2), dimension 47, the leaf route <4,4,4> takes");
     report("shipped leaf, addressed pool, 1 core", shipped_rows * per_row,
@@ -309,7 +328,7 @@ void measure_the_widest_walk() {
 
 }  // namespace
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) try {
     const std::string what = argc > 1 ? argv[1] : "check";
     std::printf("device: %s\n", gpu_leaf::device_description().c_str());
 
@@ -323,4 +342,11 @@ int main(int argc, char** argv) {
     }
     if (failures != 0) std::printf("\n%d case(s) disagreed\n", failures);
     return failures == 0 ? 0 : 1;
+} catch (const std::exception& failure) {
+    // Everything that can go wrong here is an exception, and `cuda_guard.cuh`
+    // exists so that one of them names the call that failed. Letting it reach
+    // `std::terminate` would throw that name away and abort on a signal instead
+    // of an exit code.
+    std::fprintf(stderr, "measure-leaf: %s\n", failure.what());
+    return 2;
 }

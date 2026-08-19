@@ -30,7 +30,10 @@ __device__ inline std::uint64_t row_of(const std::uint64_t* element, int row) {
     const int start = row * COLUMNS;
     std::uint64_t value = element[start / 64] >> (start % 64);
     if (start % 64 + COLUMNS > 64) value |= element[start / 64 + 1] << (64 - start % 64);
-    return value & ((std::uint64_t(1) << COLUMNS) - 1);
+    // `gf2_mask`'s guard, kept because it is the reason that function exists: a
+    // shift by the word width is undefined, and `gf2_leaf_applies` admits 64
+    // columns even though no kernel is instantiated at that width today.
+    return value & (COLUMNS >= 64 ? ~std::uint64_t(0) : (std::uint64_t(1) << COLUMNS) - 1);
 }
 
 /// One thread, one subspace element: exclusive or of the span rows its index
@@ -82,14 +85,6 @@ __global__ void walk_kernel(unsigned long long begin, unsigned long long end, in
     }
 }
 
-struct DeviceBuffer {
-    void* pointer = nullptr;
-    explicit DeviceBuffer(std::size_t bytes) { GPU_LEAF_CHECK(cudaMalloc(&pointer, bytes)); }
-    ~DeviceBuffer() { cudaFree(pointer); }
-    DeviceBuffer(const DeviceBuffer&) = delete;
-    DeviceBuffer& operator=(const DeviceBuffer&) = delete;
-};
-
 void launch(const LeafQuestion& question, unsigned int blocks, unsigned int threads,
             unsigned long long begin, unsigned long long end, unsigned long long* survivors,
             unsigned int* found, unsigned int capacity, int* overflow) {
@@ -131,9 +126,7 @@ GpuSurvivors walk_subspace_on_gpu(const LeafQuestion& question, std::uint64_t be
     DeviceBuffer survivors(capacity * sizeof(unsigned long long));
     DeviceBuffer counters(2 * sizeof(unsigned int));
 
-    cudaEvent_t opened, closed;
-    GPU_LEAF_CHECK(cudaEventCreate(&opened));
-    GPU_LEAF_CHECK(cudaEventCreate(&closed));
+    Event opened, closed;
 
     const auto started = std::chrono::steady_clock::now();
     GPU_LEAF_CHECK(cudaMemcpyToSymbol(c_walk_rows, question.span_rows.data(),
@@ -145,16 +138,14 @@ GpuSurvivors walk_subspace_on_gpu(const LeafQuestion& question, std::uint64_t be
         const std::uint64_t last = std::min<std::uint64_t>(first + kElementsPerLaunch, end);
         const unsigned int blocks =
             static_cast<unsigned int>((last - first + kThreadsPerBlock - 1) / kThreadsPerBlock);
-        GPU_LEAF_CHECK(cudaEventRecord(opened));
+        GPU_LEAF_CHECK(cudaEventRecord(opened.handle));
         launch(question, blocks, kThreadsPerBlock, first, last,
                static_cast<unsigned long long*>(survivors.pointer),
                static_cast<unsigned int*>(counters.pointer), static_cast<unsigned int>(capacity),
                static_cast<int*>(counters.pointer) + 1);
-        GPU_LEAF_CHECK(cudaEventRecord(closed));
-        GPU_LEAF_CHECK(cudaEventSynchronize(closed));
-        float milliseconds = 0.0f;
-        GPU_LEAF_CHECK(cudaEventElapsedTime(&milliseconds, opened, closed));
-        result.kernel_seconds += milliseconds / 1000.0;
+        GPU_LEAF_CHECK(cudaEventRecord(closed.handle));
+        GPU_LEAF_CHECK(cudaEventSynchronize(closed.handle));
+        result.kernel_seconds += seconds_between(opened, closed);
     }
 
     unsigned int counted[2] = {0, 0};
@@ -171,8 +162,6 @@ GpuSurvivors walk_subspace_on_gpu(const LeafQuestion& question, std::uint64_t be
     result.wall_seconds =
         std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
-    cudaEventDestroy(opened);
-    cudaEventDestroy(closed);
     return result;
 }
 

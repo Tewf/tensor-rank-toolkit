@@ -12,8 +12,12 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
 add_executable(measure-leaf pool_scan.cu subspace_walk.cu measure_leaf.cpp)
 target_include_directories(measure-leaf PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# `project_warnings` on the C++ side only: it carries -Wall -Wextra -Wpedantic,
+# which every other target here is built with and which nvcc does not accept for
+# device code.
 target_link_libraries(measure-leaf PRIVATE exhaustive_search descent_search linear_algebra
-                                           run_limits)
+                                           run_limits
+                     $<$<COMPILE_LANGUAGE:CXX>:project_warnings>)
 
 # 8.9 is the RTX 4060 this was measured on. `-lineinfo` and the ptxas report are
 # how the register and local-memory counts in README.md were read off; a kernel
