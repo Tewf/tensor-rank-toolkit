@@ -62,6 +62,21 @@ expect 5 "$fixtures/no_such_file.tensor"
 # budget that expired after a single node.
 expect 3 "$fixtures/f2_5x5.tensor" --target 12 --node-limit 1
 
+# A pool too large to hold must refuse the three routes that read a held pool,
+# and this is the worst thing this file guards. Only the plain search with an
+# explicit target walks an addressed pool; the other three read the materialised
+# one, which is *empty* when it did not fit, and an empty pool is not a small
+# pool. Before the guard, `--symmetry` on <4,4,4> returned "NO ... exhaustive"
+# for 47 products after one node, and AlphaTensor exhibits 47: a false
+# refutation leaving as 1. `--max-memory 1` makes any pool too large, so the
+# case is reproduced here in milliseconds on a fixture that ships.
+expect 5 "$fixtures/matmul_2x2x2.tensor" --target 6 --max-memory 1 -s matmul 2 2 2
+expect 5 "$fixtures/matmul_2x2x2.tensor" --max-memory 1 --bottom-up
+expect 5 "$fixtures/matmul_2x2x2.tensor" --max-memory 1
+# And the plain route with a target still runs, because it is the one that has
+# an addressed form: undecided at one node, never a refusal.
+expect 3 "$fixtures/matmul_2x2x2.tensor" --target 7 --max-memory 1 --node-limit 1
+
 command=$binaries/descent_search/minimise-rank
 echo "minimise-rank"
 expect 2
