@@ -10,21 +10,35 @@ The expensive direction, and what it proves. What the descent reaches is in
 | F2 2×3 | **exactly 5** | a 2×3 product: five instead of six |
 | GF(4) over GF(2) | **exactly 3** | classical |
 | GF(8) over GF(2) | **exactly 6** | classical |
-| F2 5×5 | **12 ≤ rank ≤ 14** here, and **13** in the literature | 9, 10 and 11 ruled out exhaustively here; 14 reached by the heuristic; 13 is `[bdez2012]`'s |
+| F2 5×5 | **13 ≤ rank ≤ 14** here, and **13** in the literature | 9 to 12 ruled out exhaustively here; 14 reached by the heuristic; 13 is `[bdez2012]`'s |
 
-This library narrows 5×5 from both sides without closing it: the exhaustive search rules out 11 products,
-which puts the rank at 12 or more, and the heuristic exhibits 14. **Ruling out 12
-has not been run.** It is priced at `C(961,3)` = 1.47×10⁸ nodes and about seven
-hours in [`method/exact-search.md`](method/exact-search.md), and that is an
-extrapolation from the k=11 run,
-not a measurement.
+This library narrows 5×5 from both sides without closing it: the exhaustive search
+rules out 12 products, which puts the rank at 13 or more, and the heuristic
+exhibits 14. **Ruling out 13 has not been run**, and it is the one that would
+close the map here.
 
-This paragraph previously reported that run as done, at "146 402 553 nodes and
-3 610 s on eight threads", and concluded the rank was exactly 13. No such run
-happened; the figure was an extrapolation that arrived here as a measurement.
+**Ruling out 12 has now been run**, 2026-08-19, on a quiet machine:
+`decide-rank fixtures/f2_5x5.tensor --target 12 --node-limit 300000000 --threads 6`
+returns **NO exhaustively in 146 402 553 nodes and 535.59 s**. A refutation's node
+count does not depend on the thread count, measured in
+[`../exhaustive_search/what-threads-change.md`](../exhaustive_search/what-threads-change.md),
+so the node figure is the tree's and not this run's.
+
+**What that costs is now a tenth of what this page priced it at, and the reason is
+the leaf, not the tree.** Seven hours came from extrapolating the k=11 run on the
+general field path, 77.88 s over 459 239 nodes, or 169 µs a node. The same run on
+the GF(2) leaf is 7.69 s, or **16.7 µs a node**, and 1.47×10⁸ nodes at that rate is
+41 minutes on one core. Six cores took 8 m 56 s.
+
+**The retracted figure's node count was exactly right.** This paragraph previously
+reported this run as done, at "146 402 553 nodes and 3 610 s on eight threads", and
 [`../satisfiability/measurements.md`](../satisfiability/measurements.md) retracted
-it and this page did not, which is the worse half of the error, because this is
-the page a reader reaches first.
+it because no such run had happened. The measured node count is **146 402 553**, the
+same number to the digit, which says the count was derived correctly and only the
+seconds were invented. The measured 535.59 s is 6.7x faster than the invented
+3 610 s, because the GF(2) leaf did not exist when that number was written. A
+derivation presented as a measurement is still not a measurement, and it stays
+retracted; it was simply a good derivation.
 
 **And 13 is reached, in the literature since 2012.**
 [`[bdez2012]`](../references.md) ran this same algorithm on this same map and
