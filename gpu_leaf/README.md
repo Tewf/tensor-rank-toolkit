@@ -67,6 +67,14 @@ middle band the prior. Nothing streams. The scan reads four bytes per element
 from a 262 KB table that never leaves L2, which is 17 GB/s against 272 GB/s of
 device bandwidth, and the walk reads no global memory at all.
 
+The two kernels agreeing says the same thing from the other side. Each spends
+its life in one loop over span rows, 47 of them scanning and 27 walking, and the
+measured rates are 4.22e9 and 7.36e9, a ratio of 1.746 against the 1.741 those
+row counts predict. Their two fixed costs, the outer product and the rank-one
+test, are near enough the same size to cancel, so the agreement is closer than
+the argument deserves; what it shows is that the row loop is what the card is
+spending on, and not a memory system.
+
 ## What this does not show
 
 - **That the win is the card.** 7.3x of the 3962x is not: it is deriving the
