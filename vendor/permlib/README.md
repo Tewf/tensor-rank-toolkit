@@ -18,6 +18,21 @@ diffed against upstream and replaced wholesale. It is header-only: no `.cpp`, so
 there is nothing to compile, and it is attached as an INTERFACE target with a
 `SYSTEM` include directory so that its warnings are not this repository's.
 
+**It is compiled with `PERMLIB_DOMAIN_INT`, and that is not optional here.**
+Without it `dom_int` is `unsigned short`, so a permutation domain larger than
+65 535 wraps and writes out of bounds. It does not refuse and it does not slow
+down: it segfaults inside `Transversal::foundOrbitElement` with a healthy stack,
+and a degree only a little past the ceiling could return a wrong answer instead.
+This repository's pools reach 261 121 at `⟨3,3,3⟩`, four times the ceiling, so a
+build that loses the define is broken for the shapes it exists to reach.
+
+Losing it is easy: a new vendor drop, a second build system, somebody compiling a
+file by hand. So it is checked rather than trusted, twice, in
+[`../../oracle_guided_search/pool_set_canon.cpp`](../../oracle_guided_search/pool_set_canon.cpp):
+a `static_assert` on the type stops such a build at compile time with the reason,
+and a run-time check refuses a pool that does not fit the point type rather than
+handing PermLib an index that will wrap.
+
 **Two things it needs from a caller**, both handled in `subspace_canon.cpp` and
 neither requiring a patch here:
 

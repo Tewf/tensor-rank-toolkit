@@ -14,6 +14,7 @@
 #include <permlib/permlib_api.h>
 
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
 #include <string>
 
@@ -21,6 +22,20 @@
 #include "memory_budget.h"
 #include "pool_orbits.h"
 #include "span_basis.h"
+
+// The fault that cost an afternoon, made impossible to repeat rather than fixed
+// once. PermLib's `dom_int` is `unsigned short` unless `PERMLIB_DOMAIN_INT` is
+// defined, and a pool past 65 535 then wraps and writes out of bounds. Losing the
+// define is easy: a new vendor drop, a second build system, somebody compiling
+// this file by hand. The failure it causes is not.
+//
+// So the type is checked here rather than trusted. A build without the define
+// stops at compile time with this sentence instead of segfaulting at run time on
+// a shape somebody cared about.
+static_assert(sizeof(permlib::dom_int) >= 4,
+              "PermLib's point type is too narrow: define PERMLIB_DOMAIN_INT. "
+              "Without it a pool larger than 65 535 wraps and corrupts memory, "
+              "which is what `vendor/permlib/CMakeLists.txt` sets it for.");
 
 namespace bilinear_rank {
 
@@ -76,6 +91,20 @@ PoolSetCanon::PoolSetCanon(const Field& field, const std::vector<Automorphism>& 
     // construct one: `canonical` below then returns its input, which is the
     // honest degenerate case and matches `canonical_subspace`'s empty-group arm.
     if (permutations.empty()) return;
+
+    // The same fault caught at run time as well as at compile time, because the
+    // static check only sees the type and this sees the number. A pool that does
+    // not fit the point type is refused, not attempted: past the ceiling PermLib
+    // does not fail, it wraps, and a wrapped index is a wrong answer before it is
+    // a crash.
+    if (presentation_->points > std::numeric_limits<permlib::dom_int>::max()) {
+        throw std::runtime_error(
+            "a pool of " + std::to_string(presentation_->points) +
+            " rank-one maps does not fit this build's point type, which holds " +
+            std::to_string(
+                static_cast<std::uint64_t>(std::numeric_limits<permlib::dom_int>::max())) +
+            "; the canonical form is refused rather than given a wrapped index");
+    }
 
     // Priced before it is taken, like every other bulk allocation here.
     require_room("the group presented on a pool of " +
