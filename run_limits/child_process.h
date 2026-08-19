@@ -52,6 +52,16 @@ struct ChildLimits {
 /// parent's kill is what makes the *call* leave nothing running; the alarm is what
 /// makes a *dead parent* leave nothing running. Both are wanted and neither
 /// replaces the other.
+///
+/// **What that leaves, measured rather than assumed.** Send SIGTERM to a run
+/// mid-solve and the solver outlives it: its own alarm ends it, so it holds a core
+/// for up to `seconds + 1`, which is 301 s at the SAT default. The scratch files
+/// go immediately, through `cli/interrupt_cleanup.h`, and the solver does not.
+/// Closing that window would mean killing the group from a signal handler, which
+/// is safe to do but would put a second handler on the same three signals as the
+/// file cleanup, and two handlers on one signal is one clobbering the other. It is
+/// bounded and it is one process, so it is written down here rather than fixed
+/// with a handler chain nobody asked for.
 bool run_to_completion(const std::vector<std::string>& command,
                        const std::filesystem::path& log, const ChildLimits& limits);
 
