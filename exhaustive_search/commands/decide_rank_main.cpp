@@ -155,6 +155,35 @@ int run(int argc, char** argv) {
     std::vector<bilinear_rank::Matrix> pool;
     if (fits) pool = bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
+    // Only the plain search with an explicit target has an addressed form. The
+    // other three routes read the materialised `pool`, which is **empty** when it
+    // did not fit, and an empty pool is not a small pool: the quotiented search
+    // returned "NO ... exhaustive" for 47 products on `<4,4,4>` after one node,
+    // which AlphaTensor exhibits, so it was a false refutation and exit 1.
+    // `--bottom-up` gave 16 products against a proved floor of 26 and was caught
+    // only by `require_bound_consistent`; the sweep gave up, which was luck.
+    //
+    // Refused here, where the comment below always claimed it was.
+    if (!fits) {
+        // Most specific first, and the first match wins: `--bottom-up` implies no
+        // target, so testing the sweep last would report the flag nobody typed.
+        const char* why = nullptr;
+        if (symmetry.kind != cli::SymmetryKind::None) {
+            why = "--symmetry";
+        } else if (bottom_up) {
+            why = "--bottom-up";
+        } else if (target < 0) {
+            why = "a sweep with no --target";
+        }
+        if (why != nullptr) {
+            throw std::runtime_error(
+                std::string("the pool of this shape cannot be held, and ") + why +
+                " reads a pool that is held; only the plain search with an explicit --target "
+                "walks an addressed pool. Give --target k without " + why +
+                ", or raise --max-memory if this machine really has the room");
+        }
+    }
+
     bilinear_rank::SearchBudget budget{node_limit, leaf_limit};
     std::vector<bilinear_rank::Matrix> products;
     const auto started = cli::Clock::now();
@@ -176,7 +205,7 @@ int run(int argc, char** argv) {
         // Only the plain route has an addressed form. The quotiented search keys
         // orbit tables by pool position and the sweeps index down a recursion in
         // parallel, so neither is converted, and a `--symmetry` or sweep request
-        // on a shape this large is refused above rather than answered wrongly.
+        // on a shape this large is refused above, which it now actually is.
         found = bilinear_rank::expand_subspace(field, anchor, addressed, 0,
                                               static_cast<std::size_t>(target), budget, products);
     } else if (target >= 0) {
