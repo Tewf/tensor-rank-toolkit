@@ -46,32 +46,6 @@ bool fewest_products_by_sweep(const Field& field, const std::vector<Matrix>& bas
     return false;
 }
 
-bool fewest_products_by_bisection(const Field& field, const std::vector<Matrix>& base,
-                                  const std::vector<Matrix>& pool, SearchBudget& budget,
-                                  std::vector<Matrix>& products) {
-    if (base.empty()) return false;
-    std::size_t low = flattening_floor(field, base);
-    std::size_t high = linear_algebra::multiplication_count(field, base);
-
-    std::vector<Matrix> best;
-    bool found = false;
-    while (low <= high) {
-        const std::size_t middle = low + (high - low) / 2;
-        std::vector<Matrix> attempt;
-        if (expand_subspace(field, base, pool, 0, middle, budget, attempt)) {
-            best = std::move(attempt);
-            found = true;
-            if (middle == 0) break;
-            high = middle - 1;
-        } else {
-            if (!budget.exhausted) return false;
-            low = middle + 1;
-        }
-    }
-    if (found) products = std::move(best);
-    return found;
-}
-
 std::pair<std::vector<Matrix>, std::vector<Matrix>> lowest_rank_partition(
     const Field& field, const std::vector<Matrix>& slices) {
     std::vector<Matrix> lowest;
@@ -93,31 +67,6 @@ std::pair<std::vector<Matrix>, std::vector<Matrix>> lowest_rank_partition(
         }
     }
     return {lowest, rest};
-}
-
-bool fewest_products_from_scratch(const Field& field, const std::vector<Matrix>& map,
-                     const std::vector<Matrix>& pool, SearchBudget& budget,
-                     std::vector<Matrix>& products) {
-    // Absorb the map's slices in rank order, cheapest first, minimising after
-    // each level. Nothing here is conditioned on a heuristic's answer.
-    std::vector<Matrix> absorbed;
-    auto [level, remaining] = lowest_rank_partition(field, map);
-
-    for (;;) {
-        for (const Matrix& slice : level) absorbed.push_back(slice);
-
-        std::vector<Matrix> attempt;
-        if (!fewest_products_by_bisection(field, absorbed, pool, budget, attempt)) {
-            if (!budget.exhausted) return false;
-        } else {
-            absorbed = attempt;
-        }
-        if (remaining.empty()) break;
-        std::tie(level, remaining) = lowest_rank_partition(field, remaining);
-    }
-
-    products = absorbed;
-    return !products.empty();
 }
 
 }  // namespace bilinear_rank

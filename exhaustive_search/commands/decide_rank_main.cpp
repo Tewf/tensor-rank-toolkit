@@ -32,7 +32,7 @@ namespace {
 
 void usage() {
     cli::note() << "usage: decide-rank <tensor-file> [--target k] [--anchor map|heuristic]\n"
-                   "                   [--node-limit N] [--leaf-limit N] [--bottom-up]\n"
+                   "                   [--node-limit N] [--leaf-limit N]\n"
                    "                   [--max-memory 2G] [--general-leaf] [--help]\n"
                    "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                    "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
@@ -60,7 +60,6 @@ void usage() {
 int run(int argc, char** argv) {
     long long target = -1;
     bool anchor_on_heuristic = false;
-    bool bottom_up = false;
     // The file first, so that `--node-limit` below can overwrite it: a flag that
     // was given always wins over tunables.conf, and one that was not leaves the
     // file's number standing.
@@ -90,8 +89,6 @@ int run(int argc, char** argv) {
             node_limit = arguments.count();
         } else if (arguments.is("--leaf-limit")) {
             leaf_limit = arguments.count();
-        } else if (arguments.is("--bottom-up")) {
-            bottom_up = true;
         } else if (arguments.is("--general-leaf")) {
             bilinear_rank::set_gf2_leaf_offered(false);
         } else {
@@ -156,22 +153,17 @@ int run(int argc, char** argv) {
     if (fits) pool = bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
     // Only the plain search with an explicit target has an addressed form. The
-    // other three routes read the materialised `pool`, which is **empty** when it
-    // did not fit, and an empty pool is not a small pool: the quotiented search
+    // other routes read the materialised `pool`, which is **empty** when it did
+    // not fit, and an empty pool is not a small pool: the quotiented search
     // returned "NO ... exhaustive" for 47 products on `<4,4,4>` after one node,
-    // which AlphaTensor exhibits, so it was a false refutation and exit 1.
-    // `--bottom-up` gave 16 products against a proved floor of 26 and was caught
-    // only by `require_bound_consistent`; the sweep gave up, which was luck.
+    // which AlphaTensor exhibits, so it was a false refutation and exit 1. The
+    // sweep gave up rather than answering, which was luck and not a defence.
     //
     // Refused here, where the comment below always claimed it was.
     if (!fits) {
-        // Most specific first, and the first match wins: `--bottom-up` implies no
-        // target, so testing the sweep last would report the flag nobody typed.
         const char* why = nullptr;
         if (symmetry.kind != cli::SymmetryKind::None) {
             why = "--symmetry";
-        } else if (bottom_up) {
-            why = "--bottom-up";
         } else if (target < 0) {
             why = "a sweep with no --target";
         }
@@ -189,9 +181,7 @@ int run(int argc, char** argv) {
     const auto started = cli::Clock::now();
 
     bool found = false;
-    if (bottom_up) {
-        found = bilinear_rank::fewest_products_from_scratch(field, tensor.slices, pool, budget, products);
-    } else if (target >= 0 && symmetry.kind != cli::SymmetryKind::None) {
+    if (target >= 0 && symmetry.kind != cli::SymmetryKind::None) {
         // The search needs a group that stabilises what it is searching from, and
         // `anchor` is not always the map: under `--anchor heuristic` it is the
         // heuristic's subspace, whose stabiliser is a different group.

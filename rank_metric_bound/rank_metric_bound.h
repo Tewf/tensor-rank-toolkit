@@ -142,16 +142,8 @@ inline std::size_t slice_space_dimension(const std::vector<std::size_t>& ranks,
     return dimension;
 }
 
-/// `k + d - 1` from one axis, or 0 when that axis's slice space is zero.
-inline std::size_t kruskal_bound_on_axis(const std::vector<std::size_t>& ranks,
-                                         std::size_t characteristic) {
-    const std::size_t distance = minimum_rank_distance(ranks);
-    if (distance == 0) return 0;
-    return slice_space_dimension(ranks, characteristic) + distance - 1;
-}
-
 /// `sum_j ceil(d / |F|^j)` from one axis, the Griesmer length of the block code
-/// the decomposition induces. Never smaller than `kruskal_bound_on_axis`, since
+/// the decomposition induces. Never smaller than Kruskal's `k + d - 1`, since
 /// the first term is `d` and the other `k - 1` are at least 1 each.
 ///
 /// The division walks `d` down rather than `|F|^j` up, so nothing overflows at
@@ -197,15 +189,13 @@ std::size_t best_over_axes(const Field& field,
     return best;
 }
 
-/// `k + d - 1`, over the best axis.
-template <class Field>
-std::size_t kruskal_lower_bound(const Field& field,
-                                const std::vector<linear_algebra::MatrixOver<Field>>& slices,
-                                std::size_t table_budget = linear_algebra::kRankTableBudget) {
-    return best_over_axes(field, slices, kruskal_bound_on_axis, table_budget);
-}
-
-/// The Griesmer form, over the best axis. This is the one worth wiring in.
+/// The Griesmer form, over the best axis, and the only one wired in.
+///
+/// Kruskal's `k + d - 1` used to sit beside it and is retired to
+/// `rejected-experiments`: Griesmer is at least as large on every fixture here
+/// and strictly larger on several, so it is dominated on its own field.
+/// [`what-each-is-worth.md`](what-each-is-worth.md) keeps both columns, because
+/// the evidence for a removal outlives the code.
 template <class Field>
 std::size_t griesmer_lower_bound(const Field& field,
                                  const std::vector<linear_algebra::MatrixOver<Field>>& slices,

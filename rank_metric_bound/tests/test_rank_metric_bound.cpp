@@ -53,7 +53,6 @@ struct Fixture {
     /// `pencil_rank/what-the-literature-settles.md` and the fixtures' own table.
     long long known_rank;
     /// `k + d - 1`, the best over the three axes.
-    long long kruskal;
     /// `sum_j ceil(d / p^j)`, the best over the three axes.
     long long griesmer;
     /// `max(rank_lower_bound, Griesmer)`: the floor a caller would get if
@@ -65,29 +64,28 @@ struct Fixture {
 };
 
 constexpr Fixture kFixtures[] = {
-    {"cyclic_f2_5", 10, 5, 5, 9},
-    {"f2_2x2", 3, 3, 3, 3},
-    {"f2_2x3", 5, 4, 5, 5},
-    {"f2_3x8", 15, 10, 14, 14},
-    {"f2_4x7", 16, 10, 14, 14},
-    {"f2_5x5", 13, 9, 12, 12},
-    {"f3_3x6", 10, 8, 9, 9},
-    {"gf16_multiplication", 9, 7, 8, 8},
-    {"gf4_multiplication", 3, 3, 3, 3},
-    {"gf8_multiplication", 6, 5, 6, 6},
-    {"matmul_2x2x2", 7, 5, 5, 6},
-    {"matmul_2x2x3", 11, 7, 7, 9},
-    {"matmul_3x3x3", 23, 11, 12, 14},
-    {"pencil_irreducible_f2_4", 6, 5, 6, 6},
-    {"pencil_nilpotent_f2_3", 4, 3, 3, 4},
-    {"pencil_singular_f2_2x3", 3, 3, 3, 3},
-    {"pencil_split_f3_3", 3, 3, 3, 3},
-    {"w_state", 3, 2, 2, 3},
+    {"cyclic_f2_5", 10, 5, 9},
+    {"f2_2x2", 3, 3, 3},
+    {"f2_2x3", 5, 5, 5},
+    {"f2_3x8", 15, 14, 14},
+    {"f2_4x7", 16, 14, 14},
+    {"f2_5x5", 13, 12, 12},
+    {"f3_3x6", 10, 9, 9},
+    {"gf16_multiplication", 9, 8, 8},
+    {"gf4_multiplication", 3, 3, 3},
+    {"gf8_multiplication", 6, 6, 6},
+    {"matmul_2x2x2", 7, 5, 6},
+    {"matmul_2x2x3", 11, 7, 9},
+    {"matmul_3x3x3", 23, 12, 14},
+    {"pencil_irreducible_f2_4", 6, 6, 6},
+    {"pencil_nilpotent_f2_3", 4, 3, 4},
+    {"pencil_singular_f2_2x3", 3, 3, 3},
+    {"pencil_split_f3_3", 3, 3, 3},
+    {"w_state", 3, 2, 3},
 };
 
 using linear_algebra::ModularField;
 using linear_algebra::ModularMatrix;
-
 /// A two-slice tensor whose slices are equal, so `v -> v ·_2 T` has a kernel and
 /// the slice space is smaller than its axis. Its rank is 1, and a bound that
 /// counted the axis instead of the space would say 2.
@@ -101,7 +99,6 @@ linear_algebra::Tensor repeated_slice_tensor() {
     }
     return tensor;
 }
-
 /// A sum of `terms` random rank-one terms, so the rank is at most `terms` however
 /// the coefficients fall, and any lower bound above `terms` is a false refutation.
 ///
@@ -150,15 +147,9 @@ int main(int argc, char** argv) {
         const long long griesmer = static_cast<long long>(
             rank_metric_bound::griesmer_lower_bound(field, tensor.slices));
         const double seconds = cli::elapsed_seconds(started);
-        const long long kruskal =
-            static_cast<long long>(rank_metric_bound::kruskal_lower_bound(field, tensor.slices));
-
-        check::equal(label + " Kruskal bound", kruskal, fixture.kruskal);
         check::equal(label + " Griesmer bound", griesmer, fixture.griesmer);
-        check::equal(label + " neither exceeds a known rank",
-                     griesmer <= fixture.known_rank && kruskal <= fixture.known_rank ? 1 : 0, 1);
-        check::equal(label + " Griesmer is at least Kruskal", griesmer >= kruskal ? 1 : 0, 1);
-
+        check::equal(label + " does not exceed a known rank",
+                     griesmer <= fixture.known_rank ? 1 : 0, 1);
         // Per axis: `k` read off the contraction table must be the flattening
         // rank, and `k + d - 1` must reach at least it.
         const std::vector<std::size_t> flattenings =
@@ -191,14 +182,8 @@ int main(int argc, char** argv) {
                          static_cast<long long>(
                              rank_metric_bound::slice_space_dimension(ranks, characteristic)),
                          static_cast<long long>(flattenings[axis]));
-            check::equal(label + " axis " + std::to_string(axis) + " is at least the flattening",
-                         rank_metric_bound::kruskal_bound_on_axis(ranks, characteristic) >=
-                                 flattenings[axis]
-                             ? 1
-                             : 0,
-                         1);
+            
         }
-
         // What wiring Griesmer into `rank_lower_bound` would return. A `max` of
         // valid lower bounds is a valid lower bound, so this can only rise; the
         // point of pinning it is that the one fixture where it rises is a checked
@@ -213,7 +198,6 @@ int main(int argc, char** argv) {
                   << " d=" << deciding_distance << ", against rank_lower_bound " << floor_today
                   << "\n";
     }
-
     // A slice space smaller than its axis: both bounds read the space, not the
     // axis, so a tensor that is not concise is bounded at its true rank of 1.
     {
@@ -224,7 +208,6 @@ int main(int argc, char** argv) {
                          rank_metric_bound::griesmer_lower_bound(field, tensor.slices)),
                      1);
     }
-
     // No budget means every axis is skipped, which must weaken the answer to
     // zero rather than enumerate anything or report a bound it did not compute.
     {
@@ -236,7 +219,6 @@ int main(int argc, char** argv) {
                          rank_metric_bound::griesmer_lower_bound(field, tensor.slices, 0)),
                      0);
     }
-
     // Soundness on shapes no fixture reaches. A tensor built from `terms` random
     // rank-one terms has rank at most `terms`, so a bound above `terms` is a false
     // refutation, and this is where the two cases the header argues about actually
@@ -262,9 +244,8 @@ int main(int argc, char** argv) {
                 const std::size_t terms = 1 + generator() % 8;
                 const std::vector<ModularMatrix> slices =
                     low_rank_tensor(field, characteristic, generator, rows, columns, depth, terms);
-                const long long highest = static_cast<long long>(std::max(
-                    rank_metric_bound::griesmer_lower_bound(field, slices),
-                    rank_metric_bound::kruskal_lower_bound(field, slices)));
+                const long long highest =
+                    static_cast<long long>(rank_metric_bound::griesmer_lower_bound(field, slices));
                 ++trials;
                 if (highest == static_cast<long long>(terms)) ++tight;
                 if (highest > static_cast<long long>(terms)) {

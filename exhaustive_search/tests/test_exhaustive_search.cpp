@@ -19,7 +19,7 @@ namespace {
 
 /// From nothing: the map's own slices as the starting subspace, so the answer
 /// is not conditioned on any heuristic.
-void check_from_scratch(const std::string& directory, const std::string& name,
+void check_fewest_products(const std::string& directory, const std::string& name,
                         long long expected_products) {
     const linear_algebra::Tensor tensor =
         linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
@@ -57,34 +57,6 @@ void check_from_scratch(const std::string& directory, const std::string& name,
                                    tensor.slices)) {
         std::cout << "  FAIL  " << name << ": the products do not compute the map\n";
         ++check::failure_count;
-    }
-}
-
-/// The two routes to the same number must agree, or the faster one is lying.
-void check_routes_agree(const std::string& directory, const std::string& name) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
-    const bilinear_rank::Field field(tensor.characteristic);
-    const std::vector<bilinear_rank::Matrix> pool =
-        bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
-
-    bilinear_rank::SearchBudget sweep_budget;
-    bilinear_rank::SearchBudget bisect_budget;
-    std::vector<bilinear_rank::Matrix> by_sweep;
-    std::vector<bilinear_rank::Matrix> by_bisection;
-    const bool swept =
-        bilinear_rank::fewest_products_by_sweep(field, tensor.slices, pool, sweep_budget, by_sweep);
-    const bool bisected = bilinear_rank::fewest_products_by_bisection(field, tensor.slices, pool,
-                                                                     bisect_budget, by_bisection);
-
-    check::equal(name + " sweep and bisection both succeed",
-                 (swept && bisected) ? 1 : 0, 1);
-    if (swept && bisected) {
-        check::equal(name + " sweep and bisection agree",
-                     static_cast<long long>(by_sweep.size()),
-                     static_cast<long long>(by_bisection.size()));
-        std::cout << "        sweep " << sweep_budget.nodes_visited << " nodes, bisection "
-                  << bisect_budget.nodes_visited << "\n";
     }
 }
 
@@ -128,18 +100,16 @@ int main(int argc, char** argv) {
         return check::report("exhaustive search, lower bound");
     }
 
-    check_from_scratch(directory, "f2_2x2", 3);  // Karatsuba
-    check_from_scratch(directory, "f2_2x3", 5);  // the write-up's worked example
+    check_fewest_products(directory, "f2_2x2", 3);  // Karatsuba
+    check_fewest_products(directory, "f2_2x3", 5);  // the write-up's worked example
 
     // The two tensors from outside this repository's own subject whose answers
     // are known independently of it. <2,2,2> is Strassen's seven products and
     // Winograd's proof that six are not enough, so getting 7 here and a NO at 6
     // below is the whole of a classical result, reproduced from the tensor.
     // The W state is the textbook rank-3 tensor of border rank 2.
-    check_from_scratch(directory, "matmul_2x2x2", 7);
-    check_from_scratch(directory, "w_state", 3);
-    check_routes_agree(directory, "f2_2x2");
-    check_routes_agree(directory, "f2_2x3");
+    check_fewest_products(directory, "matmul_2x2x2", 7);
+    check_fewest_products(directory, "w_state", 3);
 
     // The lower bound on F2 5x5. Ruling out 11 is the slow half of it and runs
     // as its own test; these two are a sixth of a second between them.

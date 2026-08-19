@@ -47,27 +47,4 @@ bool fewest_products_by_sweep(const Field& field, const std::vector<Matrix>& bas
                               const std::vector<Matrix>& pool, SearchBudget& budget,
                               std::vector<Matrix>& products);
 
-/// The same question by bisection on `k`.
-///
-/// Faster, and it assumes what the sweep does not: that a `k`-product solution
-/// implies a `k+1`-product one. That holds whenever the pool still has a map
-/// outside the current span, which is why both are kept and tested to agree.
-/// This variant handles the case where the search finds no candidate, returning
-/// an empty result.
-bool fewest_products_by_bisection(const Field& field, const std::vector<Matrix>& base,
-                                  const std::vector<Matrix>& pool, SearchBudget& budget,
-                                  std::vector<Matrix>& products);
-
-/// Split slices into those of the lowest rank present and all the rest.
-std::pair<std::vector<Matrix>, std::vector<Matrix>> lowest_rank_partition(
-    const Field& field, const std::vector<Matrix>& slices);
-
-/// Build from nothing, absorbing the map's slices in rank order.
-///
-/// This is the from-scratch variant, so its answer is not conditioned on a
-/// heuristic's output, though it is also the most expensive approach.
-bool fewest_products_from_scratch(const Field& field, const std::vector<Matrix>& map,
-                     const std::vector<Matrix>& pool, SearchBudget& budget,
-                     std::vector<Matrix>& products);
-
 }  // namespace bilinear_rank
