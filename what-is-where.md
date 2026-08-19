@@ -44,6 +44,8 @@ OPTIONS.md               every flag of every tool, its default, and what
 article/                 the write-up: definitions, theorems, proofs, negative results
 site/                    the stylesheet, the hand-drawn charts and the shared
                          navigation index.html is assembled from
+web_interface/           a browser console for the twelve tools, and the
+                         commands behind it
 tools/                   scripts that are not part of the build: one asks every
                          backend the same question and tabulates the cost
 ```

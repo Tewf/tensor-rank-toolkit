@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tensor-rank-toolkit console</title>
+<link rel="icon" href="/site/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/site/style.css">
+<link rel="stylesheet" href="/page/console.css">
+</head>
+<body>
+
+<header class="head">
+  <span class="brand">tensor-rank-toolkit</span>
+  <span class="facts" id="facts">reading the machine...</span>
+  <span class="spacer"></span>
+  <span class="facts">every answer shows the command that produced it</span>
+</header>
+
+<main class="console">
+
+<div>
+  <section class="panel">
+    <h2>1 &nbsp;The map</h2>
+    <div class="row">
+      <select id="fixture"><option value="">load a fixture...</option></select>
+      <button id="upload-button">open a file...</button>
+      <input type="file" id="upload" hidden accept=".tensor,.matrix,.sms,.txt,text/plain">
+      <button id="build-button">build one...</button>
+    </div>
+
+    <div id="builder" hidden>
+      <label for="builder-mode">make-tensor writes a map on standard output, and
+        this puts it straight in the box.</label>
+      <div class="row">
+        <select id="builder-mode"></select>
+        <input id="builder-values" size="14" placeholder="2 2 2 2">
+        <button id="builder-go">build</button>
+      </div>
+      <p class="hint" id="builder-fields"></p>
+    </div>
+
+    <label for="map">Type it, paste it, or load one. The format is
+      <code>field p</code>, <code>shape slices rows columns</code>, then the
+      slices as dense rows; <code>#</code> is a comment.</label>
+    <textarea id="map" spellcheck="false"
+      placeholder="field 2&#10;shape 3 2 2&#10;&#10;1 0&#10;0 0&#10;&#10;0 1&#10;1 0&#10;&#10;0 0&#10;0 1"></textarea>
+    <p class="hint" id="reading"></p>
+  </section>
+
+  <section class="panel">
+    <h2>2 &nbsp;The question</h2>
+    <div id="tools"></div>
+  </section>
+
+  <section class="panel" id="options-panel" hidden>
+    <h2>3 &nbsp;How to ask it</h2>
+    <p class="answers" id="answers"></p>
+    <div id="options"></div>
+    <label for="wall-clock">
+      Wall clock, in seconds, after which this console stops the run
+      <span class="flag">(a backstop, not a budget: it decides nothing)</span>
+    </label>
+    <input id="wall-clock" size="8" inputmode="numeric">
+  </section>
+
+  <section class="panel" id="run-panel" hidden>
+    <h2>4 &nbsp;Run it</h2>
+    <pre class="command" id="preview"></pre>
+    <div class="row">
+      <button class="go" id="run">Run</button>
+      <span class="hint" id="run-note"></span>
+    </div>
+  </section>
+</div>
+
+<section id="results">
+  <p class="empty">Nothing has been run yet. Every run appears here with the
+  exact command, both of its streams, and how it ended.</p>
+</section>
+
+</main>
+
+<script src="/page/console.js"></script>
+<script src="/page/map_box.js"></script>
+<script src="/page/question.js"></script>
+<script src="/page/results.js"></script>
+</body>
+</html>
