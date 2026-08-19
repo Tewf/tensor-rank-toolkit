@@ -28,6 +28,10 @@ add_library(project_warnings INTERFACE)
 target_compile_options(project_warnings INTERFACE -Wall -Wextra -Wpedantic)
 
 enable_testing()
+# Third-party and header-only, so it comes before anything that links it.
+# vendor/permlib/README.md says what it is and why it is not nauty.
+add_subdirectory(vendor/permlib)
+
 add_subdirectory(cli)
 add_subdirectory(testing)
 add_subdirectory(run_limits)
@@ -42,6 +46,7 @@ add_subdirectory(integer_programme)
 add_subdirectory(matrix_sparsification)
 add_subdirectory(satisfiability)
 add_subdirectory(curve_bounds)
+add_subdirectory(rank_metric_bound)
 add_subdirectory(oracle_guided_search)
 add_subdirectory(pencil_rank)
 add_subdirectory(canonical_factorisation)
