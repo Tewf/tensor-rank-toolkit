@@ -27,7 +27,7 @@ struct Expectation {
 /// 10, 10 to 14, 10 to 14, 8 to 9. On `f2_3x8` that leaves a gap of one against
 /// the known rank of 15, where it used to be five.
 constexpr Expectation kExpectations[] = {
-    {"f2_5x5", 25, 16, 14, 10},
+    {"f2_5x5", 25, 16, 14, 12},  // 12, not 10, since Griesmer joined the floor
     {"f2_3x8", 24, 19, 16, 14},
     {"f2_4x7", 28, 19, 16, 14},
     {"f3_3x6", 18, 12, 11, 9},

@@ -7,6 +7,7 @@
 #include "field.h"
 #include "matrix.h"
 #include "tensor_flattening.h"
+#include "rank_metric_bound.h"
 #include "tensor_rank_sum.h"
 
 /// The best lower bound on tensor rank available here without searching, which is
@@ -14,9 +15,11 @@
 /// start from.
 ///
 /// One function, so that adding a bound is one edit and every caller gains it.
-/// There are three bounds now: the flattening ranks
-/// ([`tensor_flattening.h`](tensor_flattening.h)), and the line and total rank
-/// sums ([`tensor_rank_sum.h`](tensor_rank_sum.h)). They are kept as separate
+/// There are four bounds now: the flattening ranks
+/// ([`tensor_flattening.h`](tensor_flattening.h)), the line and total rank
+/// sums ([`tensor_rank_sum.h`](tensor_rank_sum.h)), and Griesmer applied to the
+/// slice space read as a rank-metric code
+/// ([`../rank_metric_bound/rank_metric_bound.h`](../rank_metric_bound/rank_metric_bound.h)). They are kept as separate
 /// functions rather than folded together because they are separately testable,
 /// and because the flattening bound is polynomial time while the rank sums are not.
 ///
@@ -35,7 +38,8 @@ namespace linear_algebra {
 /// is a valid lower bound, so their maximum is one too.
 template <class Field>
 std::size_t rank_lower_bound(const Field& field, const std::vector<MatrixOver<Field>>& slices) {
-    return std::max(flattening_lower_bound(field, slices), rank_sum_lower_bound(field, slices));
+    return std::max({flattening_lower_bound(field, slices), rank_sum_lower_bound(field, slices),
+                     rank_metric_bound::griesmer_lower_bound(field, slices)});
 }
 
 }  // namespace linear_algebra

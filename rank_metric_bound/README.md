@@ -18,7 +18,7 @@ separate question, is measured, and is these two pages:
 | | |
 |---|---|
 | [`what-each-is-worth.md`](what-each-is-worth.md) | the value of each bound on every fixture, where Griesmer wins and where it loses, and why |
-| [`the-edit-not-made.md`](the-edit-not-made.md) | what it costs against the floor already in use, and the one-line change to `linear_algebra` that would make it a default |
+| [`joining-the-shared-floor.md`](joining-the-shared-floor.md) | what it costs against the floor already in use, and the three edits that made it the default |
 
 **Step 1 of the descent already had `d` and threw it away.**
 `minimum_weight_basis` sorts `span(T)` by ascending rank, so the smallest rank in
