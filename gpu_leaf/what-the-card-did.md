@@ -2,33 +2,27 @@
 
 The tables behind [`README.md`](README.md)'s verdict. Measured under
 [`../MEASURING.md`](../MEASURING.md): one core where it says one core, fastest of
-three, machine otherwise quiet, under `flock /tmp/bilinear-measure.lock`. The
-host is built at `-O3` with no `-march=native`, which is how the rest of this
-repository is built, so a hand-vectorised host is a further factor the card would
-have to beat and is not one of these rows.
+three, machine otherwise quiet, under `flock /tmp/bilinear-measure.lock`, at
+`-O3` with no `-march=native`, which is how the rest of this repository is built.
 
 ## The baseline, which did not exist before this
 
-The only per-element figure this repository had was **785 ns**, and it is the
-*general* Givaro path at `⟨4,4,4⟩`. The GF(2) leaf is 6.0x to 39.6x faster than
-that path on the same work
+The only per-element figure this repository had was **785 ns**, the *general*
+Givaro path at `⟨4,4,4⟩`. The GF(2) leaf is 6.0x to 39.6x faster than that path on
+the same work
 ([`../exhaustive_search/gf2_leaf.h`](../exhaustive_search/gf2_leaf.h)), so timing
 a kernel against 785 ns would have flattered the card by up to 23x. So the first
-thing measured here is the GF(2) leaf itself, on an **addressed** pool at 16x16
-over GF(2), one core.
+thing measured is the GF(2) leaf itself, on an **addressed** pool at 16x16 over
+GF(2), one core. Three host rows follow and they are three different claims:
 
-Three host rows appear below and they are three different claims:
-
-- **the shipped leaf** is `Gf2Leaf<Addressed>` exactly as the search calls it,
-  deriving each candidate through `RankOnePool::at` at 256 Givaro multiplications
-  and a heap allocation;
+- **the shipped leaf** is `Gf2Leaf<Addressed>` as the search calls it, deriving
+  each candidate through `RankOnePool::at` at 256 Givaro multiplications and a
+  heap allocation;
 - **packed generation on the host** is the kernel's own arithmetic on one core,
-  the outer product as two shifts and a branch-free reduction. It is here so the
-  card is not credited with a win that belongs to the representation;
-- **twelve threads** is the same range on all twelve hardware threads, which is
-  not a partition of one leaf: a `Gf2Leaf` scan starts at index 0 and cannot be
-  started elsewhere without changing it, so what the row prices is twelve cores
-  on this work.
+  so the card is not credited with a win that belongs to the representation;
+- **twelve threads** is the same range on all twelve, not a partition of one
+  leaf: a `Gf2Leaf` scan starts at index 0 and cannot be started elsewhere
+  without changing it, so the row prices twelve cores on this work.
 
 ## The pool scan, 16x16 over GF(2), dimension 47
 
@@ -84,3 +78,24 @@ Dimension 31 is the widest walk `⟨4,4,4⟩` can pose, since past it `2^dim` ex
 the pool and the leaf becomes a scan. The card walks all 2 147 483 648 of its
 elements in **0.290 s**, at 7.42e9 elements per second. No host row accompanies
 it: one core would be minutes, and the ratio is already established above.
+
+## What repeating the whole thing showed
+
+Every table above was taken twice, on two builds a code review apart.
+
+**The card reproduced to three digits**: 4.216e9 elements per second on the whole
+pool both times, 1.019 s both times, 0.290 s on the widest walk both times.
+**Every host row came back 3% to 12% slower**, the shipped ones included, and
+those are untouched by anything that changed between the builds, so the spread is
+the chassis: the second run followed fifteen minutes of somebody else's
+single-core job, and 13% run to run from throttling alone is what
+[`../MEASURING.md`](../MEASURING.md) documents this machine at. By that file's
+rule the minimum over runs is the closest estimate of the work, so each row above
+keeps its faster observation, which is the first run for every host row and a tie
+for the card. **The published ratios are the conservative ones**, taken where the
+host did best.
+
+The repeat also settles a doubt a review raised. The host reference is inline in
+a header and its result was discarded, which is the shape a compiler may delete
+outright; it now goes to a `volatile`, and the rows moved no further than the
+shipped rows beside them. Nothing was being deleted.
