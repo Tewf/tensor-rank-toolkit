@@ -1,5 +1,8 @@
 #include "group_construction.h"
 
+#include <sstream>
+#include <stdexcept>
+
 #include <stdexcept>
 
 #include "measures.h"
@@ -129,6 +132,26 @@ Matrix unit(const Field& field, std::size_t order) {
 }
 
 }  // namespace
+
+void require_matmul_shape(const std::vector<Matrix>& slices, std::size_t rows,
+                          std::size_t inner, std::size_t columns) {
+    if (slices.empty()) return;
+    const std::size_t wanted_rows = rows * inner;
+    const std::size_t wanted_columns = inner * columns;
+    const std::size_t wanted_slices = rows * columns;
+    if (slices.front().rows() == wanted_rows && slices.front().columns() == wanted_columns &&
+        slices.size() == wanted_slices) {
+        return;
+    }
+
+    std::ostringstream complaint;
+    complaint << "--symmetry matmul " << rows << " " << inner << " " << columns << " describes "
+              << wanted_slices << " slices of " << wanted_rows << "x" << wanted_columns
+              << ", and the tensor given has " << slices.size() << " slices of "
+              << slices.front().rows() << "x" << slices.front().columns()
+              << "; a group built for one shape says nothing about another";
+    throw std::runtime_error(complaint.str());
+}
 
 std::vector<Automorphism> matrix_multiplication_symmetry_generators(const Field& field,
                                                                     std::size_t rows,

@@ -1,5 +1,7 @@
 #include "strict_deflation.h"
 
+#include "group_construction.h"
+
 #include <mutex>
 #include <stdexcept>
 
@@ -27,6 +29,21 @@ std::vector<Matrix> candidates_of(const Field& field, const std::vector<std::siz
     return matrix_multiplication_orbit_representatives(field, shape[0], shape[1], shape[2]);
 }
 
+/// A named shape must be this tensor's shape, on both routes.
+///
+/// Neither route reaches `requested_ambient_group`, which is where the same guard
+/// sits for the three commands that do, so it is asked for here. Without it the
+/// tree route built 4x4 representatives for a tensor of 4x6 slices and died in
+/// the allocator: `free(): invalid pointer`, exit 134, which is not in
+/// `cli/exit_code.h`'s vocabulary at all.
+void require_shape_or_nothing(const linear_algebra::Tensor& tensor,
+                              const std::vector<std::size_t>& shape) {
+    if (shape.size() != 3) return;
+    const Field field(tensor.characteristic);
+    require_matmul_shape(tensor.slices, shape[0], shape[1], shape[2]);
+    (void)field;
+}
+
 void verify_or_throw(const Field& field, const linear_algebra::Tensor& tensor, StrictStep& step) {
     std::vector<Matrix> kept;
     for (const Matrix& term : step.decomposition) {
@@ -43,6 +60,7 @@ void verify_or_throw(const Field& field, const linear_algebra::Tensor& tensor, S
 /// waiting for unsatisfiable on each.
 StrictStep by_solver(const linear_algebra::Tensor& tensor, std::size_t products,
                      const StrictSettings& settings) {
+    require_shape_or_nothing(tensor, settings.matmul_shape);
     StrictStep step;
     step.products = products;
 
@@ -80,6 +98,7 @@ StrictStep by_solver(const linear_algebra::Tensor& tensor, std::size_t products,
 StrictStep by_tree(const linear_algebra::Tensor& tensor, std::size_t products,
                    const StrictSettings& settings) {
     const Field field(tensor.characteristic);
+    require_shape_or_nothing(tensor, settings.matmul_shape);
     StrictStep step;
     step.products = products;
 

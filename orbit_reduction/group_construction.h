@@ -50,6 +50,25 @@ std::vector<Automorphism> all_automorphisms(const Field& field, std::size_t rows
 /// will, and orbits only ever need generators.
 std::vector<Matrix> general_linear_generators(const Field& field, std::size_t order);
 
+/// Refuse a `⟨n,m,k⟩` that is not the shape of these slices.
+///
+/// A matrix multiplication tensor `⟨n,m,k⟩` has `n·k` slices of `(n·m) × (m·k)`,
+/// which is the identity `inferred_matmul_shape` inverts. Handing a group built
+/// for one shape to a tensor of another is not a weak quotient, it is undefined:
+/// `act_on` multiplies matrices whose sizes do not meet, and
+/// `matrix_ops.h::multiply` checks no shapes, so the write runs off the end of
+/// the result. Measured on `deflate-strictly --refuter tree`, that is
+/// `free(): invalid pointer` and a core dump, and on `minimise-rank` it is worse
+/// than a crash: it exits 0 having quotiented by nothing, printing
+/// "stabiliser 0, 961 orbits of 961".
+///
+/// So this is the guard both routes to a matmul group must pass, and it throws
+/// rather than returning a flag, because every caller's honest response is to
+/// stop. `orbit_cubes.cpp` already refuses the same mistake in the same words for
+/// the cube route; this is that refusal made available to the rest.
+void require_matmul_shape(const std::vector<Matrix>& slices, std::size_t rows,
+                          std::size_t inner, std::size_t columns);
+
 /// The same symmetries as below, from generators, so the group is never
 /// enumerated. Use this for `⟨3,3,3⟩` and up.
 std::vector<Automorphism> matrix_multiplication_symmetry_generators(const Field& field,
