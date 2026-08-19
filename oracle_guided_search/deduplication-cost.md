@@ -49,9 +49,24 @@ At `⟨2,2,3⟩` that is 6048 elements looked at per parent, seven parents per n
 So the honest reading is that the deduplication is **correct and worth having, and
 currently bottlenecked by its own invariant** rather than by the enumeration. The fix is
 not more pruning; it is a real canonical labelling with refinement, `nauty`'s actual
-contribution rather than the augmentation scheme built on top of it, which would make
-the code sublinear in `|G|` and turn a 3000x node reduction into something like a 3000x
-speedup. That is the next piece of work and it is a substantial one.
+contribution rather than the augmentation scheme built on top of it.
+
+**That piece now exists**, as a reduction rather than an algorithm:
+[`pool_set_canon.h`](pool_set_canon.h) names an orbit from generators by canonical
+image of a set under a prescribed permutation group, `[linton2004]` through
+`[permlib]`, and agrees with the walk on every one of the 225 depth-one children
+of `⟨2,2,2⟩`. It is not yet wired into `is_canonical_augmentation`, which would
+change that function's signature from a group list to this object and make the
+`group visits` column above mean something else, so the numbers here still
+describe the walk.
+
+**The 3000x this used to hope for is not supported by anything published.** No
+source found states a proven complexity bound for canonical image: Linton, Leon
+and Jefferson et al. offer correctness proofs and experiments, and the problem
+subsumes setwise stabiliser, so it is Graph-Isomorphism-hard and no polynomial
+algorithm is on offer. Jefferson et al.'s own measurements against Linton report
+*instances solved inside a timeout* rather than a ratio, so even the published
+improvement does not divide into a speedup. Expect a measurement, not a factor.
 
 ## Where it does not apply
 

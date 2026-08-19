@@ -265,10 +265,13 @@ augmentation: give each object a group-invariant canonical parent and accept an
 extension only from that parent's class, so every isomorphism class is generated
 exactly once with **no memory of what has been generated**. Implemented in
 [`oracle_guided_search/canonical_parent.h`](oracle_guided_search/canonical_parent.h).
-The `nauty` lineage; the refinement-based canonical labelling that makes the
-invariant cheap is the part not implemented here, and is what
+The `nauty` lineage. The refinement-based canonical labelling that makes the
+invariant cheap was long the part not implemented here, which
 [`deduplication-cost.md`](oracle_guided_search/deduplication-cost.md) measures the
-absence of.
+absence of; it now exists as
+[`pool_set_canon.h`](oracle_guided_search/pool_set_canon.h), a reduction to
+`[linton2004]` through `[permlib]` rather than an implementation, and is not yet
+the parent test's canonical form.
 
 **`linton2004`**: S. A. Linton. *Finding the smallest image of a set.* ISSAC 2004,
 229-234, [doi:10.1145/1005285.1005319](https://doi.org/10.1145/1005285.1005319).
