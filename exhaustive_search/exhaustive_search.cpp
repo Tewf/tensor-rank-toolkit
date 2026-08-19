@@ -65,7 +65,14 @@ template <typename Candidates>
 bool expand_subspace_impl(const Field& field, ReducedBasis span,
                           std::size_t width, const Candidates& pool, std::size_t from,
                           std::size_t target, SearchBudget& budget, std::vector<Element>& scratch,
-                          const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products) {
+                          const Gf2Leaf<Candidates>* binary, const std::atomic<bool>* found,
+                          std::vector<Matrix>& products) {
+    // Somebody else already has a witness, so this subtree cannot change the
+    // answer and every node it spends is spent against the shared budget. Without
+    // this test the extra subtrees exhausted the budget and turned a proof into an
+    // undecided: `matmul_2x2x2 --target 7 --node-limit 20000` gave 7 436 nodes and
+    // exit 0 on one thread, and 20 000 nodes and exit 3 on four.
+    if (found != nullptr && found->load(std::memory_order_relaxed)) return false;
     if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = span.dimension();
@@ -84,7 +91,7 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
         ReducedBasis extended = span;
         extended.try_add(map);
         if (expand_subspace_impl(field, std::move(extended), width, pool, index + 1, target, budget,
-                                 scratch, binary, products)) {
+                                 scratch, binary, found, products)) {
             return true;
         }
         if (!budget.exhausted) return false;  // gave up rather than ruled out
@@ -120,7 +127,7 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
     if (worker_count() <= 1) {
         std::vector<Element> scratch;
         return expand_subspace_impl(field, root, width, pool, from, target, budget, scratch, leaf,
-                                    products);
+                                    nullptr, products);
     }
 
     // The root node itself, counted here exactly as the recursion counts it, so
@@ -163,7 +170,7 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
 
         std::vector<Matrix> mine;
         if (!expand_subspace_impl(field, std::move(extended), width, pool, index + 1, target, budget,
-                                  scratch, leaf, mine)) {
+                                  scratch, leaf, &found, mine)) {
             return;
         }
         const std::lock_guard<std::mutex> keep(handover);

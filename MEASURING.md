@@ -48,8 +48,14 @@ measuring a different thing, so **the changed flag belongs beside the number**.
 | `--node-limit` | 5 000 000 | `search_node_limit` in `tunables.conf` |
 | `--timeout` | 300 s | `sat_timeout_seconds` in `tunables.conf` |
 
-More threads change the wall clock and never a count: the exact search visits the
-same nodes and the heuristic adopts the same candidates in the same order.
+More threads change the wall clock, and on a **satisfiable** question also a
+count, which this file used to deny: a refutation visits the same nodes at any
+thread count, a witness stops early and the workers already running spend against
+the same budget, so a tight `--node-limit` can turn exit 0 into exit 3. Measured,
+with the consequence and what to do about it:
+[`exhaustive_search/what-threads-change.md`](exhaustive_search/what-threads-change.md).
+
+The heuristic is unaffected and adopts the same candidates in the same order.
 
 **A published node count above 5 000 000 means a non-default `--node-limit` was
 used.** The GF(16) row of `satisfiability/results.json` records 105 600 301
