@@ -9,6 +9,7 @@
 # measured to lose on all seven fixtures once the rank sums closed the gap it was
 # meant to close. `measurements/` keeps both sets of numbers.
 add_library(oracle_guided_search STATIC strict_deflation.cpp tree_refutation.cpp
+                                       pool_set_canon.cpp
                                         subspace_canon.cpp canonical_parent.cpp
                                         canonical_augmentation.cpp)
 target_include_directories(oracle_guided_search PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -17,7 +18,8 @@ target_include_directories(oracle_guided_search PUBLIC ${CMAKE_CURRENT_SOURCE_DI
 # nothing in `satisfiability` or `orbit_reduction` knows this exists. That is the
 # same arrangement `satisfiability/commands` documents, moved into a library so a
 # test can link it.
-target_link_libraries(oracle_guided_search PUBLIC satisfiability orbit_reduction
+target_link_libraries(oracle_guided_search PRIVATE permlib
+                                          PUBLIC satisfiability orbit_reduction
                                                   descent_search exhaustive_search
                                                   run_limits
                                            PRIVATE map_construction cli project_warnings)

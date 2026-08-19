@@ -11,3 +11,11 @@ target_link_libraries(test_canonical_augmentation PRIVATE oracle_guided_search f
 add_test(NAME canonical_augmentation
          COMMAND test_canonical_augmentation ${PROJECT_SOURCE_DIR}/fixtures)
 set_tests_properties(canonical_augmentation PROPERTIES TIMEOUT 900)
+
+# The reduction's correctness claim: naming an orbit from generators must induce
+# the same partition as walking all 216 elements. 2x2x2 is the largest shape where
+# the walk is available as an oracle, which is why the check lives at that size.
+add_executable(test_pool_set_canon test_pool_set_canon.cpp)
+target_link_libraries(test_pool_set_canon PRIVATE oracle_guided_search formats testing
+                                                  project_warnings)
+add_test(NAME pool_set_canon COMMAND test_pool_set_canon ${PROJECT_SOURCE_DIR}/fixtures)
