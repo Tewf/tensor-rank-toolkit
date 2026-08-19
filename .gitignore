@@ -18,3 +18,8 @@ article/*.fdb_latexmk
 article/*.bbl
 article/*.blg
 article/*.synctex.gz
+
+# What the browser console writes while it runs: one directory per run, holding
+# the command, the output and any operators the tool emitted. Generated, and
+# sometimes large, so it is regenerated rather than carried.
+web_interface/runs/

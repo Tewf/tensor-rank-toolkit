@@ -1,0 +1,130 @@
+/* The console, on top of the project's own tokens.
+
+   site/style.css is served from where it already lives, so the colours, the two
+   type families and the dark mode are the published page's rather than a second
+   copy of them. Everything here is what a console needs and that page does not:
+   a two column working area, a form, and a result card whose badge says how a
+   run ended.
+
+   One colour is added. The stylesheet has a teal and a gold and no alarm, and
+   this interface has two endings that must not be read as either: a component
+   that failed its own check, and a tool that could not run at all. */
+
+:root { --alarm: #A32B22; --wide: 1600px; }
+@media (prefers-color-scheme: dark) { :root { --alarm: #F08A7E; } }
+
+body { font-size: 15px; }
+
+.head {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap;
+  padding: .7rem 1.4rem;
+}
+.head .brand { font-weight: 700; letter-spacing: -.02em; }
+.head .facts { font-family: var(--mono); font-size: .74rem; color: var(--muted); }
+.head .spacer { flex: 1; }
+
+.console {
+  display: grid; gap: 1.6rem; padding: 1.4rem;
+  grid-template-columns: minmax(380px, 460px) minmax(0, 1fr);
+  max-width: var(--wide); margin: 0 auto; align-items: start;
+}
+@media (max-width: 1000px) { .console { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 1rem 1.1rem; margin-bottom: 1.1rem;
+}
+.panel > h2 {
+  font-size: .78rem; font-family: var(--mono); letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+  margin: 0 0 .8rem;
+}
+.panel p { font-size: .86rem; color: var(--muted); margin: .5rem 0; }
+
+textarea, input, select, button {
+  font-family: var(--mono); font-size: .82rem; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 3px; padding: .38rem .5rem;
+}
+textarea { width: 100%; min-height: 12rem; line-height: 1.5; resize: vertical; }
+select, input { max-width: 100%; }
+label { display: block; font-size: .8rem; margin: .55rem 0 .1rem; }
+label .flag { font-family: var(--mono); color: var(--teal); }
+.hint { font-size: .76rem; color: var(--muted); line-height: 1.5; margin: .15rem 0 .4rem; }
+
+.row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.row > * { flex: 0 0 auto; }
+
+button { cursor: pointer; background: var(--sunken); }
+button:hover { border-color: var(--teal); }
+button.go {
+  background: var(--teal); color: var(--paper); border-color: var(--teal);
+  font-weight: 650; padding: .5rem 1.2rem; font-size: .9rem;
+}
+button.go[disabled] { opacity: .5; cursor: default; }
+
+/* the question: one row per tool, the whole row is the control */
+.tool {
+  display: block; width: 100%; text-align: left; font-family: var(--sans);
+  background: none; border: 0; border-bottom: 1px solid var(--line);
+  border-radius: 0; padding: .5rem .2rem;
+}
+.tool:last-child { border-bottom: 0; }
+.tool .name { font-family: var(--mono); font-size: .82rem; color: var(--teal); }
+.tool .asks { display: block; font-size: .84rem; color: var(--muted); margin-top: .1rem; }
+.tool[aria-pressed="true"] { background: var(--sunken); }
+.tool[aria-pressed="true"] .name { font-weight: 700; }
+
+.answers { font-size: .84rem; color: var(--muted); margin: 0 0 .7rem; }
+
+pre.command {
+  font-family: var(--mono); font-size: .78rem; line-height: 1.6;
+  background: var(--sunken); border: 1px solid var(--line); border-radius: 3px;
+  padding: .6rem .7rem; margin: .3rem 0 .6rem;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+pre.command .loose { color: var(--muted); font-style: italic; }
+
+/* results */
+.result {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 1rem 1.1rem; margin-bottom: 1rem;
+}
+.result header { display: flex; gap: .7rem; align-items: baseline; flex-wrap: wrap; }
+.result h3 { margin: 0; font-size: .95rem; font-family: var(--mono); }
+.result .clock { font-family: var(--mono); font-size: .76rem; color: var(--muted); }
+
+.badge {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em;
+  text-transform: uppercase; font-weight: 700;
+  border: 1px solid currentColor; border-radius: 2px; padding: .1rem .45rem;
+  color: var(--muted);
+}
+.v-yes .badge, .v-no .badge { color: var(--teal); }
+.v-undecided .badge, .v-stopped .badge, .v-usage .badge { color: var(--gold); }
+.v-error .badge, .v-unverified .badge,
+.v-signalled .badge, .v-unknown .badge { color: var(--alarm); }
+
+.means { font-size: .92rem; margin: .6rem 0 .2rem; max-width: none; }
+.standing {
+  font-size: .8rem; color: var(--muted); margin: 0 0 .7rem; max-width: none;
+  border-left: 2px solid var(--line); padding-left: .6rem;
+}
+.v-undecided .standing, .v-stopped .standing { border-left-color: var(--gold); }
+.v-error .standing, .v-unverified .standing { border-left-color: var(--alarm); }
+
+.stream {
+  font-family: var(--mono); font-size: .78rem; line-height: 1.55;
+  background: var(--sunken); border: 1px solid var(--line); border-radius: 3px;
+  padding: .55rem .7rem; margin: .25rem 0 .7rem; max-height: 26rem;
+  overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.stream.commentary { color: var(--muted); }
+.stream-label {
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); margin-top: .5rem;
+}
+.files a { font-family: var(--mono); font-size: .78rem; margin-right: .8rem; }
+.empty { color: var(--muted); font-size: .88rem; }
