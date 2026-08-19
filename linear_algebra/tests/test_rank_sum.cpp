@@ -179,11 +179,20 @@ int main(int argc, char** argv) {
                          linear_algebra::rank_sum_lower_bound(field, tensor.slices)),
                      static_cast<long long>(together));
 
-        // And the combined bound is exactly the largest of the three.
-        check::equal(name + " combined bound",
-                     static_cast<long long>(
-                         linear_algebra::rank_lower_bound(field, tensor.slices)),
-                     static_cast<long long>(std::max(together, flattening)));
+        // And the combined bound is at least the largest of the three here.
+        //
+        // It was an equality until Griesmer joined `rank_lower_bound` as a fourth
+        // term, and on `f2_5x5` that term wins, 12 against 10. Asserting equality
+        // here would either pin this file to a bound it does not compute or make
+        // it a second copy of `rank_metric_bound`'s own test. What belongs here is
+        // that the shared entry point never loses to the rank sums, and the exact
+        // value of every term is asserted where that term lives.
+        check::equal(name + " combined bound is at least the rank sums",
+                     linear_algebra::rank_lower_bound(field, tensor.slices) >=
+                             std::max(together, flattening)
+                         ? 1
+                         : 0,
+                     1);
 
         if (measured.line > measured.total) line_ever_wins = true;
         if (measured.total > measured.line) total_ever_wins = true;

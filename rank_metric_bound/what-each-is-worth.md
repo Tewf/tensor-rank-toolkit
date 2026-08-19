@@ -5,7 +5,7 @@ The least rank each argument fails to refute, one core, fastest of three, from
 [`../MEASURING.md`](../MEASURING.md). `rank_lower_bound` is the flattening bound
 and both rank sums together, which is what a caller gets today; `k` and `d` are
 the deciding axis's, printed by that same command. Cost is
-[`the-edit-not-made.md`](the-edit-not-made.md)'s subject and the column here is
+[`joining-the-shared-floor.md`](joining-the-shared-floor.md)'s subject and the column here is
 the whole bound from the tensor, taken on one core under the measurement lock on
 an otherwise idle machine. The rows under 0.02 ms are a few microseconds of work
 quoted to two decimals, so read them as an order of magnitude and not as a
@@ -46,7 +46,7 @@ the field size says. On polynomial multiplication it collapses to `n + m - 1`,
 the number of output coefficients, which the flattening bound already gives.
 
 **The Griesmer form wins once, and the win needs stating carefully.** On `f2_5x5`
-it returns 12 against `rank_lower_bound`'s 10, in 0.46 ms. It does not move the
+it returns 12 where the other three terms of `rank_lower_bound` reach only 10, in 0.46 ms. It does not move the
 repository's bracket: `12 <= rank <= 14` already stood, and its 12 came from
 `decide-rank --target 11` running to exhaustion, which `exhaustive_search` prices
 at 77 s. What changed is the price of that 12, and that the cheap floor every
