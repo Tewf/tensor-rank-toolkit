@@ -18,6 +18,7 @@
 #include <string>
 
 #include "candidate_pool.h"
+#include "memory_budget.h"
 #include "pool_orbits.h"
 #include "span_basis.h"
 
@@ -76,15 +77,10 @@ PoolSetCanon::PoolSetCanon(const Field& field, const std::vector<Automorphism>& 
     // honest degenerate case and matches `canonical_subspace`'s empty-group arm.
     if (permutations.empty()) return;
 
-    // Refused rather than attempted. `construct` does not fail at this size, it
-    // dies, and a segfault is not an answer a caller can act on.
-    if (presentation_->points > kLargestVerifiedPool) {
-        throw std::runtime_error(
-            "a pool of " + std::to_string(presentation_->points) +
-            " is past the " + std::to_string(kLargestVerifiedPool) +
-            " this canonical form was verified on; it is not slow past there, it "
-            "crashes, so the shape is refused instead");
-    }
+    // Priced before it is taken, like every other bulk allocation here.
+    require_room("the group presented on a pool of " +
+                     std::to_string(presentation_->points) + " rank-one maps",
+                 presentation_->points, kBytesPerPoolPoint);
     presentation_->group = permlib::construct(
         static_cast<permlib::dom_int>(presentation_->points), permutations.begin(),
         permutations.end());
