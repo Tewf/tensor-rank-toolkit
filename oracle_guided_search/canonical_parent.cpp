@@ -80,22 +80,27 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
                                     const std::vector<Matrix>& child,
                                     const SubspaceCode& parent_code, const Matrix& added,
                                     const std::vector<Matrix>& pool,
-                                    const std::vector<Automorphism>& group) {
+                                    const std::vector<Automorphism>& group,
+                                    const PoolSetCanon& canon) {
     ParentTest test;
     const std::vector<std::size_t> inside = pool_inside(field, pool, child);
     const std::vector<Matrix> chosen(child.begin() + base.size(), child.end());
     const std::vector<std::vector<Matrix>> parents =
         candidate_parents(field, base, chosen, pool, inside);
 
-    SubspaceCode least;
+    // The canonical name of each candidate parent's orbit, by least image under a
+    // prescribed group rather than by walking it. `canonical_subspace` took the
+    // least code over every element, which is what made this route lose: 16.2x
+    // fewer nodes for 15x the wall clock, because one test cost `|G|` reductions.
+    std::vector<std::size_t> least;
     std::vector<SubspaceCode> least_codes;
     for (const std::vector<Matrix>& parent : parents) {
-        const CanonicalSubspace canonical = canonical_subspace(field, group, parent);
-        test.group_visits += group.size();
-        if (least.empty() || canonical.code < least) {
-            least = canonical.code;
+        const std::vector<std::size_t> name = canon.canonical(pool_inside(field, pool, parent));
+        ++test.canonisations;
+        if (least.empty() || name < least) {
+            least = name;
             least_codes.assign(1, subspace_code(field, parent));
-        } else if (canonical.code == least) {
+        } else if (name == least) {
             least_codes.push_back(subspace_code(field, parent));
         }
     }
@@ -103,22 +108,27 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
         return test;
     }
 
-    const CanonicalSubspace canonical_child = canonical_subspace(field, group, child);
-    test.group_visits += group.size();
+    // The distinguished pool element of the child, by canonising the **pair**
+    // rather than by minimising over the group elements that attain the child's
+    // canonical form. Linton's algorithm returns an image and not the element that
+    // got there, so the attaining coset is not available; a marked pair on a
+    // doubled ground set asks the same question with the same primitive, and a
+    // minimum of orbit invariants is an orbit invariant.
     const SubspaceCode added_code = subspace_code(field, {added});
 
-    SubspaceCode best_key;
-    SubspaceCode added_key;
+    std::vector<std::size_t> best_key;
+    std::vector<std::size_t> added_key;
+    bool added_seen = false;
     for (const std::size_t index : inside) {
-        SubspaceCode key;
-        for (const std::size_t which : canonical_child.attaining) {
-            const SubspaceCode image = image_code(field, group[which], pool[index]);
-            if (key.empty() || image < key) key = image;
+        const std::vector<std::size_t> key = canon.canonical_with_marked(inside, index);
+        ++test.canonisations;
+        if (subspace_code(field, {pool[index]}) == added_code) {
+            added_key = key;
+            added_seen = true;
         }
-        if (subspace_code(field, {pool[index]}) == added_code) added_key = key;
         if (best_key.empty() || key < best_key) best_key = key;
     }
-    test.accepted = added_key == best_key;
+    test.accepted = added_seen && added_key == best_key;
     return test;
 }
 

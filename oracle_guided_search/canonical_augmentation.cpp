@@ -1,5 +1,9 @@
 #include "canonical_augmentation.h"
 
+#include <optional>
+
+#include "pool_set_canon.h"
+
 #include <algorithm>
 #include <cstdint>
 #include <exception>
@@ -23,6 +27,9 @@ struct Walk {
     const linear_algebra::Tensor* tensor = nullptr;
     const std::vector<Matrix>* pool = nullptr;
     const std::vector<Automorphism>* group = nullptr;
+    /// Built once for the whole walk. Presenting the group costs more than one
+    /// parent test does, and every test wants the same presentation.
+    const PoolSetCanon* canon = nullptr;
     /// The span dimension the walk starts from, so a branch named by the pool
     /// elements it added knows what dimension it sits at.
     std::size_t base = 0;
@@ -114,8 +121,10 @@ void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimensi
         child.push_back(pool[index]);
         if (walk.canonical && !walk.group->empty()) {
             const ParentTest test = is_canonical_augmentation(
-                field, walk.tensor->slices, child, current_code, pool[index], pool, *walk.group);
+                field, walk.tensor->slices, child, current_code, pool[index], pool, *walk.group,
+                *walk.canon);
             walk.report.group_visits += test.group_visits;
+            walk.report.canonisations += test.canonisations;
             if (!test.accepted) continue;
         }
         descend(walk, child, dimension + 1, index + 1);
@@ -185,8 +194,10 @@ void expand_one(Walk& walk, const std::vector<Matrix>& root, const Branch& node,
         child.push_back(pool[index]);
         if (walk.canonical && !walk.group->empty()) {
             const ParentTest test = is_canonical_augmentation(
-                field, walk.tensor->slices, child, current_code, pool[index], pool, *walk.group);
+                field, walk.tensor->slices, child, current_code, pool[index], pool, *walk.group,
+                *walk.canon);
             walk.report.group_visits += test.group_visits;
+            walk.report.canonisations += test.canonisations;
             if (!test.accepted) continue;
         }
         Branch next;
@@ -275,6 +286,16 @@ EnumerationReport enumerate_solution_subspaces(const Field& field,
     walk.group = &group;
     walk.target = target;
     walk.canonical = canonical;
+
+    // Presented once, and only when the parent test will ask. Building it walks
+    // the group to work out how it permutes the two vector lists, which is the
+    // last `|G|` pass left here and happens once for the whole enumeration rather
+    // than once per candidate parent.
+    std::optional<PoolSetCanon> canoniser;
+    if (canonical && !group.empty() && !pool.empty()) {
+        canoniser.emplace(field, group, pool.front().rows(), pool.front().columns());
+        walk.canon = &canoniser.value();
+    }
 
     walk.base = linear_algebra::span_of(field, tensor.slices).dimension();
     if (walk.base <= target) {

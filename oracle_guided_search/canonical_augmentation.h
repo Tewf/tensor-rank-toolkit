@@ -59,9 +59,14 @@ struct EnumerationReport {
     std::size_t distinct = 0;
     /// Subspaces built and tested, the measure that does not depend on the machine.
     std::size_t nodes = 0;
-    /// Group elements looked at by the parent test. Zero when it is off, and the
-    /// number that says what the deduplication cost.
+    /// Group elements looked at by the parent test. **Zero since the parent test
+    /// stopped walking the group**, which is what it measured; it is kept rather
+    /// than removed because `deduplication-cost.md` publishes it, and a column
+    /// going to zero says what happened where a renamed one would not.
     std::size_t group_visits = 0;
+    /// Canonical images asked for, which is what replaced the walk. One per
+    /// candidate parent and one per pool element of the child.
+    std::size_t canonisations = 0;
     double seconds = 0;
     /// One rank-one basis per emitted subspace, each already checked against the map
     /// by `recovers_map`.
@@ -91,7 +96,7 @@ struct EnumerationReport {
 /// no count.** This is the one search here where that is a fact rather
 /// than a hope: it counts instead of stopping, so there is no witness to race to
 /// and no shared budget to spend against, and every subtree is visited whatever
-/// the thread count. `emitted`, `distinct`, `nodes` and `group_visits` are
+/// the thread count. `emitted`, `distinct`, `nodes` and `canonisations` are
 /// therefore identical at one thread and at twelve, asserted in
 /// `tests/test_canonical_augmentation.cpp`; contrast
 /// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md), where

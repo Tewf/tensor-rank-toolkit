@@ -46,27 +46,38 @@ in the last column: `canonical_subspace` finds a canonical code by walking the w
 group and taking the least, so one test costs `|G|` reductions per candidate parent.
 At `⟨2,2,3⟩` that is 6048 elements looked at per parent, seven parents per node.
 
-So the honest reading is that the deduplication is **correct and worth having, and
-currently bottlenecked by its own invariant** rather than by the enumeration. The fix is
-not more pruning; it is a real canonical labelling with refinement, `nauty`'s actual
+So the honest reading **was** that the deduplication is correct and worth having,
+and bottlenecked by its own invariant rather than by the enumeration: the fix was
+never more pruning, it was a real canonical labelling, `nauty`'s actual
 contribution rather than the augmentation scheme built on top of it.
 
-**That piece now exists**, as a reduction rather than an algorithm:
-[`pool_set_canon.h`](pool_set_canon.h) names an orbit from generators by canonical
-image of a set under a prescribed permutation group, `[linton2004]` through
-`[permlib]`, and agrees with the walk on every one of the 225 depth-one children
-of `⟨2,2,2⟩`. It is not yet wired into `is_canonical_augmentation`, which would
-change that function's signature from a group list to this object and make the
-`group visits` column above mean something else, so the numbers here still
-describe the walk.
+## That change is made, and the route stopped losing
 
-**The 3000x this used to hope for is not supported by anything published.** No
-source found states a proven complexity bound for canonical image: Linton, Leon
-and Jefferson et al. offer correctness proofs and experiments, and the problem
-subsumes setwise stabiliser, so it is Graph-Isomorphism-hard and no polynomial
-algorithm is on offer. Jefferson et al.'s own measurements against Linton report
-*instances solved inside a timeout* rather than a ratio, so even the published
-improvement does not divide into a speedup. Expect a measurement, not a factor.
+`canonical_subspace` named an orbit by walking every element of the group and
+taking the least code. [`pool_set_canon.h`](pool_set_canon.h) names the same
+orbits by least image under a prescribed permutation group, `[linton2004]` through
+`[permlib]`, and the parent test asks it instead. Measured on
+`enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2`,
+both routes back to back on an idle machine:
+
+| route | distinct | nodes | wall |
+|---|---|---|---|
+| plain | 36 | 1 890 601 | 35.89 s |
+| canonical, walking the group | 1 | 954 | 21.9 s |
+| canonical, canonical image | 1 | **83** | **3.04 s** |
+
+**22 779x fewer nodes than the plain route and 11.8x faster**, against 1 982x and
+1.7x before. The group is no longer walked at all: `group_visits` is 0 and
+`canonisations` is what counts now.
+
+**The node count moved, and that is expected rather than alarming.** A canonical
+form is not unique; any function constant on orbits and separating them will do,
+and a different one accepts a different representative per class, so it walks a
+different tree. What may not move is the answer, and it does not: 36 subspaces in
+one orbit by the plain route, one found here, none at target 6, and
+`factor-over-canonical-basis` still returns a factorisation that multiplies out.
+Losing solutions would also shrink a node count, which is why `distinct` is
+asserted beside it rather than the count being trusted alone.
 
 ## Where it does not apply
 
