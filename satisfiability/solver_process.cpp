@@ -196,8 +196,11 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
     // usage and exit, which would read here as a solver that answered nothing.
     std::string configuration;
     if (solver.name == "kissat") {
-        if (tuning == Tuning::Satisfiable) configuration = " --sat";
-        if (tuning == Tuning::Unsatisfiable) configuration = " --unsat";
+        // No leading space. These used to be pasted into a shell line, where the
+        // shell split them; they are an argv element now, and " --unsat" is a
+        // filename kissat cannot read rather than a configuration it honours.
+        if (tuning == Tuning::Satisfiable) configuration = "--sat";
+        if (tuning == Tuning::Unsatisfiable) configuration = "--unsat";
     }
 
     const auto started = std::chrono::steady_clock::now();
