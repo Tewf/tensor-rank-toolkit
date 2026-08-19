@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "arguments.h"
 #include "dense_matrix_file.h"
 #include "exit_code.h"
 #include "greedy_sparsifier.h"
@@ -36,12 +37,29 @@ void report(const Field& field, const std::string& method,
 
 /// The tool proper. main only turns a thrown refusal into a line.
 int run(int argc, char** argv) {
-    if (argc < 2) {
+    // Walked by `cli/arguments.h` rather than by hand. What the hand-rolled two
+    // lines did instead: `--show` was read at argv[2] and nowhere else, so
+    // `sparsify-operator m.matrix junk --show` printed no matrix and said nothing
+    // about why; every other word on the line was dropped without a message, so a
+    // misspelt `--shows` exited 0 having silently ignored the flag; and a second
+    // filename was read past in silence, which is what a shell glob hands you
+    // when a fixture directory holds more matches than the writer expected.
+    // Three ways to ask for something and be told it was done.
+    cli::Arguments arguments(argc, argv);
+    bool show_matrix = false;
+    while (arguments.next_flag()) {
+        if (arguments.is("--show")) {
+            show_matrix = true;
+        } else {
+            arguments.refuse();
+        }
+    }
+    // No file named, and nothing here reads a map on stdin.
+    if (arguments.reads_stdin()) {
         std::cerr << "usage: sparsify-operator <matrix-file|.sms> [--show]\n";
         return cli::exit_status(cli::ExitCode::Usage);
     }
-    const std::string path = argv[1];
-    const bool show_matrix = (argc > 2 && std::string(argv[2]) == "--show");
+    const std::string path = arguments.filename();
 
     const Field field;
     // The format is inferred from the file extension: `.sms` files use the
@@ -95,6 +113,12 @@ int run(int argc, char** argv) {
 int main(int argc, char** argv) {
     try {
         return run(argc, argv);
+    } catch (const cli::ArgumentError& problem) {
+        // A word on the command line that could not be read. The run never
+        // started, so Usage and not Error: this used to reach the handler below
+        // and leave as 5, reporting a bad flag as a tool that could not run.
+        std::cerr << "sparsify-operator: " << problem.what() << "\n";
+        return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& problem) {
         // An unreadable file, or a run that would not fit the memory budget.
         // Reported as a line, not as a terminate. Was 1, which this command has
