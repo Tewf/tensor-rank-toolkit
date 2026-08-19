@@ -1,0 +1,310 @@
+diff --git a/canonical_factorisation/factorisation.cpp b/canonical_factorisation/factorisation.cpp
+index 6f70be9..b744e6a 100644
+--- a/canonical_factorisation/factorisation.cpp
++++ b/canonical_factorisation/factorisation.cpp
+@@ -99,33 +99,6 @@ std::size_t pool_size_for(const ModularField& field, std::size_t rows, std::size
+ /// **quietly**, which is what this did when it called `all_automorphisms`
+ /// directly: that refuses on any 4x4 map over GF(2), so every matrix
+ /// multiplication fixture ran unquotiented while reporting that symmetry was on.
+-/// The `<n,m,k>` a shape would have if it were a matrix multiplication tensor.
+-///
+-/// `nm x mk x kn` are the three dimensions, so their product is `(nmk)^2` and
+-/// the three sizes divide out of its square root. Returns false when they do
+-/// not come out whole, which is most tensors.
+-///
+-/// Guessing wrong is safe rather than merely unlikely: `stabiliser_of` keeps
+-/// only the elements that actually fix `span(T)`, which is the precondition
+-/// `expand_subspace_up_to_symmetry` needs, so a wrong guess yields a small
+-/// group and never a false refusal.
+-bool inferred_matmul_shape(std::size_t rows, std::size_t columns, std::size_t slices,
+-                           std::size_t shape[3]) {
+-    if (rows == 0 || columns == 0 || slices == 0) return false;
+-    const std::size_t product = rows * columns * slices;
+-    std::size_t root = static_cast<std::size_t>(std::sqrt(static_cast<double>(product)));
+-    while (root > 0 && root * root > product) --root;
+-    while ((root + 1) * (root + 1) <= product) ++root;
+-    if (root * root != product) return false;
+-
+-    if (root % columns || root % slices || root % rows) return false;
+-    shape[0] = root / columns;   // n
+-    shape[1] = root / slices;    // m
+-    shape[2] = root / rows;      // k
+-    return shape[0] * shape[1] == rows && shape[1] * shape[2] == columns &&
+-           shape[2] * shape[0] == slices;
+-}
+-
+ std::vector<bilinear_rank::Automorphism> stabiliser_or_nothing(
+     const ModularField& field, const std::vector<ModularMatrix>& slices,
+     const cli::Symmetry& symmetry, std::string& refusal) {
+@@ -144,7 +117,7 @@ std::vector<bilinear_rank::Automorphism> stabiliser_or_nothing(
+     // stabiliser rather than a wrong one.
+     std::size_t shape[3] = {0, 0, 0};
+     if (symmetry.kind == cli::SymmetryKind::Automatic &&
+-        inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
++        bilinear_rank::inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
+                               shape)) {
+         try {
+             const std::vector<bilinear_rank::Automorphism> closed =
+@@ -211,7 +184,7 @@ Factorisation by_satisfiability(const ModularField& field,
+ std::vector<bilinear_rank::Automorphism> full_product_group(
+     const ModularField& field, const std::vector<ModularMatrix>& slices, std::string& refusal) {
+     std::size_t shape[3] = {0, 0, 0};
+-    if (!inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
++    if (!bilinear_rank::inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
+                                shape)) {
+         refusal = "canonical augmentation needs a product shape, and these dimensions are not one";
+         return {};
+diff --git a/cli/symmetry_argument.h b/cli/symmetry_argument.h
+index 9a6ccfe..451916e 100644
+--- a/cli/symmetry_argument.h
++++ b/cli/symmetry_argument.h
+@@ -21,20 +21,36 @@
+ namespace cli {
+ 
+ enum class SymmetryKind {
+-    None,                   ///< try every candidate; the default everywhere
++    Inferred,               ///< the closed form if the shape is a product; the default
++    None,                   ///< try every candidate, and only when asked for
+     Automatic,              ///< the map's own stabiliser, computed for this map
+     MatrixMultiplication,   ///< the closed-form orbits of `⟨n,m,k⟩`
+ };
+ 
+ struct Symmetry {
+-    SymmetryKind kind = SymmetryKind::None;
++    SymmetryKind kind = SymmetryKind::Inferred;
+     std::vector<std::size_t> shape;  ///< three entries, and only for `matmul`
+ };
+ 
++/// Whether a `--symmetry` word was actually typed.
++///
++/// `Inferred` is the default, so nobody asked for it, and a command that refuses
++/// a *request* it cannot honour must not refuse the default: it should quietly
++/// do without. Reading `kind != None` as "the user asked" is what broke two
++/// commands the moment the default stopped being `None`.
++inline bool was_requested(const Symmetry& symmetry) {
++    return symmetry.kind != SymmetryKind::Inferred;
++}
++
+ inline const char* symmetry_usage() {
+     return "  -s, --symmetry none|auto|matmul <n> <m> <k>\n"
+-           "        none    try every candidate, and the default, so a command\n"
+-           "                not asked for symmetry answers as it always did\n"
++           "        (none given) infer <n,m,k> from the three dimensions and use\n"
++           "                the closed form when they come out whole. This is the\n"
++           "                default: a wrong guess yields a small group, never a\n"
++           "                false refusal, and a shape that is not a product gets\n"
++           "                no group at all\n"
++           "        none    try every candidate, for timing the two against each\n"
++           "                other on one question\n"
+            "        auto    quotient by this map's own stabiliser; works on any\n"
+            "                map, and refuses when the group is too large to build\n"
+            "        matmul  quotient by the symmetries of <n,m,k>, whose orbits\n"
+@@ -63,7 +79,10 @@ inline Symmetry parse_symmetry(int argc, char** argv, int& position) {
+     const std::string kind = argv[++position];
+ 
+     Symmetry symmetry;
+-    if (kind == "none") return symmetry;
++    if (kind == "none") {
++        symmetry.kind = SymmetryKind::None;
++        return symmetry;
++    }
+     if (kind == "auto") {
+         symmetry.kind = SymmetryKind::Automatic;
+         return symmetry;
+diff --git a/exhaustive_search/commands/decide_rank_main.cpp b/exhaustive_search/commands/decide_rank_main.cpp
+index bf0b38d..efd3f1e 100644
+--- a/exhaustive_search/commands/decide_rank_main.cpp
++++ b/exhaustive_search/commands/decide_rank_main.cpp
+@@ -168,7 +168,7 @@ int run(int argc, char** argv) {
+         // Most specific first, and the first match wins: `--bottom-up` implies no
+         // target, so testing the sweep last would report the flag nobody typed.
+         const char* why = nullptr;
+-        if (symmetry.kind != cli::SymmetryKind::None) {
++        if (cli::was_requested(symmetry) && symmetry.kind != cli::SymmetryKind::None) {
+             why = "--symmetry";
+         } else if (bottom_up) {
+             why = "--bottom-up";
+@@ -188,16 +188,27 @@ int run(int argc, char** argv) {
+     std::vector<bilinear_rank::Matrix> products;
+     const auto started = cli::Clock::now();
+ 
++    // The search needs a group that stabilises what it is searching from, and
++    // `anchor` is not always the map: under `--anchor heuristic` it is the
++    // heuristic's subspace, whose stabiliser is a different group.
++    //
++    // Asked for before the route is chosen, because the route now depends on the
++    // answer. A group of one element is no quotient, so the plain search runs
++    // rather than the quotiented one carrying a permutation table that strikes
++    // nothing; and the quotient needs the pool in hand, so an addressed pool
++    // takes the plain route whatever was asked for.
++    std::vector<bilinear_rank::Automorphism> generators;
++    if (target >= 0 && fits && !bottom_up) {
++        generators = bilinear_rank::stabiliser_of(
++            field, anchor, bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry));
++    }
++    const bool quotient = generators.size() > 1;
++    if (quotient) cli::result() << "  quotienting by " << generators.size() << " generators\n";
++
+     bool found = false;
+     if (bottom_up) {
+         found = bilinear_rank::fewest_products_from_scratch(field, tensor.slices, pool, budget, products);
+-    } else if (target >= 0 && symmetry.kind != cli::SymmetryKind::None) {
+-        // The search needs a group that stabilises what it is searching from, and
+-        // `anchor` is not always the map: under `--anchor heuristic` it is the
+-        // heuristic's subspace, whose stabiliser is a different group.
+-        const std::vector<bilinear_rank::Automorphism> generators = bilinear_rank::stabiliser_of(
+-            field, anchor, bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry));
+-        cli::result() << "  quotienting by " << generators.size() << " generators\n";
++    } else if (quotient) {
+         found = bilinear_rank::expand_subspace_up_to_symmetry(field, anchor, pool, generators,
+                                                      static_cast<std::size_t>(target), budget,
+                                                      products);
+diff --git a/orbit_reduction/README.md b/orbit_reduction/README.md
+index 627ba4e..8843f3f 100644
+--- a/orbit_reduction/README.md
++++ b/orbit_reduction/README.md
+@@ -52,6 +52,39 @@ stated as a contract because the two sides are compiled apart:
+ `--symmetry` word typed at a shell into a group, and the library has no business
+ knowing a command line exists.
+ 
++## When it is taken, and what that costs
++
++**A shape that looks like `⟨n,m,k⟩` is quotiented by default.** No `--symmetry`
++word means `Inferred`: the three dimensions are read as `nm x mk x kn`, whose
++product is `(nmk)^2`, and where they come out whole the closed-form group is
++used. A shape that is not a product gets no group, and one that looks like a
++product and is not gets a small stabiliser rather than a wrong one, because
++`stabiliser_of` keeps only what actually fixes `span(T)`. `-s none` turns it off,
++which is how the two are timed against each other on one question.
++
++**It is not free on a satisfiable question, and the direction is measured.** On
++`matmul_2x2x2`, one core:
++
++| question | quotiented | `-s none` | |
++|---|---|---|---|
++| `--target 6`, refute | 648 nodes, 0.0161 s | 25 399 nodes, 0.0368 s | 39x nodes, **2.3x faster** |
++| `--target 7`, find | 3 167 nodes, 0.1545 s | 7 436 nodes, 0.0210 s | 2.3x nodes, **7.4x slower** |
++
++The quotient costs about 17 us a node against 2.8 us, spent striking orbits and
++narrowing the residual subgroup. A refutation visits the whole tree, so 39x fewer
++nodes pays for it. A find stops at the first witness in index order, so the plain
++search gets there before the quotient has earned its per-node cost back. **This is
++the same asymmetry `orbit_cubes` measures on the solver**, where cubes are worth
++8.2x on a refutation and 250x worse on a find, and it has the same cause.
++
++Both rows are milliseconds, so they say which way the effect goes and not how
++large it is. A question with real weight has not been measured either way.
++
++**The sweep is not affected.** `fewest_products_by_sweep` has no quotiented form,
++so `decide-rank` with no `--target` runs exactly as it did. Giving the sweep one
++is what would let this default be right rather than a coin flip, since a sweep is
++every refutation below the answer and one find at the end.
++
+ ## What it is worth, measured
+ 
+ Refuting `⟨2,2,2⟩` at k = 6 costs the tree search **0.56 s plain and 0.02 s
+diff --git a/orbit_reduction/group_construction.cpp b/orbit_reduction/group_construction.cpp
+index a1ec7e7..e228302 100644
+--- a/orbit_reduction/group_construction.cpp
++++ b/orbit_reduction/group_construction.cpp
+@@ -1,5 +1,7 @@
+ #include "group_construction.h"
+ 
++#include <cmath>
++
+ #include <sstream>
+ #include <stdexcept>
+ 
+@@ -225,4 +227,21 @@ std::vector<Automorphism> matrix_multiplication_symmetries(const Field& field, s
+     return group;
+ }
+ 
++bool inferred_matmul_shape(std::size_t rows, std::size_t columns, std::size_t slices,
++                           std::size_t shape[3]) {
++    if (rows == 0 || columns == 0 || slices == 0) return false;
++    const std::size_t product = rows * columns * slices;
++    std::size_t root = static_cast<std::size_t>(std::sqrt(static_cast<double>(product)));
++    while (root > 0 && root * root > product) --root;
++    while ((root + 1) * (root + 1) <= product) ++root;
++    if (root * root != product) return false;
++
++    if (root % columns || root % slices || root % rows) return false;
++    shape[0] = root / columns;   // n
++    shape[1] = root / slices;    // m
++    shape[2] = root / rows;      // k
++    return shape[0] * shape[1] == rows && shape[1] * shape[2] == columns &&
++           shape[2] * shape[0] == slices;
++}
++
+ }  // namespace bilinear_rank
+diff --git a/orbit_reduction/group_construction.h b/orbit_reduction/group_construction.h
+index c829e27..9ac0800 100644
+--- a/orbit_reduction/group_construction.h
++++ b/orbit_reduction/group_construction.h
+@@ -50,6 +50,19 @@ std::vector<Automorphism> all_automorphisms(const Field& field, std::size_t rows
+ /// will, and orbits only ever need generators.
+ std::vector<Matrix> general_linear_generators(const Field& field, std::size_t order);
+ 
++/// The `<n,m,k>` a shape would have if it were a matrix multiplication tensor.
++///
++/// `nm x mk x kn` are the three dimensions, so their product is `(nmk)^2` and
++/// the three sizes divide out of its square root. Returns false when they do
++/// not come out whole, which is most tensors.
++///
++/// Guessing wrong is safe rather than merely unlikely: `stabiliser_of` keeps
++/// only the elements that actually fix `span(T)`, which is the precondition
++/// `expand_subspace_up_to_symmetry` needs, so a wrong guess yields a small
++/// group and never a false refusal.
++bool inferred_matmul_shape(std::size_t rows, std::size_t columns, std::size_t slices,
++                           std::size_t shape[3]);
++
+ /// Refuse a `⟨n,m,k⟩` that is not the shape of these slices.
+ ///
+ /// A matrix multiplication tensor `⟨n,m,k⟩` has `n·k` slices of `(n·m) × (m·k)`,
+diff --git a/orbit_reduction/requested_group.h b/orbit_reduction/requested_group.h
+index daa7f12..1a91c35 100644
+--- a/orbit_reduction/requested_group.h
++++ b/orbit_reduction/requested_group.h
+@@ -62,6 +62,21 @@ inline std::vector<Automorphism> requested_ambient_group(const Field& field,
+                                                          const cli::Symmetry& symmetry) {
+     if (symmetry.kind == cli::SymmetryKind::None || slices.empty()) return {};
+ 
++    // The default. `nm x mk x kn` has product `(nmk)^2`, so a product shape is
++    // recognisable from the three dimensions alone and its orbits are known in
++    // closed form, needing no group enumerated. A shape that is not a product
++    // returns nothing here and the caller searches as it always did, and a shape
++    // that looks like one but is not yields a small stabiliser rather than a
++    // wrong group: `stabiliser_of` keeps only what actually fixes `span(T)`.
++    if (symmetry.kind == cli::SymmetryKind::Inferred) {
++        std::size_t shape[3] = {0, 0, 0};
++        if (!inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
++                                   shape)) {
++            return {};
++        }
++        return matrix_multiplication_symmetry_generators(field, shape[0], shape[1], shape[2]);
++    }
++
+     if (symmetry.kind == cli::SymmetryKind::MatrixMultiplication) {
+         // Before the group is built, not after: a group for the wrong shape is
+         // undefined against this tensor rather than merely useless.
+diff --git a/satisfiability/commands/decide_rank_by_sat_main.cpp b/satisfiability/commands/decide_rank_by_sat_main.cpp
+index 5a3f71b..b3b60f3 100644
+--- a/satisfiability/commands/decide_rank_by_sat_main.cpp
++++ b/satisfiability/commands/decide_rank_by_sat_main.cpp
+@@ -137,7 +137,15 @@ bool report(const linear_algebra::Tensor& tensor, std::size_t products,
+ /// silently pin the wrong variables.
+ bool build_orbit_cubes(const linear_algebra::Tensor& tensor, const cli::Symmetry& symmetry,
+                        std::size_t first_products, satisfiability::SolveOptions& approach) {
+-    if (symmetry.kind == cli::SymmetryKind::None) return true;
++    // `Inferred` is the default and means the closed-form orbits where they help.
++    // They do not help here: measured, the cubes cost 30.73 s against 0.12 s on
++    // `matmul_2x2x2` at k = 7, because they are solved in sequence and the ones
++    // that refute are paid for before the one that answers. So the cubes stay
++    // something asked for, and the default reads as none.
++    if (symmetry.kind == cli::SymmetryKind::None ||
++        symmetry.kind == cli::SymmetryKind::Inferred) {
++        return true;
++    }
+ 
+     // Not a limitation to apologise for: an orbit cube *is* a representative of
+     // the closed-form orbits of <n,m,k>, so there is no map whose own stabiliser
