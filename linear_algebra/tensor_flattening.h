@@ -35,9 +35,10 @@
 /// compressed to its flattening rank without changing the rank. Jason Yang's
 /// search (`[yang2025]`; keys are [`../references.md`](../references.md)) does
 /// this at *every node* of its recursion, which is a large part of why it is
-/// fast. Here it is only detected, by `is_concise`. Compressing the tensor and
-/// mapping a decomposition back is the obvious next step and is not done yet, so
-/// no caller acts on the answer.
+/// fast. `is_concise` detects it here; compressing the tensor and carrying a
+/// decomposition of the compressed one back is
+/// [`tensor_compression.h`](tensor_compression.h). **No search calls that yet**,
+/// so the answer is available to act on and nothing acts on it.
 namespace linear_algebra {
 
 /// The `axis`-th flattening: axis 0 keeps rows, axis 1 keeps columns, axis 2
