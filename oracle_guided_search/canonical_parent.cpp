@@ -3,23 +3,12 @@
 #include <algorithm>
 
 #include "candidate_pool.h"
+#include "pool_set_canon.h"
 #include "span_basis.h"
 
 namespace bilinear_rank {
 
 namespace {
-
-/// The pool elements lying inside `span(generators)`.
-std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matrix>& pool,
-                                     const std::vector<Matrix>& generators) {
-    const ReducedBasis span = linear_algebra::span_of(field, generators);
-    std::vector<std::size_t> inside;
-    std::vector<Element> scratch;
-    for (std::size_t index = 0; index < pool.size(); ++index) {
-        if (span.contains(pool[index], scratch)) inside.push_back(index);
-    }
-    return inside;
-}
 
 /// `Σ coefficients[i] · basis[i]`.
 Matrix linear_combination(const Field& field, const std::vector<Matrix>& basis,
