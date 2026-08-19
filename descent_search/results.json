@@ -4,7 +4,7 @@
   "why": "Nothing in the repository could re-derive the published numbers. These are computed from the committed fixtures by code the CI runs, and each result is checked to still generate the map it came from.",
   "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz, which is the machine Table 1 was measured on.",
   "warning": "Times are cumulative: step 3 includes steps 1 and 2.",
-  "outside_the_driver": "`reproduce/measure.py --check` re-derives the `fixtures` rows below and nothing else in this file: `exact_search` and `famous_tensors` are carried whole, so nothing re-runs them and nothing notices when they go stale. They have. Probed against the shipped binary on 2026-08-19, counts only and no timing: the `decided` node counts are out because the search reaches the same answers sooner, `f2_2x3` at 2 nodes rather than 3, `gf4_multiplication` at 2 rather than 3 and `gf8_multiplication` at 329 rather than 1606, with `f2_2x2` still at 1 and every verdict and product count unchanged. Six refutations are retired outright, because `rank_lower_bound` now refuses their target before the search opens a node: `f2_5x5` at 9, 10 and 11 (1, 959 and 459 239 nodes, the 77.4 s among them), GF(16) at 7 (1 897 576 nodes), cyclic 5 at 7 (461 251 nodes) and `<2,2,3>` at 8 (446 923 nodes, which `satisfiability/results.json` already carries as 0 with the same explanation). Those counts are what the binary produced when the flattening rank was the only bound it had, so `bounded`'s 'each ruled out exhaustively' is no longer how those three are refused, though the `12 <= rank <= 14` it concludes is untouched and now free. What still reproduces exactly: `<2,2,2>` at 25 399 nodes to rule out 6 and 7 436 to find 7. None of this is corrected here by hand, because a figure typed into a results file rather than measured is the failure `reproduce/measure.py` exists to stop; correcting it wants the driver extended over this block and a quiet machine for the timings beside it.",
+  "retired_by_the_bounds": "Seven published counts were retired or corrected on 2026-08-19, and this says what happened to each. `reproduce/measure.py --check` re-derives `exact_search` and `famous_tensors` now as well as `fixtures`; it did not before, which is how thirty-odd counts in these two blocks went unchecked and these seven went stale unnoticed. **Four are refutations `rank_lower_bound` now refuses before the search opens a node**, so the count is 0 with no search time beside it, and that is a better published figure than the one it replaces: a floor returned in milliseconds is a stronger statement than a tree walked to the end for a minute. They are `f2_5x5` at 9, 10 and 11 (was 1, 959 and 459 239 nodes, at 0.0003 s, 0.17 s and 77.4 s), GF(16) at 7 (was 1 897 576 nodes, 34.5 s), cyclic 5 at 7 (was 461 251 nodes, 51.4 s) and `<2,2,3>` at 8 (was 446 923 nodes, 53.1 s). **Three are `decided` node counts that fell because the search reaches the same answer sooner**: `f2_2x3` 3 to 2, `gf4_multiplication` 3 to 2, `gf8_multiplication` 1606 to 329, with every verdict and product count unchanged and `f2_2x2` still at 1. What still reproduces exactly: `<2,2,2>` at 25 399 nodes to rule out 6 and 7 436 to find 7, and every heuristic step count here except `<2,3,3>`'s, which nothing asks. **Dated, because two of these are today's and five are older.** `f2_5x5` at 10 and 11 were live measurements until the Griesmer floor moved that map from 10 to 12 on 2026-08-19 (`rank_metric_bound/`): a build of the tree as it stood the night before still walks 459 239 nodes to refuse 11. The other five were already stale before that session began, and the same build proves it, refusing GF(16) at 7, cyclic 5 at 7 and `<2,2,3>` at 8 from the bounds and giving 2, 2 and 329 nodes on the three `decided` maps. The counts here were refreshed by `measure.py --counts`, which rewrites counts and leaves timings alone, so the microsecond figures beside the three corrected `decided` counts are older than the counts and were not re-measured: this machine had three other agents on it, and MEASURING.md does not accept a timing taken there. `counts_provenance` names the commit that produced the counts and says as much.",
   "steps": [
     "Step 1, greedy smallest basis: walk the span from lowest rank upwards, keeping whatever is not already spanned.",
     "Step 2, minimise over the rank-one maps already inside the map.",
@@ -98,31 +98,35 @@
         "exact": 3,
         "nodes": 1,
         "seconds": 7e-06,
-        "why_trustworthy": "Karatsuba's answer, and 2n-1 = 3 is a lower bound, so 3 is optimal."
+        "why_trustworthy": "Karatsuba's answer, and 2n-1 = 3 is a lower bound, so 3 is optimal.",
+        "command": "build/exhaustive_search/decide-rank fixtures/f2_2x2.tensor"
       },
       {
         "map": "f2_2x3",
         "naive": 6,
         "exact": 5,
-        "nodes": 3,
+        "nodes": 2,
         "seconds": 2e-05,
-        "why_trustworthy": "A 2x3 product: five products instead of six."
+        "why_trustworthy": "A 2x3 product: five products instead of six.",
+        "command": "build/exhaustive_search/decide-rank fixtures/f2_2x3.tensor"
       },
       {
         "map": "gf4_multiplication",
         "naive": 4,
         "exact": 3,
-        "nodes": 3,
+        "nodes": 2,
         "seconds": 7e-06,
-        "why_trustworthy": "The bilinear complexity of GF(4) over GF(2) is classically 3."
+        "why_trustworthy": "The bilinear complexity of GF(4) over GF(2) is classically 3.",
+        "command": "build/exhaustive_search/decide-rank fixtures/gf4_multiplication.tensor"
       },
       {
         "map": "gf8_multiplication",
         "naive": 9,
         "exact": 6,
-        "nodes": 1606,
+        "nodes": 329,
         "seconds": 0.0047,
-        "why_trustworthy": "The bilinear complexity of GF(8) over GF(2) is classically 6."
+        "why_trustworthy": "The bilinear complexity of GF(8) over GF(2) is classically 6.",
+        "command": "build/exhaustive_search/decide-rank fixtures/gf8_multiplication.tensor"
       }
     ],
     "bounded": [
@@ -134,17 +138,22 @@
           11
         ],
         "nodes": [
-          1,
-          959,
-          459239
+          0,
+          0,
+          0
         ],
         "seconds": [
-          0.0003,
-          0.17,
-          77.4
+          null,
+          null,
+          null
         ],
-        "conclusion": "No algorithm with 9, 10 or 11 products exists, each ruled out exhaustively, so the rank is at least 12. The heuristic exhibits 14, so this repository proves 12 <= rank <= 14. Table 1 of Barbulescu, Detrey, Estibals and Zimmermann (2012) gives 27 decompositions at 13, so the rank is 13 on their authority and the heuristic's 14 is not optimal.",
-        "not_decided": "whether 12 or 13 products suffice. Ruling out 12 is priced at C(961,3) = 1.47e8 nodes and about seven hours, extrapolated from the k=11 run at 5900 nodes a second, and has not been run. An earlier version of this file recorded that run as done, at 146402553 nodes and 3610.2 s; no such run happened."
+        "conclusion": "No algorithm with 9, 10 or 11 products exists, each refused by `rank_lower_bound` before the search opens a node, so the rank is at least 12. Nine and ten were exhaustions and eleven was a 77 second one until 2026-08-19; see `retired_by_the_bounds`. The heuristic exhibits 14, so this repository proves 12 <= rank <= 14. Table 1 of Barbulescu, Detrey, Estibals and Zimmermann (2012) gives 27 decompositions at 13, so the rank is 13 on their authority and the heuristic's 14 is not optimal.",
+        "not_decided": "whether 12 or 13 products suffice. Ruling out 12 is priced at C(961,3) = 1.47e8 nodes and about seven hours, extrapolated from the k=11 run at 5900 nodes a second, and has not been run. An earlier version of this file recorded that run as done, at 146402553 nodes and 3610.2 s; no such run happened. The 5900 nodes a second that price came from is the general leaf's rate. The GF(2) leaf walks the same question at 459 239 nodes in 7.69 s (`exhaustive_search/gf2_leaf.h`), which reprices ruling out 12 at about 40 minutes rather than seven hours. Still not run.",
+        "commands": [
+          "build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 9",
+          "build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 10",
+          "build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 11"
+        ]
       }
     ]
   },
@@ -165,7 +174,8 @@
           "step_1": 8,
           "step_2": 8,
           "step_3": 8,
-          "step_3_shortlist": 0
+          "step_3_shortlist": 0,
+          "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
@@ -176,7 +186,9 @@
           "nodes_to_rule_out_6": 25399,
           "seconds_to_rule_out_6": 0.41,
           "nodes_to_find_7": 7436,
-          "seconds_to_find_7": 0.14
+          "seconds_to_find_7": 0.14,
+          "command_to_rule_out_6": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
+          "command_to_find_7": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7"
         },
         "known": 7,
         "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step; the plateau walk crosses to 7 in 0.11 s (oracle_guided_search/measurements/)."
@@ -188,15 +200,17 @@
           "step_1": 12,
           "step_2": 12,
           "step_3": 12,
-          "step_3_shortlist": 0
+          "step_3_shortlist": 0,
+          "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x3.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
             7,
             8
           ],
-          "nodes_to_rule_out_8": 446923,
-          "seconds_to_rule_out_8": 53.1
+          "nodes_to_rule_out_8": 0,
+          "seconds_to_rule_out_8": null,
+          "command_to_rule_out_8": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x3.tensor --target 8"
         },
         "known": 11,
         "reading": "Rank >= 9 here. Ruling out 9 is about 1.4e8 nodes, some 4.6 hours, and was not run."
@@ -225,7 +239,8 @@
         "heuristic": {
           "step_1": 27,
           "step_2": 27,
-          "step_3": "stopped at 45 minutes; projected 4.2 hours from the measured 2x3x3 scan, and one independent test per candidate, so it parallelises"
+          "step_3": "stopped at 45 minutes; projected 4.2 hours from the measured 2x3x3 scan, and one independent test per candidate, so it parallelises",
+          "command": "build/descent_search/minimise-rank fixtures/matmul_3x3x3.tensor --steps 2"
         },
         "known": "open: 19 <= rank <= 23, and >= 20 over F2 since 2026",
         "reading": "Out of reach exactly: ruling out 10 is 2.6e5 nodes against a pool of 261121, about 10 hours."
@@ -234,7 +249,8 @@
         "tensor": "W state",
         "naive": 3,
         "heuristic": {
-          "step_1": 3
+          "step_1": 3,
+          "command": "build/descent_search/minimise-rank fixtures/w_state.tensor --steps 1"
         },
         "exact": {
           "ruled_out": [
@@ -251,17 +267,19 @@
         "heuristic": {
           "step_1": 17,
           "step_2": 12,
-          "step_3": 10
+          "step_3": 10,
+          "command": "build/descent_search/minimise-rank fixtures/cyclic_f2_5.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
             6,
             7
           ],
-          "nodes_to_rule_out_7": 461251,
-          "seconds_to_rule_out_7": 51.4
+          "nodes_to_rule_out_7": 0,
+          "seconds_to_rule_out_7": null,
+          "command_to_rule_out_7": "build/exhaustive_search/decide-rank fixtures/cyclic_f2_5.tensor --target 7"
         },
-        "reading": "8 <= rank <= 10. The heuristic works here, unlike on matrix multiplication."
+        "reading": "9 <= rank <= 10. `rank_lower_bound` returns the 9 in milliseconds, where refusing 7 was 461 251 nodes and a minute; see `retired_by_the_bounds`. The heuristic works here, unlike on matrix multiplication."
       },
       {
         "tensor": "GF(16) over GF(2)",
@@ -270,7 +288,8 @@
           "step_1": 16,
           "step_2": 11,
           "step_3": 9,
-          "step_3_shortlist": 4
+          "step_3_shortlist": 4,
+          "command": "build/descent_search/minimise-rank fixtures/gf16_multiplication.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
@@ -279,15 +298,14 @@
             7,
             8
           ],
-          "nodes_to_rule_out_7": 1897576,
-          "seconds_to_rule_out_7": 34.5,
-          "nodes_to_rule_out_8": 105600301,
-          "seconds_to_rule_out_8": 2325.7,
-          "seconds_to_rule_out_8_note": "The same run and the same count are recorded as 2328 s in `satisfiability/results.json`, which is the row `reproduce/measure.py` owns; the 2.3 s between the two is inside the 13% band this chassis varies by, and neither is re-derivable, because both predate the GF(2) bit-packed leaf that the shipped binary now uses. The count itself reproduces exactly, at the `--node-limit 200000000` recorded there.",
-          "decided": 9
+          "nodes_to_rule_out_7": 0,
+          "seconds_to_rule_out_7": null,
+          "rule_out_8": "105 600 301 nodes, and the wall clock beside them, are published once, in `satisfiability/results.json`, which is the row `reproduce/measure.py` re-derives and where the `--node-limit 200000000` behind the count is recorded. This file used to restate the pair and stated the seconds as 2325.7 against that file's 2328 for the one run, which is what publishing a number twice costs. It is a pointer now rather than a copy.",
+          "decided": 9,
+          "command_to_rule_out_7": "build/exhaustive_search/decide-rank fixtures/gf16_multiplication.tensor --target 7"
         },
         "known": ">= 8 by de Groote, since 2n-1 is attained only for n <= q/2 + 1",
-        "reading": "Decided exactly: 9. The exact search ruled out everything below by exhaustion, the heuristic supplied the 9, and neither method could have done it alone."
+        "reading": "Decided exactly: 9. The exact search ruled out everything below, 5, 6 and 7 free from the polynomial bounds and 8 by exhaustion; the heuristic supplied the 9, and neither method could have done it alone."
       }
     ],
     "refused": {
@@ -315,6 +333,31 @@
     "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
+  },
+  "counts_provenance": {
+    "commit": "d92ba923ca2b3b0abc72cc62bbd88d76de9b9d2c",
+    "tree_clean": false,
+    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "reports no version; binary at ~/.local/bin/drat-trim",
+      "cbc": "reports no version; binary at /usr/bin/cbc",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "build",
+    "repeats": 1,
+    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
     "defaults_in_force": {
       "threads": 1,
       "max_memory_bytes": 2147483648,

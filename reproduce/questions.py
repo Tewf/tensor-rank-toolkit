@@ -1,0 +1,433 @@
+"""Every published number, as the invocation that produces it.
+
+This is the half of the driver that knows what the questions are: which fixtures,
+which targets, which flags, and how to read a count out of what a binary printed.
+[`measure.py`](measure.py) is the other half, and knows what to do with the
+answers: compare them against the committed files, rewrite those files, and stamp
+the provenance of what produced them.
+
+They were one file until it passed seven hundred lines. The split is along the
+seam the repository already had: a table of questions is data and reads like data,
+a driver is behaviour, and the two were only sharing a file because they arrived
+together. Everything here is imported by `measure.py`; nothing here imports it.
+"""
+import pathlib
+import re
+import subprocess
+import time
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+def shown(command):
+    """A command line as a reader on another machine can run it.
+
+    The commands recorded here used to be absolute, which made every one of
+    them a fact about this laptop: they carried a home directory, a username
+    and a directory layout, none of which a reader has and none of which the
+    numbers depend on. Anything under the repository is rendered relative to
+    it, so the recorded line is what you type after cloning; a solver found on
+    PATH keeps its absolute path, because that one really is a fact about the
+    machine and pretending otherwise would hide which binary answered.
+    """
+    words = []
+    for word in command:
+        try:
+            words.append(str(pathlib.Path(word).resolve().relative_to(ROOT)))
+        except ValueError:
+            words.append(word)
+    return " ".join(words)
+
+# Fastest of this many, because wall clock is noisy upward and not downward: a
+# slow run means the machine was busy, and averaging that in measures the
+# machine rather than the code.
+REPEATS = 3
+
+FIXTURES = ["f2_5x5", "f2_3x8", "f2_4x7", "f3_3x6"]
+OPERATORS = ["strassen_u", "strassen_v", "alternative_basis_u"]
+
+# The satisfiability strand's published questions, written as invocations rather
+# than as prose: the fixture, the k a decomposition is found at, the k that is
+# refused, and whether the tree search was asked that same refusal. A fixture
+# with neither target has no published answer, so nothing is run for it and its
+# row is carried whole.
+#
+# `exhaustive_costs` prices a tree search too dear for the default run and is
+# what the SKIPPED line says. It is a price and not an excuse: the question is
+# asked by `--slow`, and the flag it needs is in the row's `exhaustive_command`.
+SAT_QUESTIONS = [
+    {"name": "f2_2x2", "found_at": 3, "ruled_out_at": 2},
+    {"name": "f2_2x3", "found_at": 5, "ruled_out_at": 4},
+    {"name": "gf4_multiplication", "found_at": 3, "ruled_out_at": 2},
+    {"name": "gf8_multiplication", "found_at": 6, "ruled_out_at": 5},
+    {"name": "w_state", "found_at": 3, "ruled_out_at": 2},
+    {"name": "matmul_2x2x2", "found_at": 7, "ruled_out_at": 6, "exhaustive": True},
+    {"name": "matmul_2x2x3", "ruled_out_at": 8, "exhaustive": True},
+    {"name": "gf16_multiplication", "found_at": 9, "ruled_out_at": 8, "exhaustive": True,
+     "exhaustive_costs": (
+         "105 600 301 nodes, which is 6.6 minutes of one core and longer than "
+         "every other question here together. The invocation is recorded in "
+         "`exhaustive_command`, node limit and all; `measure.py --slow` asks it.")},
+    {"name": "f2_5x5"},
+]
+
+# The flags every published satisfiability number was taken under. They are here
+# once, and `results.json` names them in its `source`, because a figure taken
+# under other flags is a figure of something else.
+SAT_FLAGS = ["--break-symmetry", "--plain-cnf"]
+
+# The suffix a results file marks an orphaned figure with. `<field>_not_reproducible`
+# holds the reason, and the field it names is carried rather than re-derived.
+NOT_REPRODUCIBLE = "_not_reproducible"
+
+# Every section of a results file whose rows this re-derives, as the path to it
+# and the field its rows are named by.
+#
+# `--check` used to know about exactly one section, `fixtures`, and a results
+# file is not one section. `descent_search/results.json` also publishes
+# `exact_search` and `famous_tensors`, some thirty counts, and nothing looked at
+# them: three of the four `decided` node counts and four whole refutations went
+# stale, one of them during the session that added them, and the driver whose job
+# is catching drift reported that every published count still reproduced. A
+# section missing from this tuple is a section nothing notices.
+SECTIONS = (
+    (("fixtures",), "name"),
+    (("exact_search", "decided"), "map"),
+    (("exact_search", "bounded"), "map"),
+    (("famous_tensors", "runs"), "tensor"),
+)
+
+# The famous tensors, as the fixture each row's prose label names. The label is
+# prose and the fixture is a file, so the mapping has to live somewhere; the
+# questions do not, and are read out of the row itself, because a row publishing
+# `nodes_to_rule_out_8` is a row claiming that run.
+FAMOUS_FIXTURES = {
+    "<2,2,2> matrix multiplication": "matmul_2x2x2",
+    "<2,2,3> matrix multiplication": "matmul_2x2x3",
+    "<3,3,3> matrix multiplication": "matmul_3x3x3",
+    "W state": "w_state",
+    "cyclic convolution, length 5": "cyclic_f2_5",
+    "GF(16) over GF(2)": "gf16_multiplication",
+}
+
+# What no run here re-derives, named with its price so a carried figure never
+# reads as a checked one. Printed on every run, `--check` included, next to the
+# satisfiability strand's own skipped line.
+CARRIED = (
+    ("descent_search/results.json", "<2,3,3> matrix multiplication", "the whole row",
+     "no fixture ships for this tensor, `make-tensor --matmul 2 2 3 3` builds it, and its "
+     "step 3 scan is 32 193 candidates and 153.6 s. Nothing here asks it."),
+    ("descent_search/results.json", "<3,3,3> matrix multiplication", "heuristic step_3",
+     "not a count but a note: the scan was stopped at 45 minutes against a projected 4.2 "
+     "hours. Steps 1 and 2 are re-derived, and cost 0.05 s."),
+)
+
+
+def output_of(command, expect=(0,)):
+    """Run and return stdout+stderr, refusing to guess when a command fails.
+
+    `expect` is the exit codes the question may answer with, because here a
+    refusal is an answer and not a failure: both deciders exit 0 for "here is a
+    decomposition" and 1 for "there is none". Anything else, a spent budget or a
+    misread file, is still a failure and still stops the run.
+    """
+    done = subprocess.run(command, capture_output=True, text=True)
+    if done.returncode not in expect:
+        raise RuntimeError(f"{' '.join(command)} exited {done.returncode}\n{done.stderr}")
+    return done.stdout + done.stderr
+
+
+def fastest(command, repeats=REPEATS, expect=(0,)):
+    """(text of the fastest run, its seconds). Every run must agree in output."""
+    best_seconds = None
+    best_text = None
+    for _ in range(repeats):
+        started = time.perf_counter()
+        text = output_of(command, expect)
+        seconds = time.perf_counter() - started
+        if best_seconds is None or seconds < best_seconds:
+            best_seconds, best_text = seconds, text
+    return best_text, round(best_seconds, 4)
+
+
+def descent_of(build, name, repeats=REPEATS):
+    """One fixture through minimise-rank, per step."""
+    command = [str(build / "descent_search" / "minimise-rank"),
+               str(ROOT / "fixtures" / f"{name}.tensor"), "--steps", "3"]
+    text, seconds = fastest(command, repeats)
+
+    steps = {}
+    for step, label in ((1, "step_1"), (2, "step_2"), (3, "step_3")):
+        found = re.search(rf"step {step}: (\d+) multiplications.*?([\d.e+-]+) s cumulative", text)
+        if not found:
+            raise RuntimeError(f"{name}: no 'step {step}' line in\n{text}")
+        steps[label] = {"multiplications": int(found.group(1)),
+                        "seconds": round(float(found.group(2)), 4)}
+    naive = re.search(r"naive: (\d+) multiplications", text)
+    return {"name": name,
+            "naive": int(naive.group(1)) if naive else None,
+            "command": shown(command),
+            **steps}
+
+
+def sparsification_of(build, name, repeats=REPEATS):
+    """One operator through sparsify-operator, per method."""
+    command = [str(build / "matrix_sparsification" / "sparsify-operator"),
+               str(ROOT / "fixtures" / f"{name}.matrix")]
+    text, seconds = fastest(command, repeats)
+
+    counts = {}
+    for key, pattern in (
+            ("as_given", r"as given: (\d+) nonzeros"),
+            ("row_basis_heuristic", r"row-basis heuristic: (\d+) nonzeros"),
+            ("oracle_bottom_up", r"exact oracle, bottom-up: (\d+) nonzeros"),
+            ("oracle_top_down", r"exact oracle, top-down: (\d+) nonzeros")):
+        found = re.search(pattern, text)
+        if not found:
+            raise RuntimeError(f"{name}: no '{key}' line in\n{text}")
+        counts[key] = int(found.group(1))
+
+    shape = re.search(r"as given: \d+ nonzeros, (\d+x\d+)", text)
+    return {"name": name,
+            "shape": shape.group(1) if shape else None,
+            "command": shown(command),
+            "seconds": seconds,
+            **counts}
+
+
+def tree_search(build, fixture, target=None, expect=(0,), repeats=REPEATS):
+    """One `decide-rank` question, as the pair a results file publishes.
+
+    Zero nodes with no seconds is a real answer and now the commonest one here:
+    `rank_lower_bound` refuses the target before the search opens a node, so
+    there is nothing to count and no wall clock to report. It is also a better
+    published figure than the node count it replaces, because a bound returned in
+    milliseconds is a stronger statement than a tree walked for a minute. The
+    `None` says the question has no wall clock, not that a measurement went
+    missing.
+    """
+    command = [str(build / "exhaustive_search" / "decide-rank"),
+               str(ROOT / "fixtures" / f"{fixture}.tensor")]
+    if target is not None:
+        command += ["--target", str(target)]
+    text, _ = fastest(command, repeats, expect=expect)
+    # The search's own line, not this process's wall clock, which is what
+    # `gf2_leaf.h` measures the leaf against and the only figure the two strands
+    # can both quote: process start-up and pool construction dwarf a question
+    # answered in ten microseconds, and the same question asked through the
+    # satisfiability strand's row must not come back a different number.
+    visited = re.search(r"(\d+) nodes in ([\d.e+-]+) s", text)
+    found = re.search(r"FOUND: (\d+) products", text)
+    return {"nodes": int(visited.group(1)) if visited else 0,
+            "seconds": round(float(visited.group(2)), 6) if visited else None,
+            "products": int(found.group(1)) if found else None,
+            "command": shown(command), "text": text}
+
+
+def exact_search_of(build, committed, repeats=REPEATS):
+    """`exact_search`: the maps `decide-rank` settles, and the map it bounds.
+
+    Each row is carried and then overwritten field by field, so the prose, the
+    naive counts and the `why_trustworthy` lines stay where they are. What is
+    re-derived is what the row publishes: a `decided` row claims a decomposition
+    and a node count, a `bounded` row claims one refutation per target in its own
+    `no_algorithm_with`, and asking anything the row does not publish would put a
+    figure in the file that nobody chose to publish.
+    """
+    block = dict(committed)
+    block["decided"] = []
+    for row in committed.get("decided", []):
+        answer = tree_search(build, row["map"], repeats=repeats)
+        if answer["products"] != row["exact"]:
+            raise RuntimeError(f"{row['map']}: found {answer['products']} products, "
+                               f"not the published {row['exact']}\n{answer['text']}")
+        block["decided"].append({**row, "nodes": answer["nodes"],
+                                 "seconds": answer["seconds"],
+                                 "command": answer["command"]})
+
+    block["bounded"] = []
+    for row in committed.get("bounded", []):
+        answers = [tree_search(build, row["map"], target, expect=(1,), repeats=repeats)
+                   for target in row["no_algorithm_with"]]
+        block["bounded"].append({**row, "nodes": [a["nodes"] for a in answers],
+                                 "seconds": [a["seconds"] for a in answers],
+                                 "commands": [a["command"] for a in answers]})
+    return block
+
+
+def famous_tensors_of(build, committed, repeats=REPEATS):
+    """`famous_tensors`: the tensors the complexity literature argues about.
+
+    Same rule as above, applied to a row with two instruments in it. The descent
+    is re-run to the deepest step the row publishes as a number, which is why
+    `<3,3,3>` is asked for two steps and not three: its step 3 is a note saying
+    the scan was stopped, and a note is not a count to re-derive. The exact search
+    is asked for each `nodes_to_*` the row publishes, and the verdict it comes
+    back with is checked rather than recorded, because a flipped verdict is not
+    drift to report but a reason to stop.
+    """
+    block = dict(committed)
+    block["runs"] = []
+    for row in committed.get("runs", []):
+        fixture = FAMOUS_FIXTURES.get(row["tensor"])
+        if fixture is None:
+            block["runs"].append(row)
+            continue
+        fresh = dict(row)
+
+        published = row.get("heuristic", {})
+        steps = [step for step in (1, 2, 3) if isinstance(published.get(f"step_{step}"), int)]
+        if steps:
+            counts, naive, command = heuristic_of(build, fixture, max(steps), repeats)
+            fresh["heuristic"] = {**published,
+                                  **{key: value for key, value in counts.items()
+                                     if key in published},
+                                  "command": command}
+            if naive is not None and "naive" in row:
+                fresh["naive"] = naive
+
+        exact = dict(row.get("exact", {}))
+        for key in [key for key in exact if key.startswith("nodes_to_")]:
+            question = key[len("nodes_to_"):]          # `rule_out_8`, `find_7`
+            target = int(question.rsplit("_", 1)[1])
+            finding = question.startswith("find")
+            answer = tree_search(build, fixture, target,
+                                 expect=(0,) if finding else (1,), repeats=repeats)
+            if finding and answer["products"] != target:
+                raise RuntimeError(f"{row['tensor']}: no {target} products\n{answer['text']}")
+            if not finding and "NO:" not in answer["text"]:
+                raise RuntimeError(f"{row['tensor']}: {target} is no longer "
+                                   f"refused\n{answer['text']}")
+            exact[key] = answer["nodes"]
+            exact[f"seconds_to_{question}"] = answer["seconds"]
+            exact[f"command_to_{question}"] = answer["command"]
+        if exact:
+            fresh["exact"] = exact
+        block["runs"].append(fresh)
+    return block
+
+
+def heuristic_of(build, fixture, steps, repeats=REPEATS):
+    """(the descent's per-step counts, its naive count, the invocation)."""
+    command = [str(build / "descent_search" / "minimise-rank"),
+               str(ROOT / "fixtures" / f"{fixture}.tensor"), "--steps", str(steps)]
+    text, _ = fastest(command, repeats)
+    counts = {}
+    for step in range(1, steps + 1):
+        found = re.search(rf"step {step}: (\d+) multiplications", text)
+        if not found:
+            raise RuntimeError(f"{fixture}: no 'step {step}' line in\n{text}")
+        counts[f"step_{step}"] = int(found.group(1))
+    for key, pattern in (("step_3_pool", r"# step 3 pool: (\d+)"),
+                         ("step_3_shortlist", r"# step 3 shortlist: (\d+)")):
+        found = re.search(pattern, text)
+        if found:
+            counts[key] = int(found.group(1))
+    naive = re.search(r"naive: (\d+) multiplications", text)
+    return counts, int(naive.group(1)) if naive else None, shown(command)
+
+
+def unreproducible(row):
+    """`{field: why}` for the figures in a committed row this refuses to re-derive.
+
+    A number whose flags were never written down cannot be reproduced by anybody,
+    so the results file states that beside the number itself, in a
+    `<field>_not_reproducible` key, and this reads the file rather than keeping a
+    second list of exceptions in code. The caller prints one line per entry on
+    every run, `--check` included.
+    """
+    return {key[:-len(NOT_REPRODUCIBLE)]: why for key, why in row.items()
+            if key.endswith(NOT_REPRODUCIBLE)}
+
+
+def skipped_fields(question, committed, slow):
+    """`{field: why}` for the figures this run leaves to the committed row.
+
+    Two reasons, and the difference between them is the whole point of printing
+    them. A figure whose flags were never written down cannot be reproduced by
+    anybody, and `unreproducible` above reads that admission out of the file. A
+    figure that is merely expensive is reproducible on demand: it names its price
+    in `exhaustive_costs`, its invocation is recorded beside it, and `--slow`
+    asks it. Either way the caller prints one line per entry on every run, so a
+    carried number never reads as a re-derived one.
+    """
+    skipped = unreproducible(committed)
+    if not slow and "exhaustive_costs" in question:
+        skipped.setdefault("exhaustive_nodes", question["exhaustive_costs"])
+    return skipped
+
+
+def exhaustive_command(build, tensor, target, committed):
+    """The recorded tree-search invocation, re-pointed at this build directory.
+
+    A published node count above the default ceiling of 5 000 000 means a
+    `--node-limit` was passed, and the only place that flag is written down is
+    the `exhaustive_command` the last run recorded beside the number. So the
+    flags come from the file: everything the recorded line carries after its
+    target is passed again. Rebuilding the line here instead is not a smaller
+    version of the same run, it is a different question, one that spends the
+    default budget and gives up undecided.
+
+    A row with no recorded line yet gets the bare command, which is what the two
+    cheap exhaustions want and what wrote their lines in the first place.
+    """
+    command = [str(build / "exhaustive_search" / "decide-rank"), tensor,
+               "--target", str(target)]
+    recorded = (committed.get("exhaustive_command") or "").split()
+    if "--target" in recorded:
+        command += recorded[recorded.index("--target") + 2:]
+    return command
+
+
+def satisfiability_of(build, question, committed, repeats=REPEATS, slow=False):
+    """One fixture's published questions, re-asked of the solver and of the tree.
+
+    What this does not measure is carried from the committed row untouched: the
+    field, the rank the literature gives, the prose, and the second opinions from
+    the other solver are not measurements this makes, and restating them here
+    would put them in two files at once.
+    """
+    name = question["name"]
+    tensor = str(ROOT / "fixtures" / f"{name}.tensor")
+    solver = str(build / "satisfiability" / "decide-rank-by-sat")
+    row = dict(committed)
+
+    def solved(target, expect, wanted):
+        command = [solver, tensor, "--target", str(target), *SAT_FLAGS]
+        text, seconds = fastest(command, repeats, expect=(expect,))
+        if wanted not in text:
+            raise RuntimeError(f"{name}: k={target} no longer answers {wanted!r}\n{text}")
+        return shown(command), seconds
+
+    if "found_at" in question:
+        target = question["found_at"]
+        command, seconds = solved(target, 0, "FOUND a decomposition")
+        row.update({"found_at": target, "found_seconds": seconds,
+                    "found_command": command})
+
+    if "ruled_out_at" in question:
+        target = question["ruled_out_at"]
+        command, seconds = solved(target, 1, "NO, rank is more than")
+        row.update({"ruled_out_at": target, "ruled_out_seconds": seconds,
+                    "ruled_out_command": command})
+
+    if question.get("exhaustive") and "exhaustive_nodes" not in skipped_fields(question,
+                                                                              committed, slow):
+        target = question["ruled_out_at"]
+        command = exhaustive_command(build, tensor, target, committed)
+        text, _ = fastest(command, repeats, expect=(1,))
+        # No node line at all means the polynomial lower bound refused the target
+        # before the search opened a node. That is a count of zero and a question
+        # with no search time to report, not a measurement that went missing.
+        #
+        # The seconds are the search's own, for the reason `tree_search` gives:
+        # `descent_search/results.json` publishes some of these same questions,
+        # and two files quoting one run must quote the same number.
+        visited = re.search(r"(\d+) nodes in ([\d.e+-]+) s", text)
+        row.update({"exhaustive_nodes": int(visited.group(1)) if visited else 0,
+                    "exhaustive_ruled_out_seconds":
+                        round(float(visited.group(2)), 6) if visited else None,
+                    "exhaustive_command": shown(command)})
+    return row
+
+

@@ -15,6 +15,7 @@ reader who disagrees with a number can rerun exactly what made it.
     reproduce/measure.py --build build                 # rewrite the results files
     reproduce/measure.py --build build --check         # counts only, exit 1 on drift
     reproduce/measure.py --build build --check --slow  # and the 6.6 minute exhaustion
+    reproduce/measure.py --build build --counts        # rewrite counts, keep every timing
 
 `--check` is what CI runs. It re-derives every *count* and compares, and it does
 not look at timings at all, because a shared cloud runner cannot reproduce a
@@ -22,104 +23,48 @@ timing and pretending otherwise is how the last wrong number got in. Timings are
 rewritten only by a full run on a quiet machine, under the protocol in
 MEASURING.md.
 
-Three files are covered: the descent, the sparsification and the satisfiability
-strand. One question inside the third is not asked by default, and it is priced
-rather than hidden: the GF(16) exhaustion visits 105 600 301 nodes and costs 6.6
-minutes of one core, which is longer than everything else here together, so the
-default run leaves it out and `--slow` asks it. The flag it needs is written down
-in the `exhaustive_command` of the row it belongs to, and this reads that field
-back rather than rebuilding the line, because a line rebuilt here would carry the
-default node limit and answer a different question. Every run, `--check`
-included, prints a SKIPPED line naming what it left out and what that costs. A
+`--counts` is the rewrite a machine that is not quiet is entitled to make. It
+refreshes the counts and the invocations that produced them and leaves every
+`seconds` field exactly as it was measured, because MEASURING.md's own division
+says a count is a fact about the problem and reproduces anywhere while a timing
+is a fact about a machine on an afternoon. It stamps a `counts_provenance` block
+beside the committed `provenance` rather than over it, so neither claims the
+other's run. Without it, the only way to correct a drifted count is a rewrite
+that overwrites protocol-grade timings with whatever the machine gives today.
+
+Three files are covered, and every section of them that publishes a count:
+`fixtures`, and the `exact_search` and `famous_tensors` blocks of the descent's
+file, which `--check` did not look at until it was caught not looking. Thirty-odd
+counts lived there unchecked, and seven had gone stale, one of them during the
+session that improved the bound behind it. What each section is and what names its
+rows is `SECTIONS`, in `questions.py`; a section missing from it goes unnoticed.
+
+One question is not asked by default, and it is priced rather than hidden: the
+GF(16) exhaustion visits 105 600 301 nodes and costs 6.6 minutes of one core,
+which is longer than everything else here together, so the default run leaves it
+out and `--slow` asks it. The flag it needs is written down in the
+`exhaustive_command` of the row it belongs to, and this reads that field back
+rather than rebuilding the line, because a line rebuilt here would carry the
+default node limit and answer a different question. Two further figures are
+carried rather than asked, and `questions.CARRIED` names them and their price.
+Every run,
+`--check` included, prints a SKIPPED line saying what it left out and why. A
 number the driver does not cover must never read as one it covered and agreed
-with, which is the failure this whole file exists to stop.
+with, which is the failure these two files exist to stop.
 """
 import argparse
 import json
-import pathlib
-import re
 import shutil
 import subprocess
 import sys
-import time
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-
-
-def shown(command):
-    """A command line as a reader on another machine can run it.
-
-    The commands recorded here used to be absolute, which made every one of
-    them a fact about this laptop: they carried a home directory, a username
-    and a directory layout, none of which a reader has and none of which the
-    numbers depend on. Anything under the repository is rendered relative to
-    it, so the recorded line is what you type after cloning; a solver found on
-    PATH keeps its absolute path, because that one really is a fact about the
-    machine and pretending otherwise would hide which binary answered.
-    """
-    words = []
-    for word in command:
-        try:
-            words.append(str(pathlib.Path(word).resolve().relative_to(ROOT)))
-        except ValueError:
-            words.append(word)
-    return " ".join(words)
-
-# Fastest of this many, because wall clock is noisy upward and not downward: a
-# slow run means the machine was busy, and averaging that in measures the
-# machine rather than the code.
-REPEATS = 3
-
-FIXTURES = ["f2_5x5", "f2_3x8", "f2_4x7", "f3_3x6"]
-OPERATORS = ["strassen_u", "strassen_v", "alternative_basis_u"]
-
-# The satisfiability strand's published questions, written as invocations rather
-# than as prose: the fixture, the k a decomposition is found at, the k that is
-# refused, and whether the tree search was asked that same refusal. A fixture
-# with neither target has no published answer, so nothing is run for it and its
-# row is carried whole.
-#
-# `exhaustive_costs` prices a tree search too dear for the default run and is
-# what the SKIPPED line says. It is a price and not an excuse: the question is
-# asked by `--slow`, and the flag it needs is in the row's `exhaustive_command`.
-SAT_QUESTIONS = [
-    {"name": "f2_2x2", "found_at": 3, "ruled_out_at": 2},
-    {"name": "f2_2x3", "found_at": 5, "ruled_out_at": 4},
-    {"name": "gf4_multiplication", "found_at": 3, "ruled_out_at": 2},
-    {"name": "gf8_multiplication", "found_at": 6, "ruled_out_at": 5},
-    {"name": "w_state", "found_at": 3, "ruled_out_at": 2},
-    {"name": "matmul_2x2x2", "found_at": 7, "ruled_out_at": 6, "exhaustive": True},
-    {"name": "matmul_2x2x3", "ruled_out_at": 8, "exhaustive": True},
-    {"name": "gf16_multiplication", "found_at": 9, "ruled_out_at": 8, "exhaustive": True,
-     "exhaustive_costs": (
-         "105 600 301 nodes, which is 6.6 minutes of one core and longer than "
-         "every other question here together. The invocation is recorded in "
-         "`exhaustive_command`, node limit and all; `measure.py --slow` asks it.")},
-    {"name": "f2_5x5"},
-]
-
-# The flags every published satisfiability number was taken under. They are here
-# once, and `results.json` names them in its `source`, because a figure taken
-# under other flags is a figure of something else.
-SAT_FLAGS = ["--break-symmetry", "--plain-cnf"]
-
-# The suffix a results file marks an orphaned figure with. `<field>_not_reproducible`
-# holds the reason, and the field it names is carried rather than re-derived.
-NOT_REPRODUCIBLE = "_not_reproducible"
-
-
-def output_of(command, expect=(0,)):
-    """Run and return stdout+stderr, refusing to guess when a command fails.
-
-    `expect` is the exit codes the question may answer with, because here a
-    refusal is an answer and not a failure: both deciders exit 0 for "here is a
-    decomposition" and 1 for "there is none". Anything else, a spent budget or a
-    misread file, is still a failure and still stops the run.
-    """
-    done = subprocess.run(command, capture_output=True, text=True)
-    if done.returncode not in expect:
-        raise RuntimeError(f"{' '.join(command)} exited {done.returncode}\n{done.stderr}")
-    return done.stdout + done.stderr
+# What each published number is, and how to ask for it: `questions.py`. The
+# import is flat because the two files sit in one directory and Python puts a
+# script's own directory first on the path, so `reproduce/measure.py` runs from
+# anywhere without a package, an installer or a `sys.path` line.
+from questions import (CARRIED, FIXTURES, OPERATORS, REPEATS, ROOT, SAT_QUESTIONS,
+                       SECTIONS, descent_of, exact_search_of, famous_tensors_of,
+                       satisfiability_of, shown, skipped_fields, sparsification_of)
 
 
 def version_in(text):
@@ -171,8 +116,15 @@ def version_of(binary, *flags):
     return f"{NO_VERSION} {path}"
 
 
-def provenance(build):
-    """Everything a reader needs to tell why their number differs from mine."""
+def provenance(build, counts=False):
+    """Everything a reader needs to tell why their number differs from mine.
+
+    `counts` writes the block a `--counts` run is entitled to: it names the code
+    that produced the counts and says, in `covers`, that the timings in the file
+    are older than it and were not touched. It is written beside the committed
+    `provenance` rather than over it, because that one describes the timings and
+    is still true of them.
+    """
     def git(*args):
         try:
             return subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
@@ -186,9 +138,16 @@ def provenance(build):
                                 capture_output=True, text=True).stdout.strip() or None
 
     dirty = git("status", "--porcelain")
+    covers = {} if not counts else {"covers":
+        "The counts in this file and the invocations that produced them, and nothing else. "
+        "Every `seconds` field here is older than this block and was not touched: a count is "
+        "exact arithmetic and comes out the same on any machine, a timing does not, so "
+        "`--counts` refreshes the first and leaves the second exactly as measured. What "
+        "produced the timings is the `provenance` block."}
     return {
         "commit": git("rev-parse", "HEAD"),
         "tree_clean": dirty == "" if dirty is not None else None,
+        **covers,
         "compiler": version_of("c++"),
         "givaro": givaro,
         "solvers": {
@@ -197,8 +156,10 @@ def provenance(build):
                          "drat-trim", "cbc", "glpsol")
         },
         "build_directory": shown([str(build)]),
-        "repeats": REPEATS,
-        "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+        "repeats": 1 if counts else REPEATS,
+        "protocol": ("counts only: exact arithmetic, one run each, the machine irrelevant."
+                     if counts else
+                     "one core, fastest of three, quiet machine. See MEASURING.md."),
         "defaults_in_force": {
             "threads": 1,
             "max_memory_bytes": 2 << 30,
@@ -208,179 +169,60 @@ def provenance(build):
     }
 
 
-def fastest(command, repeats=REPEATS, expect=(0,)):
-    """(text of the fastest run, its seconds). Every run must agree in output."""
-    best_seconds = None
-    best_text = None
-    for _ in range(repeats):
-        started = time.perf_counter()
-        text = output_of(command, expect)
-        seconds = time.perf_counter() - started
-        if best_seconds is None or seconds < best_seconds:
-            best_seconds, best_text = seconds, text
-    return best_text, round(best_seconds, 4)
-
-
-def descent_of(build, name, repeats=REPEATS):
-    """One fixture through minimise-rank, per step."""
-    command = [str(build / "descent_search" / "minimise-rank"),
-               str(ROOT / "fixtures" / f"{name}.tensor"), "--steps", "3"]
-    text, seconds = fastest(command, repeats)
-
-    steps = {}
-    for step, label in ((1, "step_1"), (2, "step_2"), (3, "step_3")):
-        found = re.search(rf"step {step}: (\d+) multiplications.*?([\d.e+-]+) s cumulative", text)
-        if not found:
-            raise RuntimeError(f"{name}: no 'step {step}' line in\n{text}")
-        steps[label] = {"multiplications": int(found.group(1)),
-                        "seconds": round(float(found.group(2)), 4)}
-    naive = re.search(r"naive: (\d+) multiplications", text)
-    return {"name": name,
-            "naive": int(naive.group(1)) if naive else None,
-            "command": shown(command),
-            **steps}
-
-
-def sparsification_of(build, name, repeats=REPEATS):
-    """One operator through sparsify-operator, per method."""
-    command = [str(build / "matrix_sparsification" / "sparsify-operator"),
-               str(ROOT / "fixtures" / f"{name}.matrix")]
-    text, seconds = fastest(command, repeats)
-
-    counts = {}
-    for key, pattern in (
-            ("as_given", r"as given: (\d+) nonzeros"),
-            ("row_basis_heuristic", r"row-basis heuristic: (\d+) nonzeros"),
-            ("oracle_bottom_up", r"exact oracle, bottom-up: (\d+) nonzeros"),
-            ("oracle_top_down", r"exact oracle, top-down: (\d+) nonzeros")):
-        found = re.search(pattern, text)
-        if not found:
-            raise RuntimeError(f"{name}: no '{key}' line in\n{text}")
-        counts[key] = int(found.group(1))
-
-    shape = re.search(r"as given: \d+ nonzeros, (\d+x\d+)", text)
-    return {"name": name,
-            "shape": shape.group(1) if shape else None,
-            "command": shown(command),
-            "seconds": seconds,
-            **counts}
-
-
-def unreproducible(row):
-    """`{field: why}` for the figures in a committed row this refuses to re-derive.
-
-    A number whose flags were never written down cannot be reproduced by anybody,
-    so the results file states that beside the number itself, in a
-    `<field>_not_reproducible` key, and this reads the file rather than keeping a
-    second list of exceptions in code. The caller prints one line per entry on
-    every run, `--check` included.
-    """
-    return {key[:-len(NOT_REPRODUCIBLE)]: why for key, why in row.items()
-            if key.endswith(NOT_REPRODUCIBLE)}
-
-
-def skipped_fields(question, committed, slow):
-    """`{field: why}` for the figures this run leaves to the committed row.
-
-    Two reasons, and the difference between them is the whole point of printing
-    them. A figure whose flags were never written down cannot be reproduced by
-    anybody, and `unreproducible` above reads that admission out of the file. A
-    figure that is merely expensive is reproducible on demand: it names its price
-    in `exhaustive_costs`, its invocation is recorded beside it, and `--slow`
-    asks it. Either way the caller prints one line per entry on every run, so a
-    carried number never reads as a re-derived one.
-    """
-    skipped = unreproducible(committed)
-    if not slow and "exhaustive_costs" in question:
-        skipped.setdefault("exhaustive_nodes", question["exhaustive_costs"])
-    return skipped
-
-
-def exhaustive_command(build, tensor, target, committed):
-    """The recorded tree-search invocation, re-pointed at this build directory.
-
-    A published node count above the default ceiling of 5 000 000 means a
-    `--node-limit` was passed, and the only place that flag is written down is
-    the `exhaustive_command` the last run recorded beside the number. So the
-    flags come from the file: everything the recorded line carries after its
-    target is passed again. Rebuilding the line here instead is not a smaller
-    version of the same run, it is a different question, one that spends the
-    default budget and gives up undecided.
-
-    A row with no recorded line yet gets the bare command, which is what the two
-    cheap exhaustions want and what wrote their lines in the first place.
-    """
-    command = [str(build / "exhaustive_search" / "decide-rank"), tensor,
-               "--target", str(target)]
-    recorded = (committed.get("exhaustive_command") or "").split()
-    if "--target" in recorded:
-        command += recorded[recorded.index("--target") + 2:]
-    return command
-
-
-def satisfiability_of(build, question, committed, repeats=REPEATS, slow=False):
-    """One fixture's published questions, re-asked of the solver and of the tree.
-
-    What this does not measure is carried from the committed row untouched: the
-    field, the rank the literature gives, the prose, and the second opinions from
-    the other solver are not measurements this makes, and restating them here
-    would put them in two files at once.
-    """
-    name = question["name"]
-    tensor = str(ROOT / "fixtures" / f"{name}.tensor")
-    solver = str(build / "satisfiability" / "decide-rank-by-sat")
-    row = dict(committed)
-
-    def solved(target, expect, wanted):
-        command = [solver, tensor, "--target", str(target), *SAT_FLAGS]
-        text, seconds = fastest(command, repeats, expect=(expect,))
-        if wanted not in text:
-            raise RuntimeError(f"{name}: k={target} no longer answers {wanted!r}\n{text}")
-        return shown(command), seconds
-
-    if "found_at" in question:
-        target = question["found_at"]
-        command, seconds = solved(target, 0, "FOUND a decomposition")
-        row.update({"found_at": target, "found_seconds": seconds,
-                    "found_command": command})
-
-    if "ruled_out_at" in question:
-        target = question["ruled_out_at"]
-        command, seconds = solved(target, 1, "NO, rank is more than")
-        row.update({"ruled_out_at": target, "ruled_out_seconds": seconds,
-                    "ruled_out_command": command})
-
-    if question.get("exhaustive") and "exhaustive_nodes" not in skipped_fields(question,
-                                                                              committed, slow):
-        target = question["ruled_out_at"]
-        command = exhaustive_command(build, tensor, target, committed)
-        text, seconds = fastest(command, repeats, expect=(1,))
-        # No node line at all means the polynomial lower bound refused the target
-        # before the search opened a node. That is a count of zero and a question
-        # with no search time to report, not a measurement that went missing.
-        visited = re.search(r"(\d+) nodes in", text)
-        row.update({"exhaustive_nodes": int(visited.group(1)) if visited else 0,
-                    "exhaustive_ruled_out_seconds": seconds if visited else None,
-                    "exhaustive_command": shown(command)})
-    return row
-
-
 def counts_only(block):
     """Everything but the timings and the invocations, which is what CI can check.
 
     A timing is any key with `seconds` in its name, which takes the second
-    opinions from the other solver with it; an invocation is any key named
-    `command` or ending in `_command`. A shared runner reproduces neither: not
-    the wall clock, and not the absolute paths a command is spelt with on the
-    machine that ran it.
+    opinions from the other solver with it; an invocation is any key mentioning a
+    command. A shared runner reproduces neither: not the wall clock, and not the
+    directory a command is spelt with on the machine that ran it.
     """
     if isinstance(block, dict):
         return {k: counts_only(v) for k, v in block.items()
-                if k != "provenance" and "seconds" not in k
-                and not k.endswith("command")}
+                if "provenance" not in k and "seconds" not in k and "command" not in k}
     if isinstance(block, list):
         return [counts_only(item) for item in block]
     return block
+
+
+def rows_of(document):
+    """(section, name, row) for every row of every section in SECTIONS."""
+    for path, key in SECTIONS:
+        block = document
+        for step in path:
+            block = block.get(step) if isinstance(block, dict) else None
+        for row in block or ():
+            yield "/".join(path), row.get(key), row
+
+
+def with_timings_kept(committed, measured, timing=False):
+    """`measured`, with every timing it measured replaced by the committed one.
+
+    MEASURING.md draws this line and this walks it. A count is a fact about the
+    problem, computed in exact arithmetic, and comes out the same on any machine,
+    so a busy machine is no obstacle to refreshing one. A timing is a fact about
+    a machine on an afternoon. `--counts` therefore rewrites the counts and the
+    invocations that produced them and leaves every `seconds` field exactly as it
+    was measured, rather than overwriting a figure taken under the protocol with
+    one taken beside three other agents' searches.
+
+    A measured timing of `None` is written rather than kept, because that is not a
+    slower reading of the same question. It says the question no longer opens a
+    node, so there is no wall clock at all, which is as machine-independent as the
+    zero beside it and would be a lie to leave at 77.4 s.
+    """
+    if isinstance(measured, dict):
+        merged = dict(committed) if isinstance(committed, dict) else {}
+        for key, value in measured.items():
+            merged[key] = with_timings_kept(merged.get(key), value, "seconds" in key)
+        return merged
+    if isinstance(measured, list) and isinstance(committed, list) \
+            and len(measured) == len(committed):
+        return [with_timings_kept(old, new, timing)
+                for old, new in zip(committed, measured)]
+    if timing and measured is not None and committed is not None:
+        return committed
+    return measured
 
 
 def main():
@@ -392,17 +234,21 @@ def main():
     parser.add_argument("--slow", action="store_true",
                         help="also ask the questions priced in exhaustive_costs, "
                              "which is 6.6 minutes of one core for the GF(16) exhaustion")
+    parser.add_argument("--counts", action="store_true",
+                        help="rewrite the counts and the invocations that produced them, and "
+                             "leave every timing exactly as it was measured. This is the "
+                             "rewrite a machine that is not quiet is entitled to make")
     arguments = parser.parse_args()
 
     build = (ROOT / arguments.build).resolve()
     if not build.is_dir():
         sys.exit(f"no build directory at {build}; run cmake first")
 
-    # One run per question under --check, three under a rewrite. The fastest of
-    # three is what a *timing* needs, and --check reads no timing: the commands
-    # are deterministic, so the second and third runs would compare a count
-    # against itself, at the price of tripling the two-minute solver sweep.
-    repeats = 1 if arguments.check else REPEATS
+    # One run per question under --check and under --counts, three under a full
+    # rewrite. The fastest of three is what a *timing* needs, and neither of those
+    # two writes one: the commands are deterministic, so the second and third runs
+    # would compare a count against itself at the price of tripling the sweep.
+    repeats = REPEATS if not (arguments.check or arguments.counts) else 1
 
     descent = ROOT / "descent_search" / "results.json"
     sparsification = ROOT / "matrix_sparsification" / "results.json"
@@ -413,16 +259,21 @@ def main():
 
     # Said before anything is measured, so that a reader of the output knows what
     # the run below is not going to tell them.
-    skipped = [(question["name"], field, why) for question in SAT_QUESTIONS
+    skipped = [(str(satisfiability.relative_to(ROOT)), question["name"], field, why)
+               for question in SAT_QUESTIONS
                for field, why in skipped_fields(question,
                                                 sat_rows.get(question["name"], {}),
                                                 arguments.slow).items()]
-    for name, field, why in skipped:
-        print(f"SKIPPED  {satisfiability.name}: {name} {field}, carried from the "
-              f"committed row. {why}")
+    skipped += list(CARRIED)
+    for where, name, field, why in skipped:
+        print(f"SKIPPED  {where}: {name} {field}, carried from the committed row. {why}")
 
     measured = {
-        descent: {"fixtures": [descent_of(build, name, repeats) for name in FIXTURES]},
+        descent: {"fixtures": [descent_of(build, name, repeats) for name in FIXTURES],
+                  "exact_search": exact_search_of(
+                      build, committed[descent].get("exact_search", {}), repeats),
+                  "famous_tensors": famous_tensors_of(
+                      build, committed[descent].get("famous_tensors", {}), repeats)},
         sparsification:
             {"fixtures": [sparsification_of(build, name, repeats) for name in OPERATORS]},
         satisfiability:
@@ -436,21 +287,29 @@ def main():
     for path, fresh in measured.items():
         existing = committed[path]
         if arguments.check:
-            for new_row in fresh["fixtures"]:
-                old_row = next((r for r in existing.get("fixtures", [])
-                                if r.get("name") == new_row["name"]), None)
+            old_rows = {(section, name): row for section, name, row in rows_of(existing)}
+            for section, name, new_row in rows_of(fresh):
+                old_row = old_rows.get((section, name))
+                where = f"{path.relative_to(ROOT)}: {section} {name}"
                 if old_row is None:
-                    print(f"NEW      {path.name}: {new_row['name']}")
+                    print(f"NEW      {where}")
                     drifted = True
                 elif counts_only(old_row) != counts_only(new_row):
-                    print(f"DRIFTED  {path.name}: {new_row['name']}")
+                    print(f"DRIFTED  {where}")
                     print(f"  committed {counts_only(old_row)}")
                     print(f"  measured  {counts_only(new_row)}")
                     drifted = True
             continue
 
-        existing.update(fresh)
-        existing["provenance"] = provenance(build)
+        if arguments.counts:
+            existing = with_timings_kept(existing, fresh)
+            existing["counts_provenance"] = provenance(build, counts=True)
+        else:
+            existing.update(fresh)
+            existing["provenance"] = provenance(build)
+            # A full rewrite covers what --counts covered and the timings besides,
+            # so the narrower block it left behind has nothing left to say.
+            existing.pop("counts_provenance", None)
         path.write_text(json.dumps(existing, indent=2) + "\n")
         print(f"wrote {path.relative_to(ROOT)}")
 
