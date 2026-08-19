@@ -151,6 +151,37 @@ and Cotardo attribute the inequality itself to Kruskal (1977); **that paper was
 not read**, and the module's header says so rather than passing the attribution
 on as checked.
 
+**`bnrs2019`**: E. Byrne, A. Neri, A. Ravagnani, J. Sheekey. *Tensor
+Representation of Rank-Metric Codes.* SIAM Journal on Applied Algebra and
+Geometry **3** (2019), no. 4, 614-643,
+[doi:10.1137/19M1253964](https://doi.org/10.1137/19M1253964),
+[arXiv:1904.05227](https://arxiv.org/abs/1904.05227). Reads a matrix code as the
+first slice space of a 3-tensor, the same object `byrne2021` and `brockett1978`
+name, and is where `byrne2021` gets the coding-theoretic form of Kruskal's bound
+from (their reference [7]).
+
+**What was read.** Section 3, which opens "In this section, F denotes an
+arbitrary field", so nothing in it asks for characteristic zero. **Corollary
+4.14(2)**, that pulling a code back along a rank-`R` decomposition gives an
+`[R, k, >= d]` block code, which is the hypothesis
+[`rank_metric_bound.h`](rank_metric_bound/rank_metric_bound.h) hands to Griesmer.
+**Corollary 4.15**, their own proof of `trk >= dim + d - 1` that never leaves a
+finite field, so the Kruskal form here does not rest on reading a 1977 paper
+about the reals correctly. And their **Theorem 3.6**, which is Kruskal's bound
+and cites Kruskal 1977 **Corollary 1** for it, the same number `byrne2021` gives
+it: two papers, one attribution, neither of them the original.
+
+**What was not read, and what is therefore not claimed.** The numbering was
+checked in **arXiv:1904.05227v1**; the SIAM version is paywalled and was not
+opened, so `[bnrs2019, Cor. 4.14(2)]` cites the preprint's numbering and may not
+be the journal's. Corollary 4.14 is stated for `V` and `W` of full rank, that is
+for a concise tensor, and **that hypothesis is not what the code relies on**:
+`rank_metric_bound.h` derives the same block code by restricting to a complement
+of the contraction kernel, which needs no conciseness, so the paper is cited for
+the code's parameters and not for the route to them. **Griesmer's name appears
+nowhere in this paper**: 4.14(2) produces the block code and stops, and applying
+the Griesmer bound to it is ours.
+
 **`hastad1990`**: J. Håstad. *Tensor rank is NP-complete.* Journal of
 Algorithms **11** (1990), no. 4, 644-654.
 [doi:10.1016/0196-6774(90)90014-6](https://doi.org/10.1016/0196-6774(90)90014-6),
