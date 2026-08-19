@@ -14,6 +14,7 @@ reader who disagrees with a number can rerun exactly what made it.
 
     reproduce/measure.py --build build                 # rewrite the results files
     reproduce/measure.py --build build --check         # counts only, exit 1 on drift
+    reproduce/measure.py --build build --check --slow  # and the 6.6 minute exhaustion
 
 `--check` is what CI runs. It re-derives every *count* and compares, and it does
 not look at timings at all, because a shared cloud runner cannot reproduce a
@@ -22,11 +23,16 @@ rewritten only by a full run on a quiet machine, under the protocol in
 MEASURING.md.
 
 Three files are covered: the descent, the sparsification and the satisfiability
-strand. One figure inside the third is not, and that is stated rather than
-arranged: the flags behind it were never written down, `satisfiability/results.json`
-says so beside it in a `_not_reproducible` key, and every run of this prints a
-SKIPPED line naming it. A number the driver does not cover must never read as one
-it covered and agreed with, which is the failure this whole file exists to stop.
+strand. One question inside the third is not asked by default, and it is priced
+rather than hidden: the GF(16) exhaustion visits 105 600 301 nodes and costs 6.6
+minutes of one core, which is longer than everything else here together, so the
+default run leaves it out and `--slow` asks it. The flag it needs is written down
+in the `exhaustive_command` of the row it belongs to, and this reads that field
+back rather than rebuilding the line, because a line rebuilt here would carry the
+default node limit and answer a different question. Every run, `--check`
+included, prints a SKIPPED line naming what it left out and what that costs. A
+number the driver does not cover must never read as one it covered and agreed
+with, which is the failure this whole file exists to stop.
 """
 import argparse
 import json
@@ -72,6 +78,10 @@ OPERATORS = ["strassen_u", "strassen_v", "alternative_basis_u"]
 # refused, and whether the tree search was asked that same refusal. A fixture
 # with neither target has no published answer, so nothing is run for it and its
 # row is carried whole.
+#
+# `exhaustive_costs` prices a tree search too dear for the default run and is
+# what the SKIPPED line says. It is a price and not an excuse: the question is
+# asked by `--slow`, and the flag it needs is in the row's `exhaustive_command`.
 SAT_QUESTIONS = [
     {"name": "f2_2x2", "found_at": 3, "ruled_out_at": 2},
     {"name": "f2_2x3", "found_at": 5, "ruled_out_at": 4},
@@ -80,7 +90,11 @@ SAT_QUESTIONS = [
     {"name": "w_state", "found_at": 3, "ruled_out_at": 2},
     {"name": "matmul_2x2x2", "found_at": 7, "ruled_out_at": 6, "exhaustive": True},
     {"name": "matmul_2x2x3", "ruled_out_at": 8, "exhaustive": True},
-    {"name": "gf16_multiplication", "found_at": 9, "ruled_out_at": 8, "exhaustive": True},
+    {"name": "gf16_multiplication", "found_at": 9, "ruled_out_at": 8, "exhaustive": True,
+     "exhaustive_costs": (
+         "105 600 301 nodes, which is 6.6 minutes of one core and longer than "
+         "every other question here together. The invocation is recorded in "
+         "`exhaustive_command`, node limit and all; `measure.py --slow` asks it.")},
     {"name": "f2_5x5"},
 ]
 
@@ -108,20 +122,53 @@ def output_of(command, expect=(0,)):
     return done.stdout + done.stderr
 
 
+def version_in(text):
+    """The version inside a tool's answer to `--version`, or None if it gave none.
+
+    `--version` is a convention and not a guarantee. drat-trim has no such flag
+    and prints its usage instead; cbc prints a welcome banner and puts the
+    version on the line after it. Taking the first line either way is how
+    `usage: drat-trim [INPUT] [<PROOF>] ...` came to sit in a field labelled
+    version, in three committed provenance blocks, for as long as this function
+    guessed.
+
+    So a version has to look like one: it carries a digit, it does not open with
+    `usage`, and past the first line it has to say `version` as well, which stops
+    a copyright year from being read as a release. What this rejects is recorded
+    as the marker below, never as a number nobody printed.
+    """
+    for index, line in enumerate(text.strip().splitlines()[:5]):
+        line = line.strip()
+        if not any(character.isdigit() for character in line):
+            continue
+        if line.lower().startswith("usage"):
+            continue
+        if index == 0 or "version" in line.lower():
+            return line
+    return None
+
+
+# What is recorded for an installed tool that prints no version anywhere. It
+# names the binary that answered, because that is the fact still worth having:
+# a reader who needs to know which drat-trim this was can look at that path.
+NO_VERSION = "reports no version; binary at"
+
+
 def version_of(binary, *flags):
-    """A version string, or None when the tool is not installed."""
+    """A version string, the marker for a tool that prints none, or None when it
+    is not installed."""
     path = shutil.which(binary)
     if path is None:
         return None
     for flag in flags or ("--version",):
         try:
             done = subprocess.run([binary, flag], capture_output=True, text=True, timeout=10)
-            first = (done.stdout + done.stderr).strip().splitlines()
-            if first:
-                return first[0].strip()
         except (OSError, subprocess.SubprocessError):
             continue
-    return path
+        found = version_in(done.stdout + done.stderr)
+        if found:
+            return found
+    return f"{NO_VERSION} {path}"
 
 
 def provenance(build):
@@ -232,7 +279,46 @@ def unreproducible(row):
             if key.endswith(NOT_REPRODUCIBLE)}
 
 
-def satisfiability_of(build, question, committed, repeats=REPEATS):
+def skipped_fields(question, committed, slow):
+    """`{field: why}` for the figures this run leaves to the committed row.
+
+    Two reasons, and the difference between them is the whole point of printing
+    them. A figure whose flags were never written down cannot be reproduced by
+    anybody, and `unreproducible` above reads that admission out of the file. A
+    figure that is merely expensive is reproducible on demand: it names its price
+    in `exhaustive_costs`, its invocation is recorded beside it, and `--slow`
+    asks it. Either way the caller prints one line per entry on every run, so a
+    carried number never reads as a re-derived one.
+    """
+    skipped = unreproducible(committed)
+    if not slow and "exhaustive_costs" in question:
+        skipped.setdefault("exhaustive_nodes", question["exhaustive_costs"])
+    return skipped
+
+
+def exhaustive_command(build, tensor, target, committed):
+    """The recorded tree-search invocation, re-pointed at this build directory.
+
+    A published node count above the default ceiling of 5 000 000 means a
+    `--node-limit` was passed, and the only place that flag is written down is
+    the `exhaustive_command` the last run recorded beside the number. So the
+    flags come from the file: everything the recorded line carries after its
+    target is passed again. Rebuilding the line here instead is not a smaller
+    version of the same run, it is a different question, one that spends the
+    default budget and gives up undecided.
+
+    A row with no recorded line yet gets the bare command, which is what the two
+    cheap exhaustions want and what wrote their lines in the first place.
+    """
+    command = [str(build / "exhaustive_search" / "decide-rank"), tensor,
+               "--target", str(target)]
+    recorded = (committed.get("exhaustive_command") or "").split()
+    if "--target" in recorded:
+        command += recorded[recorded.index("--target") + 2:]
+    return command
+
+
+def satisfiability_of(build, question, committed, repeats=REPEATS, slow=False):
     """One fixture's published questions, re-asked of the solver and of the tree.
 
     What this does not measure is carried from the committed row untouched: the
@@ -264,10 +350,10 @@ def satisfiability_of(build, question, committed, repeats=REPEATS):
         row.update({"ruled_out_at": target, "ruled_out_seconds": seconds,
                     "ruled_out_command": command})
 
-    if question.get("exhaustive") and "exhaustive_nodes" not in unreproducible(committed):
+    if question.get("exhaustive") and "exhaustive_nodes" not in skipped_fields(question,
+                                                                              committed, slow):
         target = question["ruled_out_at"]
-        command = [str(build / "exhaustive_search" / "decide-rank"), tensor,
-                   "--target", str(target)]
+        command = exhaustive_command(build, tensor, target, committed)
         text, seconds = fastest(command, repeats, expect=(1,))
         # No node line at all means the polynomial lower bound refused the target
         # before the search opened a node. That is a count of zero and a question
@@ -303,6 +389,9 @@ def main():
     parser.add_argument("--build", default="build", help="the build directory")
     parser.add_argument("--check", action="store_true",
                         help="compare counts against the committed files and exit 1 on drift")
+    parser.add_argument("--slow", action="store_true",
+                        help="also ask the questions priced in exhaustive_costs, "
+                             "which is 6.6 minutes of one core for the GF(16) exhaustion")
     arguments = parser.parse_args()
 
     build = (ROOT / arguments.build).resolve()
@@ -325,10 +414,12 @@ def main():
     # Said before anything is measured, so that a reader of the output knows what
     # the run below is not going to tell them.
     skipped = [(question["name"], field, why) for question in SAT_QUESTIONS
-               for field, why in unreproducible(sat_rows.get(question["name"], {})).items()]
+               for field, why in skipped_fields(question,
+                                                sat_rows.get(question["name"], {}),
+                                                arguments.slow).items()]
     for name, field, why in skipped:
-        print(f"SKIPPED  {satisfiability.name}: {name} {field}, which this driver "
-              f"does not cover. {why}")
+        print(f"SKIPPED  {satisfiability.name}: {name} {field}, carried from the "
+              f"committed row. {why}")
 
     measured = {
         descent: {"fixtures": [descent_of(build, name, repeats) for name in FIXTURES]},
@@ -336,7 +427,8 @@ def main():
             {"fixtures": [sparsification_of(build, name, repeats) for name in OPERATORS]},
         satisfiability:
             {"fixtures": [satisfiability_of(build, question,
-                                            sat_rows.get(question["name"], {}), repeats)
+                                            sat_rows.get(question["name"], {}), repeats,
+                                            arguments.slow)
                           for question in SAT_QUESTIONS]},
     }
 

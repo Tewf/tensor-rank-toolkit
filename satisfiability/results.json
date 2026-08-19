@@ -1,7 +1,7 @@
 {
   "task": "Deciding tensor rank as a satisfiability question: is there a decomposition of T into k rank-one terms?",
-  "source": "Produced by `reproduce/measure.py`, which asks every question below of both instruments: `decide-rank-by-sat <fixture> --target k --break-symmetry --plain-cnf` for the solver columns, and `decide-rank <fixture> --target k` for the exhaustive ones, which answer the same question by enumerating subspaces. Each row carries the invocation that produced it, and the provenance block at the end names the commit, the compiler, the Givaro version, the solvers on PATH and the defaults in force.",
-  "covered": "`measure.py --check` re-derives `found_at`, `ruled_out_at` and `exhaustive_nodes`, and stops the run rather than reporting drift if a verdict has flipped. It carries `field`, `known_rank`, the notes and the `*_under_cryptominisat` second opinions untouched, because those are a literature fact, prose and another solver's answer rather than measurements this driver makes. It re-derives no timing, for the reason MEASURING.md gives. It covers every figure here except one, the GF(16) exhaustive node count, and it prints a SKIPPED line naming that one on every run.",
+  "source": "Produced by `reproduce/measure.py`, which asks every question below of both instruments: `decide-rank-by-sat <fixture> --target k --break-symmetry --plain-cnf` for the solver columns, and `decide-rank <fixture> --target k [--node-limit N]` for the exhaustive ones, which answer the same question by enumerating subspaces. Each row carries the invocation that produced it, node limit and all, and the driver reads that line back rather than rebuilding it, and the provenance block at the end names the commit, the compiler, the Givaro version, the solvers on PATH and the defaults in force.",
+  "covered": "`measure.py --check` re-derives `found_at`, `ruled_out_at` and `exhaustive_nodes`, and stops the run rather than reporting drift if a verdict has flipped. It carries `field`, `known_rank`, the notes and the `*_under_cryptominisat` second opinions untouched, because those are a literature fact, prose and another solver's answer rather than measurements this driver makes. It re-derives no timing, for the reason MEASURING.md gives. Every count here is reproducible, but one is not re-derived by default: the GF(16) exhaustive node count is 6.6 minutes of one core, so `--check` carries it and `--check --slow` asks it, and a SKIPPED line names that figure and its price on every run.",
   "why": "Hastad proved in 1990 that tensor rank is NP-complete over every finite field. NP-completeness cuts both ways: a decomposition is a certificate, so the question can be handed to a solver rather than enumerated.",
   "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz, 2026-08-16. Every timing is the fastest of three runs on an otherwise quiet machine, because the spread between runs is larger than several of the values.",
   "timings": "Every `*_seconds` field is the 2026-08-16 run described under `machine`, and no `--check` reads one. They are rewritten only by a full `measure.py` run on a quiet machine, under the protocol in MEASURING.md; the counts beside them are re-derived on every push.",
@@ -111,7 +111,8 @@
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 105600301,
       "exhaustive_ruled_out_seconds": 2328,
-      "exhaustive_nodes_not_reproducible": "The `--node-limit` this run was given was never written down. 105 600 301 nodes is twenty-one times the default ceiling of 5 000 000 (`search_node_limit`, `tunables.conf`), so the run cannot have been made at the default, and the number it was raised to is recorded nowhere; the 2328 s beside it came off the same unrecorded run. `reproduce/measure.py` therefore does not re-derive either, and prints a SKIPPED line naming this figure on every run, `--check` included, rather than passing over it in silence. Re-deriving it is roughly forty minutes of one core at the rate the shipped binary visits nodes. Whoever runs it should write the flag into `exhaustive_command`, delete this key, and let the driver own the figure."
+      "exhaustive_command": "build/exhaustive_search/decide-rank fixtures/gf16_multiplication.tensor --target 8 --node-limit 200000000",
+      "exhaustive_note": "The node count is reproducible now and the flag behind it is in `exhaustive_command` above: the missing `--node-limit` was 200 000 000, and the recorded line gives 105 600 301 nodes and exit 1, deterministically, matching this row exactly. `reproduce/measure.py` reads that field back rather than rebuilding the line, so the flag is passed again; what it no longer does by default is spend the 6.6 minutes of one core the search costs, which is longer than every other question in this file together, so the default run carries this count and `--slow` re-derives it. The SKIPPED line names the price. **The 2328 s beside the count is older than the count's own instrument** and is left as measured rather than replaced: it was taken before the GF(2) bit-packed leaf existed (`exhaustive_search/gf2_leaf.h`), and at the general-leaf rate that file records, 200 000 nodes in 4.47 s, this count projects to 2360 s, which is the recorded value inside the 13% thermal band. The shipped binary does the same search about six times faster, but no replacement timing is published here: the runs that showed it were taken on a machine with a browser on it, which MEASURING.md does not accept."
     },
     {
       "name": "f2_5x5",
@@ -198,8 +199,8 @@
       "cryptominisat5": "c CryptoMiniSat version 5.11.15",
       "cadical": null,
       "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
-      "drat-trim": "usage: drat-trim [INPUT] [<PROOF>] [<option> ...]",
-      "cbc": "Welcome to the CBC MILP Solver",
+      "drat-trim": "reports no version; binary at /home/hamlil/.local/bin/drat-trim",
+      "cbc": "Version: 2.10.11",
       "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
     },
     "build_directory": "build",

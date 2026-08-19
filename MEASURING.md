@@ -58,11 +58,11 @@ with the consequence and what to do about it:
 The heuristic is unaffected and adopts the same candidates in the same order.
 
 **A published node count above 5 000 000 means a non-default `--node-limit` was
-used.** The GF(16) row of `satisfiability/results.json` records 105 600 301
-exhaustive nodes, twenty-one times the default ceiling, and the flag behind it
-was never written down. That row says so in its own `_not_reproducible` key, and
-`reproduce/measure.py` prints a SKIPPED line naming it on every run: the one
-figure the driver does not cover is the one it is loudest about.
+used, and the row records the flag.** The GF(16) row of
+`satisfiability/results.json` has 105 600 301 exhaustive nodes at `--node-limit
+200000000`, which `reproduce/measure.py` reads back out of `exhaustive_command`
+rather than rebuilding. That search costs 6.6 minutes of one core, so the default
+run carries the count, `--slow` re-derives it, and a SKIPPED line prices it.
 
 ## What is reproducible, and what is not
 
