@@ -33,12 +33,35 @@ solution for two slices. Polynomial multiplication is what every `.tensor`
 fixture here is; the two-slice case is the one shape of it that never needed a
 search, and nothing here special-cases it.
 
+**Theorem 1 is the formula, and it was read**, from the author's own copy at
+[logic.pdmi.ras.ru/~grigorev/pub/pair.pdf](https://logic.pdmi.ras.ru/~grigorev/pub/pair.pdf),
+the LNCS volume being paywalled. The report's own summary calls it *"the explicit
+formula for the rang of a pair of matrices over an algebraically-closed field
+(theorem I)"*, and the statement counts, over the Weierstrass-Kronecker form,
+`Σ(a_i + 1)` over the `L` blocks, `Σ(β_j + 1)` over the transposed ones, `p` the
+size of the regular part, and `d` the number of blocks of dimension at least
+2 × 2. That is
+[`kronecker_structure.h`](pencil_rank/kronecker_structure.h)'s
+`Σ(eps_i + 1) + Σ(eta_j + 1) + regular_size + delta` term for term. **The
+algebraically-closed hypothesis is the theorem's own**, which is why the module
+reports that count as a lower bound over `GF(p)` and not as the rank.
+
 **`jaja1979`**: J. Ja'Ja'. *Optimal evaluation of pairs of bilinear forms.* SIAM
 Journal on Computing **8** (1979), no. 3, 443-462; STOC 1978. Determines the
 rank of any `p x q x 2` tensor in polynomial time, through the Kronecker theory
 of matrix pencils. It marks where the exhaustive machinery here starts being
 necessary: at two slices the answer is a canonical form, and the searches in
 this repository are for what lies past that.
+
+**Its theorem numbers are named through `[sumi2009]`, the way `[gabriel1972]` is
+named through `[brion2008]`.** The paper itself is behind SIAM's paywall and was
+not read; what was checked is that `[sumi2009]`, whose reference [6] is this
+paper, cites *"[6, Theorem 2.1]"* for `rank((0, E_k); (E_k, 0)) = k + 1`, the
+singular-block count, *"[6, Theorem 3.3 and proof of Theorem 3.1]"* for the
+regular part, and *"[6, Theorem 3.6]"* for the reverse inequality under
+`p_1(A)` splitting. Those three are the only numbers this repository quotes for
+it, in [`kronecker_structure.h`](pencil_rank/kronecker_structure.h); a
+`[jaja1979, Thm. n]` for any other `n` would be an invention.
 
 **`sumi2009`**: T. Sumi, M. Miyazaki, T. Sakata. *Rank of 3-tensors with 2 slices
 and Kronecker canonical forms.* Linear Algebra and its Applications (2009),
@@ -117,6 +140,17 @@ when an `R`-base exists, is the equivalence
 [`canonical_factorisation/`](canonical_factorisation/README.md) is built on,
 credited there to Bürgisser-Clausen-Shokrollahi Proposition 14.45.
 
+**Theorem 5.4 is the other numbered result cited to it, and it was read.**
+*"(Tensor-rank bound). We have `trk(C) ≥ dim_{F_q}(C) + d(C) − 1`"*, over `F_q`
+throughout section 5. Its two symbols are the paper's own: the code is a slice
+space in the sense of **Definition 2.1**, *"the first slice space of `X` ... the
+span of `X_1, …, X_k`"*, and `d` is **Definition 5.3**, *"the minimum (rank)
+distance ... `min{rk(X) : X ∈ C, X ≠ 0}`"*. So `k` and `d` mean in
+[`rank_metric_bound/`](rank_metric_bound/README.md) what they mean here. Byrne
+and Cotardo attribute the inequality itself to Kruskal (1977); **that paper was
+not read**, and the module's header says so rather than passing the attribution
+on as checked.
+
 **`hastad1990`**: J. Håstad. *Tensor rank is NP-complete.* Journal of
 Algorithms **11** (1990), no. 4, 644-654.
 [doi:10.1016/0196-6774(90)90014-6](https://doi.org/10.1016/0196-6774(90)90014-6),
@@ -146,10 +180,15 @@ Local Search for Hybrid SAT Solving on GPUs.* AAAI 2025,
 [arXiv:2308.15020](https://arxiv.org/abs/2308.15020). FastFourierSAT, and the
 reason a GPU does not help this repository: it accelerates **continuous local
 search**, which finds satisfying assignments and cannot refute, while the
-expensive half here is the refutation. Named in
-[`positioning/hardware-and-parallelism.md`](positioning/hardware-and-parallelism.md),
-which also records that GPU CDCL is reported as slower than CPU CDCL. The author
-list is from the arXiv record and the first name may not be the one to cite by.
+expensive half here is the refutation. The author list is from the arXiv record
+and the first name may not be the one to cite by.
+
+**The key is not used anywhere.**
+[`positioning/hardware-and-parallelism.md`](positioning/hardware-and-parallelism.md)
+carries the argument, and records that GPU CDCL is reported as slower than CPU
+CDCL, but it names the system in prose as FastFourierSAT and cites no key, so a
+reader there has nothing to look up. This entry said it was named there, which
+was the wrong half of that sentence to state.
 
 **`schaefer2018`**: M. Schaefer, D. Štefankovič. *The Complexity of Tensor
 Rank.* Theory of Computing Systems **62** (2018), 1161-1174.
@@ -207,6 +246,17 @@ Definition 7 and Definition 13 are the automorphism action and the setwise
 stabiliser; Algorithm 3 is `BDEZStab`; Definitions 20 and 22 and Algorithm 4 are
 the covering-sets method; Propositions 28 and 29 are the stems for the short
 product and the matrix product.
+
+**Theorem 17 and Corollary 18 are the two `orbit_reduction/` leans on hardest,
+and they say different things.** Read from v3. **Theorem 17** is the closed-form
+stabiliser, *"for the group action `M · (X, Y) ↦ X^T M Y`, the subgroup
+stabilizing the vector space `T_{p,q,r}` can be described as the group given by
+the pairs `(P ⊗ R^T, Q ⊗ R^{-1})` for `P ∈ GL_p`, `R ∈ GL_q`, `Q ∈ GL_r`"*, which
+is the group [`pool_orbits.h`](orbit_reduction/pool_orbits.h) acts by.
+**Corollary 18** is *"the elements of `T_{p,q,r}` of a given rank lie in the same
+orbit under the action of `Stab(T_{p,q,r})`"*, which is a statement about
+elements **of the target subspace**, and the rank-one pool is not inside it. The same header
+records that the pool orbits were once attributed to it and are not its.
 
 **`covanov2018`**: S. Covanov. *Algorithmes de Multiplication: Complexité
 Bilinéaire et Méthodes Asymptotiquement Rapides.* Thèse, Université de Lorraine,
@@ -398,15 +448,29 @@ of the `⟨3,3,3⟩` bound of 19 that stood for twenty-three years, and of the
 
 ## Searching for decompositions, which is the other direction
 
+Where this repository stands against all of these:
+[`positioning/`](positioning/README.md).
+
 **`alphatensor2022`**: A. Fawzi et al. *Discovering faster matrix multiplication
 algorithms with reinforcement learning.* Nature **610** (2022), 47-53.
 AlphaZero applied to decomposition as a single-player game; 14 236 non-equivalent
 schemes for `⟨4,4,4⟩`.
 
 **`kauers2023`**: M. Kauers, J. Moosbauer. *Flip Graphs for Matrix
-Multiplication.* ISSAC 2023, [arXiv:2212.01175](https://arxiv.org/abs/2212.01175).
-Rewriting a working decomposition rather than searching for one. `⟨5,5,5⟩` in 95
-with no machine learning.
+Multiplication.* Proc. ISSAC 2023, 381-388,
+[arXiv:2212.01175](https://arxiv.org/abs/2212.01175).
+Rewriting a working decomposition rather than searching for one: a random walk
+on a graph whose vertices are decompositions, where a flip preserves the rank
+and a reduction lowers it, which is what
+[`flip_graph.h`](flip_graph/flip_graph.h) implements. `⟨5,5,5⟩` in 95 with no
+machine learning.
+
+**Definition 2 and Proposition 3 are the reduction.** Read: a scheme is
+*reducible* when some nonempty `I` has `dim⟨A^(i)⟩_{i∈I} = 1` and
+`{B^(i)}_{i∈I}` linearly dependent, or the same with any other pair of the three
+modes, and **Proposition 3** is that a reducible scheme of rank `r` yields one of
+rank `r - 1`. `flip_graph.cpp` detects the free case of it, two terms agreeing on
+two modes, widened to agreement up to a scalar in each.
 
 **`moosbauer2025`**: J. Moosbauer, M. Poole. *Flip Graphs with Symmetry and New
 Matrix Multiplication Schemes.* ISSAC 2025,
@@ -421,6 +485,14 @@ Theorem 7), which is exactly the division of labour between the two strands
 here. **Their `(n,m)` are degrees, not term counts**: Toom-Cook gives rank
 `n+m+1`, so their `(n,m)` is this repository's `(n+1)x(m+1)`. Their proven
 list, translated, is 2x2, 2x3, 2x4, 2x5, 2x6, 3x3, 3x4, 3x5 and 4x4 over `Z2`.
+
+**Their closing question is this repository's opening, and so is the obstacle
+they name for it.** Their conclusion asks for polynomial multiplication over
+`Z3`, `Z5` and `Z7`, and says why the walk works best over `Z2`: for a larger
+field a constant factor moves freely between the three components,
+`(αu)⊗v⊗w = u⊗(αv)⊗w = u⊗v⊗(αw)`, and *"a search engine that follows a random
+path in the flip graph would somehow have to cope with this freedom, and it is
+unclear what is the best way of doing this"*.
 
 **`kauers2025`**: M. Kauers, I. Wood. *Exploring the Meta Flip Graph for Matrix
 Multiplication.* [arXiv:2510.19787](https://arxiv.org/abs/2510.19787), 2025.
@@ -522,14 +594,27 @@ method, which shares no machinery with anything here.
 Definition 3.2 is the Ω-valid set; Algorithms 3 and 4 are the two exact oracles
 in [`matrix_sparsification/oracle_sparsifier.h`](matrix_sparsification/oracle_sparsifier.h);
 Algorithm 2 is the driver they feed, from `gottlieb2010`; Algorithm 6 is the
-greedy in `greedy_sparsifier.h`; Claim 2.11 is the additive complexity in
-`algorithm_cost.h`.
+greedy in `greedy_sparsifier.h`.
+
+**This entry claimed Claim 2.11 and the paper has no such claim.** Its numbered
+claims run 2.12, 3.10, 3.11 and 3.18, and 2.12 is the complexity of a recursively
+applied linear map, not an additive complexity. The additive complexity
+`algorithm_cost.h` implements is `[beniamini2019, Claim 2.11]`, which is what the
+header has always cited; only this file was pointing at the wrong paper.
 
 **`beniamini2019`**: G. Beniamini, O. Schwartz. *Faster Matrix Multiplication
 Via Sparse Decomposition.* SPAA 2019, pp. 11-22.
 Definition 2.8 is the trilinear identity `algorithm_check.h` verifies; Claim 3.9
 and Corollary 3.10 are the arithmetic complexity and its leading coefficient;
 Definition 3.5 and Algorithm 2 are the decomposed recursive-bilinear algorithm.
+
+**Claim 2.11 is here and not in `beniamini2020`**, read from the SPAA proceedings
+copy: it gives the additive complexities of the encoding and decoding matrices as
+`q_u = nnz(U) + nns(U) - rows(U)`, the same for `V`, and
+`q_w = nnz(W) + nns(W) - cols(W)`, which is
+[`algorithm_cost.h`](matrix_sparsification/algorithm_cost.h) term for term. The
+paper credits the claim to `[karstadt2017]`; it is cited to here because here is
+where it was read.
 
 **`karstadt2017`**: E. Karstadt, O. Schwartz. *Matrix Multiplication, A Little
 Faster.* SPAA 2017. Also JACM 67(1), 2020. The alternative-basis technique both
@@ -590,8 +675,13 @@ gives; Algorithm 3 is `bdez2012`'s search restricted to symmetric forms; Tables
 H. Randriambololona, R. Rolland. *On the Tensor Rank of Multiplication in Finite
 Extensions of Finite Fields and Related Issues in Algebraic Geometry.* Russian
 Mathematical Surveys **76** (2021), no. 1, 29-89,
-[arXiv:1906.07456](https://arxiv.org/abs/1906.07456). The survey the bound
-tables are taken from.
+[arXiv:1906.07456](https://arxiv.org/abs/1906.07456). The survey these bounds
+sit in.
+
+**Not the source of the table here**, which this entry used to say it was.
+[`symmetric_bound_table.h`](curve_bounds/symmetric_bound_table.h) is
+`[rambaud2014, Table 1]` transcribed, and a 2021 survey cannot be where a 2014
+table came from. What this is cited for is Theorem 2.1, below.
 
 Its §2, *Old classical results*, is also the small-field story for polynomial
 multiplication, and its **Theorem 2.1** restates the field-size statement: if
@@ -652,57 +742,6 @@ here.
 Operations Over Finite Fields of Characteristic Three with Low Complexity.*
 Journal of Computational and Applied Mathematics **259** (2014), 546-554.
 Context, not implemented here.
-
-## Walking a decomposition
-
-Where this repository stands against all of these:
-[`positioning/`](positioning/README.md).
-
-**`kauers2023`**: M. Kauers, J. Moosbauer. *Flip graphs for matrix
-multiplication.* Proc. ISSAC'23, 381-388. arXiv:2212.01175. The method
-[`flip_graph.h`](flip_graph/flip_graph.h) implements: random walks on a graph
-whose vertices are decompositions, where a flip preserves the rank and a
-reduction lowers it.
-
-**`chen2025`**: S. Chen, M. Kauers. *Flip graphs for polynomial multiplication.*
-arXiv:2502.06264. The same walk on this repository's own subject, over `Z2`, with
-optimality proved by SAT for every degree pair up to `(3,3)`. Their closing
-question, polynomial multiplication over `Z3`, `Z5` and `Z7`, and the obstacle
-they name for it, are the one opening this repository has.
-
-**`moosbauer2025`**: J. Moosbauer, M. Poole. *Flip graphs with symmetry and new
-matrix multiplication schemes.* arXiv:2502.04514. The walk restricted to schemes
-admitting a group action: `5x5` in 93 multiplications, `6x6` in 153.
-
-**`ikenmeyer2025`**: C. Ikenmeyer, J. Moosbauer. *Strassen's algorithm via orbit
-flip graphs.* arXiv:2503.05467. Strassen's 7 reproved from an order-6 group
-action, with no calculation and no pattern matching.
-
-**`arai2024`**: Y. Arai, Y. Ichikawa, K. Hukushima. *Adaptive flip graph
-algorithm for matrix multiplication.* Proc. ISSAC'24, 292-298. arXiv:2312.16960.
-Transitions that do not strictly reduce the count, and a constrained search range.
-
-**`kauers2025meta`**: M. Kauers, I. Wood. *Exploring the meta flip graph for
-matrix multiplication.* arXiv:2510.19787.
-
-**`perminov2026`**: A. I. Perminov. *Fast matrix multiplication in small formats:
-discovering new schemes with an open-source flip graph framework.*
-arXiv:2603.02398, code at
-[github.com/dronperminov/FastMatrixMultiplication](https://github.com/dronperminov/FastMatrixMultiplication),
-MIT. Bit-level encoding, OpenMP, 680 formats from `(2,2,2)` to `(16,16,16)`, and
-a GPU variant. **The baseline for any flip graph number produced here.**
-
-**`sedoglavic2024`**: A. Sedoglavic. *Yet another catalogue of fast matrix
-multiplication algorithms.* [fmm.univ-lille.fr](https://fmm.univ-lille.fr/). The
-field's running record of best known upper bounds.
-
-**`deza2023`**: A. Deza, C. Liu, E. B. Khalil, P. Vaezipoor. *Fast matrix
-multiplication without tears: a constraint programming approach.* Proc. CP 2023,
-LIPIcs vol. 280. arXiv:2306.01097. The Brent equations solved by constraint
-programming. The 2x2 and 3x3 cases are MIPLIB 2017 benchmarks, so the formulation
-is standard and nothing here is new. This repository stated the same equations for
-a MILP solver, measured them against the SAT strand and the tree search, and
-retired the encoding: [`state-of-the-art/rank-as-a-milp.md`](state-of-the-art/rank-as-a-milp.md).
 
 ## The algorithms everything is measured against
 
