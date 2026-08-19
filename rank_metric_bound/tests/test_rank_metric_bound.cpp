@@ -57,7 +57,7 @@ struct Fixture {
     /// `sum_j ceil(d / p^j)`, the best over the three axes.
     long long griesmer;
     /// `max(rank_lower_bound, Griesmer)`: the floor a caller would get if
-    /// [`../the-edit-not-made.md`](../the-edit-not-made.md)'s one-line edit to
+    /// [`../joining-the-shared-floor.md`](../joining-the-shared-floor.md)'s one-line edit to
     /// `linear_algebra/rank_lower_bound.h` were made. Pinned here because it is
     /// this module's whole claim, and because whoever makes that edit needs the
     /// eighteen numbers it has to produce.
