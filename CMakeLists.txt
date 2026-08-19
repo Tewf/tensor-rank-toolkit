@@ -25,7 +25,11 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GIVARO REQUIRED IMPORTED_TARGET givaro)
 
 add_library(project_warnings INTERFACE)
-target_compile_options(project_warnings INTERFACE -Wall -Wextra -Wpedantic)
+# Guarded on the language rather than left bare: nvcc rejects these for device
+# code, and a genex belongs here where compile options are legal rather than in
+# a `target_link_libraries` call, where CMake refuses it outright.
+target_compile_options(project_warnings
+                       INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-Wall -Wextra -Wpedantic>)
 
 enable_testing()
 # Third-party and header-only, so it comes before anything that links it.
