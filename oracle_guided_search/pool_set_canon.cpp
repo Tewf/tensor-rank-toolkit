@@ -14,6 +14,8 @@
 #include <permlib/permlib_api.h>
 
 #include <algorithm>
+#include <stdexcept>
+#include <string>
 
 #include "candidate_pool.h"
 #include "pool_orbits.h"
@@ -73,6 +75,16 @@ PoolSetCanon::PoolSetCanon(const Field& field, const std::vector<Automorphism>& 
     // construct one: `canonical` below then returns its input, which is the
     // honest degenerate case and matches `canonical_subspace`'s empty-group arm.
     if (permutations.empty()) return;
+
+    // Refused rather than attempted. `construct` does not fail at this size, it
+    // dies, and a segfault is not an answer a caller can act on.
+    if (presentation_->points > kLargestVerifiedPool) {
+        throw std::runtime_error(
+            "a pool of " + std::to_string(presentation_->points) +
+            " is past the " + std::to_string(kLargestVerifiedPool) +
+            " this canonical form was verified on; it is not slow past there, it "
+            "crashes, so the shape is refused instead");
+    }
     presentation_->group = permlib::construct(
         static_cast<permlib::dom_int>(presentation_->points), permutations.begin(),
         permutations.end());
@@ -123,6 +135,31 @@ std::vector<std::size_t> PoolSetCanon::canonical_with_marked(
         if (least[point]) canonical.push_back(point);
     }
     return canonical;
+}
+
+std::vector<std::vector<std::uint32_t>> PoolSetCanon::stabiliser_generators(
+    const std::vector<std::size_t>& indices) const {
+    if (!presentation_->group) return {};
+
+    std::vector<permlib::dom_int> points;
+    points.reserve(indices.size());
+    for (const std::size_t index : indices) {
+        points.push_back(static_cast<permlib::dom_int>(index));
+    }
+
+    const boost::shared_ptr<permlib::PermutationGroup> fixing =
+        permlib::setStabilizer(*presentation_->group, points.begin(), points.end());
+
+    std::vector<std::vector<std::uint32_t>> generators;
+    if (!fixing) return generators;
+    for (const permlib::Permutation::ptr& element : fixing->S) {
+        std::vector<std::uint32_t> images(presentation_->points);
+        for (std::size_t point = 0; point < presentation_->points; ++point) {
+            images[point] = static_cast<std::uint32_t>(*element / point);
+        }
+        generators.push_back(std::move(images));
+    }
+    return generators;
 }
 
 std::vector<std::size_t> PoolSetCanon::canonical(

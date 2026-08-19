@@ -68,7 +68,27 @@ both routes back to back on an idle machine:
 
 **22 779x fewer nodes than the plain route and 11.8x faster**, against 1 982x and
 1.7x before. The group is no longer walked at all: `group_visits` is 0 and
-`canonisations` is what counts now.
+`canonisations` is what counts now. Handing the caller's group as **generators**
+rather than as a list took the same run from 3.04 s to **1.12 s**, because the
+presentation is built from six of them instead of 216.
+
+**The last `|G|` dependency is gone too, and it was the one that decided which
+shapes this route could reach.** `stabiliser_of` filtered a group held as a list,
+so the canonical route refused `⟨3,3,3⟩` outright at 4 741 632 elements and
+6.2 GiB before opening a node. The subgroup fixing a subspace now comes from a
+backtrack over generators, `[permlib]`'s `setStabilizer`, which is sound here
+because the enumerator descends from `span(T)`: every subspace it reaches is
+`span(T) + span(pool ∩ U)`, so fixing the subspace and fixing its pool content are
+the same condition. Node counts did not move, which is the check that matters:
+83 and one distinct subspace, before and after.
+
+**What that bought, and what it did not.** The route now reaches `⟨2,3,3⟩`, whose
+pool is 32 193, and still refuses `⟨3,3,3⟩` at 261 121 for a different reason:
+`[permlib]`'s group construction **crashes** at that degree, with a 512 MB stack
+as well as the default. Verified working at 225, 945 and 32 193; the boundary
+between 32 193 and 261 121 is not located. So the refusal moved from a memory
+budget to a measured limit of the library, and it is a refusal rather than a
+segfault because `kLargestVerifiedPool` says so.
 
 **The node count moved, and that is expected rather than alarming.** A canonical
 form is not unique; any function constant on orbits and separating them will do,

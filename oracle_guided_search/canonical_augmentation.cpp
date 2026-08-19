@@ -93,15 +93,13 @@ std::vector<std::size_t> augmentations(const Walk& walk, const std::vector<Matri
     for (std::uint32_t index = 0; index < pool.size(); ++index) {
         if (!span.contains(pool[index], scratch)) outside.push_back(index);
     }
-    // The stabiliser still comes from the group as a list, and that is the last
-    // `|G|` dependency the canonical route has: filtering a generating set for the
-    // elements that happen to fix `current` does **not** generate the stabiliser,
-    // which `pool_orbits.cpp` learned the hard way (41 orbits where there are 13).
-    // A generator-driven subspace stabiliser is the piece that would let this run
-    // at `<3,3,3>`, where the group is 4 741 632 elements and 6.2 GiB.
-    const std::vector<Automorphism> stabiliser = stabiliser_of(field, current, *walk.group);
-    // The action itself no longer needs a table, which was the other half.
-    const PoolAction action(field, stabiliser, pool.front().rows(), pool.front().columns());
+    // The subgroup fixing this subspace, by backtrack from generators rather than
+    // by filtering a group held as a list. That list was the last `|G|` dependency
+    // here, and it is why the canonical route refused `<3,3,3>` outright: the
+    // group is 4 741 632 elements and 6.2 GiB. `pool_set_canon.h` argues why the
+    // setwise stabiliser of the pool content is the stabiliser of the subspace.
+    const std::vector<std::vector<std::uint32_t>> action =
+        walk.canon->stabiliser_generators(pool_inside(field, pool, current));
 
     std::vector<std::size_t> representatives;
     for (const std::uint32_t index : orbit_representatives(action, outside)) {
