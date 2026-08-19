@@ -270,6 +270,32 @@ invariant cheap is the part not implemented here, and is what
 [`deduplication-cost.md`](oracle_guided_search/deduplication-cost.md) measures the
 absence of.
 
+**`linton2004`**: S. A. Linton. *Finding the smallest image of a set.* ISSAC 2004,
+229-234, [doi:10.1145/1005285.1005319](https://doi.org/10.1145/1005285.1005319).
+The canonical image of a set under a **prescribed** permutation group, which is
+the primitive [`pool_set_canon.h`](oracle_guided_search/pool_set_canon.h) reduces
+to, and the name the field gives the problem `mckay1998`'s canonical parent needs
+solved cheaply.
+
+**Not read.** It is named through `[permlib]`, whose
+`include/permlib/search/orbit_lex_min_search.h` cites it by title and year as what
+that file implements, and through Jefferson et al.'s account of it, the same way
+`[gabriel1972]` is named through `[brion2008]`. No numbered result of it is quoted
+anywhere here, and none should be until somebody has the paper. What matters for
+this repository is settled without it: the group is prescribed rather than
+discovered, which is why `nauty` is the wrong instrument and not merely a slower
+one, since it would canonise under `Sym(left) x Sym(right)`, merge orbits `G`
+separates and yield a floor nothing downstream could catch.
+
+**`permlib`**: T. Rehn. *PermLib*, a C++ library for permutation group
+computations, [github.com/tremlin/PermLib](https://github.com/tremlin/PermLib),
+BSD 3-clause. Vendored at commit `2b4e468`, the `include/` tree unmodified, in
+[`vendor/permlib/`](vendor/permlib/README.md) with its licence and authors. Read:
+`permlib_api.h`'s `smallestSetImage` and the `OrbitLexMinSearch` it calls, and
+enough of `permutation.h` and `transversal/` to know that the transversal is a
+Schreier tree rather than explicit, which is what makes a degree of 261 121
+affordable. Not read: everything else.
+
 **`covanov2019`**: S. Covanov. *Improved Method for Finding Optimal Formulae
 for Bilinear Maps in a Finite Field.*
 [arXiv:1705.07728v3](https://arxiv.org/abs/1705.07728), 2018.
