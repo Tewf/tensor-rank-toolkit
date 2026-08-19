@@ -133,10 +133,16 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
     const std::size_t dimension = root.dimension();
     if (dimension > target) return false;
     if (dimension == target) {
-        // A leaf at the root: one pool scan, nothing to spread over cores.
+        // A leaf at the root: nothing to spread over cores, so this asks the one
+        // leaf test rather than a second copy of one. It used to call the pool
+        // scan directly, on the assumption in its own comment that a root leaf is
+        // always a scan. It is not: `rank_one_basis_of` picks the subspace walk
+        // wherever that is cheaper and the bit-packed route over GF(2), so
+        // `--threads 2` answered this leaf by a slower path than `--threads 1`,
+        // and by a different one. Threads default to 1, so no published number
+        // was ever taken down the wrong branch.
         std::vector<Element> scratch;
-        std::vector<Matrix> within =
-            independent_rank_one_maps_in(field, root, width, pool, target, scratch, &budget);
+        std::vector<Matrix> within = rank_one_basis_of(field, root, pool, target, scratch, &budget, leaf);
         if (within.size() != target) return false;
         products = std::move(within);
         return true;

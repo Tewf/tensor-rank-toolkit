@@ -10,6 +10,7 @@
 #include "candidate_pool.h"
 #include "check.h"
 #include "exhaustive_search.h"
+#include "parallel.h"
 #include "fewest_products.h"
 #include "tensor_file.h"
 
@@ -188,6 +189,43 @@ int main(int argc, char** argv) {
         bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, 11, whole, none);
         check::equal("an affordable leaf still refutes", whole.exhausted ? 1 : 0, 1);
         check::equal("and reports no leaf abandoned", whole.leaf_abandoned ? 1 : 0, 0);
+    }
+
+    // One thread and many must answer a leaf at the root by the same route.
+    //
+    // The parallel branch used to call the pool scan directly there, while one
+    // thread went through `rank_one_basis_of`, which picks the subspace walk
+    // wherever that is cheaper and the bit-packed route over GF(2). Both routes
+    // give the same answer, so the *answer* cannot catch this. The leaf budget
+    // can: the walk of a 2-dimensional span over GF(2) is 4 elements and the
+    // pool is 9, so a leaf limit between the two completes down one route and is
+    // abandoned down the other.
+    //
+    // The root is a leaf exactly when the target equals the span's dimension,
+    // which is the question "is this tensor's rank its own span dimension".
+    {
+        const linear_algebra::Tensor tensor =
+            linear_algebra::read_tensor_file(directory + "/w_state.tensor");
+        const bilinear_rank::Field field(tensor.characteristic);
+        const std::vector<bilinear_rank::Matrix> pool =
+            bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
+        const std::size_t at_the_root =
+            linear_algebra::span_of(field, tensor.slices).dimension();
+
+        std::vector<int> abandoned;
+        for (std::size_t workers : {std::size_t(1), std::size_t(4)}) {
+            bilinear_rank::set_worker_count(workers);
+            bilinear_rank::SearchBudget budget{/*node_limit=*/1'000'000, /*leaf_limit=*/4};
+            std::vector<bilinear_rank::Matrix> products;
+            bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, at_the_root, budget,
+                                           products);
+            abandoned.push_back(budget.leaf_abandoned ? 1 : 0);
+        }
+        bilinear_rank::set_worker_count(1);  // process-wide: leave it as it was
+
+        check::equal("the root really is a leaf here", at_the_root, std::size_t(2));
+        check::equal("one thread takes the cheap leaf route", abandoned[0], 0);
+        check::equal("and four threads take the same one", abandoned[1], abandoned[0]);
     }
 
     return check::report("exhaustive search");
