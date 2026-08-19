@@ -70,10 +70,14 @@ two cleanly, 6.0x scanning against 16.2x walking at one shape. The 64x row for
 **This page covers the tree and the solver only.** The other two parts people
 ask about, generating the pool and the `C A` recovery, are in
 [`what-a-gpu-would-take.md`](what-a-gpu-would-take.md), along with the one part
-that is genuinely shaped for a card and the measurement that would decide it. One
-correction lives there and is worth knowing here: pool generation is 4% of a
-`⟨3,3,3⟩` run and almost all of a `⟨4,4,4⟩` one, so a ceiling computed at the first
-shape says nothing about the second.
+that is genuinely shaped for a card. One correction lives there and is worth
+knowing here: pool generation is 4% of a `⟨3,3,3⟩` run and almost all of a
+`⟨4,4,4⟩` one, so a ceiling computed at the first shape says nothing about the
+second.
+
+**That one part has since been built and measured**, and the leaf really is worth
+a card: [`../gpu_leaf/README.md`](../gpu_leaf/README.md). It changes nothing on
+this page, which is about the tree above the leaf and stands.
 
 **The recommendation survives, on less evidence than it claimed.** An order of
 magnitude on the CPU for no new hardware, measured now rather than forecast.

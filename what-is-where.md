@@ -20,6 +20,9 @@ descent_search/          rank from above, by descent
 exhaustive_search/       rank decided outright, and what that costs
 map_construction/        building the maps every method runs on
 orbit_reduction/         quotienting all three searches by symmetry
+gpu_leaf/                what one consumer GPU is worth on the leaf test,
+                         measured; built only where nvcc is present, and called
+                         by nothing else here
 flip_graph/              moving a decomposition sideways instead of building one
 oracle_guided_search/    fixed-k search, tree refutation, canonical augmentation
 canonical_factorisation/ the rank as A B, with the receipt that checks it

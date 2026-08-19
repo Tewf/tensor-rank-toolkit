@@ -5,10 +5,12 @@ question for the exhaustive **tree** (warp divergence) and the **solver** route
 (GPU CDCL is a published negative result). It never examined the other two parts
 anybody asks about. This page does, and it corrects a number.
 
-Nothing here is built. There is no `.cu`, `.cl` or `.hip` in this repository and
-no build wiring for one. The hardware present is an RTX 4060 Laptop, 8188 MiB,
-compute capability 8.9; `nvcc` is absent but `nvidia-cuda-toolkit` is in the
-Ubuntu archive, so the toolchain is one install away rather than a project.
+**The leaf part is now built and measured**, in
+[`../gpu_leaf/README.md`](../gpu_leaf/README.md), on the RTX 4060 Laptop this page
+was written beside. The two other parts below stay forecasts, and are marked as
+such. This paragraph said "nothing here is built" until 2026-08-19; what changed
+is one directory of CUDA, guarded so that a machine without `nvcc` builds and
+tests exactly as before.
 
 ## The rule this page is applied with
 
@@ -68,16 +70,22 @@ Four things line up, and they are the reason this section exists:
 The one loop-carried dependency stays on the host: the greedy `try_add` runs only
 on survivors, and a leaf needs `k` of them out of 4.29e9.
 
-## What would decide it, and what would not
+## What decided it: the bands were cleared, and the prior was wrong
 
-The honest experiment is standalone and needs no branch: a kernel over
-`i` in `[0, 4.29e9)` that regenerates, packs, and reduces against a basis in
-constant memory, timed against the measured 785 ns per element. Against 0.9 hours
-a leaf: **50x makes it 65 s and is worth wiring in; 10x makes it 5.4 minutes,
-which is real and still does not finish `<4,4,4>`; under 5x is the memory
-bandwidth wall and the answer is no.**
+The experiment this section asked for was run, standalone and on no branch of the
+searches: a kernel over `i` in `[0, 4.29e9)` that regenerates, packs, and reduces
+against a basis in constant memory. The bands were **50x worth wiring in, 10x
+real and insufficient, under 5x the bandwidth wall**, and the card clears 50x
+against every host baseline, including all twelve threads running the kernel's
+own arithmetic. **One whole `<4,4,4>` leaf is 1.02 s.** The tables:
+[`../gpu_leaf/what-the-card-did.md`](../gpu_leaf/what-the-card-did.md).
 
-Two things to hold. A 256-bit exclusive-or reduce is likely bandwidth bound rather
-than compute bound, so the middle band is the prior. And **this is GF(2) only**:
-Givaro carries every element as an `int64_t`, so GF(3), GF(5) and the rationals
-have none of this shape.
+**The prior in this paragraph was wrong.** It said a 256-bit exclusive-or reduce
+is likely bandwidth bound and made the middle band the prior; it is compute
+bound, because nothing streams. It also said to time the kernel against 785 ns,
+which would have been the wrong baseline: that figure is the *general* path, and
+the GF(2) leaf it replaces was measured at 940 ns per element on an addressed
+pool only when someone went and measured it.
+
+**This is GF(2) only**, which was right: Givaro carries every element as an
+`int64_t`, so GF(3), GF(5) and the rationals have none of this shape.
