@@ -35,6 +35,11 @@ std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matri
 struct PoolSetCanon::Presentation {
     std::size_t points = 0;
     boost::shared_ptr<permlib::PermutationGroup> group;
+    /// The same group on `2 * points`, acting alike on both halves, so that a
+    /// marked pair can be canonised as a set. Built on demand: a search that
+    /// never asks for a distinguished element never pays for it.
+    mutable boost::shared_ptr<permlib::PermutationGroup> doubled;
+    std::vector<std::vector<permlib::dom_int>> images;  // one per generator
 };
 
 /// One PermLib permutation per generator, from the factored action.
@@ -61,6 +66,7 @@ PoolSetCanon::PoolSetCanon(const Field& field, const std::vector<Automorphism>& 
             image[point] = static_cast<permlib::dom_int>(left * right_count + right);
         }
         permutations.push_back(permlib::Permutation::ptr(new permlib::Permutation(image)));
+        presentation_->images.push_back(image);
     }
 
     // An empty generator list is the trivial group, and PermLib is not asked to
@@ -77,6 +83,47 @@ PoolSetCanon::PoolSetCanon(PoolSetCanon&&) noexcept = default;
 PoolSetCanon& PoolSetCanon::operator=(PoolSetCanon&&) noexcept = default;
 
 std::size_t PoolSetCanon::size() const { return presentation_->points; }
+
+/// The doubled presentation, built the first time a marked pair is asked for.
+static boost::shared_ptr<permlib::PermutationGroup> doubled_group(
+    std::size_t points, const std::vector<std::vector<permlib::dom_int>>& images) {
+    std::list<permlib::Permutation::ptr> permutations;
+    for (const std::vector<permlib::dom_int>& image : images) {
+        permlib::Permutation::perm both(2 * points);
+        for (std::size_t point = 0; point < points; ++point) {
+            both[point] = image[point];
+            both[points + point] = static_cast<permlib::dom_int>(points + image[point]);
+        }
+        permutations.push_back(permlib::Permutation::ptr(new permlib::Permutation(both)));
+    }
+    return permlib::construct(static_cast<permlib::dom_int>(2 * points), permutations.begin(),
+                              permutations.end());
+}
+
+std::vector<std::size_t> PoolSetCanon::canonical_with_marked(
+    const std::vector<std::size_t>& indices, std::size_t marked) const {
+    if (presentation_->images.empty()) {
+        std::vector<std::size_t> sorted = indices;
+        std::sort(sorted.begin(), sorted.end());
+        sorted.push_back(presentation_->points + marked);
+        return sorted;
+    }
+    if (!presentation_->doubled) {
+        presentation_->doubled = doubled_group(presentation_->points, presentation_->images);
+    }
+
+    permlib::dset set(2 * presentation_->points);
+    for (const std::size_t index : indices) set.set(index);
+    set.set(presentation_->points + marked);
+
+    const permlib::dset least = permlib::smallestSetImage(*presentation_->doubled, set);
+
+    std::vector<std::size_t> canonical;
+    for (std::size_t point = 0; point < least.size(); ++point) {
+        if (least[point]) canonical.push_back(point);
+    }
+    return canonical;
+}
 
 std::vector<std::size_t> PoolSetCanon::canonical(
     const std::vector<std::size_t>& indices) const {
