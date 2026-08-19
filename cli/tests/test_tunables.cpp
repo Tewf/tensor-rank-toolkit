@@ -17,6 +17,7 @@
 /// published number would quietly depend on which directory a command ran in.
 /// That is what the last check here is for.
 #include <fstream>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -82,9 +83,37 @@ void check_a_typo_stops_the_run() {
     check::text("a good file is accepted", refusal("ilp_node_limit = 5\n"), "");
 }
 
+/// Which tunables the file actually sets, by name, comments stripped the way
+/// `read_tunables_from` strips them.
+///
+/// Needed because the comparison below cannot see an omission. It seeds
+/// `from_file` with the compiled defaults and reads the file over the top, so a
+/// field the file never mentions keeps the compiled value and is then compared
+/// against the compiled value: the line prints `ok` and covers nothing. Deleting
+/// three fields from `tunables.conf` left this file passing, which is the same
+/// shape as the fault its own header comment describes, one level up.
+std::set<std::string> names_set_by(const std::string& path) {
+    std::set<std::string> named;
+    std::ifstream file(path);
+    std::string line;
+    while (std::getline(file, line)) {
+        const std::string content = cli::trimmed(line.substr(0, line.find('#')));
+        const std::size_t split = content.find('=');
+        if (content.empty() || split == std::string::npos) continue;
+        named.insert(cli::trimmed(content.substr(0, split)));
+    }
+    return named;
+}
+
 /// The one that earns this file's place: the shipped `tunables.conf` must set
 /// every tunable to the value already compiled in, or deleting the file changes
 /// behaviour and every table in the README depends on a working directory.
+///
+/// "Set" is two claims, and both are checked: that the file names the tunable at
+/// all, and that the value it names is the compiled one. Only the second was
+/// checked before, and the first is what `tunables.h` promises when it says the
+/// file "writes out every default, so the format needs no documentation apart
+/// from itself".
 void check_the_shipped_file_matches_the_defaults(const std::string& root) {
     const std::string path = root + "/tunables.conf";
     std::ifstream file(path);
@@ -93,9 +122,19 @@ void check_the_shipped_file_matches_the_defaults(const std::string& root) {
         return;
     }
 
+    const std::set<std::string> named = names_set_by(path);
     cli::Tunables from_file;
     cli::read_tunables_from(file, path, from_file);
     const cli::Tunables compiled;
+
+    for (const auto& counted : cli::counted_tunables()) {
+        check::equal("tunables.conf writes out " + counted.first,
+                     static_cast<long long>(named.count(counted.first)), 1);
+    }
+    for (const auto& listed : cli::listed_tunables()) {
+        check::equal("tunables.conf writes out " + listed.first,
+                     static_cast<long long>(named.count(listed.first)), 1);
+    }
 
     for (const auto& [name, field] : cli::counted_tunables()) {
         check::equal("tunables.conf " + name + " is the compiled default",
