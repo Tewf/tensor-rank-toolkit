@@ -212,5 +212,30 @@
       "node_limit": 5000000,
       "solver_timeout_seconds": 300
     }
+  },
+  "counts_provenance": {
+    "commit": "d92ba923ca2b3b0abc72cc62bbd88d76de9b9d2c",
+    "tree_clean": false,
+    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "reports no version; binary at /home/hamlil/.local/bin/drat-trim",
+      "cbc": "reports no version; binary at /usr/bin/cbc",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "build",
+    "repeats": 1,
+    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
   }
 }

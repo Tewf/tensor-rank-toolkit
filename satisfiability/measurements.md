@@ -30,9 +30,9 @@ methods.
 |---|---|---|---|
 | `⟨2,2,2⟩` find 7 | 7 436 nodes | **0.18 s** | both find Strassen |
 | `⟨2,2,2⟩` rule out 6 | 25 399 nodes, 0.41 s | **0.31 s** | |
-| `⟨2,2,3⟩` rule out 8 | 446 923 nodes, 53.1 s | **34.3 s** | 1.6x |
+| `⟨2,2,3⟩` rule out 8 | retired, 0 nodes (was 446 923, 53.1 s) | 34.3 s | the bounds refute 8 in ms, beating both |
 | GF(16) find 9 | not reachable | **0.27 s** | |
-| GF(16) rule out 8 | 105 600 301 nodes, 2328 s | **108.0 s** | **21x** |
+| GF(16) rule out 8 | 105 600 301 nodes at `--node-limit 200000000`, 2328 s | **108.0 s** | **21x** |
 | GF(8) rule out 5 | | **0.038 s** | |
 | Karatsuba, GF(4), W state | | under 0.02 s | |
 | F₂ 5×5 rule out 12 | never run | **unresolved** | neither method has an answer |
@@ -44,15 +44,20 @@ naming kissat, which is a worse fault than a stale number: `⟨2,2,2⟩` find 7 
 find 9 was 36.7 s against 0.27 s. Solver by solver, per column, in
 [`results.json`](results.json).
 
+`⟨2,2,3⟩` at 8 is retired rather than measured: the bounds refuse it before the
+search opens a node. Under `retired_by_the_bounds` in
+[`../descent_search/results.json`](../descent_search/results.json).
+
 The last row is open on both sides, and the earlier version of it was wrong in
 this repository's worst way: it gave the exhaustive column "146 402 553 nodes,
 3610 s on 8 threads", which is not a measurement. No such run happened. That
 column was an extrapolation from `descent_search/method/`, where k=12 is priced
 at `C(961,3)` and about seven hours and is labelled extrapolated, and it arrived
 here as a time and a node count in a table headed "Measured". What this repository
-proves by itself is **12 ≤ rank ≤ 14**, with 11 ruled out exhaustively and 14
-reached by the heuristic; the solver had 700 s, returned unknown, and wrote no
-proof.
+proves by itself is **12 ≤ rank ≤ 14**, with 14 reached by the heuristic and 11
+refused: an exhaustion of 459 239 nodes and 77 s until 2026-08-19, when the
+Griesmer floor moved this map to 12 and returned that refusal in milliseconds. The
+solver had 700 s on 12, returned unknown, and wrote no proof.
 
 **The rank itself is 13 and has been published since 2012.** `[bdez2012]` ran the
 same algorithm on the same map over a complete run: 27 solution subspaces,
@@ -62,7 +67,8 @@ would reproduce a published exclusion, which is worth doing as a check and settl
 nothing open.
 
 **The advantage grows with the instance**, which is the interesting part: level
-on `⟨2,2,2⟩`, 1.6 times on `⟨2,2,3⟩`, twenty-one times on GF(16). The exhaustive
+on `⟨2,2,2⟩`, twenty-one times on GF(16), and 1.6 times on `⟨2,2,3⟩` until that
+comparison lost its exhaustive end to the bounds. The exhaustive
 search prunes subspaces and, with the orbit quotient, whole orbits at once; the
 solver learns clauses, and the harder the instance the more there is to learn.
 
