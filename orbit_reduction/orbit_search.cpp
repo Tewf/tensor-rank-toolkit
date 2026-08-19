@@ -6,7 +6,9 @@
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <optional>
 
+#include "gf2_leaf.h"
 #include "parallel.h"
 #include "rank_one_basis.h"
 #include "span_basis.h"
@@ -37,7 +39,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
                        const std::vector<std::uint32_t>& residual, std::size_t target,
                        std::size_t depth, SearchBudget& budget, std::vector<Element>& scratch,
                        PositionsByDepth& positions, const std::atomic<bool>* found_elsewhere,
-                       std::vector<Matrix>& products) {
+                       const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
     // Somebody else already has a witness, so this subtree cannot change the
     // answer and every node it spends is spent against the shared budget. The
     // plain search learnt this the expensive way: without the test the extra
@@ -53,7 +55,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
         // but never against the candidates still standing: a rank-one basis of
         // this subspace may use maps the branch stopped carrying.
         std::vector<Matrix> within =
-            rank_one_basis_of(field, span, pool, target, scratch);
+            rank_one_basis_of(field, span, pool, target, scratch, &budget, binary);
         if (within.size() != target) return false;
         products = std::move(within);
         return true;
@@ -109,7 +111,8 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
             candidates.begin() + static_cast<std::ptrdiff_t>(slot), candidates.end());
 
         if (expand_up_to_impl(field, std::move(extended), pool, action, tail, narrowed, target,
-                              depth + 1, budget, scratch, positions, found_elsewhere, products)) {
+                              depth + 1, budget, scratch, positions, found_elsewhere, binary,
+                              products)) {
             found = true;
         } else if (!budget.exhausted) {
             break;  // gave up rather than ruled out
@@ -161,13 +164,15 @@ std::vector<std::uint32_t> tail_of(const Branch& branch) {
 bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix>& pool,
                 const Permutations& action, std::size_t target, SearchBudget& budget,
                 std::vector<Element>& scratch, std::vector<std::uint32_t>& position,
-                std::vector<Branch>& children, std::vector<Matrix>& products) {
+                std::vector<Branch>& children, const Gf2Leaf<std::vector<Matrix>>* binary,
+                std::vector<Matrix>& products) {
     if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = node.span.dimension();
     if (dimension > target) return false;
     if (dimension == target) {
-        std::vector<Matrix> within = rank_one_basis_of(field, node.span, pool, target, scratch);
+        std::vector<Matrix> within =
+            rank_one_basis_of(field, node.span, pool, target, scratch, &budget, binary);
         if (within.size() != target) return false;
         products = std::move(within);
         return true;
@@ -246,7 +251,7 @@ bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix
 /// against a subtree that is seconds of work.
 bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matrix>& pool,
                         const Permutations& action, std::size_t target, SearchBudget& budget,
-                        std::vector<Matrix>& products) {
+                        const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
     // Widen the frontier one node at a time, oldest first, until it holds at least
     // as many independent subtrees as there are workers. Oldest first keeps it
     // breadth first, so the prefix stays near the top of the tree where it is a
@@ -265,7 +270,7 @@ bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matri
         const Branch node = std::move(frontier[taken]);
         ++taken;
         if (expand_one(field, node, pool, action, target, budget, prefix_scratch, position, frontier,
-                       products)) {
+                       binary, products)) {
             return true;
         }
     }
@@ -285,7 +290,7 @@ bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matri
         PositionsByDepth positions(levels, std::vector<std::uint32_t>(pool.size(), kNotHere));
         std::vector<Matrix> mine;
         if (!expand_up_to_impl(field, node.span, pool, action, tail_of(node), node.residual, target,
-                               0, budget, scratch, positions, &found, mine)) {
+                               0, budget, scratch, positions, &found, binary, mine)) {
             return;
         }
         const std::lock_guard<std::mutex> keep(handover);
@@ -314,10 +319,22 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
     std::vector<std::uint32_t> residual(stabiliser.size());
     std::iota(residual.begin(), residual.end(), std::uint32_t(0));
 
+    // The GF(2) leaf, built once for the whole search, as
+    // [`../exhaustive_search/exhaustive_search.cpp`](../exhaustive_search/exhaustive_search.cpp)
+    // builds it. Both routes below read `rank_one_basis_of`'s two defaults
+    // instead, so every leaf here took the general path and no leaf could be
+    // stopped.
+    std::optional<Gf2Leaf<std::vector<Matrix>>> packed;
+    if (!pool.empty() && gf2_leaf_applies(field, pool[0].columns())) {
+        packed.emplace(pool, pool[0].rows(), pool[0].columns());
+    }
+    const Gf2Leaf<std::vector<Matrix>>* binary = packed ? &packed.value() : nullptr;
+
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
     if (spread_over_cores && worker_count() > 1) {
         Branch whole{root, std::make_shared<std::vector<std::uint32_t>>(candidates), 0, residual};
-        return expand_in_parallel(field, std::move(whole), pool, action, target, budget, products);
+        return expand_in_parallel(field, std::move(whole), pool, action, target, budget, binary,
+                                  products);
     }
 
     const std::size_t levels = target > root.dimension() ? target - root.dimension() + 1 : 1;
@@ -325,7 +342,7 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
 
     std::vector<Element> scratch;
     return expand_up_to_impl(field, root, pool, action, candidates, residual, target, 0, budget,
-                             scratch, positions, nullptr, products);
+                             scratch, positions, nullptr, binary, products);
 }
 
 }  // namespace bilinear_rank
