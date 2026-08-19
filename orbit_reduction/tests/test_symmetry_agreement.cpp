@@ -1,3 +1,4 @@
+#include <stdexcept>
 /// That quotienting a search by the map's symmetries changes what it costs and
 /// never what it answers.
 ///
@@ -112,5 +113,46 @@ int main(int argc, char** argv) {
             std::cout << "  ok    " << label << ": orbits agree (" << name_of(with) << ")\n";
         }
     }
+    // A named shape that is not the tensor's shape must be refused, not used.
+    //
+    // Before the guard, `matmul 2 2 2` against 4x6 slices reached `act_on`, which
+    // multiplies matrices whose sizes do not meet through a `multiply` that checks
+    // none, and the write ran past the end of the result: `free(): invalid
+    // pointer` and exit 134 on the tree refuter. On `minimise-rank` it was quieter
+    // and worse, exit 0 having quotiented by nothing at all. The mismatch is
+    // therefore a memory-safety property and not a usability one, which is why it
+    // is asserted rather than left to the tools.
+    {
+        const linear_algebra::Tensor wrong =
+            linear_algebra::read_tensor_file(directory + "/matmul_2x2x3.tensor");
+        bool refused = false;
+        try {
+            bilinear_rank::require_matmul_shape(wrong.slices, 2, 2, 2);
+        } catch (const std::runtime_error&) {
+            refused = true;
+        }
+        check::equal("a shape that is not the tensor's is refused", refused ? 1 : 0, 1);
+
+        const linear_algebra::Tensor right =
+            linear_algebra::read_tensor_file(directory + "/matmul_2x2x2.tensor");
+        bool accepted = true;
+        try {
+            bilinear_rank::require_matmul_shape(right.slices, 2, 2, 2);
+        } catch (const std::runtime_error&) {
+            accepted = false;
+        }
+        check::equal("and the tensor's own shape is not", accepted ? 1 : 0, 1);
+
+        // 2x2x3 against its own shape, so the guard is not merely refusing
+        // everything that is not 2x2x2.
+        bool own = true;
+        try {
+            bilinear_rank::require_matmul_shape(wrong.slices, 2, 2, 3);
+        } catch (const std::runtime_error&) {
+            own = false;
+        }
+        check::equal("nor is 2x2x3 against 2 2 3", own ? 1 : 0, 1);
+    }
+
     return check::report("symmetry agreement");
 }

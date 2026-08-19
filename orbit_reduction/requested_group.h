@@ -63,6 +63,9 @@ inline std::vector<Automorphism> requested_ambient_group(const Field& field,
     if (symmetry.kind == cli::SymmetryKind::None || slices.empty()) return {};
 
     if (symmetry.kind == cli::SymmetryKind::MatrixMultiplication) {
+        // Before the group is built, not after: a group for the wrong shape is
+        // undefined against this tensor rather than merely useless.
+        require_matmul_shape(slices, symmetry.shape[0], symmetry.shape[1], symmetry.shape[2]);
         return matrix_multiplication_symmetry_generators(field, symmetry.shape[0],
                                                          symmetry.shape[1], symmetry.shape[2]);
     }
