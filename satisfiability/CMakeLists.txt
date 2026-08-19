@@ -5,7 +5,7 @@ add_library(satisfiability STATIC boolean_formula.cpp formula_to_tensor.cpp
                                  symmetry_breaking.cpp
                                  solver_process.cpp)
 target_include_directories(satisfiability PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(satisfiability PUBLIC linear_algebra formats cli PRIVATE project_warnings)
+target_link_libraries(satisfiability PUBLIC run_limits linear_algebra formats cli PRIVATE project_warnings)
 
 add_subdirectory(commands)
 add_subdirectory(tests)

@@ -1,6 +1,7 @@
 #include "solver_process.h"
 
 #include <array>
+#include <atomic>
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
@@ -10,6 +11,8 @@
 #include <stdexcept>
 
 #include <unistd.h>
+
+#include "child_process.h"
 
 namespace satisfiability {
 
@@ -31,36 +34,64 @@ std::string on_path(const std::string& name) {
     return {};
 }
 
-std::string run_and_capture(const std::string& command) {
-    std::string captured;
-    std::FILE* pipe = popen(command.c_str(), "r");
-    if (pipe == nullptr) return captured;
+/// A scratch path nothing else in this process is using.
+///
+/// The process id alone was enough while one solver ran at a time. It is not
+/// enough for a cube split with workers: every worker is this same process, so
+/// every one of them would name the same file and they would overwrite each
+/// other's formula. The counter is what makes the name unique per call.
+std::filesystem::path scratch_file(const std::string& extension) {
+    static std::atomic<unsigned long> issued{0};
+    std::error_code ignored;
+    return std::filesystem::temp_directory_path(ignored) /
+           ("tensor-rank-" + std::to_string(::getpid()) + "-" +
+            std::to_string(issued.fetch_add(1)) + extension);
+}
 
-    std::array<char, 4096> buffer{};
-    while (std::fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
-        captured += buffer.data();
+/// Run an outside solver under a cap and hand back what it printed.
+///
+/// This used to be `popen("sh -c 'ulimit -v N; exec timeout T ...'")`, which is
+/// the pattern `integer_programme` abandoned after measuring what it costs: a
+/// `timeout` prefix bounds an orphan's duration and not its effect, and the
+/// parent holds no handle on the process group, so a solver that forks leaves the
+/// fork behind. One leak per worker is what a parallel cube split multiplies, so
+/// this is a prerequisite for one rather than a tidy-up.
+///
+/// `run_limits/child_process.h` is now the one launcher in this repository. The
+/// shell goes with it: the command is a vector, so nothing here has to quote a
+/// path, `ulimit -v` becomes `setrlimit`, and `2>/dev/null` becomes
+/// `merge_stderr` false, because this route parses the log and a solver's
+/// progress chatter is not an answer.
+std::string run_capped(const std::vector<std::string>& command, std::size_t megabytes,
+                       std::size_t seconds) {
+    const std::filesystem::path log = scratch_file(".log");
+    const bool started = bilinear_rank::run_to_completion(
+        command, log, bilinear_rank::ChildLimits{static_cast<double>(seconds), megabytes, false});
+
+    std::string captured;
+    if (started) {
+        std::ifstream reading(log);
+        std::ostringstream all;
+        all << reading.rdbuf();
+        captured = all.str();
     }
-    pclose(pipe);
+    std::error_code ignored;
+    std::filesystem::remove(log, ignored);
     return captured;
 }
 
-/// ulimit is per-process and needs no privileges, unlike a cgroup, and this is
-/// a child we already spawn through a shell.
-std::string capped(const std::string& binary, const std::string& file, std::size_t megabytes,
-                   std::size_t seconds, const std::string& proof = "",
-                   const std::string& configuration = "") {
-    // kissat takes the proof file as a second positional argument. Nothing else
-    // here does, so the caller is told rather than the flag being guessed at.
-    const std::string extra = proof.empty() ? "" : " \"" + proof + "\"";
-    return "sh -c 'ulimit -v " + std::to_string(megabytes * 1024) + "; exec timeout " +
-           std::to_string(seconds) + " \"" + binary + "\"" + configuration + " \"" + file +
-           "\"" + extra + " 2>/dev/null'";
-}
-
-std::filesystem::path scratch_file(const std::string& extension) {
-    std::error_code ignored;
-    return std::filesystem::temp_directory_path(ignored) /
-           ("tensor-rank-" + std::to_string(::getpid()) + extension);
+/// The argument vector for a solver, where `capped` used to build a shell line.
+///
+/// kissat takes the proof file as a second positional argument. Nothing else here
+/// does, so the caller is told rather than the flag being guessed at.
+std::vector<std::string> solver_command(const std::string& binary, const std::string& file,
+                                        const std::string& proof = "",
+                                        const std::string& configuration = "") {
+    std::vector<std::string> command{binary};
+    if (!configuration.empty()) command.push_back(configuration);
+    command.push_back(file);
+    if (!proof.empty()) command.push_back(proof);
+    return command;
 }
 
 }  // namespace
@@ -140,8 +171,9 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
     }
 
     const auto started = std::chrono::steady_clock::now();
-    const std::string output = run_and_capture(capped(solver.path, file.string(), memory_megabytes,
-                                                      timeout_seconds, proof_path, configuration));
+    const std::string output =
+        run_capped(solver_command(solver.path, file.string(), proof_path, configuration),
+                   memory_megabytes, timeout_seconds);
     run.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
     std::istringstream lines(output);
@@ -158,9 +190,9 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
         // which is the whole point: otherwise a refusal is the solver's word.
         const std::string checker = find_proof_checker();
         if (!checker.empty()) {
-            const std::string verdict = run_and_capture(
-                "sh -c 'exec timeout " + std::to_string(timeout_seconds) + " \"" + checker +
-                "\" \"" + file.string() + "\" \"" + proof_path + "\" 2>/dev/null'");
+            // No memory cap: the checker reads a proof rather than searching.
+            const std::string verdict =
+                run_capped({checker, file.string(), proof_path}, 0, timeout_seconds);
             run.proof = verdict.find("s VERIFIED") != std::string::npos ? Proof::Verified
                                                                        : Proof::Refuted;
         }
@@ -185,7 +217,7 @@ SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t 
 
     const auto started = std::chrono::steady_clock::now();
     const std::string output =
-        run_and_capture(capped(solver, file.string(), memory_megabytes, timeout_seconds));
+        run_capped(solver_command(solver, file.string()), memory_megabytes, timeout_seconds);
     run.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
     std::istringstream lines(output);

@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 
+#include "child_process.h"
 #include "mps_format.h"
 #include "whole_numbers.h"
 
@@ -145,99 +146,6 @@ Recipe recipe_for(Backend backend, const std::filesystem::path& model,
     return {};
 }
 
-/// Start the solver in a process group of its own, wait out the clock, and kill
-/// the **group** if the clock runs out. False when it could not be started.
-///
-/// This replaces `std::system` under a `timeout` prefix, which was not a handle
-/// on anything. The prefix bounded the orphan's *duration* and not its effect:
-/// for those seconds it held a core, and every measurement taken afterwards read
-/// slow. It defeated three runs of the backend comparison, and one ILP cell read
-/// 6.62 s against a stray where it reads 3.34 s clean.
-///
-/// The group is what must be killed, not the child. CBC and GLPK are single
-/// processes today, but a backend that forks a worker leaves it behind when only
-/// its parent is signalled, which is the same leak with an extra step. `setpgid`
-/// in the child and `killpg` in the parent covers both, and it never matches on a
-/// process name, so it cannot reach a solver somebody else is running or, worse,
-/// the process doing the killing.
-///
-/// **The child also caps itself, and dropping that would have been a regression.**
-/// A parent killed mid-solve cannot kill anything, and what the old `timeout`
-/// prefix genuinely bought was that the orphan died within the cap rather than at
-/// reboot. `alarm` is preserved across `execvp` while SIGALRM's disposition resets
-/// to terminate, so the solver carries its own deadline and needs nobody alive to
-/// enforce it. The parent's kill is what makes the *call* leave nothing running;
-/// the alarm is what makes a *dead parent* leave nothing running. Both are wanted
-/// and neither replaces the other.
-bool run_to_completion(const std::vector<std::string>& command,
-                       const std::filesystem::path& log) {
-    std::vector<char*> argv;
-    argv.reserve(command.size() + 1);
-    for (const std::string& word : command) argv.push_back(const_cast<char*>(word.c_str()));
-    argv.push_back(nullptr);
-
-    const std::string log_path = log.string();
-    const pid_t child = ::fork();
-    if (child < 0) return false;
-
-    if (child == 0) {
-        // Its own group, set on both sides of the fork because whichever runs
-        // first wins and neither ordering is guaranteed.
-        ::setpgid(0, 0);
-        const int null_in = ::open("/dev/null", O_RDONLY);
-        const int output = ::open(log_path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0600);
-        if (null_in >= 0) ::dup2(null_in, STDIN_FILENO);
-        if (output >= 0) {
-            ::dup2(output, STDOUT_FILENO);
-            ::dup2(output, STDERR_FILENO);
-        }
-        // One second of grace, so the parent's kill is what normally ends a run
-        // and this only fires when there is no parent left to do it.
-        ::alarm(solver_time_limit() + 1);
-        ::execvp(argv[0], argv.data());
-        // Only reached when the binary vanished between the availability probe
-        // and here. `_exit` and not `exit`, so no parent's destructors run twice.
-        ::_exit(127);
-    }
-
-    ::setpgid(child, child);
-
-    // Polled rather than alarmed, because a SIGCHLD handler is process-wide state
-    // for a library to be setting and this is called in a loop over backends.
-    //
-    // The interval doubles from 50 us to 20 ms. A flat interval has to choose
-    // between adding it to every millisecond-long solve and burning syscalls for
-    // five minutes on a long one; doubling pays neither. `test_optimisation` runs
-    // a battery of tiny programmes through every installed backend, so the fast
-    // end is not hypothetical.
-    const double deadline_seconds = solver_time_limit();
-    long pause_nanoseconds = 50'000;
-    double waited = 0;
-    int status = 0;
-    while (waited < deadline_seconds) {
-        const pid_t done = ::waitpid(child, &status, WNOHANG);
-        if (done == child) return true;
-        // EINTR is not an answer about the child, and returning here would walk
-        // away from a solver still holding a core, which is the whole defect.
-        if (done < 0 && errno == EINTR) continue;
-        if (done < 0) {
-            ::killpg(child, SIGKILL);
-            ::waitpid(child, &status, 0);
-            return false;
-        }
-        const timespec pause{0, pause_nanoseconds};
-        ::nanosleep(&pause, nullptr);
-        waited += static_cast<double>(pause_nanoseconds) / 1e9;
-        if (pause_nanoseconds < 20'000'000) pause_nanoseconds *= 2;
-    }
-
-    ::killpg(child, SIGKILL);
-    // Blocking, so the child is reaped rather than left a zombie, and the caller
-    // returns to a machine with nothing of ours running on it.
-    ::waitpid(child, &status, 0);
-    return true;
-}
-
 bool log_says(const std::filesystem::path& log, const char* phrase) {
     if (*phrase == '\0') return false;
     std::string text;
@@ -268,7 +176,10 @@ Solution run_backend(Backend backend, const IntegerProgramme& programme) {
     // which the parse below finds out for itself, and one killed at the deadline
     // leaves a partial file the same parse rejects. Only a fork that failed is
     // worth short-circuiting on.
-    const bool started = run_to_completion(recipe.command, log);
+    // One launcher for the whole repository, in `run_limits`. No memory cap and
+    // stderr in the log, which is exactly what this route has always run with.
+    const bool started = bilinear_rank::run_to_completion(
+        recipe.command, log, bilinear_rank::ChildLimits{static_cast<double>(solver_time_limit()), 0, true});
 
     std::vector<Number> values(programme.variables.size(), Number(0));
     const std::vector<std::string> output = lines_of(recipe.answer_in_log ? log : answer);
