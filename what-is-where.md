@@ -11,7 +11,8 @@ a `commands/`.
 linear_algebra/          exact arithmetic over GF(p) and over Q, shared by everything
 formats/                 tensor, dense matrix, SMS, DIMACS and SMT-LIB files
 cli/                     what every command shares: clock, exit codes, argument
-                         grammar, the stdout/stderr split, the tunables
+                         grammar, the stdout/stderr split, removing a scratch
+                         file when a run is interrupted, the tunables
 tunables.conf            the numbers a run is bounded by, in a file not in code
 testing/                 the assertion helper every module's tests use
 run_limits/              how much memory and how many cores one run may take
