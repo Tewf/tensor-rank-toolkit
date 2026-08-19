@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include "child_process.h"
+#include "interrupt_cleanup.h"
 
 namespace satisfiability {
 
@@ -48,6 +49,36 @@ std::filesystem::path scratch_file(const std::string& extension) {
             std::to_string(issued.fetch_add(1)) + extension);
 }
 
+/// A scratch path that removes itself however its scope is left.
+///
+/// `std::filesystem::remove` at the end of a function covers a return and not a
+/// throw, and this module throws: `check_applicable` refuses a cube split it
+/// cannot honour, and the formula is already on disk by then. The destructor
+/// covers both, and `cli::remove_when_interrupted` covers the one route a
+/// destructor cannot, a signal, which returns to nowhere.
+class ScratchFile {
+   public:
+    explicit ScratchFile(std::filesystem::path path) : path_(std::move(path)) {
+        cli::remove_when_interrupted(path_.string());
+    }
+    ~ScratchFile() {
+        std::error_code ignored;
+        std::filesystem::remove(path_, ignored);
+        // Freed here and not merely removed: the interrupt table holds eight, and
+        // every question registers a formula and a log, so a run that never gave
+        // its slots back would refuse its fourth question.
+        cli::forget_when_interrupted(path_.string());
+    }
+    ScratchFile(const ScratchFile&) = delete;
+    ScratchFile& operator=(const ScratchFile&) = delete;
+
+    const std::filesystem::path& path() const { return path_; }
+    std::string string() const { return path_.string(); }
+
+   private:
+    std::filesystem::path path_;
+};
+
 /// Run an outside solver under a cap and hand back what it printed.
 ///
 /// This used to be `popen("sh -c 'ulimit -v N; exec timeout T ...'")`, which is
@@ -64,19 +95,18 @@ std::filesystem::path scratch_file(const std::string& extension) {
 /// progress chatter is not an answer.
 std::string run_capped(const std::vector<std::string>& command, std::size_t megabytes,
                        std::size_t seconds) {
-    const std::filesystem::path log = scratch_file(".log");
+    const ScratchFile log(scratch_file(".log"));
     const bool started = bilinear_rank::run_to_completion(
-        command, log, bilinear_rank::ChildLimits{static_cast<double>(seconds), megabytes, false});
+        command, log.path(),
+        bilinear_rank::ChildLimits{static_cast<double>(seconds), megabytes, false});
 
     std::string captured;
     if (started) {
-        std::ifstream reading(log);
+        std::ifstream reading(log.path());
         std::ostringstream all;
         all << reading.rdbuf();
         captured = all.str();
     }
-    std::error_code ignored;
-    std::filesystem::remove(log, ignored);
     return captured;
 }
 
@@ -156,9 +186,9 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
             "second argument; install it, or ask the question without a proof");
     }
 
-    const std::filesystem::path file = scratch_file(".cnf");
+    const ScratchFile file(scratch_file(".cnf"));
     {
-        std::ofstream out(file);
+        std::ofstream out(file.path());
         linear_algebra::write_dimacs(out, formula, solver.native_xor);
     }
 
@@ -197,7 +227,6 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
                                                                        : Proof::Refuted;
         }
     }
-    std::filesystem::remove(file, ignored);
     return run;
 }
 
@@ -209,9 +238,9 @@ SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t 
     run.solver_found = true;
     run.solver_name = "cvc5";
 
-    const std::filesystem::path file = scratch_file(".smt2");
+    const ScratchFile file(scratch_file(".smt2"));
     {
-        std::ofstream out(file);
+        std::ofstream out(file.path());
         linear_algebra::write_smtlib(out, problem);
     }
 
@@ -224,9 +253,6 @@ SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t 
     run.field_model = linear_algebra::read_smtlib_model(lines);
     run.answered = run.field_model.answered;
     run.satisfiable = run.field_model.satisfiable;
-
-    std::error_code ignored;
-    std::filesystem::remove(file, ignored);
     return run;
 }
 
