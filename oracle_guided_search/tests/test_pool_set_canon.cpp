@@ -13,9 +13,10 @@
 #include <string>
 #include <vector>
 
-#include "candidate_pool.h"
 #include "check.h"
 #include "group_construction.h"
+#include "candidate_pool.h"
+#include "pool_orbits.h"
 #include "pool_set_canon.h"
 #include "subspace_canon.h"
 #include "tensor_file.h"
@@ -81,6 +82,43 @@ int main(int argc, char** argv) {
     std::size_t orbits = 0;
     for (const std::size_t label : walked) orbits = label + 1 > orbits ? label + 1 : orbits;
     std::printf("depth-one orbits: %zu, by both routes\n", orbits);
+
+    // A marked pair's canonical form must be a function of the pair's orbit, and
+    // nothing else. That is the whole contract, so it is checked directly: move
+    // both the set and its marked point by a group element and the answer may not
+    // move. The distinguished element the parent test wants is the minimum of
+    // these over the candidates, and a minimum of orbit invariants is one.
+    const bilinear_rank::FactoredAction action =
+        bilinear_rank::factored_action(field, whole, tensor.rows(), tensor.columns());
+    const std::size_t right_count =
+        bilinear_rank::normalised_vectors(field, tensor.columns()).size();
+
+    std::size_t pairs_checked = 0;
+    for (std::size_t index = 0; index < pool.size(); index += 37) {
+        std::vector<bilinear_rank::Matrix> child = tensor.slices;
+        child.push_back(pool[index]);
+        const std::vector<std::size_t> inside = bilinear_rank::pool_inside(field, pool, child);
+        if (inside.empty()) continue;
+
+        const std::size_t marked = inside.front();
+        const std::vector<std::size_t> expected = canon.canonical_with_marked(inside, marked);
+
+        for (std::size_t which = 0; which < whole.size(); which += 23) {
+            const auto move = [&](std::size_t point) {
+                return static_cast<std::size_t>(action.left[which][point / right_count]) *
+                           right_count +
+                       action.right[which][point % right_count];
+            };
+            std::vector<std::size_t> moved_set;
+            for (const std::size_t point : inside) moved_set.push_back(move(point));
+
+            check::equal("moving a marked pair does not move its canonical form",
+                         canon.canonical_with_marked(moved_set, move(marked)) == expected ? 1 : 0,
+                         1);
+            ++pairs_checked;
+        }
+    }
+    check::equal("and enough pairs were actually checked", pairs_checked > 20 ? 1 : 0, 1);
 
     return check::report("pool set canon against the group walk");
 }

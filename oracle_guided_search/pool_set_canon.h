@@ -81,6 +81,24 @@ class PoolSetCanon {
     /// only that it is the same one every time.
     std::vector<std::size_t> canonical(const std::vector<std::size_t>& indices) const;
 
+    /// The canonical form of the **pair** (`indices`, `marked`), for choosing one
+    /// pool element of a subspace in a way the group agrees with.
+    ///
+    /// The parent test needs a distinguished element of the child, and "least
+    /// under the elements that carry the child to its canonical form" is how
+    /// `canonical_parent.cpp` used to say it, which needs the attaining coset and
+    /// therefore the whole group. Linton's algorithm hands back an image and not a
+    /// canonising element, so that route is closed.
+    ///
+    /// The standard way round it is to canonise the pair instead of the set. A
+    /// pair becomes a set on a **doubled ground set**: point `p` for membership
+    /// and point `p + size()` to mark. The group acts the same way on both copies,
+    /// so an orbit of pairs is an orbit of sets and the same primitive answers.
+    /// Comparing these over the candidate elements picks the distinguished one,
+    /// and it is the group's choice rather than an arbitrary basis's.
+    std::vector<std::size_t> canonical_with_marked(const std::vector<std::size_t>& indices,
+                                                   std::size_t marked) const;
+
    private:
     /// PermLib types stay out of this header: every includer would otherwise
     /// inherit a vendored library and Boost.
