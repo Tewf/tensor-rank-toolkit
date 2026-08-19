@@ -9,6 +9,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "algorithm_recovery.h"
 #include "candidate_pool.h"
@@ -16,6 +17,7 @@
 #include "fewest_products.h"
 #include "flip_graph.h"
 #include "minimise_rank.h"
+#include "parallel.h"
 #include "tensor_file.h"
 #include "timing.h"
 
@@ -29,6 +31,9 @@ void usage() {
                  "              minimise-rank, which is why this one is not called that\n"
                  "  --seeds N   independent walks, 8 by default; each is reproducible\n"
                  "              from its own seed number\n"
+                 "  --threads N N workers, 0 for every core, 1 by default. The seeds are\n"
+                 "              independent walks, so this changes the wall clock and\n"
+                 "              nothing else: same seeds, same schemes, same output\n"
                  "  --from k    walk from the heuristic's k-product scheme rather than\n"
                  "              from the naive algorithm. The heuristic has to reach k\n"
                  "              or fewer or the run refuses, because a starting point\n"
@@ -82,6 +87,8 @@ int run(int argc, char** argv) {
             flips = std::stoul(argv[++argument]);
         } else if (flag == "--seeds" && argument + 1 < argc) {
             seeds = std::stoul(argv[++argument]);
+        } else if (flag == "--threads" && argument + 1 < argc) {
+            bilinear_rank::set_worker_count(std::stoul(argv[++argument]));
         } else if (flag == "--from" && argument + 1 < argc) {
             from = std::stoll(argv[++argument]);
         } else {
@@ -131,24 +138,58 @@ int run(int argc, char** argv) {
     }
 
     const cli::Clock::time_point started = cli::Clock::now();
+
+    // Walk every seed, then reduce over them in seed order.
+    //
+    // The seeds are independent: each is `mt19937_64(seed)` and reads a `start`
+    // and a field that nobody writes, so a walk is the same walk whichever worker
+    // runs it and the answers are bit-identical at any thread count. That is what
+    // makes this the one search here that parallelises without an argument about
+    // node counts: there is no shared budget, no early exit and no race, only
+    // eight equal-cost walks and a minimum over them.
+    //
+    // The reduction stays sequential and stays second, because `best` carries
+    // between seeds: a seed prints only if it beats every *earlier* seed, and
+    // whether a scheme is verified at all depends on that. Reducing as the walks
+    // landed would make the printed lines depend on which worker finished first.
+    struct Walked {
+        bilinear_rank::Scheme scheme;
+        bilinear_rank::FlipReport report;
+        double seconds = 0.0;
+    };
+    std::vector<Walked> walks(seeds);
+    bilinear_rank::parallel_for(seeds, [&](std::size_t offset) {
+        const cli::Clock::time_point walk_started = cli::Clock::now();
+        walks[offset].scheme = bilinear_rank::random_flip_walk(field, start, flips, offset + 1,
+                                                              &walks[offset].report);
+        walks[offset].seconds = cli::elapsed_seconds(walk_started);
+    });
+
     std::size_t best = start.size();
     for (std::size_t seed = 1; seed <= seeds; ++seed) {
-        bilinear_rank::FlipReport report;
-        const bilinear_rank::Scheme walked = bilinear_rank::random_flip_walk(field, start, flips, seed, &report);
-        if (walked.size() >= best) continue;
-        if (!computes(field, tensor.slices, walked)) {
-            std::cout << "  seed " << seed << ": " << walked.size()
+        const Walked& walked = walks[seed - 1];
+        if (walked.scheme.size() >= best) continue;
+        if (!computes(field, tensor.slices, walked.scheme)) {
+            std::cout << "  seed " << seed << ": " << walked.scheme.size()
                       << " products, DISCARDED, does not compute the map\n";
             continue;
         }
-        best = walked.size();
-        std::cout << "  seed " << seed << ": " << best << " products after " << report.flips
-                  << " flips and " << report.reductions << " reductions, " << cli::elapsed_seconds(started)
+        best = walked.scheme.size();
+        // This seed's own walk, not the elapsed run: with workers the two differ,
+        // and a cumulative figure would say when a worker happened to be reached.
+        std::cout << "  seed " << seed << ": " << best << " products after " << walked.report.flips
+                  << " flips and " << walked.report.reductions << " reductions, " << walked.seconds
                   << " s\n";
     }
     const std::size_t bound = bilinear_rank::flattening_floor(field, tensor.slices);
     std::cout << "best over " << seeds << " seeds: " << bilinear_rank::require_bound_consistent(best, bound)
               << "\n";
+    // The wall clock for the whole walk, on stderr where a non-result belongs,
+    // following `decide-rank-by-pencil`. With workers the per-seed figures above
+    // no longer sum to this, which is the reason it is printed at all: the number
+    // the write-ups quote for a walk is this one.
+    std::cerr << "# " << cli::elapsed_seconds(started) << " s, " << bilinear_rank::worker_count()
+              << " worker(s)\n";
     return cli::exit_status(cli::ExitCode::Yes);
 }
 
