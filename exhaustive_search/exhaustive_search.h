@@ -126,14 +126,6 @@ std::vector<Matrix> independent_rank_one_maps_in(const Field& field, const Reduc
                                                  std::size_t needed, std::vector<Element>& scratch,
                                                  SearchBudget* budget = nullptr);
 
-/// The rank-one maps of `pool` lying inside the span of `subspace`, taken
-/// greedily so they stay independent.
-///
-/// When there are as many as the subspace has dimensions, they are a rank-one
-/// basis of it, and a rank-one basis is an algorithm.
-std::vector<Matrix> rank_one_maps_within(const Field& field, const std::vector<Matrix>& subspace,
-                                         const std::vector<Matrix>& pool);
-
 /// Extend `subspace` with maps from `pool` (index `from` onward) to dimension
 /// exactly `target`, such that the result has a rank-one basis.
 ///

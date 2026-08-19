@@ -1,6 +1,5 @@
 #include "fewest_products.h"
 
-#include <algorithm>
 #include <stdexcept>
 
 #include "measures.h"
@@ -44,29 +43,6 @@ bool fewest_products_by_sweep(const Field& field, const std::vector<Matrix>& bas
         if (!budget.exhausted) return false;
     }
     return false;
-}
-
-std::pair<std::vector<Matrix>, std::vector<Matrix>> lowest_rank_partition(
-    const Field& field, const std::vector<Matrix>& slices) {
-    std::vector<Matrix> lowest;
-    std::vector<Matrix> rest;
-    if (slices.empty()) return {lowest, rest};
-
-    // Each slice's rank is taken once. Taken three times, as it was, the cost
-    // is three eliminations per slice for a partition that needs one.
-    std::vector<std::size_t> ranks;
-    ranks.reserve(slices.size());
-    for (const Matrix& slice : slices) ranks.push_back(linear_algebra::rank(field, slice));
-    const std::size_t smallest = *std::min_element(ranks.begin(), ranks.end());
-
-    for (std::size_t index = 0; index < slices.size(); ++index) {
-        if (ranks[index] == smallest) {
-            lowest.push_back(slices[index]);
-        } else {
-            rest.push_back(slices[index]);
-        }
-    }
-    return {lowest, rest};
 }
 
 }  // namespace bilinear_rank
