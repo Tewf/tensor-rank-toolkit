@@ -7,8 +7,15 @@
 
 namespace bilinear_rank {
 
+namespace {
+bool offered = true;
+}  // namespace
+
+void set_gf2_leaf_offered(bool wanted) { offered = wanted; }
+bool gf2_leaf_offered() { return offered; }
+
 bool gf2_leaf_applies(const Field& field, std::size_t columns) {
-    return static_cast<std::size_t>(field.characteristic()) == 2 && columns <= 64;
+    return offered && static_cast<std::size_t>(field.characteristic()) == 2 && columns <= 64;
 }
 
 /// Packing the pool once is most of what the representation is worth: a

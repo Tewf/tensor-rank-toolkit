@@ -33,33 +33,43 @@ bound on the rank, which the descent already produces in milliseconds. The
 expensive half is the refutation, which is what a *lower* bound is made of and
 what DRAT lets a reader check. A GPU accelerates the half already cheap.
 
-## The part that would vectorise, and the win that needs no GPU
+## The part that would vectorise, and the win that needed no GPU
 
-One thing here is embarrassingly parallel and branch-free: **the leaf test.**
-`independent_rank_one_maps_in` scans the whole pool asking whether each rank-one
-map lies in the current span, and the module's own header says the leaf is where
-an exhaustive search spends its life. Those are `|P|` independent reductions of
-identical shape.
+One thing here is embarrassingly parallel and branch-free: **the leaf test**,
+where an exhaustive search spends its life. **But the first order of magnitude
+was never on a card, it was in the representation**: over GF(2) a span
+membership test is an exclusive or, not a loop of Givaro calls on `int64_t`, and
+`exhaustive_search/gf2_leaf.h` now answers the leaf with one bit per entry.
 
-**But the first order of magnitude is not on a card, it is in the representation.**
-Every field element here is an `int64_t` through Givaro's `Modular<int64_t>`, and
-there is no specialisation for GF(2) anywhere in the tree. Over GF(2) a span
-membership test is an XOR reduction, so:
+### This page predicted 40x to 64x. Measured, it is 6.0x to 39.6x
 
-| shape | one map, as now | as a bitset | factor |
-|---|---|---|---|
-| 9x9, `⟨3,3,3⟩` | 81 x 8 bytes = 648 B | 81 bits = 2 words, 16 B | **40x** |
-| 16x16, `⟨4,4,4⟩` | 256 x 8 bytes = 2 048 B | 256 bits = 4 words, 32 B | **64x** |
+That prediction was a ratio of storage widths, 648 bytes of `int64_t` against 16
+bytes of bitset at 9x9, quoted onward as if something had timed it. Nothing had.
+Measured under [`../MEASURING.md`](../MEASURING.md), one core, fastest of three,
+each question asked twice with and without `decide-rank --general-leaf`, which
+forces the general path over GF(2) so both columns are the same tree:
 
-The same factor applies to the inner loop, which becomes two or four XORs per
-basis row instead of eighty-one or two hundred and fifty-six field operations.
-Most fixtures here are over GF(2).
+| question | leaf route | general | GF(2) | factor |
+|---|---|---|---|---|
+| `gf16_multiplication --target 8 --node-limit 200000` | scan the pool | 4.47 s | 0.750 s | **6.0x** |
+| `f2_3x8 --target 14 --node-limit 20000` | scan the pool | 8.27 s | 0.995 s | **8.3x** |
+| `f2_5x5 --target 11` | scan the pool | 77.88 s | 7.69 s | **10.1x** |
+| `matmul_2x2x2 --target 6` | walk the subspace | 0.560 s | 0.0347 s | **16.2x** |
+| `matmul_3x3x3 --target 23 --node-limit 300` | scan the pool | 82.28 s | 3.55 s | **23.2x** |
+| `matmul_3x3x3 --target 17 --node-limit 60` | walk the subspace | 16.66 s | 0.420 s | **39.6x** |
 
-**That is the recommendation: a GF(2) bitset representation before any thought of
-a GPU.** It is one representation, it needs no new hardware, it compounds with the
-addressed pool already in place, and it attacks the loop this repository has
-already identified as the hot one. Whether the leaf test then wants a GPU is a
-question worth asking afterwards and not before.
+**The band was too high and the reasoning behind it was wrong twice over.** The
+loop this page named, the pool scan, reaches 23.2x and not 40x: a bitset shortens
+a reduction by the machine word, so the width ratio was never going to arrive
+whole. The one figure that does reach 40x is on the route this page never
+mentioned, walking the subspace, where the gain is not the width but
+`gf2_is_rank_one` replacing a Gaussian elimination. The two 4x4 rows separate the
+two cleanly, 6.0x scanning against 16.2x walking at one shape. The 64x row for
+`<4,4,4>` stays untested: no fixture here reaches it.
+
+**The recommendation survives, on less evidence than it claimed.** An order of
+magnitude on the CPU for no new hardware, measured now rather than forecast.
+
 
 ## What the neighbours actually run on
 
