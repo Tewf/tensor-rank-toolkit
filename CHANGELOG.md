@@ -17,13 +17,55 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   [`fixtures/published-targets.md`](fixtures/published-targets.md); the bounds are
   pinned on all six in `rank_metric_bound/tests/`, where they cost 4.1 s.
 
+- **A GPU proof of concept for the leaf test**, `gpu_leaf/`, built only where
+  `nvcc` is present and called by nothing else. One whole `<4,4,4>` leaf, all
+  4 294 836 225 rank-one maps, in **1.019 s** against 1.12 hours for the same leaf
+  on one core, with survivor sets compared map for map against the shipped leaf on
+  thirteen questions.
+- **A device ranking**, [`run_limits/device.h`](run_limits/device.h), in the shape
+  `integer_programme/solver_chain.h` already uses for solvers: the order is fixed,
+  the availability is not, and an absent backend is a state reported rather than an
+  error found downstream. `decide-rank` prints which device would answer.
+  **No GPU backend is compiled in**, and it says so.
+- **A span held as its rank filtration**,
+  [`descent_search/sorted_span.h`](descent_search/sorted_span.h). The leaf test and
+  the minimum-weight cost both become dimensions of `R[1] ⊆ … ⊆ R[16]`, so a sort
+  over `p^dim` becomes a counting pass over sixteen buckets and the state that
+  survives is 24 KB at `<4,4,4>`.
+- **The literature the leaf test sits in**, which was cited nowhere: the Segre and
+  bounded-rank line, the three MinRank modellings with their Hilbert series, Yang's
+  fixed-parameter result, CUDA finite-field elimination, and Heule's SAT benchmark
+  suite.
+
 ### Changed
 
+- **The leaf of the quotiented search now packs its bits and can be stopped.** It
+  called `rank_one_basis_of` with two arguments defaulted, so every leaf there took
+  the general Givaro path and no `--leaf-limit` reached it. **25.7x** on
+  `matmul_3x3x3 --target 23 --node-limit 300`, at the same 300 nodes.
+- **A pool element is formed in bits where no table holds it.** It was rebuilt as a
+  Givaro matrix and packed back one field element at a time; the outer product now
+  goes straight into words. **5.87x** on the same question with the pool addressed,
+  and `gpu_leaf` measures 940.2 ns an element against 129.1 at `<4,4,4>`.
+- **The quotient runs on a pool it cannot hold.** Its candidate list was a vector,
+  its positions a table and its struck orbits a byte array, all sized by the pool
+  and all now arithmetic or a predicate: **34.3 MB less** at `<3,3,3>` at identical
+  node counts, and `--symmetry` is no longer refused where the grid does not fit.
 - **`[wang2026]` is now cited at the arXiv version its numbers come from**, v10,
   because that preprint's table grew across ten revisions rather than being
   corrected in place, and three of the four bounds quoted from it are absent from
   v1. A citation that names a document not containing the number is the one
   failure [`references.md`](references.md) exists to prevent.
+- **`rank(f2_5x5) >= 13` is this repository's own claim now**, not `[bdez2012]`'s.
+  Refuting twelve products was recorded as never run and priced at seven hours; it
+  is 146 402 553 nodes and ran, and the seven hours was an extrapolation from the
+  general leaf's rate that the GF(2) leaf had already made stale.
+
+### Removed
+
+- **Two functions nothing called**, `lowest_rank_partition` and
+  `rank_one_maps_within`, the first orphaned when three search routes were retired
+  and the second never called at all.
 
 ## [0.1.0] - 2026-08-18
 

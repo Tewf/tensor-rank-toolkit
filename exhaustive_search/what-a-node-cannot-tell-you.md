@@ -16,12 +16,10 @@ Measured over seven levels on three fixtures:
 [`tests/test_bound_at_a_node.cpp`](tests/test_bound_at_a_node.cpp).
 
 Every term degrades for one reason. The flattening along the axis the search
-grows **is** the dimension. Griesmer reads the least rank in the space, and the
-search's whole job is putting **rank-one** maps into it, so that least rank is 1
-from the first choice and `sum_j ceil(1/p^j)` over `k` terms is `k`. The root
-value is the floor a search already starts from and a live question has
-`target > floor`, so the test is true exactly when `dim V >= target` is, which
-costs nothing.
+grows **is** the dimension, and Griesmer reads the least rank in the space, which
+the search drives to 1 with its first choice. The root value is the floor a
+search already starts from, so the test is true exactly when `dim V >= target`
+is, which costs nothing.
 
 **The bound asks what the cheapest thing in the space is, and the search spends
 its time putting cheap things there.**
@@ -49,11 +47,10 @@ set by the refutations it has completed rather than by anything exhibited. No
 construction can match that: `t + 1` has only to be **not yet refuted**, where an
 upper bound has to be **built**.
 
-Seeding from `minimum_weight_basis` instead starts at 8 against 7 on `<2,2,2>`
-and **16 against 13** on `f2_5x5`, which is three extra levels of an exponent
-paid up front. And the loop's re-work is not the objection people expect:
-refuting 11 on `f2_5x5` is 459 239 nodes against 146 402 553 for refuting 12,
-so the repetition is **0.31%**.
+Seeding from `minimum_weight_basis` starts at 8 against 7 on `<2,2,2>` and **16
+against 13** on `f2_5x5`, three extra levels of an exponent paid up front. And
+the loop's re-work is not what people expect: refuting 11 on `f2_5x5` is 459 239
+nodes against 146 402 553 for refuting 12, so the repetition is **0.31%**.
 
 ## 4. Meeting the floor with `cost(V)`
 
