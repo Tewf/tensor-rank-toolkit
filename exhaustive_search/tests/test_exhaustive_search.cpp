@@ -10,6 +10,7 @@
 #include "candidate_pool.h"
 #include "check.h"
 #include "exhaustive_search.h"
+#include "rank_one_basis.h"
 #include "gf2_leaf.h"
 #include "parallel.h"
 #include "fewest_products.h"
@@ -241,6 +242,32 @@ int main(int argc, char** argv) {
                 std::string(question.fixture) + " at " + std::to_string(question.target);
             check::equal(label + ": both leaves give the same verdict", found_at[1], found_at[0]);
             check::equal(label + ": and visit the same nodes", nodes_at[1], nodes_at[0]);
+
+            // And the same again across the two *routes*, which is a different
+            // axis: `--general-leaf` above chooses the arithmetic and this
+            // chooses whether to scan the pool or walk the subspace. The rule
+            // picks one per call, so a route that answered differently would
+            // only ever be wrong on the questions the rule happens to send it,
+            // and would look correct everywhere else. Timing them against each
+            // other is what the flag is for; agreeing is what makes that
+            // timing mean anything.
+            std::vector<int> route_found;
+            std::vector<long long> route_nodes;
+            for (const bilinear_rank::LeafRoute route :
+                 {bilinear_rank::LeafRoute::Scan, bilinear_rank::LeafRoute::Walk}) {
+                bilinear_rank::set_leaf_route(route);
+                bilinear_rank::SearchBudget budget;
+                std::vector<bilinear_rank::Matrix> products;
+                const bool found = bilinear_rank::expand_subspace(field, tensor.slices, pool, 0,
+                                                                  question.target, budget, products);
+                route_found.push_back(found ? static_cast<int>(products.size()) : -1);
+                route_nodes.push_back(static_cast<long long>(budget.nodes_visited.load()));
+            }
+            bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Auto);  // process-wide
+
+            check::equal(label + ": both routes give the same verdict", route_found[1],
+                         route_found[0]);
+            check::equal(label + ": and visit the same nodes", route_nodes[1], route_nodes[0]);
         }
     }
 
