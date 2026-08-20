@@ -75,8 +75,10 @@ claim nothing about the clock.
 
 ## McKay: the flag is where it belongs
 
-0.795 ms a node against 2.66 us plain, so it must remove 299x to break even and
-removes 53x: a 5.6x loss plus a 0.196 s entry fee. Both sides of that comparison
+25.8x slower on the wall clock while removing 53x the nodes. (This said "299x a
+node plus a 0.196 s entry fee" until 2026-08-20; the fee was a fitting artefact
+and the per-node cost varies seventeen-fold across the sweep's own levels.) Both
+sides of that comparison
 already had the group, so this is the marginal value of the parent test **over**
 the orbit quotient and not over nothing. It stays wired and off, because a route
 known to lose is worth more than an unwired one somebody proposes again:
