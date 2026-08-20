@@ -70,7 +70,7 @@ leaf test too, `dim R[1] == dim V`, and that reading is the trap: building the
 filtration walks the same `p^dim` elements the walk route walks, without its
 early exit and with a Gaussian rank where a rank-one test would do.
 
-**The GPU** does one whole `⟨4,4,4⟩` leaf in 1.019 s against 67 minutes of one
+**The GPU** does one whole `⟨4,4,4⟩` leaf in 1.019 s against 9.2 minutes of one
 core, and answers no question this repository can currently pose, because the
 tree above that leaf has a node count nothing here bounds.
 

@@ -15,9 +15,11 @@ a kernel against 785 ns would have flattered the card by up to 23x. So the first
 thing measured is the GF(2) leaf itself, on an **addressed** pool at 16x16 over
 GF(2), one core. Three host rows follow and they are three different claims:
 
-- **the shipped leaf** is `Gf2Leaf<Addressed>` as the search calls it, deriving
-  each candidate through `RankOnePool::at` at 256 Givaro multiplications and a
-  heap allocation;
+- **the shipped leaf** was `Gf2Leaf<Addressed>` as the search called it *that
+  morning*, deriving each candidate through `RankOnePool::at` at 256 Givaro
+  multiplications and a heap allocation. **It stopped shipping at 08:21 the same
+  day**, when `d85fd32` gave `Gf2Leaf` the masked derivation below, so this row
+  now prices a path nothing takes;
 - **packed generation on the host** is the kernel's own arithmetic on one core,
   so the card is not credited with a win that belongs to the representation;
 - **twelve threads** is the same range on all twelve, not a partition of one
@@ -32,14 +34,20 @@ the leaf is a scan, and a target of 47 products is a scan.
 
 | what | elements | seconds | ns/element | elements/s |
 |---|---|---|---|---|
-| shipped leaf, addressed pool, 1 core | 13 107 000 | 12.323 | **940.2** | 1.06e6 |
-| shipped leaf, addressed pool, 12 threads | 157 284 000 | 17.915 | 113.9 | 8.78e6 |
-| packed generation on the host, 1 core | 131 070 000 | 16.917 | 129.1 | 7.75e6 |
-| packed generation on the host, 12 threads | 1 572 840 000 | 30.209 | 19.2 | 5.21e7 |
+| former leaf, addressed pool, 1 core | 13 107 000 | 12.323 | 940.2 | 1.06e6 |
+| former leaf, addressed pool, 12 threads | 157 284 000 | 17.915 | 113.9 | 8.78e6 |
+| **the leaf as it ships now**, 1 core | 131 070 000 | 16.917 | **129.1** | 7.75e6 |
+| **the leaf as it ships now**, 12 threads | 1 572 840 000 | 30.209 | 19.2 | 5.21e7 |
 | one RTX 4060, the rows the host was given | 131 070 000 | 0.035 | 0.27 | 3.77e9 |
 | one RTX 4060, **the whole pool** | 4 294 836 225 | **1.019** | 0.24 | **4.22e9** |
 
-**940.2 ns is the baseline.** The 785 ns is close to it because at `⟨4,4,4⟩` the
+**129.1 ns is the baseline now, and 940.2 ns was for seven hours.** Confirmed
+independently on 2026-08-20 by differencing two `--leaf-limit` values on
+`decide-rank --matmul 2 4 4 4 --target 47`, so process start-up and the mask
+tables cancel: 40 000 000 further elements cost 4.81 s, or **120.3 ns each**,
+which is the packed rate inside the thermal band and nowhere near 940.2.
+
+**What the old baseline was.** The 785 ns is close to it because at `⟨4,4,4⟩` the
 two measure nearly the same thing: the bit-packed leaf replaces the membership
 test but not `RankOnePool::at`, and on an addressed pool the rebuild is most of
 the element. That is also why packed generation is worth 7.3x here on one core,
@@ -50,9 +58,9 @@ prefix of the outer-product grid and the last card row covers all of it; they
 agree to 12%, which is the thermal band, so the prefix is representative.
 
 **One whole `⟨4,4,4⟩` leaf, 4 294 836 225 rank-one maps, is 1.02 s on one card.**
-At the rates above, the same leaf is **67 minutes** of one core as the search runs
-today, 9.2 minutes of one core with packed generation, and 82 seconds of all
-twelve threads with packed generation. Those three are arithmetic on a measured
+At the rates above, the same leaf is **9.2 minutes** of one core as the search
+runs today and 82 seconds of all twelve threads; it was 67 minutes on the path
+that shipped when this was written. Those three are arithmetic on a measured
 rate and are not measurements; only the 1.02 s was timed end to end.
 
 ## The subspace walk, 16x16 over GF(2), dimension 27
