@@ -1,7 +1,7 @@
 # Canonical augmentation, wired and measured
 
-The third route, why it exists, and why it is never the default. The other two
-narrowings, one of which works, are in
+The third route, why it exists, and why it is never the default. Every other way
+of narrowing this search, the one that works and the two that cannot, is
 [`narrowing-the-search.md`](narrowing-the-search.md).
 
 `--route canonical` is McKay canonical augmentation `[mckay1998]`: give every
@@ -63,32 +63,3 @@ reaches 7, still engages rather than falling back, and still visits strictly
 fewer nodes than the plain route. **A wired route known to lose is worth more
 than an unwired one somebody will propose again**, and it is worth more still
 when the reason it loses is a number rather than an impression.
-
-**The full `GL(n) x GL(m)` cannot work.** The sandwiching action `M -> mu M nu`
-is *transitive* on nonzero rank-one matrices: given `u v^T` and `u' v'^T`, take
-`mu` with `mu u = u'` and `nu` with `v^T nu = v'^T`, both of which exist because
-`GL` is transitive on nonzero vectors. So `P` is a single orbit and quotienting
-by the whole group leaves one representative and no problem. Only the subgroup
-fixing `span(T)` preserves the question, which is why the stabiliser is the
-object and the ambient group is not.
-
-**Branching on cosets of `span(T)` does not pay.** Two maps differing by an
-element of the span extend it identically, so in principle the branching only
-needs `P` modulo `span(T)`. Measured, it collapses nothing where it would
-matter:
-
-| tensor | `\|P\|` | cosets | saving |
-|---|---|---|---|
-| `f2_2x2` | 9 | 1 | 9.00x |
-| `f2_2x3` | 21 | 3 | 7.00x |
-| `gf4_multiplication` | 9 | 3 | 3.00x |
-| `matmul_2x2x2` | 225 | 198 | 1.14x |
-| `f2_5x5` | 961 | 853 | 1.13x |
-| `f3_3x6` | 4732 | 4049 | 1.17x |
-| `gf16_multiplication` | 225 | 225 | 1.00x |
-| `matmul_3x3x3` | 261 121 | 261 121 | **1.00x** |
-
-The saving is real only where the span is a large part of the ambient space,
-which is exactly where the search was already trivial. On the two shapes anyone
-would want it for it is worth nothing at all, so it is not implemented, and this
-table is here so it is not proposed again.
