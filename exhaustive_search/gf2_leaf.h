@@ -66,6 +66,14 @@
 /// that the leaf is where the search lives: by Amdahl, a whole-run factor of
 /// 10.1 needs the replaced part to have been **at least 90%** of the general
 /// run, whatever the leaf itself gained.
+///
+/// **Every scan row above is of `by_scanning_the_pool_directly`**, which is
+/// what the scan was when those runs were taken. It is still here and still
+/// answers wherever the pool is not the grid, but a search now reaches
+/// `by_carrying_a_residual` instead, so the scan rows understate the file by
+/// whatever that route is worth. Nothing here re-prices them: the measurement
+/// is a separate act under [`../MEASURING.md`](../MEASURING.md), and a number
+/// nobody took does not belong in a table of numbers somebody did.
 namespace bilinear_rank {
 
 /// Whether the leaf test has a GF(2) form for this field and shape.
@@ -116,8 +124,33 @@ class Gf2Leaf {
     /// per element than the general route does not make it finite. It is the
     /// same bound the general route takes, in the same units, so the two cannot
     /// stop at different places.
+    ///
+    /// **Two routines answer this and they are the same answer**, not merely
+    /// the same count: the same maps, in the same order, for every span, every
+    /// `needed` and every budget. Which one runs is a fact about the pool and
+    /// not about the span — `carries_a_residual` below — and
+    /// [`tests/test_residual_scan.cpp`](tests/test_residual_scan.cpp) is what
+    /// holds them to it.
     std::vector<Matrix> by_scanning_the_pool(const ReducedBasis& span, std::size_t needed,
                                              SearchBudget* budget = nullptr) const;
+
+    /// The scan that asks the span about each element in turn.
+    ///
+    /// One `reduce` per element, which is `O(dim)` conditional row exclusive ors
+    /// apiece and `|pool| * dim` word operations across a leaf. This is what the
+    /// scan was before the residual below, and it stays for two reasons: it
+    /// answers wherever the pool is not the grid, and the fast route is checked
+    /// against it, which needs it callable by name.
+    std::vector<Matrix> by_scanning_the_pool_directly(const ReducedBasis& span, std::size_t needed,
+                                                      SearchBudget* budget = nullptr) const;
+
+    /// Whether a scan takes the residual route rather than the direct one.
+    ///
+    /// True exactly when the constructor found the pool to be the grid of outer
+    /// products and could invert the right-hand list. Exported for the test
+    /// that puts the two routes on the same span: without it that test would
+    /// compare the direct scan with itself, on every shape, and pass.
+    bool carries_a_residual() const { return !right_index_of_mask_.empty(); }
 
     /// Every one of the `elements` members of `span`, each tested for rank one.
     std::vector<Matrix> by_walking_the_subspace(const ReducedBasis& span, std::size_t needed,
@@ -125,6 +158,28 @@ class Gf2Leaf {
                                                 SearchBudget* budget = nullptr) const;
 
    private:
+    /// The scan that never forms an element and never asks the span anything.
+    ///
+    /// Reduction modulo a subspace is linear, and the pool is a grid, so for one
+    /// left vector the whole row of it is reachable by carrying a residual along
+    /// a Gray code over the right-hand patterns: one exclusive or per element
+    /// and a test for zero, in place of a reduction. The proof and the four
+    /// things that make it the *same* answer are in the source.
+    std::vector<Matrix> by_carrying_a_residual(const ReducedBasis& span, std::size_t needed,
+                                               SearchBudget* budget) const;
+
+    /// Where each column of a right-hand vector lands in the span, for one left
+    /// vector: `columns_` reductions, and then every element of that left
+    /// vector's row of the grid is an exclusive or of them.
+    void residuals_of_one_left(const linear_algebra::Gf2SpanBasis& reachable, std::uint64_t left,
+                               std::vector<std::uint64_t>& per_column) const;
+
+    /// The pool as the grid of outer products it is, when it is one.
+    void note_the_grid(const Field& field);
+
+    /// `right_index_of_mask_`, or nothing when the patterns are not a bijection.
+    void invert_the_right_masks();
+
     /// Pool element `index` as packed words, from the table when there is one
     /// and into `buffer` when there is not.
     ///
@@ -140,11 +195,17 @@ class Gf2Leaf {
     const std::uint64_t* bits_of(std::size_t index, std::vector<std::uint64_t>& buffer) const;
 
     /// The two vector lists as bit patterns, in the order `at(i)` indexes them.
-    /// Empty when the table exists, since nothing then asks, and when the pool
-    /// handed over is not the grid those lists generate.
+    /// Empty when the pool handed over is not the grid those lists generate,
+    /// and held whether or not the table exists: the table is the fastest way to
+    /// hand a survivor back, and these are how a survivor is found at all.
     std::vector<std::uint64_t> left_masks_;
     std::vector<std::uint64_t> right_masks_;
     std::size_t right_count_ = 0;
+
+    /// Which entry of `right_masks_` carries each pattern, one entry per
+    /// pattern. Empty when there is no grid, or when the list turned out not to
+    /// be the bijection this rests on.
+    std::vector<std::uint32_t> right_index_of_mask_;
 
     linear_algebra::Gf2SpanBasis packed(const ReducedBasis& span) const;
     Matrix unpacked(const std::uint64_t* words) const;

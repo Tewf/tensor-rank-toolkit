@@ -36,6 +36,17 @@ add_executable(test_reflected_gray_walk test_reflected_gray_walk.cpp)
 target_link_libraries(test_reflected_gray_walk PRIVATE exhaustive_search testing project_warnings)
 add_test(NAME reflected_gray_walk COMMAND test_reflected_gray_walk)
 
+# The GF(2) pool scan carries a reduction along a Gray code instead of asking
+# the span about every element, and owes the direct scan the same maps in the
+# same order rather than merely as many. `try_add` is order-dependent, so a
+# survivor offered out of index order comes back as a different rank-one basis
+# of the same space, which no count anywhere would catch.
+add_executable(test_residual_scan test_residual_scan.cpp)
+target_link_libraries(test_residual_scan PRIVATE exhaustive_search descent_search
+                                                 formats testing project_warnings)
+add_test(NAME residual_scan COMMAND test_residual_scan ${PROJECT_SOURCE_DIR}/fixtures)
+set_tests_properties(residual_scan PROPERTIES TIMEOUT 900)
+
 # And the leaf built on it, against the rebuild it replaced, on the same span
 # over each of the three odd characteristics the fixtures carry. The Gray order
 # changes which rank-one basis comes back and may not change how many, which is
