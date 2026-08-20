@@ -9,8 +9,9 @@
 /// The bulk questions here are all the same shape: some millions of independent
 /// elements, each formed from its own index and reduced against a basis held in
 /// common. That is what a card is for, and it is measured: one whole `<4,4,4>`
-/// leaf, 4 294 836 225 rank-one maps, in **1.019 s** against 1.12 hours for the
-/// same leaf on one core.
+/// leaf, 4 294 836 225 rank-one maps, in **1.019 s** against 9.2 minutes for the
+/// same leaf on one core. (It was 1.12 hours until `d85fd32` gave the host leaf
+/// the kernel's own arithmetic, which is 7.3x of the gap and no card at all.)
 ///
 /// **This is a seam, not a switch, and no GPU backend is compiled in yet.** It
 /// exists so that one can be added without restructuring anything, in the shape
