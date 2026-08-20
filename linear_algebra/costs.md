@@ -12,6 +12,7 @@ Notation is [the README's](README.md#notation).
 | `SpanBasis::contains` | Θ(d·w) | Θ(w) |
 | `SpanBasis::try_add` | Θ(d·w) | Θ(w) added to Θ(d·w) held |
 | `rank(A)` | O(r·d·c) | Θ(d·c) |
+| `is_rank_one(A)` | O(r·c) | Θ(1) |
 | `nonzero_count(A)` | Θ(r·c) | Θ(1) |
 | `multiplication_count` | O(k·n·d·m) | Θ(d·m) |
 | `flattening_lower_bound` | O(n·m·k·(n+m+k)) | Θ(n·m·k) |
@@ -41,6 +42,14 @@ question they ask most often, and answering it by computing two ranks from
 scratch costs Θ(d²·w) each time. Reducing the candidate against a basis already
 in echelon form costs Θ(d·w). On F3 3×6 that change alone took step 3 from 29.8
 seconds to 11.3.
+
+**`is_rank_one` is the same saving one row further down.** "Is this rank one?" is
+asked far more often than "what is its rank?" — once per element of every
+subspace the exhaustive search walks — and answering it with `rank` pays the `d`
+and an allocation per row for a verdict settled at the second nonzero one.
+Cross-multiplying against the first nonzero row decides it in one pass and no
+inverses; why that is the same question is in
+[`measures.h`](measures.h) beside the code.
 
 **`invert` is a factor of `c` off the textbook**, at Θ(c⁴) where a single
 Gauss-Jordan on `[A | I]` is Θ(c³): it runs `c` independent solves, one per row
