@@ -24,6 +24,78 @@ std::size_t rank(const Field& field, const MatrixOver<Field>& matrix) {
     return span.dimension();
 }
 
+/// Whether a matrix has rank exactly one, decided without computing its rank.
+///
+/// The exhaustive search asks this of every element of every subspace it walks
+/// and never wants the number, so [`rank`](measures.h) above answers a harder
+/// question than the caller asked: it builds a `SpanBasis`, copies every row
+/// into it and runs the elimination to the last one, where the verdict is
+/// settled at the second nonzero row. The matrix arrives here as a pointer and a
+/// shape so that no `Matrix` need be formed to ask, and nothing here allocates.
+///
+/// A matrix has rank one exactly when it has a nonzero row and every row is a
+/// scalar multiple of the first nonzero one. **The multiple is never formed**:
+/// with `a` the first nonzero row and `p` the column of its first nonzero entry,
+/// a row `b` is a multiple of `a` exactly when `a[p]·b[j] = b[p]·a[j]` for every
+/// `j`, which is that statement with the division cleared and so costs no
+/// inverse. `a[p]` is invertible, which is what makes the two equivalent and is
+/// why this is a claim about a field and not about a ring.
+///
+/// **A zero row satisfies the test with no case of its own**: both sides come
+/// out `a[p]·0 = 0·a[j]`, so a zero row is a multiple of `a` and passes, which
+/// is the right answer and the one place this would quietly go wrong if the
+/// arithmetic were rearranged. Rows before the first nonzero one are zero by
+/// construction and need not be revisited. The zero matrix has rank zero, not
+/// one, and is refused.
+///
+/// This and [`gf2_is_rank_one`](gf2_bits.h) are the same predicate over two
+/// representations and **must agree about what rank one means**: the exhaustive
+/// search sends a leaf down one path or the other on the characteristic alone,
+/// so a disagreement would be a rank that depends on which path ran. Over GF(2)
+/// the only nonzero scalar is 1, so "a scalar multiple of the first nonzero row"
+/// degenerates to "equal to it" and the cross-multiplication collapses into a
+/// word comparison. Both refuse the zero matrix, and
+/// [`../exhaustive_search/tests/test_rank_one_predicate.cpp`](../exhaustive_search/tests/test_rank_one_predicate.cpp)
+/// holds this one against `rank` over every small matrix rather than trusting
+/// the argument above.
+template <class Field>
+bool is_rank_one(const Field& field, const typename Field::Element* data, std::size_t rows,
+                 std::size_t columns) {
+    using Element = typename Field::Element;
+    if (rows == 0 || columns == 0) return false;
+
+    std::size_t leading_row = rows;
+    std::size_t pivot = columns;
+    for (std::size_t row = 0; row < rows && leading_row == rows; ++row) {
+        for (std::size_t column = 0; column < columns; ++column) {
+            if (field.isZero(data[row * columns + column])) continue;
+            leading_row = row;
+            pivot = column;
+            break;
+        }
+    }
+    if (leading_row == rows) return false;
+
+    const Element* leading = data + leading_row * columns;
+    Element ours;
+    Element theirs;
+    for (std::size_t row = leading_row + 1; row < rows; ++row) {
+        const Element* other = data + row * columns;
+        for (std::size_t column = 0; column < columns; ++column) {
+            field.mul(ours, leading[pivot], other[column]);
+            field.mul(theirs, other[pivot], leading[column]);
+            if (!field.areEqual(ours, theirs)) return false;
+        }
+    }
+    return true;
+}
+
+/// The same predicate on a matrix already formed, for callers that hold one.
+template <class Field>
+bool is_rank_one(const Field& field, const MatrixOver<Field>& matrix) {
+    return is_rank_one(field, matrix.data(), matrix.rows(), matrix.columns());
+}
+
 /// The number of multiplications a set of slices costs, which is what the rank
 /// search exists to reduce: the sum of their ranks.
 template <class Field>

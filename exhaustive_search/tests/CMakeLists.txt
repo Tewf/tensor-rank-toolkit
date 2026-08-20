@@ -44,3 +44,11 @@ add_executable(test_gray_walk_leaf test_gray_walk_leaf.cpp)
 target_link_libraries(test_gray_walk_leaf PRIVATE exhaustive_search descent_search
                                                   formats testing project_warnings)
 add_test(NAME gray_walk_leaf COMMAND test_gray_walk_leaf ${PROJECT_SOURCE_DIR}/fixtures)
+
+# And the one test the leaf now rests on: `is_rank_one` is the only thing that
+# says yes to an element, so it is held against the elimination it replaced over
+# every matrix of the shapes small enough to enumerate. It lives here rather than
+# beside `measures.h` because this is the caller whose answers it decides.
+add_executable(test_rank_one_predicate test_rank_one_predicate.cpp)
+target_link_libraries(test_rank_one_predicate PRIVATE linear_algebra testing project_warnings)
+add_test(NAME rank_one_predicate COMMAND test_rank_one_predicate)
