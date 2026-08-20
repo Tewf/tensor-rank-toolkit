@@ -31,6 +31,34 @@ It has not always been. `least_in_orbit` replaced a `struck` byte array and a
 the general Givaro routine rather than the packed GF(2) one. Both are fixed,
 and the surcharge that used to make the quotient a real trade is mostly gone.
 
+## The node count stops being a property of the question
+
+**A refutation's node count is order-invariant without the quotient and not with
+it.** Measured on `matmul_2x2x2` refuting six products, the same pool handed over
+forwards and reversed:
+
+| | in order | reversed |
+|---|---|---|
+| no group, the control | 25 399 | **25 399** |
+| quotiented by the 6 generators | **648** | 711 |
+
+The control is what makes the second row a result. Without a group the tree
+counts each *set* of pool elements once, in ascending index order, whatever order
+the pool is in — so reversing cannot move it, and does not. With the quotient,
+`least_in_orbit` keeps the earliest member of each orbit **within the remaining
+suffix**, so reversing changes which element represents each orbit, and different
+representatives sit above suffixes of different sizes.
+
+**So the pool's order is a free parameter worth 9.7% here, in the direction
+nobody chose.** It is the same lever `--threads` pulls on a satisfiable question,
+where it is worth 5.7x, arriving somewhere it was assumed not to reach: the
+refutations, which are where a sweep spends its time.
+
+Nothing here says a *better* order exists or how to find one. What it says is
+that the search has a knob it does not know it has, and that
+[`../exhaustive_search/what-threads-change.md`](../exhaustive_search/what-threads-change.md)'s
+"it is the same tree whoever visits it" is true of workers and not of orders.
+
 ## What that leaves
 
 **The quotient pays on a refutation and pays less on a satisfiable question**,
