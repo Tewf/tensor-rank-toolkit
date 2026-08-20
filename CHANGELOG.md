@@ -6,6 +6,17 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **Six order-3 fixtures over GF(2), each aimed at a number somebody has
+  published**: `gf32_multiplication` and `gf64_multiplication`, extending the
+  field-extension family past the three this repository settles itself;
+  `cyclic_f2_7`, whose rank `[wang2026]` closes at 13 from both sides; and
+  `matmul_2x3x4`, `matmul_3x3x4` and `matmul_3x4x4`, the three small formats that
+  paper leaves open. Shapes, naive costs, targets and the two moduli are in
+  [`fixtures/published-targets.md`](fixtures/published-targets.md); the bounds are
+  pinned on all six in `rank_metric_bound/tests/`, where they cost 4.1 s.
+
 ### Changed
 
 - **`[wang2026]` is now cited at the arXiv version its numbers come from**, v10,
