@@ -19,6 +19,7 @@ import command_line
 import repository
 import registry
 import runner
+import worked_examples
 import workspace
 
 # A backstop, not a budget. Where a tool has a budget flag of its own the browser
@@ -43,6 +44,7 @@ class Service:
         """Everything the page needs to draw itself once."""
         return {
             "tools": catalogue.TOOLS,
+            "examples": worked_examples.EXAMPLES,
             "fixtures": repository.fixtures(),
             "root": str(repository.ROOT),
             "build": str(self.build),
@@ -53,7 +55,41 @@ class Service:
     def preview(self, request):
         """The line that pressing Run would produce, assembled by the same code."""
         plan = self._assemble(request, self.runs_root / NOT_YET, write=False)
-        return {"command": plan["shown"], "reader": plan["reader"]}
+        return {"command": plan["shown"], "reader": plan["reader"],
+                "warnings": self._warnings(request, plan["tool"])}
+
+    def _warnings(self, request, tool):
+        """What is worth knowing before pressing Run, and nothing that is not.
+
+        One thing, and it is the one `not-production-ready-yet.md` records. A
+        solver started by `run_limits/child_process.h` is in a process group of
+        its own, so stopping this run does not reach it; what ends it is the
+        alarm it carries, set from the tool's own timeout. This interface fills
+        that flag in with the console's wall clock, which closes the window, and
+        clearing it or raising it above the clock reopens it. It used to reopen
+        without saying so, which is the part that was fixable.
+        """
+        chosen = request.get("options") or {}
+        seconds = self._wall_clock(request)
+        said = []
+        for option in tool["options"]:
+            if not option.get("carries_wall_clock"):
+                continue
+            given = str(chosen.get(option["flag"], "")).strip()
+            if given.isdigit() and int(given) <= seconds:
+                continue
+            if given.isdigit():
+                stated = (option["flag"] + " is " + given + " s, above this "
+                          "console's " + str(seconds) + " s wall clock.")
+            else:
+                stated = (option["flag"] + " is not set here, so it is whatever "
+                          "tunables.conf says; this console's wall clock is " +
+                          str(seconds) + " s.")
+            said.append(stated + " A solver this run starts carries an alarm set "
+                        "from that flag, and stopping the run does not reach it: "
+                        "it can hold a core until the alarm fires. Set the flag "
+                        "at or below the wall clock and that window closes.")
+        return said
 
     def start(self, request):
         # The tool is resolved before a directory is made, so a request naming

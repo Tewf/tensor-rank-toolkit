@@ -55,14 +55,22 @@ function follow(identifier, node) {
 
 function draw(node, card) {
   const ending = card.outcome;
-  node.className = "result" + (ending ? " v-" + ending.verdict : "");
+  // Two classes, and they are two questions. `v-` is the ending's own name, of
+  // which there are nine; `d-` is the three-way one underneath it, so that
+  // proved, found and nothing-proved are three colours a reader separates
+  // without reading. A screen that gives a refutation and an exhausted budget
+  // the same colour has merged them whatever the sentence beneath says.
+  node.className = "result" + (ending ? " v-" + ending.verdict +
+                                        " d-" + ending.decides.split(" ")[0] : "");
   node.textContent = "";
 
   const badge = el("span", {class: "badge",
                             text: ending ? ending.badge : "running"});
+  const decides = ending ? el("span", {class: "decides", text: ending.decides}) : null;
   const clock = el("span", {class: "clock",
     text: card.seconds + " s of a " + card.wall_clock_seconds + " s wall clock"});
-  const header = el("header", {}, [el("h3", {text: card.tool}), badge, clock]);
+  const header = el("header", {},
+                    [el("h3", {text: card.tool}), badge, decides, clock]);
   if (card.running) {
     const stop = el("button", {type: "button", text: "stop"});
     stop.onclick = () => ask("POST", "/api/runs/" + card.id + "/stop");
@@ -70,7 +78,8 @@ function draw(node, card) {
   }
   node.appendChild(header);
 
-  node.appendChild(el("pre", {class: "command", text: card.command}));
+  node.appendChild(commandBlock(card.command));
+  drawPlan(node, card);
   if (ending) {
     // A tool that refused says why in its own words, and those words name the
     // line and the file. They are the answer, so they go where the answer goes
@@ -82,7 +91,9 @@ function draw(node, card) {
     // run is the sentence underneath.
     const code = card.exit_status >= 0 ? "exit " + card.exit_status + ": " : "";
     node.appendChild(el("p", {class: "means", text: code + (refusal || ending.means)}));
-    if (ending.show_standing !== false) {
+    // Where the tool declares no reading of its own the two are the same
+    // sentence, and printing it twice reads as two claims rather than one.
+    if (ending.show_standing !== false && ending.standing !== ending.means) {
       node.appendChild(el("p", {class: "standing", text: ending.standing}));
     }
   }
@@ -100,6 +111,18 @@ function draw(node, card) {
     text: "Kept in " + card.directory + ". The seconds above are a wall clock on " +
           "a machine that is also running a browser: MEASURING.md is the protocol " +
           "a published timing is taken under, and this is not it."}));
+}
+
+function drawPlan(node, card) {
+  /* How the tool was going to answer, in its own words, above the verdict
+     instead of four screens under it. `plan_lines.py` chooses which lines these
+     are and copies them; every one of them is still in the stream below, so
+     nothing here is the only place a reader can see it. */
+  if (!card.plan || !card.plan.length) return;
+  const strip = el("ul", {class: "plan"});
+  for (const line of card.plan) strip.appendChild(el("li", {text: line}));
+  node.appendChild(el("p", {class: "stream-label", text: "the plan it printed"}));
+  node.appendChild(strip);
 }
 
 function spoken(commentary) {

@@ -24,6 +24,19 @@ whole, in [`outcome.py`](outcome.py), and nothing anywhere shortens it.
 A status that is none of these is reported as having no name, never as the
 nearest one that does.
 
+## The same rule in one word, so a screen can carry it
+
+Words distinguish and colours do not, and a reader takes the colour first. Two
+endings painted the same shade have been merged before the sentence under them
+is read, so every card also carries `decides`: **found**, **proved**, or
+**nothing proved**. It is `decide-rank`'s own vocabulary — that tool prints
+`FOUND`, `NO` and `GAVE UP` — and it is one branch on the exit code, taken
+before the tool's badge is applied and never from it. Only exit 1 reaches
+`proved`. Everything that is not 0 or 1 lands in `nothing proved`: a budget, a
+stop, the wall clock, a crash, and a status with no name. There is no path in
+[`outcome.py`](outcome.py) by which giving up acquires a colour that says
+otherwise, and the three are asserted from real runs below.
+
 ## The three the interface can cause, named as its own
 
 **You pressed stop**, **the wall clock ran out**, and **the console shut down**.
@@ -61,7 +74,8 @@ and minimises nothing. Both carry their replacement reading beside themselves in
 [`tests/check_web_interface.py`](tests/check_web_interface.py) drives the
 interface over HTTP and reaches each of exit 0, 1, 3 and 5 from a real run of a
 real binary, then asserts that the exit 3 case is undecided and is not reported
-as a refutation. Asserting that against a table of codes would pass whatever the
+as a refutation, and that the four land on found, proved, nothing proved and
+nothing proved. Asserting that against a table of codes would pass whatever the
 interface did with them, so it is asserted against
 `decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000`, which really
 does run out of nodes.

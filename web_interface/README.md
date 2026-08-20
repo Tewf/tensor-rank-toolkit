@@ -24,58 +24,62 @@ are `--build`, `--port`, `--host`, `--runs` and `--wall-clock`; `--help` lists t
 
 ## What you do with it
 
+**Start here.** Six worked examples sit above the panels, in
+[`worked_examples.py`](worked_examples.py). Each fills the map, the tool and the
+flags and then stops, so the line is read before it is run. Four of them are the
+same map one flag apart, which is the shortest way to see the difference between
+found, proved impossible, and a budget that ran out.
+
 1. **The map.** Type it, paste it, load one of the repository's fixtures, open a
    file, or build one with `make-tensor`. The format is the one that already
-   exists, `formats/tensor_file.h`, and nothing new was invented.
+   exists, `formats/tensor_file.h`, and nothing new was invented. The fixtures
+   the chosen tool cannot read are greyed rather than hidden.
 2. **The question.** Eleven tools, each stating what it asks. The flags are
    those of `OPTIONS.md`, each carrying the note that says what it costs.
 3. **The command.** Shown before you run it and again beside the answer, as a
-   line you can retype at a terminal.
-4. **The answer.** The exit code in the vocabulary of `cli/exit_code.h`, the
-   tool's own reading of it, both streams kept apart as `cli/report.h` splits
-   them, and any file the run wrote.
+   line you can retype at a terminal, with a button that copies it. Anything
+   worth knowing before you press Run is said underneath it.
+4. **The answer.** Three things, in this order: **how it ended**, as the tool's
+   own word and as one of found, proved and nothing proved; **the plan the tool
+   printed**, its pool, its leaf, its device and its quotient, lifted out of the
+   stream; then both streams kept apart as `cli/report.h` splits them, and any
+   file the run wrote.
 
 An unmodified fixture is run where it lies, so the line under the answer is the
 same one the repository's own documents use. Anything typed is written into the
 run's directory first, and that path is what the line then names.
 
-## One example, end to end
-
-Load `matmul_2x2x2.tensor`, choose `decide-rank`, ask for 7 products, run:
+## The first two starters, end to end
 
 ```
 build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7
-exit 0, YES:  7 products, rank bound 6, gap 1;  verified: they compute the map
-```
+exit 0, FOUND: 7 products, rank bound 6, gap 1;  verified: they compute the map
 
-Change the target to 6 and run it again:
-
-```
 build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6
-exit 1, NO:   there is no algorithm with 6 products. The search was exhaustive.
+exit 1, NO:    there is no algorithm with 6 products. The search was exhaustive.
 ```
 
-Two runs and the rank of `⟨2,2,2⟩` is 7: one algorithm at 7 that was checked,
-and no algorithm at 6 by a search that was exhaustive. Both lines run unchanged
-in a terminal and give the same two answers. No timing is quoted here, because a
-wall clock taken beside a browser is not one `MEASURING.md` would accept.
+Two runs and the rank of `⟨2,2,2⟩` is 7, and both lines run unchanged in a
+terminal. No timing is quoted, because a wall clock taken beside a browser is
+not one `MEASURING.md` would accept.
 
 ## What it will not do
 
 It will not turn a budget that ran out into a proof, and
 [`what-it-will-not-say.md`](what-it-will-not-say.md) is how that is kept. It
 will not leave a search running when you stop it, which is
-`run_limits/child_process.h`'s rule applied one level up. What is not finished
-is written down in
-[`not-production-ready-yet.md`](not-production-ready-yet.md) rather than left to
-be discovered.
+`run_limits/child_process.h`'s rule applied one level up. What is not finished is
+in [`not-production-ready-yet.md`](not-production-ready-yet.md) rather than left
+to be discovered.
 
 ## Checking it
 
 ```sh
-python3 web_interface/tests/check_web_interface.py     # 21 checks, about 15 s
+python3 web_interface/tests/check_web_interface.py     # 37 checks
 ```
 
 It starts a console, drives it over HTTP and asserts against real runs of real
-binaries, including that exit 3 arrives as undecided. It is deliberately not
+binaries: that exit 3 arrives as undecided and never as a refutation, that the
+plan lines it promotes are still the characters the tools print, and that each of
+the six worked examples still ends where it says it does. It is deliberately not
 registered with `ctest`, whose count is quoted elsewhere and means something else.
