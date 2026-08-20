@@ -9,11 +9,18 @@ behind its flag.
 |---|---|---|
 | orbit quotient | **wired**, on `-s` | 39.2x fewer nodes refuting `⟨2,2,2⟩` at 6, at a 1.41x surcharge a node |
 | odometer | **wired**, automatic | the only route at `⟨4,4,4⟩`, where a held pool is 8.2 TiB |
-| GPU leaf | **wire**, after one measurement | 81x the whole host on the hardest comparison |
+| GPU leaf | **verdict suspended** — the host moved under it | was 81x on the hardest comparison; the host leaf has since changed twice |
 | `SortedSpan` | **wire the cost query, not the search** | 1.10x there; refuted at a node, dominated at a leaf |
 | McKay | **leave it on `--route canonical`** | 53x fewer nodes at 299x a node |
 
-## The GPU: wire it, and measure the floor first
+## The GPU: the verdict is suspended, because the host moved
+
+**Everything below was measured against a host leaf that has since changed
+twice** — `is_rank_one` and the carried residual both landed on 2026-08-20, and
+the second alone took a scan element from 108 ns to 1.16 ns in a harness. Against
+a card at 0.24 ns that is under 5x, which is this page's own "not worth it" band.
+Nothing here is retracted; it is suspended until the comparison is re-taken with
+`measure-leaf`, which now times the leaf that ships.
 
 The seam is [`../run_limits/device.h`](../run_limits/device.h) and it is already
 the right shape: a fixed ranking, a probe for availability, a host that always

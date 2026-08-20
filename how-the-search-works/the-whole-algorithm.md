@@ -77,9 +77,17 @@ leaf(V):                                   has V a rank-one basis?
         survivors <- kernel(route, LeafQuestion(V, P), the whole range)
         if survivors.overflowed: retry in chunks, else fall back to Cpu
         return greedy over sorted survivors reaches dim V
-    else:
-        return binary or general leaf, stopping at dim V found
+
+    WALK on the host:   combination ^= rows[ctz(index)]   one xor, Gray order
+                        is_rank_one(combination)          two rows, not a rank
+    SCAN on the host:   residual ^= reduce(left (x) e_j)  one xor; dim leaves
+                        residual = 0 => inside V          the inner loop
+                        survivors sorted per left, then the greedy
 ```
+
+**Both host routes carry rather than rebuild**, since 2026-08-20. Each returns
+the same maps in the same order, and the CUDA kernel — written against the old
+scan — agrees with the new one survivor by survivor on all thirteen shapes.
 
 **The host leaf stops at `dim V` maps and the kernel does not**, so the card's
 measured factors are for a leaf run to its end: every leaf of a refutation, and
