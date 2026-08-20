@@ -26,6 +26,12 @@
 /// The saving is the size of the group, and the group is large exactly where
 /// the questions are open: 216 elements for `⟨2,2,2⟩` over GF(2), about four for
 /// polynomial multiplication.
+///
+/// **Which of a node's candidates open a branch is not decided here.** That is
+/// [`isomorph_rejection.h`](isomorph_rejection.h), which carries both the exact
+/// rule this search has always used and the cheap partial one `--orbit-test
+/// generators` selects, and the argument that swapping them changes node counts
+/// and never a verdict.
 namespace bilinear_rank {
 
 /// Is there an algorithm with exactly `target` products, searched up to `group`?

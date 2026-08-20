@@ -2,9 +2,9 @@
 
 A change of coordinates on each operand preserves rank, so if it also fixes the
 target subspace it maps solutions to solutions and only one member of each orbit
-need be visited. Six modules, because the group, the orbits and each consumer of
-them are separate jobs, and the header is the authority in every case: this is a
-map, not a second copy of one.
+need be visited. Seven modules, because the group, the orbits, the rule that
+rejects a repeat and each consumer of them are separate jobs, and the header is
+the authority in every case: this is a map, not a second copy of one.
 
 ## Whose work this is
 
@@ -39,6 +39,7 @@ subspace and not about the pool.
 | [`automorphism.h`](automorphism.h) | The group itself: the rank-preserving action, and the stabiliser of a subspace |
 | [`group_construction.h`](group_construction.h) | Where the groups come from: by brute force, by closed form, and by closing a generating set, the last two pinned against each other |
 | [`pool_orbits.h`](pool_orbits.h) | The orbits of the rank-one pool, found on the operand vectors rather than on their products |
+| [`isomorph_rejection.h`](isomorph_rejection.h) | Which of a node's candidates open a branch: exact rejection, or the cheap partial rule `--orbit-test generators` selects |
 | [`orbit_search.h`](orbit_search.h) | The exact search of [`../exhaustive_search/`](../exhaustive_search/) with its tree quotiented: one branch per orbit |
 | [`orbit_heuristic.h`](orbit_heuristic.h) | Steps 2 and 3 of [`../descent_search/`](../descent_search/) against a quotiented pool |
 | [`orbit_cubes.h`](orbit_cubes.h) | The first term fixed to one representative per orbit, for a solver to split on |
@@ -60,7 +61,10 @@ the time follows: **27.8x** and **2.14x**. The saving is largest on a refusal,
 which is the case that costs most, because a refusal has to visit the whole tree
 and the quotient is what shrinks it.
 [`what-the-quotient-costs.md`](what-the-quotient-costs.md) has the table, and
-the reason the surcharge used to be much larger than 1.2x.
+the reason the surcharge used to be much larger than 1.2x. Cheapening the
+rejection rule instead was tried and **does not pay**, costing 5.10x and 17.96x
+the nodes on the two refutations measured:
+[`what-partial-rejection-leaves.md`](what-partial-rejection-leaves.md).
 
 ## Where it stops, and why that is not a defect
 
