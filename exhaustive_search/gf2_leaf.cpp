@@ -27,15 +27,45 @@ bool gf2_leaf_applies(const Field& field, std::size_t columns) {
 /// `<4,4,4>` the table would be 4.3e9 maps of four words, which is 137 GiB, so
 /// there the maps are packed one at a time into the caller's buffer and the win
 /// is the reduction alone.
+namespace {
+
+/// A vector of GF(2) entries as the low bits of one word. Widths above 64 do not
+/// reach here: `gf2_leaf_applies` refuses them.
+std::uint64_t mask_of(const std::vector<int64_t>& entries) {
+    std::uint64_t bits = 0;
+    for (std::size_t index = 0; index < entries.size(); ++index) {
+        if (entries[index] != 0) bits |= std::uint64_t(1) << index;
+    }
+    return bits;
+}
+
+}  // namespace
+
 template <typename Candidates>
-Gf2Leaf<Candidates>::Gf2Leaf(const Candidates& pool, std::size_t rows, std::size_t columns)
+Gf2Leaf<Candidates>::Gf2Leaf(const Field& field, const Candidates& pool, std::size_t rows,
+                             std::size_t columns)
     : pool_(pool),
       rows_(rows),
       columns_(columns),
       width_(rows * columns),
       words_per_map_(linear_algebra::gf2_word_count(rows * columns)) {
     const std::size_t bytes_each = sizeof(std::uint64_t) * words_per_map_;
-    if (pool.size() == 0 || bytes_each > memory_budget() / pool.size()) return;
+    if (pool.size() == 0) return;
+    if (bytes_each > memory_budget() / pool.size()) {
+        // No table, so every element is formed on demand and it is worth forming
+        // it in bits. Guarded on the pool being the grid these two lists
+        // generate, in the order `at(i)` indexes it, because a caller may hand
+        // over any vector of maps and only that grid can be addressed this way.
+        const std::vector<std::vector<int64_t>> lefts = normalised_vectors(field, rows);
+        const std::vector<std::vector<int64_t>> rights = normalised_vectors(field, columns);
+        if (lefts.size() * rights.size() != pool.size()) return;
+        left_masks_.reserve(lefts.size());
+        right_masks_.reserve(rights.size());
+        for (const std::vector<int64_t>& left : lefts) left_masks_.push_back(mask_of(left));
+        for (const std::vector<int64_t>& right : rights) right_masks_.push_back(mask_of(right));
+        right_count_ = rights.size();
+        return;
+    }
 
     table_.resize(pool.size() * words_per_map_);
     for (std::size_t index = 0; index < pool.size(); ++index) {
@@ -47,6 +77,21 @@ template <typename Candidates>
 const std::uint64_t* Gf2Leaf<Candidates>::bits_of(std::size_t index,
                                                   std::vector<std::uint64_t>& buffer) const {
     if (!table_.empty()) return &table_[index * words_per_map_];
+    if (!left_masks_.empty()) {
+        const std::uint64_t left = left_masks_[index / right_count_];
+        const std::uint64_t right = right_masks_[index % right_count_];
+        for (std::size_t word = 0; word < words_per_map_; ++word) buffer[word] = 0;
+        for (std::size_t row = 0; row < rows_; ++row) {
+            if (((left >> row) & 1) == 0) continue;
+            const std::size_t start = row * columns_;
+            const std::size_t offset = start % 64;
+            buffer[start / 64] |= right << offset;
+            // Only when the row straddles a word, which also makes `offset`
+            // nonzero, since `columns_ <= 64` is the precondition above.
+            if (offset + columns_ > 64) buffer[start / 64 + 1] |= right >> (64 - offset);
+        }
+        return buffer.data();
+    }
     linear_algebra::gf2_pack(pool_[index].data(), width_, buffer.data());
     return buffer.data();
 }

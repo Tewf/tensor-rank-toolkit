@@ -293,7 +293,7 @@ bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& s
     if (pool.size() != 0) {
         const Matrix first = pool[0];
         if (gf2_leaf_applies(field, first.columns())) {
-            packed.emplace(pool, first.rows(), first.columns());
+            packed.emplace(field, pool, first.rows(), first.columns());
         }
     }
     const Gf2Leaf<Candidates>* binary = packed ? &packed.value() : nullptr;

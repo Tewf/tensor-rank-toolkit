@@ -19,3 +19,11 @@ add_executable(test_bound_at_a_node test_bound_at_a_node.cpp)
 target_link_libraries(test_bound_at_a_node PRIVATE exhaustive_search descent_search
                                                    formats testing project_warnings)
 add_test(NAME bound_at_a_node COMMAND test_bound_at_a_node ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The table route and the on-demand route must produce the same element. A
+# disagreement is a wrong answer nothing downstream catches: both feed the same
+# membership test, and a corrupted map simply fails to be in the span.
+add_executable(test_packed_generation test_packed_generation.cpp)
+target_link_libraries(test_packed_generation PRIVATE exhaustive_search descent_search
+                                                     formats testing project_warnings)
+add_test(NAME packed_generation COMMAND test_packed_generation ${PROJECT_SOURCE_DIR}/fixtures)
