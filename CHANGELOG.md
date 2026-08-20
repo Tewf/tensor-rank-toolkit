@@ -22,6 +22,19 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   4 294 836 225 rank-one maps, in **1.019 s** against 1.12 hours for the same leaf
   on one core, with survivor sets compared map for map against the shipped leaf on
   thirteen questions.
+- **`--leaf-route auto|scan|walk`**, so the two ways a leaf can be answered can
+  be timed against each other on one question rather than on two. The rule that
+  chooses between them compares `p^dim` with the pool size, pricing a membership
+  test and a rank test the same, and nothing had ever checked that. Forced onto
+  each route in turn it is right on all four questions timed, including one where
+  it sends a 225-element pool to the subspace walk and the walk wins, so **the
+  cost-weighted rule this was meant to become is not made**:
+  [`exhaustive_search/which-leaf-route-is-cheaper.md`](exhaustive_search/which-leaf-route-is-cheaper.md).
+- **A check that the front page is the results files**,
+  [`reproduce/front_page.py`](reproduce/front_page.py), run in CI. `index.html`
+  cited `descent_search/results.json` for two charts and a table and read it
+  never; the charts fetch it now, and the table, which stays hand-typeset so the
+  evidence survives JavaScript being off, is refused by CI when it drifts.
 - **A device ranking**, [`run_limits/device.h`](run_limits/device.h), in the shape
   `integer_programme/solver_chain.h` already uses for solvers: the order is fixed,
   the availability is not, and an absent backend is a state reported rather than an
