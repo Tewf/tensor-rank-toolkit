@@ -79,6 +79,17 @@ button.go[disabled] { opacity: .5; cursor: default; }
 
 .answers { font-size: .84rem; color: var(--muted); margin: 0 0 .7rem; }
 
+/* the starters: the same row control as a tool, one panel higher */
+.example {
+  display: block; width: 100%; text-align: left; font-family: var(--sans);
+  background: none; border: 0; border-bottom: 1px solid var(--line);
+  border-radius: 0; padding: .5rem .2rem;
+}
+.example:last-child { border-bottom: 0; }
+.example .name { font-size: .86rem; font-weight: 650; }
+.example .asks { display: block; font-size: .8rem; color: var(--muted); margin-top: .1rem; }
+.example:hover .name { color: var(--teal); }
+
 pre.command {
   font-family: var(--mono); font-size: .78rem; line-height: 1.6;
   background: var(--sunken); border: 1px solid var(--line); border-radius: 3px;
@@ -86,6 +97,22 @@ pre.command {
   white-space: pre-wrap; overflow-wrap: anywhere;
 }
 pre.command .loose { color: var(--muted); font-style: italic; }
+
+/* a command and the button that copies it. The button sits inside the block's
+   top corner so it is beside the line it copies and never below the fold. */
+.with-copy { position: relative; }
+.with-copy pre.command { padding-right: 4.2rem; }
+button.copy {
+  position: absolute; top: .5rem; right: .45rem;
+  font-size: .68rem; letter-spacing: .06em; text-transform: uppercase;
+  padding: .15rem .45rem; opacity: .6;
+}
+.with-copy:hover button.copy, button.copy:focus { opacity: 1; }
+
+.warning {
+  font-size: .78rem; line-height: 1.5; color: var(--ink);
+  border-left: 2px solid var(--gold); padding-left: .6rem; margin: .3rem 0;
+}
 
 /* results */
 .result {
@@ -106,6 +133,33 @@ pre.command .loose { color: var(--muted); font-style: italic; }
 .v-undecided .badge, .v-stopped .badge, .v-usage .badge { color: var(--gold); }
 .v-error .badge, .v-unverified .badge,
 .v-signalled .badge, .v-unknown .badge { color: var(--alarm); }
+
+/* The three-way one, filled rather than outlined, because this is the
+   distinction a reader has to make from across the room: something was found,
+   something was proved impossible, or nothing was established. `found` and
+   `proved` are the two teals the stylesheet has, so the third is the alarm
+   colour and the card carries a rule down its left in the same shade. */
+.decides {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .08em;
+  text-transform: uppercase; font-weight: 700; border-radius: 2px;
+  padding: .12rem .5rem; color: var(--paper); background: var(--muted);
+}
+.d-found .decides { background: var(--teal); }
+.d-proved .decides { background: var(--ink); }
+.d-nothing .decides { background: var(--gold); }
+.result { border-left: 3px solid var(--line); }
+.d-found { border-left-color: var(--teal); }
+.d-proved { border-left-color: var(--ink); }
+.d-nothing { border-left-color: var(--gold); }
+
+/* the plan, promoted out of the stream: the tool's own lines, one to a row */
+.plan {
+  list-style: none; margin: .2rem 0 .7rem; padding: 0;
+  font-family: var(--mono); font-size: .78rem; line-height: 1.6;
+}
+.plan li {
+  border-left: 2px solid var(--line); padding: .05rem .6rem; color: var(--muted);
+}
 
 .means { font-size: .92rem; margin: .6rem 0 .2rem; max-width: none; }
 .standing {

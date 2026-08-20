@@ -28,8 +28,10 @@ sys.path.insert(0, str(HERE.parent))
 
 import http.server            # noqa: E402
 import http_service           # noqa: E402
+import plan_lines             # noqa: E402
 import repository             # noqa: E402
 import service                # noqa: E402
+import worked_examples        # noqa: E402
 
 PASSED, FAILED = [], []
 
@@ -99,6 +101,9 @@ def checks(port):
     print("\nthe catalogue")
     status, setup = ask(port, "GET", "/api/setup")
     check("twelve tools are offered", len(setup["tools"]) == 12)
+    check("and every starter names a tool that is there",
+          all(example["tool"] in {tool["name"] for tool in setup["tools"]}
+              for example in setup["examples"]))
 
     print("\nthe command shown is the command run")
     body = {"tool": "decide-rank", "options": {"--target": "7"},
@@ -111,6 +116,22 @@ def checks(port):
     check("the preview is the retypable line", seen["command"] == wanted)
     _, card = run(port, "decide-rank", {"--target": "7"}, "matmul_2x2x2.tensor")
     check("and the run shows the same line", card["command"] == wanted)
+
+    print("\nthe plan the tool prints, promoted and not reworded")
+    check("the plan lines are the tool's own characters",
+          all(line in card["result"] for line in card["plan"]))
+    named = " ".join(card["plan"])
+    check("and they are the pool, the leaf and the device",
+          "pool:" in named and "leaf:" in named and "device:" in named)
+    _, quotiented = run(port, "decide-rank",
+                        {"--target": "6",
+                         "-s": {"mode": "matmul", "n": "2", "m": "2", "k": "2"}},
+                        "matmul_2x2x2.tensor")
+    # The transcription in `plan_lines.py` is only safe while it is still true of
+    # what the tools print, so it is asserted against a run and not against
+    # itself. A quotient is the line most recently reworded.
+    check("a quotient reaches the plan too",
+          any(line.startswith("quotienting by ") for line in quotiented["plan"]))
 
     print("\nthe six exit codes, from real runs")
     check("exit 0 is yes", card["exit_status"] == 0 and
@@ -133,6 +154,14 @@ def checks(port):
     check("and it carries the reader's own words",
           "must be a prime" in unreadable["commentary"])
 
+    print("\nfound, proved, and nothing proved: three, and never two")
+    check("a decomposition is found", card["outcome"]["decides"] == "found")
+    check("a refutation is proved", refuted["outcome"]["decides"] == "proved")
+    check("an exhausted budget proves nothing",
+          gave_up["outcome"]["decides"] == "nothing proved")
+    check("and so does a run that could not start at all",
+          unreadable["outcome"]["decides"] == "nothing proved")
+
     print("\na flag that changes what exit 0 claims")
     _, wrote = run(port, "decide-rank-by-sat",
                    {"--target": "5", "--emit-cnf": True}, "f2_2x3.tensor")
@@ -143,6 +172,22 @@ def checks(port):
     _, asked = run(port, "decide-rank-by-sat", {"--target": "5"}, "f2_2x3.tensor")
     check("and without it the same code is a decomposition",
           asked["exit_status"] == 0 and asked["outcome"]["badge"] == "yes")
+
+    print("\nwhat a run would leave behind, said before it starts")
+    box = {"text": repository.fixture_text("f2_2x3.tensor"),
+           "name": "f2_2x3.tensor", "fixture": "f2_2x3.tensor"}
+    _, filled = ask(port, "POST", "/api/preview",
+                    {"tool": "decide-rank-by-sat", "options": {"--timeout": "60"},
+                     "wall_clock_seconds": 120, "input": box})
+    check("a solver bounded under the wall clock is not warned about",
+          filled["warnings"] == [])
+    _, cleared = ask(port, "POST", "/api/preview",
+                     {"tool": "decide-rank-by-sat", "options": {},
+                      "wall_clock_seconds": 120, "input": box})
+    check("and clearing its budget says what that reopens",
+          len(cleared["warnings"]) == 1 and
+          "--timeout" in cleared["warnings"][0] and
+          "hold a core" in cleared["warnings"][0])
 
     print("\nrefusals, before anything is started")
     status, why = ask(port, "POST", "/api/runs",
@@ -188,6 +233,13 @@ def checks(port):
           "stopped by the wall clock" in ended["outcome"]["standing"])
     check("and nothing of that one is left either",
           group_is_gone(ended["process_group"]))
+
+    print("\nthe worked examples, each run rather than read")
+    for example in worked_examples.EXAMPLES:
+        _, ended = run(port, example["tool"], example["options"],
+                       example["fixture"])
+        check(example["title"] + " -> " + example["expect"],
+              ended.get("outcome", {}).get("badge") == example["expect"])
 
     print("\nthis machine only")
     request = urllib.request.Request("http://127.0.0.1:" + str(port) + "/api/setup",

@@ -20,6 +20,15 @@
 <main class="console">
 
 <div>
+  <section class="panel" id="starters">
+    <h2>Start here</h2>
+    <p class="hint">Each of these fills the three panels below with a real
+      question, and stops there so you can read the command before running it.
+      The first four are the same map: found, proved impossible, and a budget
+      that ran out and proved nothing.</p>
+    <div id="examples"></div>
+  </section>
+
   <section class="panel">
     <h2>1 &nbsp;The map</h2>
     <div class="row">
@@ -28,6 +37,7 @@
       <input type="file" id="upload" hidden accept=".tensor,.matrix,.sms,.txt,text/plain">
       <button id="build-button">build one...</button>
     </div>
+    <p class="hint" id="fixture-note"></p>
 
     <div id="builder" hidden>
       <label for="builder-mode">make-tensor writes a map on standard output, and
@@ -66,7 +76,11 @@
 
   <section class="panel" id="run-panel" hidden>
     <h2>4 &nbsp;Run it</h2>
-    <pre class="command" id="preview"></pre>
+    <div class="with-copy">
+      <pre class="command" id="preview"></pre>
+      <button type="button" class="copy" id="copy-preview">copy</button>
+    </div>
+    <div id="preview-warnings" hidden></div>
     <div class="row">
       <button class="go" id="run">Run</button>
       <span class="hint" id="run-note"></span>
@@ -75,14 +89,16 @@
 </div>
 
 <section id="results">
-  <p class="empty">Nothing has been run yet. Every run appears here with the
-  exact command, both of its streams, and how it ended.</p>
+  <p class="empty">Nothing has been run yet. Press one of the starters on the
+  left if you have not used this before. Every run appears here with the exact
+  command, the plan the tool printed, both of its streams, and how it ended.</p>
 </section>
 
 </main>
 
 <script src="/page/console.js"></script>
 <script src="/page/map_box.js"></script>
+<script src="/page/worked_examples.js"></script>
 <script src="/page/question.js"></script>
 <script src="/page/results.js"></script>
 </body>

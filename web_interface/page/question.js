@@ -44,6 +44,7 @@ function chooseTool(tool) {
   }
   renderTools();
   renderOptions();
+  offerFixturesFor(tool.input);
   $("options-panel").hidden = false;
   $("run-panel").hidden = false;
   $("answers").textContent = tool.answers;
@@ -91,14 +92,20 @@ function choiceControl(option, set, current) {
 }
 
 function symmetryControl(option, set) {
-  const shape = {n: "", m: "", k: ""};
+  // Seeded from what is already chosen rather than from nothing, so that
+  // redrawing the panel does not reset a quotient somebody asked for. A worked
+  // example sets `-s` and then redraws, which is exactly that case.
+  const held = state.chosen[option.flag];
+  const start = held && typeof held === "object" ? held : {mode: "none"};
+  const shape = {n: start.n || "", m: start.m || "", k: start.k || ""};
   const boxes = ["n", "m", "k"].map((part) => {
-    const box = el("input", {size: 2, placeholder: part});
+    const box = el("input", {size: 2, placeholder: part, value: shape[part]});
     box.oninput = () => { shape[part] = box.value; push(); };
     return box;
   });
   const menu = el("select", {}, ["none", "auto", "matmul"].map(
-    (mode) => el("option", {value: mode, text: mode})));
+    (mode) => el("option", {value: mode, text: mode,
+                            selected: mode === start.mode})));
   const push = () => {
     for (const box of boxes) box.hidden = menu.value !== "matmul";
     set(Object.assign({mode: menu.value}, shape));
@@ -146,13 +153,24 @@ function preview() {
       $("run").disabled = false;
       $("run-note").textContent = seen.reader
         ? "read by the " + seen.reader + " reader" : "";
+      warnings(seen.warnings || []);
     } catch (why) {
       $("preview").textContent = String(why.message);
       $("preview").className = "command loose";
       $("run").disabled = true;
       $("run-note").textContent = "";
+      warnings([]);
       return;
     }
     $("preview").className = "command";
   }, 150);
+}
+
+/* What this run would leave behind, said before it is started rather than in
+   `not-production-ready-yet.md` where nobody about to press Run is looking. */
+function warnings(said) {
+  const holder = $("preview-warnings");
+  holder.textContent = "";
+  holder.hidden = !said.length;
+  for (const line of said) holder.appendChild(el("p", {class: "warning", text: line}));
 }
