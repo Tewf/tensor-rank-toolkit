@@ -720,10 +720,21 @@ against the SAT strand and the tree search, and retired the encoding:
 Scientific and Algorithmic Discovery.* 2025. `⟨4,4,4⟩` in 48 multiplications over
 `ℂ`, the first improvement on 49 in fifty-six years.
 
-**`dumas2026`**: *Complex to Rational Fast Matrix Multiplication.*
-[arXiv:2602.13171](https://arxiv.org/abs/2602.13171), 2026. Converts a complex
-scheme to a rational one or proves none exists, generalising Dumas, Pernet and
-Sedoglavic (2025).
+**`moran2026`**: Y. Moran, O. Schwartz, S. Yuan. *Complex to Rational Fast Matrix
+Multiplication.* [arXiv:2602.13171](https://arxiv.org/abs/2602.13171), 2026.
+Converts a complex scheme to a rational one or proves none exists, generalising
+Dumas, Pernet and Sedoglavic (2025), whose ad hoc results it recovers and extends
+to coefficients carrying square roots, `i = √−1` being the special case. The
+machinery is *"basic linear-algebraic properties of similarity transformations of
+complex matrices"* and nothing heavier. Two non-existence results come out of it:
+**no rational scheme is equivalent to Smirnov's `⟨4,4,9,104⟩` `Q[√161]` algorithm
+(2022), and no real scheme to Kaporin's complex `⟨4,4,4,48⟩` (2024)** — the
+second at the format and count `[alphaevolve2025]` also reached over `ℂ`, though
+the paper does not say the two schemes are the same one and it is not assumed
+here.
+
+**The key was `dumas2026` until 2026-08-20.** Dumas is who the paper
+generalises, not who wrote it, and the entry carried no author list to catch it.
 
 **`yang2024`**: J. Yang. *Fixed-parameter tractability of canonical polyadic
 decomposition over finite fields.*
@@ -790,9 +801,22 @@ with `ranksum` when reporting its Strassen refutation, so whether it refuses ran
 place matters, is in
 [`state-of-the-art/lower-bounds.md`](state-of-the-art/lower-bounds.md).
 
-**`heule2024`**: *Ruling Out Low-rank Matrix Multiplication Tensor
+**`yang2024sat`**: J. Yang. *Ruling Out Low-rank Matrix Multiplication Tensor
 Decompositions with Symmetries via SAT.*
-[arXiv:2402.01011](https://arxiv.org/abs/2402.01011), 2024.
+[arXiv:2402.01011](https://arxiv.org/abs/2402.01011), 2024. Decompositions of
+`⟨3,3,3⟩` over `Z/2Z` of rank at most 21, which the abstract gives as the range
+where one would beat Strassen asymptotically, ruled out by a SAT solver — but
+**only those carrying a prescribed symmetry**, which is what makes the space
+small enough to exhaust and is therefore what the refutation is about. **The same
+pairing exists here and is far more timid**:
+[`orbit_cubes.h`](orbit_reduction/orbit_cubes.h) fixes the *first term* to one
+representative per orbit for a solver to split on — a group cutting the space and
+a solver refuting what is left, at one term rather than across the whole scheme.
+
+**The key was `heule2024` until 2026-08-20.** The entry carried no author list,
+the subject is SAT and matrix multiplication, and the guess was the wrong one:
+the sole author is Jason Yang, of `[yang2024]`, `[yang2025]` and
+`[yang2025thesis]`. Hence `yang2024sat`, `yang2024` being taken.
 
 **`alman2025`**: J. Alman, R. Duan, V. Vassilevska Williams, Y. Xu, Z. Xu,
 R. Zhou. *More Asymmetry Yields Faster Matrix Multiplication.* SODA 2025,
