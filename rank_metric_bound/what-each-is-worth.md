@@ -9,8 +9,12 @@ the deciding axis's, printed by that same command. Cost is
 the whole bound from the tensor, taken on one core under the measurement lock on
 an otherwise idle machine. The rows under 0.02 ms are a few microseconds of work
 quoted to two decimals, so read them as an order of magnitude and not as a
-figure; only `f3_3x6` and `matmul_3x3x3` are far enough above the noise floor to
-compare with anything.
+figure; `f3_3x6`, `matmul_3x3x3` and the three `[wang2026]` formats are the only
+rows far enough above the noise floor to compare with anything. The six rows that
+arrived with
+[`../fixtures/published-targets.md`](../fixtures/published-targets.md) were taken
+in a later run of the same command, which moved the other eighteen by less than
+the 13% the chassis varies by on its own, so those stand as first taken.
 
 | fixture | rank held | `rank_lower_bound` | `k` | `d` | Kruskal | Griesmer | cost |
 |---|---|---|---|---|---|---|---|
@@ -19,6 +23,8 @@ compare with anything.
 | `f2_4x7` | 16 | 14 | 4 | 7 | 10 | 14 | 0.94 ms |
 | `f3_3x6` | 10 | 9 | 3 | 6 | 8 | 9 | 4.12 ms |
 | `gf16_multiplication` | 9 | 8 | 4 | 4 | 7 | 8 | 0.02 ms |
+| `gf32_multiplication` | 25 | 12 | 5 | 5 | 9 | 12 | 0.06 ms |
+| `gf64_multiplication` | 36 | 14 | 6 | 6 | 11 | 14 | 0.18 ms |
 | `gf8_multiplication` | 6 | 6 | 3 | 3 | 5 | 6 | 0.01 ms |
 | `gf4_multiplication` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms |
 | `f2_2x2` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms |
@@ -29,18 +35,25 @@ compare with anything.
 | `pencil_nilpotent_f2_3` | 4 | 4 | 2 | 2 | 3 | 3 | 0.01 ms |
 | `matmul_2x2x2` | 7 | 6 | 4 | 2 | 5 | 5 | 0.02 ms |
 | `matmul_2x2x3` | 11 | 9 | 4 | 3 | 7 | 7 | 0.08 ms |
+| `matmul_2x3x4` | 20 | 14 | 12 | 2 | 13 | 13 | 5.91 ms |
 | `matmul_3x3x3` | 23 | 14 | 9 | 3 | 11 | 12 | 2.60 ms |
+| `matmul_3x3x4` | 29 | 18 | 12 | 3 | 14 | 15 | 21.69 ms |
+| `matmul_3x4x4` | 38 | 21 | 16 | 3 | 18 | 19 | 324.62 ms |
 | `cyclic_f2_5` | 10 | 9 | 5 | 1 | 5 | 5 | 0.07 ms |
+| `cyclic_f2_7` | 13 | 12 | 7 | 1 | 7 | 7 | 0.45 ms |
 | `w_state` | 3 | 3 | 2 | 1 | 2 | 2 | 0.00 ms |
 
 "Rank held" is a rank somebody has exhibited, so no lower bound may exceed it,
 the convention `linear_algebra/tests/test_rank_sum.cpp` already uses. On `f2_5x5`
 the 13 is `[bdez2012]`'s and not ours: the best decomposition exhibited here is
-14. Soundness is asserted on all eighteen and then on 120 random tensors built
+14. `gf32` and `gf64` hold 25 and 36, which is the naive algorithm and nothing
+better, because the 13 and 15 published for them were not traced to a table
+anybody here has read and this column is the one that has to be safe.
+Soundness is asserted on all twenty-four and then on 120 random tensors built
 from a known number of rank-one terms, a sixth of which come out bounded at
 exactly their rank, so "never above" is a constraint the sweep actually tests.
 
-**Kruskal's bound never wins.** Four ties, fourteen losses, and the reason is
+**Kruskal's bound never wins.** Eleven ties, thirteen losses, and the reason is
 structural: `k + d - 1` is the Singleton relaxation and throws away everything
 the field size says. On polynomial multiplication it collapses to `n + m - 1`,
 the number of output coefficients, which the flattening bound already gives.
@@ -51,12 +64,23 @@ repository's bracket: `12 <= rank <= 14` already stood, and its 12 came from
 `decide-rank --target 11` running to exhaustion, which `exhaustive_search` prices
 at 77 s. What changed is the price of that 12, and that the cheap floor every
 caller already reads now reaches it. The rank is 13 by `[bdez2012]`, so the gap
-left is one product. Elsewhere Griesmer ties eleven times and loses six, and it
-meets the rank held exactly on seven fixtures.
+left is one product. Elsewhere Griesmer ties thirteen times and loses ten, and it
+meets the rank held exactly on seven fixtures, none of them among the six added
+last.
 
-**Where it loses, it loses to a contraction argument.** In all six losses `d` is
-1, 2 or 3 against a slice space of dimension up to 9, so every Griesmer term past
-the second is already 1 and the sum barely clears `k + d - 1`. `matmul_3x3x3` is
-the extreme: `k = 9`, `d = 3`, giving `3 + 2 + 1·7 = 12` where the rank sums
-reach 14, because they count surviving terms across many contractions at once and
-that is a different thing to know. Neither family dominates the other.
+**Where it loses, it loses to a contraction argument.** In all ten losses `d` is
+1, 2 or 3 against a slice space of dimension up to 16, so every Griesmer term
+past the second is already 1 and the sum barely clears `k + d - 1`.
+`matmul_3x4x4` is now the extreme: `k = 16`, `d = 3`, giving `3 + 2 + 1·14 = 19`
+where the rank sums reach 21, and `matmul_3x3x3` loses the same way with
+`3 + 2 + 1·7 = 12` against 14. They count surviving terms across many
+contractions at once and that is a different thing to know. Neither family
+dominates the other.
+
+**The cost column now has something in it, and it is the axis.** `matmul_3x4x4`
+takes 324.62 ms where `f3_3x6` takes 4.12, some eighty times, and the bound is
+not behaving differently: it reads one table entry per vector on an axis, so
+`⟨3,4,4⟩`'s axes of 12, 16 and 12 over GF(2) are 73 728 contractions of a
+12 × 16 matrix against `f3_3x6`'s 7 317 of a 3 × 6 one. Ten times as many, each
+larger. A table walk and not a search, which is why all three stay in a test
+that is not labelled `slow`.
