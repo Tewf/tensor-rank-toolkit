@@ -55,6 +55,11 @@ addressed pool is arithmetic, `lefts[i / |rights|] ⊗ rights[i % |rights|]`, so
 
 The leaf is where the run lives. Which route it takes is decided by count and
 [that rule is measured](../exhaustive_search/which-leaf-route-is-cheaper.md).
+Both routes were rewritten on 2026-08-20 and neither forms an element any more:
+the walk moves in reflected Gray order, over GF(2) and over GF(p) alike, so a
+step is one row added; and the scan carries a residual through the pool, so a
+step is one exclusive or and a test for zero. Same verdicts, same counts, and
+[`the-whole-algorithm.md`](the-whole-algorithm.md) has both in place.
 
 ## The pieces that are not in it
 
@@ -70,8 +75,12 @@ leaf test too, `dim R[1] == dim V`, and that reading is the trap: building the
 filtration walks the same `p^dim` elements the walk route walks, without its
 early exit and with a Gaussian rank where a rank-one test would do.
 
-**The GPU** does one whole `⟨4,4,4⟩` leaf in 1.019 s against 9.2 minutes of one
-core, and answers no question this repository can currently pose, because the
-tree above that leaf has a node count nothing here bounds.
+**The GPU** does one whole `⟨4,4,4⟩` leaf in 1.019 s, and answers no question
+this repository can currently pose, because the tree above that leaf has a node
+count nothing here bounds. **The host figure it was set against is stale**: the
+9.2 minutes this said was 4 294 836 225 elements at the scan rate of the day, and
+the scan has since carried a residual instead of reducing each element. The
+verdict on the card is suspended for that reason and for one more in
+[`what-to-wire.md`](what-to-wire.md).
 
 Every parameter each of these takes: [`parameters.md`](parameters.md).

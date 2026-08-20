@@ -30,9 +30,23 @@ THREADS = {"flag": "--threads", "kind": "count", "label": "threads",
                    "limit can turn exit 0 into exit 3: "
                    "exhaustive_search/what-threads-change.md."}
 
+# One spelling, two meanings, which is a fact about the tools and not about this
+# table: on the three searches it is the pool budget in bytes and decides whether
+# the pool is held or addressed, and on the two that call a solver it is that
+# solver's cap and comes from `sat_memory_megabytes`. The note said the second of
+# both, so four of the five tools carrying it named a tunable that never reaches
+# them. Written once each, since a shared note cannot say two things.
 MEMORY = {"flag": "--max-memory", "kind": "memory", "label": "memory cap",
-          "note": "2G by default, from sat_memory_megabytes in tunables.conf.",
+          "note": "The pool budget: under it the pool is held, over it every "
+                  "element is derived from its index instead. Written as a size, "
+                  "2G or 2048M.",
           "budget": True}
+
+SOLVER_MEMORY = {"flag": "--max-memory", "kind": "memory",
+                 "label": "memory cap on the solver",
+                 "note": "Passed to the solver, from sat_memory_megabytes in "
+                         "tunables.conf. Written as a size, 2G or 2048M.",
+                 "budget": True}
 
 TOOLS = [
     {
@@ -102,6 +116,16 @@ TOOLS = [
              "note": "auto takes the cheaper by count and is right on every "
                      "question measured. scan and walk force one, for timing "
                      "them against each other on a single question."},
+            {"flag": "--orbit-test", "kind": "choice",
+             "values": ["full", "generators"],
+             "label": "how -s rejects a repeated branch",
+             "note": "Only read when -s is given. full keeps the least member "
+                     "of each orbit and walks the orbit to find it; generators "
+                     "tests only the images under the surviving generators, "
+                     "which is cheaper a candidate and leaves duplicate "
+                     "branches standing. Same verdict either way, and the node "
+                     "counts say what the duplication costs: "
+                     "orbit_reduction/what-partial-rejection-leaves.md."},
             dict(SYMMETRY), dict(THREADS), dict(MEMORY),
         ],
     },
@@ -154,7 +178,7 @@ TOOLS = [
                      "solver carries, so it bounds what outlives a stop."},
             {"flag": "--probe", "kind": "count", "label": "seconds for questions on the way",
              "budget": True},
-            dict(SYMMETRY), dict(MEMORY),
+            dict(SYMMETRY), dict(SOLVER_MEMORY),
         ],
     },
     {
@@ -241,7 +265,7 @@ TOOLS = [
             {"flag": "--parallel", "kind": "switch", "label": "ask on all cores",
              "note": "Prices every candidate rather than stopping at the first yes."},
             {"flag": "--break-symmetry", "kind": "switch", "label": "order terms 1 onward"},
-            dict(SYMMETRY), dict(MEMORY),
+            dict(SYMMETRY), dict(SOLVER_MEMORY),
         ],
     },
     {

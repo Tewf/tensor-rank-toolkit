@@ -6,7 +6,81 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **`--orbit-test full|generators` is documented**, which it was not anywhere
+  outside the binary that parses it. It is in
+  [`OPTIONS/searching-for-rank.md`](OPTIONS/searching-for-rank.md) with the
+  duplication its cheap arm leaves, in
+  [`how-the-search-works/parameters.md`](how-the-search-works/parameters.md)
+  beside the parameter it moves, and in the browser console's catalogue. The same
+  pass added `--anchor` to the parameters page, which had never been there
+  either, and `walk-scheme --steps` as the accepted older spelling of `--flips`.
+
+- **Two pages that are about using the twelve rather than about one of them.**
+  [`OPTIONS/common-recipes.md`](OPTIONS/common-recipes.md) is the line people
+  actually type, one per question, each running against a shipped fixture; and
+  [`OPTIONS/one-idea-several-spellings.md`](OPTIONS/one-idea-several-spellings.md)
+  is where the twelve disagree with each other — five names for "which machine
+  answers", `--node-limit` for four different budgets with defaults 25x apart,
+  `--max-memory` in bytes on three tools and megabytes on two, and **five
+  different behaviours for a bad enum value across the nine flags that take
+  one**. `--orbit-test bogus` names the word and the two right answers;
+  `--leaf-route bogus`, four lines away in the same file, says `unrecognised
+  option: --leaf-route`; `--anchor` and `--backend` accept anything in silence.
+  Nothing was renamed and no behaviour moved: a flag that has been published
+  keeps its name, and what was missing was the page saying so.
+
+- **The console teaches the command instead of only running it.** Six worked
+  examples in [`web_interface/worked_examples.py`](web_interface/worked_examples.py)
+  fill the map, the tool and the flags and stop there, four of them the same map
+  one flag apart so that **found**, **proved** and **gave up** are three presses;
+  the plan each tool prints — its pool, its leaf, its device, its quotient — is
+  lifted out of the stream and put above the verdict by
+  [`web_interface/plan_lines.py`](web_interface/plan_lines.py), copied and never
+  reworded; and every command shown carries a button that copies it. Each example
+  is *run* by the checks rather than read, and the promoted lines are asserted to
+  still be the characters the tools print.
+
 ### Changed
+
+- **A budget that ran out no longer shares a colour with a refutation.** The
+  console's cards were worded apart and painted alike, so `outcome.py` now
+  carries `decides` — **found**, **proved** or **nothing proved** — one branch on
+  the exit code, taken before a tool's own badge is applied and never from it.
+  Only exit 1 reaches `proved`; a budget, a stop, the wall clock, a crash and a
+  status with no name all land in `nothing proved`. It is `decide-rank`'s own
+  vocabulary, which prints `FOUND`, `NO` and `GAVE UP`.
+
+- **Three things `web_interface/not-production-ready-yet.md` recorded are
+  closed**, and the page now says what closing each one did not reach. A run that
+  starts a solver warns *before* it starts, naming the flag and the two numbers,
+  where it would leave that solver holding a core after a stop; `serve.py` counts
+  and sizes the runs it has accumulated instead of letting them grow unseen; and
+  the fixture menu greys the maps a tool cannot read, from the tool's declared
+  input rather than from any opinion about the file. The console's catalogue also
+  stopped telling four tools that their `--max-memory` came from
+  `sat_memory_megabytes`, which reaches only the two that call a solver.
+
+- **Every stale leaf timing quoted outside the leaf's own directory is marked as
+  stale rather than replaced.** `OPTIONS/searching-for-rank.md` quoted 129.1 ns a
+  scanned element and 78 ns a walked one to convert `--leaf-limit` into seconds,
+  and four ratios between the routes; `how-the-search-works/README.md` quoted 9.2
+  minutes of one core for a `⟨4,4,4⟩` leaf, which was those same 129.1 ns times
+  4 294 836 225. All were taken against the leaf as it stood before 2026-08-20.
+  None has a measured replacement here and none is invented: what each was
+  measured against is now written beside it, as
+  [`positioning/hardware-and-parallelism.md`](positioning/hardware-and-parallelism.md)
+  already does. The `-s` and `--general-leaf` rows moved to the node counts and
+  the upper bounds that survive the change, since a node count is not a property
+  of the leaf.
+
+- **The front page describes the tool as it now is.** It said the rank of
+  `⟨2,2,2⟩` was "decided in half a second", which was a wall clock from before
+  the leaf moved twice, and it priced the orbit quotient at a wall-clock 28x from
+  the same era: both are now the counts, which reproduce anywhere. The leaf's two
+  rewrites and the browser console — neither of which the page mentioned — are on
+  it, and it is still under its own length.
 
 - **The GF(2) leaf's pool scan carries a residual instead of reducing every
   element.** Reduction modulo a subspace is linear, so `reduce(x ^ d)` is

@@ -35,6 +35,7 @@ import threading
 import time
 
 import outcome
+import plan_lines
 
 # Long enough for a handler whose whole body is a few `unlink` calls, short
 # enough that a stop still feels like a stop.
@@ -157,6 +158,11 @@ class Run:
             "commentary": self._log("stderr.log"),
             "files": [],
         }
+        # The lines the tool printed about how it was going to answer. Taken
+        # while the run is still going too, because those lines are printed
+        # before the first node and are the only thing on the card for the hour
+        # a search says nothing else.
+        card["plan"] = plan_lines.found_in(card["result"])
         if status is None:
             return card
 

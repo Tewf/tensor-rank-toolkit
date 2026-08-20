@@ -49,10 +49,15 @@ The leaf.
 | flag | default | what it moves |
 |---|---|---|
 | `--target k` | none, sweeps | the question |
+| `--anchor map\|heuristic` | `map` | the `subspace` the search starts from. From the map the answer is the true minimum; from the heuristic's own result it is the minimum only among algorithms containing that subspace |
 | `-s, --symmetry` | `none` | the group above. `matmul n m k` is the closed form and needs no group built |
+| `--orbit-test full\|generators` | `full` | which rule `least_in_orbit` applies at a quotiented node: the exact one, or the cheap partial one that tests the generator images only. Read only when `-s` is given, same verdict either way, and what the duplication costs is counted in [`../orbit_reduction/what-partial-rejection-leaves.md`](../orbit_reduction/what-partial-rejection-leaves.md) |
 | `--leaf-route` | `auto` | the leaf route above |
 | `--general-leaf` | off | forces the general field path, so the packed leaf can be timed against it |
 | `--node-limit` | 5 000 000 | nodes before exit 3 |
 | `--leaf-limit` | 100 000 000 | elements inside **one** leaf before exit 3, which no node limit can bound |
 | `--threads` | 1 | `spread_over_cores` |
 | `--max-memory` | 2 GiB | whether the pool is materialised or addressed |
+
+Every flag of every tool, each with the measurement that chose its default:
+[`../OPTIONS.md`](../OPTIONS.md).

@@ -10,6 +10,11 @@ for one word and the honest word is three.
 So nothing here shortens. Every ending gets its own name, the three the
 interface itself can cause say whose doing they were rather than passing for the
 toolkit's, and no branch in this file can produce `no` from anything but exit 1.
+
+`decides` is the same rule said in one word, so that a card can be *coloured* by
+it and not only worded by it. A screen distinguishes at a glance or it does not
+distinguish, and two endings that share a colour are two endings a reader has
+merged whatever the sentence under them says.
 """
 
 # The six the toolkit speaks, worded from the header rather than paraphrased.
@@ -32,11 +37,24 @@ EXIT_CODES = {
         "Could not run at all: unreadable file, no solver, an exception."},
 }
 
+# The three-way distinction the whole toolkit is about, as one word a card can be
+# keyed on. It is `decide-rank`'s own vocabulary and not a fourth one invented
+# here: that tool prints FOUND, NO and GAVE UP, and this is those three.
+#
+# The mapping is one branch and it is the point of the branch that only exit 1
+# can reach `proved`. Everything that is not 0 or 1 lands in `nothing proved`,
+# including a budget, a stop, a crash and a status this file has no name for, so
+# there is no path by which giving up becomes a lower bound.
+NOTHING_PROVED = "nothing proved"
+DECIDES = {0: "found", 1: "proved"}
+
+
 def stopped_by(reason):
     """An ending the toolkit did not choose: you pressed stop, the wall clock ran
     out, or the console shut down. All three are undecided in substance, and all
     three name who ended the run, so nobody reads one as a verdict."""
     return {"verdict": "stopped", "badge": "stopped",
+            "decides": NOTHING_PROVED,
             "means": "nothing is decided",
             "standing": "This run was stopped by " + reason + ". Nothing is "
                         "decided, and this is not the toolkit's answer."}
@@ -57,6 +75,9 @@ def of_exit_status(status, tool_verdicts):
     """
     if status in EXIT_CODES:
         named = dict(EXIT_CODES[status])
+        # Set before the tool's own reading is applied, and never from it: a
+        # tool may soften its badge and none of them may move this.
+        named["decides"] = DECIDES.get(status, NOTHING_PROVED)
         tools_own = tool_verdicts.get(str(status))
         if tools_own:
             # The badge may soften, because "yes" over a heuristic's exit 0 reads
@@ -76,6 +97,7 @@ def of_exit_status(status, tool_verdicts):
         named["show_standing"] = status not in (0, 1) or not tools_own
         return named
     return {"verdict": "unknown", "badge": "unknown",
+            "decides": NOTHING_PROVED,
             "standing": "The tool left with status " + str(status) +
                         ", which is not one of the six codes in cli/exit_code.h. "
                         "Nothing is decided.",
@@ -86,6 +108,7 @@ def of_signal(number):
     """A run killed by something other than this interface: a crash, or an
     outside `kill`. It is not exit 1 and it is not exit 3; it is neither."""
     return {"verdict": "signalled", "badge": "signalled",
+            "decides": NOTHING_PROVED,
             "standing": "The tool was ended by signal " + str(number) +
                         " from outside this interface. Nothing is decided.",
             "means": "no verdict"}
