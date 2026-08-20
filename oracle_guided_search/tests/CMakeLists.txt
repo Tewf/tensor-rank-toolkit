@@ -40,3 +40,54 @@ target_link_libraries(test_parent_pool_content PRIVATE oracle_guided_search form
 add_test(NAME parent_pool_content
          COMMAND test_parent_pool_content ${PROJECT_SOURCE_DIR}/fixtures)
 set_tests_properties(parent_pool_content PROPERTIES TIMEOUT 900)
+
+# The claim the axis presentation makes is not that it is a good canonical form but
+# that it is the same one, so it is checked against the grid presentation it
+# replaced rather than against a property. `flattened_canon.h` keeps that
+# presentation computable on the shapes where a permutation of the grid still fits,
+# which is why this test and no other links `permlib` directly.
+add_executable(test_factored_canonisation test_factored_canonisation.cpp)
+target_link_libraries(test_factored_canonisation PRIVATE oracle_guided_search formats
+                                                         map_construction testing permlib
+                                                         project_warnings)
+add_test(NAME factored_canonisation COMMAND test_factored_canonisation)
+set_tests_properties(factored_canonisation PROPERTIES TIMEOUT 1800)
+
+# The check that catches a canonical form that is too coarse, which is the one
+# failure the enumeration's own totals cannot: a coarser form gives a smaller node
+# count, and so does a better one. Complete rather than sampled — every pair and
+# every triple of the 225-element pool against the partition the 216 elements
+# define — because a spot check on the sets a span produces is exactly the check a
+# too-coarse form passes.
+#
+# Labelled slow for the 1.9 million triples, not for the group.
+add_executable(test_orbit_separation test_orbit_separation.cpp)
+target_link_libraries(test_orbit_separation PRIVATE oracle_guided_search formats
+                                                    map_construction testing project_warnings)
+add_test(NAME orbit_separation COMMAND test_orbit_separation)
+set_tests_properties(orbit_separation PROPERTIES TIMEOUT 3600 LABELS slow)
+
+# The half of the contract that survives past the shapes an oracle reaches: a name
+# that moves when its set is moved by a group element is a name of nothing. It is
+# the weak half on purpose, and it is the only one that runs at <3,3,3>.
+add_executable(test_canon_invariance test_canon_invariance.cpp)
+target_link_libraries(test_canon_invariance PRIVATE oracle_guided_search formats
+                                                    map_construction testing project_warnings)
+add_test(NAME canon_invariance COMMAND test_canon_invariance)
+set_tests_properties(canon_invariance PROPERTIES TIMEOUT 1800)
+
+# The same program at <4,4,4>, which is the point of the whole reduction and not a
+# check of it: 4 294 836 225 cells, no reference, nothing to sweep, and the only
+# question is whether the group can be presented and a set named at all. Separate
+# and labelled slow so that a failure says which of the two it was.
+add_test(NAME canon_invariance_at_4x4x4 COMMAND test_canon_invariance --at-4x4x4)
+set_tests_properties(canon_invariance_at_4x4x4 PROPERTIES TIMEOUT 3600 LABELS slow)
+
+# The other question the presentation answers, held to the same standard: the
+# subgroup the returned generators generate, against the subgroup the 216 elements
+# define, as sets of permutations rather than as orders.
+add_executable(test_stabiliser_order test_stabiliser_order.cpp)
+target_link_libraries(test_stabiliser_order PRIVATE oracle_guided_search formats
+                                                    map_construction testing project_warnings)
+add_test(NAME stabiliser_order COMMAND test_stabiliser_order)
+set_tests_properties(stabiliser_order PROPERTIES TIMEOUT 1800)

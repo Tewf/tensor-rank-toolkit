@@ -31,6 +31,18 @@
 /// which `matrix_multiplication_symmetries` rightly refuses, and its permutation
 /// degree is **961**.
 ///
+/// **And the group is never presented on the pool either.** That factorisation is
+/// kept rather than expanded: [`factored_lex_min.h`](factored_lex_min.h) presents
+/// `G` on the two vector lists side by side, `left_count + right_count` points, and
+/// answers the same two questions there. Expanding it costs a permutation of the
+/// pool per generator — 900 bytes at `⟨2,2,2⟩`, a megabyte at `⟨3,3,3⟩`, **17 GB**
+/// at `⟨4,4,4⟩`, against half a megabyte factored. Nothing in this file's contract
+/// changes: the flat index `left * right_count + right` numbers the pool the same
+/// way either side of the reduction, so the canonical form is the same set of pool
+/// indices and not merely an equally good one, which is what
+/// [`tests/test_factored_canonisation.cpp`](tests/test_factored_canonisation.cpp)
+/// holds it to.
+///
 /// **Why this asks the same question as the subspace code.** The enumerator
 /// descends from `span(T)`, so every subspace it reaches is
 /// `span(T) + span(chosen)` with `chosen` drawn from the pool, and therefore
@@ -59,19 +71,6 @@ namespace bilinear_rank {
 std::vector<std::size_t> pool_inside(const Field& field, const std::vector<Matrix>& pool,
                                      const std::vector<Matrix>& generators);
 
-/// What presenting the group on a pool of `points` costs, near enough.
-///
-/// **Measured rather than derived**: `⟨3,3,3⟩` at 261 121 points with six
-/// generators peaks at 97 MB and takes 29.8 s to present, which is about 370
-/// bytes a point. A permutation itself is only four bytes a point, so the
-/// transversals are almost all of it, and pricing on the permutations alone would
-/// have been out by two orders of magnitude.
-///
-/// It is priced through `require_room` like every other bulk allocation here, so
-/// a shape too large refuses with the same sentence and `--max-memory` moves it.
-/// At `⟨4,4,4⟩`'s 4 294 836 225 points that is about 1.6 TB and a refusal.
-inline constexpr std::size_t kBytesPerPoolPoint = 370;
-
 class PoolSetCanon {
    public:
     /// Built from **generators**, which is the point. `rows` and `columns` are the
@@ -83,15 +82,20 @@ class PoolSetCanon {
     PoolSetCanon(PoolSetCanon&&) noexcept;
     PoolSetCanon& operator=(PoolSetCanon&&) noexcept;
 
-    /// The number of points the group is presented on: the pool size.
+    /// The pool size, `left_count * right_count`. A count and not a domain: the
+    /// group is presented on `left_count + right_count` points, and this number is
+    /// only what a pool index is taken modulo.
     std::size_t size() const;
 
     /// The lexicographically least image of `indices` under the group, as sorted
     /// pool indices. Equal answers mean one orbit.
     ///
-    /// Least is by the bitset order `[permlib]` uses, which is a fixed total
-    /// order on subsets of a fixed ground set; which order it is does not matter,
-    /// only that it is the same one every time.
+    /// Least is by the sorted pool indices compared entry by entry, which for sets
+    /// of one size is the order `[permlib]`'s `smallestSetImage` puts on subsets of
+    /// the pool. Which order it is does not matter, only that it is the same one
+    /// every time — and it is the same one it was when the group was presented on
+    /// the pool itself, which is what lets the two be held against each other
+    /// rather than merely compared for inducing the same partition.
     std::vector<std::size_t> canonical(const std::vector<std::size_t>& indices) const;
 
     /// The canonical form of the **pair** (`indices`, `marked`), for choosing one
@@ -122,7 +126,19 @@ class PoolSetCanon {
     /// an option and never was, because the generators that happen to fix a thing
     /// do not generate its stabiliser, which `pool_orbits.cpp` learned by getting
     /// 41 orbits where there are 13. A backtrack search does generate it, and
-    /// `[permlib]`'s `setStabilizer` is one.
+    /// [`factored_lex_min.h`](factored_lex_min.h) runs `[permlib]`'s on the axis
+    /// presentation, with a predicate that decides membership on the **cells**.
+    ///
+    /// **The cheap answer there is the wrong one and is not taken.** Stabilising
+    /// the set of touched rows and the set of touched columns is one call to
+    /// `setStabilizer` on `left_count + right_count` points, and it is a strictly
+    /// larger group than `Stab_G(S)` — measured larger on 13.6% of 20 000 random
+    /// cell sets of one to nine cells at `⟨2,2,2⟩`, and 12 elements against 1 at
+    /// the worst of them — because it may carry cells out of the set and others
+    /// in. A stabiliser that is too large merges augmentations that are not
+    /// equivalent, and a refutation built on it is a wrong lower bound that nothing
+    /// downstream can catch. So that group prunes the backtrack and the cells
+    /// decide membership.
     ///
     /// **Why the setwise stabiliser of the pool content is the stabiliser of the
     /// subspace.** The enumerator descends from `span(T)`, so every subspace it
@@ -131,11 +147,17 @@ class PoolSetCanon {
     /// fixes its span, and `g ∈ G = Stab(span T)` fixes `span(T)`, so it fixes the
     /// sum. The two groups are equal, and this asks for the one that is cheap.
     ///
-    /// Each generator is returned as a full permutation of the pool, so this is
-    /// `pool.size()` per generator: about a megabyte each at `⟨3,3,3⟩` and not
-    /// affordable at `⟨4,4,4⟩`, where the caller would want the images computed
-    /// rather than stored, as [`pool_orbits.h`](../orbit_reduction/pool_orbits.h)'s
-    /// `PoolAction` does for the ambient group.
+    /// **The one place the factorisation is still expanded, and the last thing
+    /// standing between this module and `⟨4,4,4⟩`.** The stabiliser is *found*
+    /// factored, on `left_count + right_count` points; each generator is then
+    /// written out as a full permutation of the pool because
+    /// [`automorphism.h`](../orbit_reduction/automorphism.h)'s `orbit_representatives`
+    /// takes one of those. That is `pool.size()` per generator: about a megabyte
+    /// each at `⟨3,3,3⟩` and not affordable at `⟨4,4,4⟩`, where the caller would
+    /// want the images computed rather than stored, as
+    /// [`pool_orbits.h`](../orbit_reduction/pool_orbits.h)'s `PoolAction` does for
+    /// the ambient group. Closing it is a change to that caller and not to this
+    /// file.
     std::vector<std::vector<std::uint32_t>> stabiliser_generators(
         const std::vector<std::size_t>& indices) const;
 
