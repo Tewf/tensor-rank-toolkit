@@ -67,12 +67,13 @@ bool least_in_orbit(const Permutations& action, const std::vector<std::uint32_t>
 /// **`H` is an index because it has always been a suffix.** A child was handed
 /// `candidates[slot..]`, and the root was `0..|pool|`, so the list was
 /// `[from, |pool|)` at every node and holding it cost a copy per branch.
-bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<Matrix>& pool,
+template <typename Candidates>
+bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& pool,
                        const Permutations& action, std::uint32_t from,
                        const std::vector<std::uint32_t>& residual, std::size_t target,
                        std::size_t depth, SearchBudget& budget, std::vector<Element>& scratch,
                        const std::atomic<bool>* found_elsewhere,
-                       const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
+                       const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products) {
     // Somebody else already has a witness, so this subtree cannot change the
     // answer and every node it spends is spent against the shared budget. The
     // plain search learnt this the expensive way: without the test the extra
@@ -157,10 +158,11 @@ struct Branch {
 ///
 /// True when this node was itself the answer, which is the one thing a prefix walk
 /// can settle without descending.
-bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix>& pool,
+template <typename Candidates>
+bool expand_one(const Field& field, const Branch& node, const Candidates& pool,
                 const Permutations& action, std::size_t target, SearchBudget& budget,
                 std::vector<Element>& scratch, std::vector<Branch>& children,
-                const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
+                const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products) {
     if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = node.span.dimension();
@@ -218,9 +220,10 @@ bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix
 /// per depth and two workers at one depth would write over each other. It is
 /// `levels` rows of `pool.size()`, allocated once per branch: 22 KB at `⟨2,2,3⟩`,
 /// against a subtree that is seconds of work.
-bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matrix>& pool,
+template <typename Candidates>
+bool expand_in_parallel(const Field& field, Branch root, const Candidates& pool,
                         const Permutations& action, std::size_t target, SearchBudget& budget,
-                        const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
+                        const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products) {
     // Widen the frontier one node at a time, oldest first, until it holds at least
     // as many independent subtrees as there are workers. Oldest first keeps it
     // breadth first, so the prefix stays near the top of the tree where it is a
@@ -264,10 +267,9 @@ bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matri
     return found.load();
 }
 
-}  // namespace
-
-bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
-                           const std::vector<Matrix>& pool,
+template <typename Candidates>
+bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& subspace,
+                           const Candidates& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
                            bool spread_over_cores) {
@@ -287,11 +289,14 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
     // builds it. Both routes below read `rank_one_basis_of`'s two defaults
     // instead, so every leaf here took the general path and no leaf could be
     // stopped.
-    std::optional<Gf2Leaf<std::vector<Matrix>>> packed;
-    if (!pool.empty() && gf2_leaf_applies(field, pool[0].columns())) {
-        packed.emplace(pool, pool[0].rows(), pool[0].columns());
+    std::optional<Gf2Leaf<Candidates>> packed;
+    if (pool.size() != 0) {
+        const Matrix first = pool[0];
+        if (gf2_leaf_applies(field, first.columns())) {
+            packed.emplace(pool, first.rows(), first.columns());
+        }
     }
-    const Gf2Leaf<std::vector<Matrix>>* binary = packed ? &packed.value() : nullptr;
+    const Gf2Leaf<Candidates>* binary = packed ? &packed.value() : nullptr;
 
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
     if (spread_over_cores && worker_count() > 1) {
@@ -303,6 +308,26 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
     std::vector<Element> scratch;
     return expand_up_to_impl(field, root, pool, action, 0, residual, target, 0, budget, scratch,
                              nullptr, binary, products);
+}
+
+}  // namespace
+
+bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
+                           const std::vector<Matrix>& pool,
+                           const std::vector<Automorphism>& group, std::size_t target,
+                           SearchBudget& budget, std::vector<Matrix>& products,
+                           bool spread_over_cores) {
+    return expand_up_to_symmetry_over(field, subspace, pool, group, target, budget, products,
+                                      spread_over_cores);
+}
+
+bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
+                           const RankOnePool& pool,
+                           const std::vector<Automorphism>& group, std::size_t target,
+                           SearchBudget& budget, std::vector<Matrix>& products,
+                           bool spread_over_cores) {
+    return expand_up_to_symmetry_over(field, subspace, Addressed{pool}, group, target, budget,
+                                      products, spread_over_cores);
 }
 
 }  // namespace bilinear_rank

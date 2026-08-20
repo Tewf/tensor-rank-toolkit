@@ -60,6 +60,29 @@ struct Run {
     long long nodes = 0;
 };
 
+/// The same question over a pool that is never held, which is what a shape whose
+/// grid does not fit in memory gets. One worker, so both walks are deterministic
+/// and the node totals must agree to the node rather than approximately.
+Run quotiented_addressed(const Field& field, const std::vector<Matrix>& slices,
+                         std::size_t target) {
+    const std::vector<bilinear_rank::Automorphism> group = bilinear_rank::stabiliser_of(
+        field, slices,
+        bilinear_rank::all_automorphisms(field, slices.front().rows(), slices.front().columns()));
+    const bilinear_rank::RankOnePool addressed(field, slices.front().rows(),
+                                               slices.front().columns());
+
+    bilinear_rank::SearchBudget budget{2'000'000};
+    std::vector<Matrix> products;
+    const bool found = bilinear_rank::expand_subspace_up_to_symmetry(field, slices, addressed,
+                                                                    group, target, budget,
+                                                                    products);
+    Run run;
+    run.nodes = static_cast<long long>(budget.nodes_visited.load());
+    run.verdict = found ? Verdict::Found
+                        : (budget.exhausted ? Verdict::Refuted : Verdict::Undecided);
+    return run;
+}
+
 Run quotiented_on(std::size_t workers, const Field& field, const std::vector<Matrix>& slices,
                   const std::vector<Matrix>& pool, std::size_t target) {
     const std::vector<bilinear_rank::Automorphism> group = bilinear_rank::stabiliser_of(
@@ -130,6 +153,18 @@ int main(int argc, char** argv) {
             ++check::failure_count;
         } else {
             std::cout << "  ok    " << label << ": orbits agree (" << name_of(with) << ")\n";
+        }
+
+        // Held pool against addressed pool, which is the whole of the claim that
+        // the quotient stopped needing the grid in memory. Same verdict and the
+        // same node total: one worker on each side, so neither is a race, and a
+        // count that moved would mean the two walk different trees.
+        {
+            const Run held = quotiented_on(1, field, tensor.slices, pool, question.target);
+            const Run addressed = quotiented_addressed(field, tensor.slices, question.target);
+            check::equal(label + ", addressed verdict", static_cast<long long>(addressed.verdict),
+                         static_cast<long long>(held.verdict));
+            check::equal(label + ", addressed nodes", addressed.nodes, held.nodes);
         }
 
         // And the same verdict on every core count, because the quotiented search

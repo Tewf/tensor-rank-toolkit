@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <vector>
 
+#include "candidate_pool.h"
 #include "automorphism.h"
 #include "exhaustive_search.h"
 #include "bilinear_rank_aliases.h"
@@ -65,6 +66,19 @@ namespace bilinear_rank {
 /// this one shares a budget and races to a witness.
 bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
                            const std::vector<Matrix>& pool,
+                           const std::vector<Automorphism>& group, std::size_t target,
+                           SearchBudget& budget, std::vector<Matrix>& products,
+                           bool spread_over_cores = true);
+
+/// The same quotiented walk over an **addressed** pool, which is never held.
+///
+/// The precondition is met for the same reason it is met by `all_rank_one_maps`:
+/// this is the same grid of outer products, indexed rather than stored, and
+/// `PoolAction` reads the group's action off the two vector lists it is built
+/// from. So a shape whose pool is 8.2 TiB can be quotiented, where before the
+/// two were exclusive and `--symmetry` was refused there outright.
+bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
+                           const RankOnePool& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
                            bool spread_over_cores = true);
