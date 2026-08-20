@@ -13,15 +13,29 @@ namespace {
 ///
 /// Written once so that the routes cannot come to disagree about what a
 /// rank-one map is while agreeing about which elements they visit.
+///
+/// **Both tests read the combination buffer the walk already carries, and the
+/// `Matrix` is built only for an element that is kept.** Almost none are: the
+/// answer for the overwhelming majority is no at the second row, and forming a
+/// matrix to be told so cost an allocation per element, a `SpanBasis` per
+/// element, a copy per row of it and an elimination that ran to the end of a
+/// question already settled. `is_rank_one` allocates nothing and stops at the
+/// first entry that disagrees; the verdicts are the same ones, since it is the
+/// same predicate as [`rank`](../linear_algebra/measures.h) `== 1` and is held
+/// against it over every small matrix in
+/// [`tests/test_rank_one_predicate.cpp`](tests/test_rank_one_predicate.cpp).
 bool keep_if_rank_one(const Field& field, const std::vector<Element>& combination,
                       std::size_t rows, std::size_t columns, ReducedBasis& independent,
                       std::vector<Matrix>& found) {
+    if (!linear_algebra::is_rank_one(field, combination.data(), rows, columns)) return false;
+    // The flattened element is the combination itself, which is what the span is
+    // built over, so the independence test needs no matrix either.
+    if (!independent.try_add(combination)) return false;
+
     Matrix element(rows, columns);
     for (std::size_t entry = 0; entry < combination.size(); ++entry) {
         element.data()[entry] = combination[entry];
     }
-    if (linear_algebra::rank(field, element) != 1) return false;
-    if (!independent.try_add(element)) return false;
     found.push_back(std::move(element));
     return true;
 }
