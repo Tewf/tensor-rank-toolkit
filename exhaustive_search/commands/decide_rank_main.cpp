@@ -18,6 +18,7 @@
 #include "fewest_products.h"
 #include "gf2_leaf.h"
 #include "group_construction.h"
+#include "isomorph_rejection.h"
 #include "memory_budget.h"
 #include "minimise_rank.h"
 #include "orbit_search.h"
@@ -38,6 +39,7 @@ void usage() {
                    "                   [--node-limit N] [--leaf-limit N]\n"
                    "                   [--max-memory 2G] [--general-leaf]\n"
                    "                   [--leaf-route auto|scan|walk] [--help]\n"
+                   "                   [--orbit-test full|generators]\n"
                    "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                    "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                    "\n"
@@ -61,6 +63,12 @@ void usage() {
                    "                      subspace. Default auto, which takes the cheaper by size.\n"
                    "                      For timing one against the other on one question; walk is\n"
                    "                      ignored where the subspace is too large to enumerate.\n"
+                   "  --orbit-test R      how -s rejects a repeated branch. full, the default, keeps\n"
+                   "                      the least member of each orbit and walks the orbit to find\n"
+                   "                      it; generators tests only the images under the surviving\n"
+                   "                      generators, which is cheaper per candidate and leaves\n"
+                   "                      duplicate branches standing. Same verdict either way, and\n"
+                   "                      the node counts say what the duplication costs.\n"
                    "  --help              print this and stop, as exit 2";
 }
 
@@ -117,6 +125,21 @@ int run(int argc, char** argv) {
             if (route == "scan") bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Scan);
             else if (route == "walk") bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Walk);
             else if (route != "auto") arguments.refuse();
+        } else if (arguments.is("--orbit-test")) {
+            const std::string rule = arguments.text();
+            if (rule == "generators") {
+                bilinear_rank::set_orbit_test(bilinear_rank::OrbitTest::Generators);
+            } else if (rule != "full") {
+                // Named and quoted rather than `arguments.refuse()`, which is
+                // what the branch above does and which reports a bad *value* as
+                // an unrecognised *flag*: `--leaf-route bogus` leaves as
+                // "unrecognised option: --leaf-route", naming neither the word
+                // that was wrong nor the two that would have been right. That is
+                // the fault `arguments.h` exists to remove and there is no reason
+                // to copy it into a new flag.
+                throw cli::ArgumentError("--orbit-test expects full or generators, not '" +
+                                         rule + "'");
+            }
         } else {
             arguments.refuse();
         }
@@ -221,7 +244,14 @@ int run(int argc, char** argv) {
         // heuristic's subspace, whose stabiliser is a different group.
         const std::vector<bilinear_rank::Automorphism> generators = bilinear_rank::stabiliser_of(
             field, anchor, bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry));
-        cli::result() << "  quotienting by " << generators.size() << " generators\n";
+        // Which rejection rule, on the same line as the group, for the reason
+        // the pool and leaf lines say which route they took: a node count whose
+        // rule is not beside it is a node count of an unknown tree.
+        cli::result() << "  quotienting by " << generators.size() << " generators, "
+                      << (bilinear_rank::orbit_test() == bilinear_rank::OrbitTest::Generators
+                              ? "rejecting by generators only"
+                              : "rejecting exactly")
+                      << "\n";
         // The quotient reads a held pool or an addressed one, whichever the shape
         // left available. It stopped needing the held one when its candidate list
         // became an index and its orbits a question rather than a table.
