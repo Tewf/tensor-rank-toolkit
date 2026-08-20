@@ -42,7 +42,13 @@ namespace bilinear_rank {
 
 class SortedSpan {
    public:
-    SortedSpan(const Field& field, const std::vector<Matrix>& slices);
+    /// `ranks_without_last` is the same optimisation `minimum_weight_basis`
+    /// takes and means the same thing: the ranks of the span of every slice but
+    /// the last, in enumeration order. Passing it is what makes the two routes
+    /// comparable at all, since half the enumeration is a rank neither of them
+    /// then computes.
+    SortedSpan(const Field& field, const std::vector<Matrix>& slices,
+               const std::vector<std::size_t>& ranks_without_last = {});
 
     std::size_t dimension() const { return dimension_; }
 
