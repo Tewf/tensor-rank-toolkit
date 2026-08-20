@@ -32,8 +32,15 @@ int main(int argc, char** argv) {
     check::equal("and it engaged rather than falling back",
                  deduplicated.route == canonical_factorisation::Route::CanonicalAugmentation ? 1 : 0,
                  1);
-    check::equal("with the full 216-element group of the product",
-                 static_cast<long long>(deduplicated.group_size), 216);
+    // Six, the closed-form generating set of <2,2,2>, and not the 216 elements
+    // it generates. This asserted 216 while the parent test named an orbit by
+    // walking every element, where a generating set would have made the test
+    // wrong rather than slow. `PoolSetCanon` names the orbit from a base and
+    // strong generating set, so the list became a cost with no purpose. What
+    // the check is for is unchanged: a zero here is the silent fallback to the
+    // plain route, which every other assertion in this file would still pass.
+    check::equal("from the six generators of the product group",
+                 static_cast<long long>(deduplicated.group_size), 6);
     check::equal("and C A gives the slices back",
                  canonical_factorisation::recovers_slices(field, tensor.slices, deduplicated) ? 1
                                                                                              : 0,

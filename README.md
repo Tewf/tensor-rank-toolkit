@@ -33,7 +33,7 @@ anywhere; the long form of each, with its method and its caveats, is in
 | [factorisation](canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
 | [satisfiability](satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
 | [symmetry](orbit_reduction/) | one member per orbit | **28x** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](oracle_guided_search/) | each class exactly once, no memory | **1982x fewer nodes** on 2x2 matmul |
+| [isomorph-free](oracle_guided_search/) | each class exactly once, no memory | **22 779x fewer nodes** on 2x2 matmul |
 | [sparsification](matrix_sparsification/) | fewer additions, rank fixed | Strassen's operators **12 nonzeros to 10** |
 
 ## The finding worth stating on its own

@@ -38,7 +38,7 @@ at that shape it is not worth a kernel.
 
 **At `<4,4,4>` the same reasoning inverts.** The pool cannot be materialised at
 all, so `RankOnePool::at(i)` is not a setup step: it is called once per element per
-leaf visit, 4 294 836 225 times, **measured at 785 ns each**. Generation stops
+leaf visit, 4 294 836 225 times, at 785 ns each then and **129.1 ns now**. Generation stops
 being 4% of the run and becomes almost all of it, `F` approaches 1, and the ceiling
 stops being the constraint. **A measurement at one shape said nothing about the
 other, and quoting it as though it did would have been the mistake this repository
@@ -61,7 +61,7 @@ Four things line up, and they are the reason this section exists:
 - **It is most of the run.** The bit-packed leaf's measured 10.1x on
   `f2_5x5 --target 11` puts `F` above 90% by the rule above.
 - **It is enormous where it matters.** One `<4,4,4>` leaf is 4.29e9 independent
-  iterations, which at the measured rate is **0.9 hours**.
+  iterations, which at the measured rate is **about 9 minutes**.
 - **Each iteration is branch-free over GF(2)**: an outer product, a bit-pack, and
   a span-membership test that is exclusive or and a zero check on four words.
 - **Nothing needs transferring.** `at(i)` is a pure function of `i`, so a thread
