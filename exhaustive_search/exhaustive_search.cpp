@@ -111,7 +111,7 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
     // every one of them.
     std::optional<Gf2Leaf<Candidates>> binary;
     if (pool.size() != 0 && gf2_leaf_applies(field, pool[0].columns())) {
-        binary.emplace(pool, pool[0].rows(), pool[0].columns());
+        binary.emplace(field, pool, pool[0].rows(), pool[0].columns());
     }
     const Gf2Leaf<Candidates>* leaf = binary ? &binary.value() : nullptr;
 
