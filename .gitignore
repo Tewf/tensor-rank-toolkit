@@ -24,3 +24,6 @@ article/*.synctex.gz
 # sometimes large, so it is regenerated rather than carried.
 web_interface/runs/
 build-cuda/
+
+# Agent worktrees live inside the repo directory; they are checkouts, not content.
+.claude/
