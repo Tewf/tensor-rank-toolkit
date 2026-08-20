@@ -54,10 +54,13 @@ knowing a command line exists.
 
 ## What it is worth, measured
 
-Refuting `⟨2,2,2⟩` at k = 6 costs the tree search **0.56 s plain and 0.02 s
-quotiented**, twenty-eight times. Finding the 7 goes 0.36 s to 0.15 s. The
-saving is largest on a refusal, which is the case that costs most, because a
-refusal has to visit the whole tree and the quotient is what shrinks it.
+The quotient removes 39.2x the nodes on a `⟨2,2,2⟩` refutation and 2.35x on a
+satisfiable question, and since `least_in_orbit` charges only about 1.2x a node,
+the time follows: **27.8x** and **2.14x**. The saving is largest on a refusal,
+which is the case that costs most, because a refusal has to visit the whole tree
+and the quotient is what shrinks it.
+[`what-the-quotient-costs.md`](what-the-quotient-costs.md) has the table, and
+the reason the surcharge used to be much larger than 1.2x.
 
 ## Where it stops, and why that is not a defect
 
