@@ -62,6 +62,15 @@ leaves as exit 2. That is asserted end to end in
 [`cli/tests/check_tunables_bound_a_run.sh`](cli/tests/check_tunables_bound_a_run.sh),
 against the built command rather than against the parser.
 
+## Before the tables
+
+- [**Common recipes**](OPTIONS/common-recipes.md): the lines people actually
+  type, one per question, each running against a shipped fixture.
+- [**One idea, several spellings**](OPTIONS/one-idea-several-spellings.md):
+  where two tools spell one idea differently, where one spelling means two
+  things, and what each of the nine enum-like flags does with a bad value —
+  which is five different things.
+
 ## The tables, one page per question
 
 - [Searching for rank](OPTIONS/searching-for-rank.md): `minimise-rank`,
@@ -77,13 +86,13 @@ against the built command rather than against the parser.
 `decide-rank-by-pencil` and `factor-over-canonical-basis` are documented in
 [`OPTIONS/reading-the-answer-off.md`](OPTIONS/reading-the-answer-off.md).
 
-`find-at-rank` is gone from this branch, and with it the `--descend` and
-`--pretest-ceiling` flags. **`--candidate-timeout` is not gone**, and this
-sentence used to say it was: `find-at-rank` had a flag of that name and so does
-`deflate-strictly`, which still accepts it and is documented above and in
+`find-at-rank` is gone from this branch, to `rejected-experiments`, and with it
+the `--descend` and `--pretest-ceiling` flags; the numbers that retired it are in
+[`oracle_guided_search/measurements/`](oracle_guided_search/measurements/README.md).
+**`--candidate-timeout` is not gone**, and this sentence used to say it was:
+`find-at-rank` had a flag of that name and so does `deflate-strictly`, which
+still accepts it and is documented in
 [`OPTIONS/committing-to-candidates.md`](OPTIONS/committing-to-candidates.md).
-Checked against the branch rather than guessed:
-`rejected-experiments:oracle_guided_search/commands/find_at_rank_main.cpp` parses
-its own. It is on
-`rejected-experiments`; the numbers that retired it are in
-[`oracle_guided_search/measurements.md`](oracle_guided_search/measurements/README.md).
+Checked against the branch rather than guessed —
+`rejected-experiments:oracle_guided_search/commands/find_at_rank_main.cpp`
+parses its own.
