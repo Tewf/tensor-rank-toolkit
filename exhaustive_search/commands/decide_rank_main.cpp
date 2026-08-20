@@ -162,9 +162,7 @@ int run(int argc, char** argv) {
     // Refused here, where the comment below always claimed it was.
     if (!fits) {
         const char* why = nullptr;
-        if (symmetry.kind != cli::SymmetryKind::None) {
-            why = "--symmetry";
-        } else if (target < 0) {
+        if (target < 0) {
             why = "a sweep with no --target";
         }
         if (why != nullptr) {
@@ -188,14 +186,18 @@ int run(int argc, char** argv) {
         const std::vector<bilinear_rank::Automorphism> generators = bilinear_rank::stabiliser_of(
             field, anchor, bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry));
         cli::result() << "  quotienting by " << generators.size() << " generators\n";
-        found = bilinear_rank::expand_subspace_up_to_symmetry(field, anchor, pool, generators,
-                                                     static_cast<std::size_t>(target), budget,
-                                                     products);
+        // The quotient reads a held pool or an addressed one, whichever the shape
+        // left available. It stopped needing the held one when its candidate list
+        // became an index and its orbits a question rather than a table.
+        found = fits ? bilinear_rank::expand_subspace_up_to_symmetry(
+                           field, anchor, pool, generators,
+                           static_cast<std::size_t>(target), budget, products)
+                     : bilinear_rank::expand_subspace_up_to_symmetry(
+                           field, anchor, addressed, generators,
+                           static_cast<std::size_t>(target), budget, products);
     } else if (target >= 0 && !fits) {
-        // Only the plain route has an addressed form. The quotiented search keys
-        // orbit tables by pool position and the sweeps index down a recursion in
-        // parallel, so neither is converted, and a `--symmetry` or sweep request
-        // on a shape this large is refused above, which it now actually is.
+        // Only a sweep still needs the pool held: it indexes down a recursion in
+        // parallel and is not converted, and it is refused above.
         found = bilinear_rank::expand_subspace(field, anchor, addressed, 0,
                                               static_cast<std::size_t>(target), budget, products);
     } else if (target >= 0) {
