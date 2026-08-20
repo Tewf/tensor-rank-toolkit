@@ -8,6 +8,33 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **The general-field leaf decides rank one without computing a rank**, and its
+  per-element path now allocates nothing at all. `linear_algebra::is_rank_one` in
+  [`linear_algebra/measures.h`](linear_algebra/measures.h) takes a pointer and a
+  shape rather than a `Matrix`, finds the first nonzero row, and cross-multiplies
+  every later row against it — `a[p]·b[j] = b[p]·a[j]`, which is "is a multiple
+  of" with the division cleared, so no modular inverse is taken and the answer
+  returns at the first entry that disagrees. Against
+  [`rank`](linear_algebra/measures.h), which is `O(r·d·c)` and builds a
+  `SpanBasis`, copies every row into it and runs the elimination to the last row
+  of a question settled at the second, this is `O(r·c)` in `Θ(1)` space.
+  `keep_if_rank_one` in
+  [`exhaustive_search/subspace_walk.cpp`](exhaustive_search/subspace_walk.cpp)
+  now tests the combination buffer the walk already carries and forms a `Matrix`
+  only for an element it keeps, which almost none are. No figure is claimed for
+  it here; the timing is taken separately, under
+  [`MEASURING.md`](MEASURING.md).
+
+- **Same verdicts, same counts.** `is_rank_one` is `rank == 1` and is held
+  against it over every 2x2, 2x3 and 3x2 matrix over GF(2), GF(3) and GF(5),
+  exhaustively, plus a sample at 3x3 over GF(5), in
+  [`exhaustive_search/tests/test_rank_one_predicate.cpp`](exhaustive_search/tests/test_rank_one_predicate.cpp).
+  It is the predicate
+  [`gf2_is_rank_one`](linear_algebra/gf2_bits.h) has always applied over GF(2),
+  where the only nonzero scalar is 1 and the cross-multiplication degenerates to
+  a word comparison; the two must agree about what rank one is, because the
+  search sends a leaf down one path or the other on the characteristic alone.
+
 - **The general-field leaf walks its subspace in base-`p` reflected Gray code
   order**, so an element costs one row added or subtracted rather than a rebuild
   from its base-`p` digits: `O(width)` field additions and no multiplication, in

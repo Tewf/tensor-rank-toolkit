@@ -69,10 +69,24 @@ namespace bilinear_rank {
 /// and shows no slope at all. That is the `O(dim * width)` against the
 /// `O(width)`, read off the clock.
 ///
-/// **What is left is not the walk.** Some 220 ns of every element is the
-/// `Matrix` formed for it and the rank test run on it, which both routes pay in
-/// full and neither reduces. That is now most of what a general-field leaf costs
-/// and is the next thing worth attacking; the digits are no longer it.
+/// **The table was taken before the per-element test changed, and both of its
+/// columns carry what that test then cost.** Most of an element was the `Matrix`
+/// formed to ask its rank and the Gaussian elimination run on it — an
+/// allocation for the matrix, a `SpanBasis`, a copy per row into it and a walk
+/// to the last row of a question settled at the second — which both routes paid
+/// in full and neither reduced. Neither is formed now. The element is tested
+/// where it already lies, in the combination buffer, by
+/// [`is_rank_one`](../linear_algebra/measures.h), which allocates nothing and
+/// stops at the first entry that disagrees, and a `Matrix` is built only for an
+/// element that is kept, which almost none are.
+///
+/// **Same verdicts, same counts**: `is_rank_one` is `rank == 1` and is held
+/// against it over every small matrix in
+/// [`tests/test_rank_one_predicate.cpp`](tests/test_rank_one_predicate.cpp).
+/// What the two columns would read now has not been measured, so the figures
+/// above stand as the comparison they were taken for — between the two ways of
+/// forming an element, where the difference is the `dim` term and nothing else —
+/// and not as what a general-field leaf costs today.
 std::vector<Matrix> by_walking_the_subspace(const Field& field, const ReducedBasis& span,
                                             std::size_t rows, std::size_t columns,
                                             std::size_t needed, std::size_t elements,
