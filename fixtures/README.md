@@ -51,6 +51,12 @@ Every step-3 target is asserted, including `f3_3x6`'s 10; the four are tagged
 `slow` so a developer can skip them with `ctest -LE slow`, and CI runs them
 anyway.
 
+Six further fixtures ship for a published number rather than for a measurement
+made here, so their shapes, naive costs and targets live under the same rule one
+file along, in [`published-targets.md`](published-targets.md): two more field
+extensions, cyclic convolution of length 7, and the three matrix multiplication
+formats `[wang2026]` leaves open.
+
 ## The one that is not concise
 
 Every other `.tensor` here has all three flattenings at full rank, so it is
