@@ -62,7 +62,7 @@ class Question {
                       : gpu_leaf::sparse_span(field_, pool_, rows * columns, dimension)),
           packed_(gpu_leaf::packed_question(field_, rows, columns, span_)),
           candidates_{pool_},
-          leaf_(candidates_, rows, columns) {}
+          leaf_(field_, candidates_, rows, columns) {}
 
     const RankOnePool& pool() const { return pool_; }
     const ReducedBasis& span() const { return span_; }

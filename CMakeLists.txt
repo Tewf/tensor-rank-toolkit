@@ -55,10 +55,11 @@ add_subdirectory(oracle_guided_search)
 add_subdirectory(pencil_rank)
 add_subdirectory(canonical_factorisation)
 
-# Only where there is a card to measure. gpu_leaf/README.md is the measurement
-# and stands on its own; the directory builds nothing the rest of the repository
-# links, so a machine without nvcc loses a number and not a capability.
-find_package(CUDAToolkit QUIET)
-if(CUDAToolkit_FOUND)
-  add_subdirectory(gpu_leaf)
-endif()
+# Read unconditionally, and guarded inside instead. gpu_leaf/README.md is a
+# measurement that stands on its own and the directory builds nothing the rest of
+# the repository links, so a machine without nvcc still loses a number rather
+# than a capability. What it must not lose is the compiler: guarded out here,
+# `measure_leaf.cpp` spent 2026-08-20 failing to compile against a constructor
+# that had gained an argument, on every machine, with CI green throughout. A
+# directory nothing compiles is a directory that drifts.
+add_subdirectory(gpu_leaf)

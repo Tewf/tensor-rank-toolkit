@@ -6,6 +6,23 @@
 # configures and builds the rest of the repository unchanged. The top-level
 # CMakeLists.txt carries the same guard, so this file is only read where CUDA is
 # present and `enable_language(CUDA)` will succeed.
+# The harness's C++ half, compiled on every machine and linked on none of them.
+# It is an object library rather than a target anybody runs: `measure_leaf.cpp`
+# calls into the kernels, so it cannot link without them, but it can be
+# type-checked without them — and that is the whole point. This is what would
+# have caught `Gf2Leaf` gaining a `field` argument on 2026-08-20.
+add_library(measure-leaf-host-check OBJECT measure_leaf.cpp)
+target_include_directories(measure-leaf-host-check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(measure-leaf-host-check PRIVATE exhaustive_search descent_search
+                                                     linear_algebra run_limits project_warnings)
+
+find_package(CUDAToolkit QUIET)
+if(NOT CUDAToolkit_FOUND)
+  message(STATUS "gpu_leaf: no CUDA toolkit, so the kernels are not built. "
+                 "The harness's C++ is still compiled.")
+  return()
+endif()
+
 enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
