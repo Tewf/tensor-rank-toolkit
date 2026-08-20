@@ -21,6 +21,36 @@ visible disagreement rather than a silent one.
 | `matmul_3x3x4` | `--matmul 2 3 3 4` | 12 9 12 | 36 | 25 ≤ rank ≤ 29 |
 | `matmul_3x4x4` | `--matmul 2 3 4 4` | 12 12 16 | 48 | 29 ≤ rank ≤ 38 |
 
+## What this repository gets on them
+
+**These shipped as bytes for six weeks with nothing ever run on them.** A fixture
+that is only checked for its shape is a file, not a benchmark, so here is what
+both searches actually say. Counts are exact and reproduce anywhere.
+
+| Fixture | floor, proved | step 1 | step 2 | step 3 | shortlist | gap to target |
+|---|---|---|---|---|---|---|
+| `gf32_multiplication` | **12** | 25 | 17 | **16** | 9 | floor 1 under, ceiling 3 over |
+| `gf64_multiplication` | **14** | 36 | 23 | **20** | 15 | floor 1 under, ceiling 5 over |
+| `cyclic_f2_7` | **12** | 19 | 15 | **15** | 0 | floor 1 under, ceiling 2 over |
+| `matmul_2x3x4` | **14** | 24 | 24 | not run | | floor 5 under |
+| `matmul_3x3x4` | **18** | 36 | 36 | not run | | floor 7 under |
+| `matmul_3x4x4` | **21** | 48 | 48 | not run | | floor 8 under |
+
+**The floor is one product short of the published rank on all three that the
+descent can finish**, from `rank_lower_bound` alone and in under a millisecond.
+Closing any of them means refuting one more product by exhaustion, which is the
+same question `f2_5x5` at 12 answered in 146 402 553 nodes.
+
+**Step 3 is not run on the three matrix multiplication rows** because their pools
+are 257 985, 2 092 545 and 268 365 825 rank-one maps. It would also find nothing:
+`cyclic_f2_7` has a shortlist of **0** out of 16 129 and still shows the pattern
+this repository records for every matrix multiplication tensor, which is that the
+descent cannot take a first step on them. Steps 1 and 2 move none of the three.
+
+Timings are omitted deliberately. The counts above were taken while the machine
+was running a browser at load 5.8, which [`../MEASURING.md`](../MEASURING.md)
+refuses for a published second and does not care about for an exact count.
+
 Shape is `slices rows cols`, the file's own header line, and every one is over
 GF(2). "Built by" is the tail of a `build/map_construction/make-tensor` call,
 which writes the file on standard output; each file's first two comment lines are
