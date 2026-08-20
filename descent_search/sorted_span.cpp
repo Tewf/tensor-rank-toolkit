@@ -11,7 +11,8 @@
 
 namespace bilinear_rank {
 
-SortedSpan::SortedSpan(const Field& field, const std::vector<Matrix>& slices) {
+SortedSpan::SortedSpan(const Field& field, const std::vector<Matrix>& slices,
+                       const std::vector<std::size_t>& ranks_without_last) {
     if (slices.empty()) return;
     const std::size_t width = linear_algebra::flattened_width<Field>(slices);
     const std::size_t rows = slices.front().rows();
@@ -28,6 +29,10 @@ SortedSpan::SortedSpan(const Field& field, const std::vector<Matrix>& slices) {
                  combinations, sizeof(std::uint8_t));
     std::vector<std::uint8_t> rank_of(combinations, 0);
     for (std::size_t index = 1; index < combinations; ++index) {
+        if (index < ranks_without_last.size()) {
+            rank_of[index] = static_cast<std::uint8_t>(ranks_without_last[index]);
+            continue;
+        }
         const Matrix element = linear_combination(
             field, slices, coefficient_vector(index, slices.size(), characteristic));
         rank_of[index] = static_cast<std::uint8_t>(linear_algebra::rank(field, element));

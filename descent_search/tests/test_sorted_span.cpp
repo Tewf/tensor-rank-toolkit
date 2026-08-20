@@ -41,6 +41,23 @@ void agrees(const std::string& label, const Field& field, const std::vector<Matr
     const bilinear_rank::SortedSpan filtration(field, slices);
     const std::vector<Matrix> basis = bilinear_rank::minimum_weight_basis(field, slices);
 
+    // The same filtration, handed the ranks of the span without the last slice,
+    // which is the form the descent's cost query would call it in. Half the
+    // enumeration is then a rank it copies rather than computes, and a wrong
+    // index range there is invisible in the answer for exactly the fixtures
+    // where the two halves happen to agree.
+    if (slices.size() > 1) {
+        const std::vector<Matrix> without_last(slices.begin(), slices.end() - 1);
+        const bilinear_rank::SortedSpan reusing(
+            field, slices, bilinear_rank::span_element_ranks(field, without_last));
+        check::equal(label + ": cost given known ranks",
+                     static_cast<long long>(reusing.cost()),
+                     static_cast<long long>(filtration.cost()));
+        check::equal(label + ": rank-one basis given known ranks",
+                     static_cast<long long>(reusing.has_rank_one_basis()),
+                     static_cast<long long>(filtration.has_rank_one_basis()));
+    }
+
     check::equal(label + ": cost", static_cast<long long>(filtration.cost()),
                  static_cast<long long>(linear_algebra::multiplication_count(field, basis)));
     check::equal(label + ": dimension", static_cast<long long>(filtration.dimension()),
