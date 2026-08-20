@@ -104,11 +104,18 @@ asserted beside it rather than the count being trusted alone.
 
 ## Where it does not apply
 
-`canonical_subspace` needs the group as a list, and
-`matrix_multiplication_symmetries` refuses above a million elements. `⟨3,3,3⟩` is
-4 741 632, so the canonical route degenerates there to the plain one: an empty group
-makes every object its own orbit. That is reported rather than refused, because it is
-what a caller at that shape actually gets.
+**This section used to contradict the two above it**, describing a list-bound
+`canonical_subspace` and a `⟨3,3,3⟩` that degenerated to the plain route. Every
+clause was true when written and every one was undone three sections up, which
+nothing sent back here to check.
+
+The degenerate case itself still stands: **an empty group makes every object its
+own orbit**, so a caller supplying no symmetry gets the plain route under the
+canonical one's name, reported through `group_size` rather than refused.
+
+What binds now is the pool and not the group. Every rank-one map of the shape is
+materialised before a node opens, 261 121 at `⟨3,3,3⟩` and 4 294 836 225 at
+`⟨4,4,4⟩`, and no quotient taken from generators changes that number.
 
 ## Spreading it over cores
 
