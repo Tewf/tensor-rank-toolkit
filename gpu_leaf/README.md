@@ -7,14 +7,29 @@ each candidate from that index, timed against the leaf that already exists. This
 is that measurement, on an RTX 4060 Laptop, 24 SMs, compute capability 8.9.
 
 **It is a proof of concept and not an integration.** Nothing outside this
-directory calls it, neither search changed, and the top-level `CMakeLists.txt`
-reads this one only behind `find_package(CUDAToolkit QUIET)`, so a machine
-without `nvcc` builds and tests exactly as before. What is wanted is a number a
+directory calls it and neither search changed. The kernels are built only where
+the toolkit is found, so a machine without `nvcc` builds and tests exactly as
+before; the harness's C++ is compiled everywhere, which is a different matter and
+[`../CMakeLists.txt`](../CMakeLists.txt) says why. What is wanted is a number a
 laboratory with real hardware can multiply, not a faster laptop.
 
-    cmake -S . -B build -DCMAKE_CUDA_COMPILER=$(command -v nvcc)
-    cmake --build build -j 6 --target measure-leaf
-    flock /tmp/bilinear-measure.lock ./build/gpu_leaf/measure-leaf both
+**Building it needs a second build directory, not a reconfigured one.** `nvcc`
+here is in a conda environment, and activating that environment puts its own C++
+compiler in front, which cannot find the system Givaro. So the host compiler is
+pinned to the system one and only `nvcc` is taken from the environment:
+
+    CUDA=$HOME/miniforge3/envs/cuda
+    PATH=$CUDA/bin:$PATH PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig \
+      cmake -S . -B build-cuda -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_COMPILER=/usr/bin/g++ -DCMAKE_CUDA_COMPILER=$CUDA/bin/nvcc \
+        -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++ -DCMAKE_CUDA_ARCHITECTURES=89 \
+        -DCUDAToolkit_ROOT=$CUDA
+    cmake --build build-cuda -j 2 --target measure-leaf
+    flock /tmp/bilinear-measure.lock ./build-cuda/gpu_leaf/measure-leaf both
+
+`CUDAToolkit_ROOT` is what `find_package` needs; `CMAKE_CUDA_COMPILER` alone
+leaves it unfound and the target is never defined. Verified 2026-08-20 with
+nvcc 12.9 from conda-forge against Givaro 4.2.0 from the system.
 
 ## What the kernel does
 
