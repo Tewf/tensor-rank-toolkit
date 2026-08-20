@@ -18,12 +18,22 @@ namespace bilinear_rank {
 Matrix linear_combination(const Field& field, const std::vector<Matrix>& slices,
                const std::vector<int64_t>& coefficients);
 
+/// The same combination written into a matrix the caller already holds, so a
+/// walk over the `p^k` elements of a span allocates once and not once each.
+void linear_combination_into(const Field& field, const std::vector<Matrix>& slices,
+               const std::vector<int64_t>& coefficients, Matrix& result);
+
 /// The coefficient vector at `index`, counting with the first coordinate
 /// varying fastest. This enumeration order is fixed and deterministic so that
 /// the tie-break between equal-rank candidates is consistent across runs, which
 /// is load-bearing for reproducibility.
 std::vector<int64_t> coefficient_vector(std::size_t index, std::size_t count,
                                         int64_t characteristic);
+
+/// The same vector written into the caller's buffer, for the same reason as
+/// `linear_combination_into`. Same order, same entries.
+void coefficient_vector_into(std::size_t index, std::size_t count, int64_t characteristic,
+                             std::vector<int64_t>& coefficients);
 
 /// How many elements the span has, which is how many combinations must be
 /// enumerated to see all of it. Throws rather than return a number no machine
