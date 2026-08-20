@@ -1,3 +1,5 @@
+#include <limits>
+
 #include "rank_one_basis.h"
 
 #include "candidate_pool.h"
@@ -60,7 +62,12 @@ std::size_t elements_of(const Field& field, std::size_t dimension, std::size_t c
     return count;
 }
 
+LeafRoute chosen_route = LeafRoute::Auto;
+
 }  // namespace
+
+void set_leaf_route(LeafRoute route) { chosen_route = route; }
+LeafRoute leaf_route() { return chosen_route; }
 
 template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
@@ -74,8 +81,18 @@ std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& sp
 
     // One rule, asked before the field is: which route is cheaper here is a fact
     // about the shape and the dimension, and it is the same fact over GF(2).
-    const std::size_t elements = elements_of(field, span.dimension(), pool.size());
-    if (elements != 0 && elements < pool.size()) {
+    // `elements_of` stops counting once `p^dim` passes its ceiling, so passing
+    // the pool size makes the count and the comparison the same act: a non-zero
+    // answer already means the walk is the smaller side. A forced walk has to be
+    // counted against a real ceiling instead, or it could never be forced, since
+    // the only leaves worth forcing are the ones the rule sends to the pool.
+    const std::size_t ceiling =
+        chosen_route == LeafRoute::Walk ? std::numeric_limits<std::size_t>::max() : pool.size();
+    const std::size_t elements = elements_of(field, span.dimension(), ceiling);
+    const bool walk = elements != 0
+                      && (chosen_route == LeafRoute::Walk || (chosen_route == LeafRoute::Auto
+                                                              && elements < pool.size()));
+    if (walk) {
         if (binary != nullptr) return binary->by_walking_the_subspace(span, needed, elements, budget);
         return by_walking_the_subspace(field, span, rows, columns, needed, elements, budget);
     }

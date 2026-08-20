@@ -22,6 +22,7 @@
 #include "minimise_rank.h"
 #include "orbit_search.h"
 #include "parallel.h"
+#include "rank_one_basis.h"
 #include "report.h"
 #include "requested_group.h"
 #include "size_argument.h"
@@ -35,7 +36,8 @@ namespace {
 void usage() {
     cli::note() << "usage: decide-rank <tensor-file> [--target k] [--anchor map|heuristic]\n"
                    "                   [--node-limit N] [--leaf-limit N]\n"
-                   "                   [--max-memory 2G] [--general-leaf] [--help]\n"
+                   "                   [--max-memory 2G] [--general-leaf]\n"
+                   "                   [--leaf-route auto|scan|walk] [--help]\n"
                    "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                    "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                    "\n"
@@ -55,6 +57,10 @@ void usage() {
                    "                      GF(2) where the bit-packed one applies. Same tree, same\n"
                    "                      nodes, same answer, and slower: it is here so the two\n"
                    "                      can be timed on one question rather than on two\n"
+                   "  --leaf-route R      force a leaf onto one route: scan the pool, or walk the\n"
+                   "                      subspace. Default auto, which takes the cheaper by size.\n"
+                   "                      For timing one against the other on one question; walk is\n"
+                   "                      ignored where the subspace is too large to enumerate.\n"
                    "  --help              print this and stop, as exit 2";
 }
 
@@ -106,6 +112,11 @@ int run(int argc, char** argv) {
             leaf_limit = arguments.count();
         } else if (arguments.is("--general-leaf")) {
             bilinear_rank::set_gf2_leaf_offered(false);
+        } else if (arguments.is("--leaf-route")) {
+            const std::string route = arguments.text();
+            if (route == "scan") bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Scan);
+            else if (route == "walk") bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Walk);
+            else if (route != "auto") arguments.refuse();
         } else {
             arguments.refuse();
         }
