@@ -24,7 +24,9 @@ stops at the first witness and may well have stopped early anyway.
 A quotiented node runs `least_in_orbit` and a plain node does not. That
 surcharge is the gap between the two rightmost columns: **1.41x** a node at
 k = 6, **1.10x** at k = 7. Time therefore tracks nodes almost exactly, and the
-node table above is very nearly the whole story.
+node table above is very nearly the whole story. It is also why paying fewer
+nodes matters more here than paying less per node, which is the finding of
+[`what-partial-rejection-leaves.md`](what-partial-rejection-leaves.md).
 
 It has not always been. `least_in_orbit` replaced a `struck` byte array and a
 `position` table both sized by the pool, and the leaf on this path was calling
