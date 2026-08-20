@@ -58,11 +58,18 @@ closing corrected this page's own R = 6 figure from 25 200 to 25 426, and what
 survives is 27 nodes traceable to a single line:
 [`do-the-counters-agree.md`](do-the-counters-agree.md).
 
+## Past `⟨2,2,2⟩`
+
+Six questions now, over three more tensors, and the baseline is above this search
+every time by 0.06% to 1.04% — one direction, one line of code accounting for all
+of it. Three of the six the baseline cannot finish, which stopped mattering once
+its tree turned out to have a closed form:
+[`the-baseline-prunes-nothing.md`](the-baseline-prunes-nothing.md).
+
 ## What is not run yet
 
-- Any question larger than `⟨2,2,2⟩`. `f2_5x5`, `gf16_multiplication` and
-  `cyclic_f2_5` all translate directly through the Python CLI's `--shape/--data`.
-- `cpd/skip-axis` on anything but its two hardcoded tensors, which needs a small
-  driver written against `CPD_DFS.search(T, R)`.
+- Anything where the baseline would have to *finish* past `⟨2,2,2⟩`. The three
+  totals above are the closed form, checked against the shape of tree the program
+  demonstrably walks, not observed to the end.
 - Anything of order 4 or more, which is where `[yang2025]` leads and this
   repository does not go.
