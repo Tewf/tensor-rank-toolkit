@@ -68,6 +68,27 @@ def check_the_build(build):
     return True
 
 
+def kept_already(runs):
+    """What earlier sessions left in the runs directory, counted on the way past.
+
+    Nothing prunes it and nothing here will: a run's directory holds its input,
+    its logs and anything it emitted, and deleting somebody's evidence to save a
+    few megabytes is the wrong trade. What was fixable is that it grew unseen, so
+    it is now on the line above the URL, with the one command that clears it.
+    """
+    directory = pathlib.Path(runs)
+    if not directory.is_dir():
+        return ""
+    kept = [path for path in directory.iterdir() if path.is_dir()]
+    if not kept:
+        return ""
+    bytes_held = sum(file.stat().st_size for path in kept
+                     for file in path.rglob("*") if file.is_file())
+    return ("\n              " + str(len(kept)) + " earlier run(s) already there, " +
+            str(round(bytes_held / 1e6, 1)) + " MB. Nothing prunes them:\n" +
+            "              rm -rf " + str(directory))
+
+
 def main():
     chosen = arguments()
     if not check_the_build(chosen.build):
@@ -91,7 +112,8 @@ def main():
     address += ":" + str(server.server_address[1]) + "/"
     print("tensor-rank-toolkit console on " + address)
     print("  build:      " + str(pathlib.Path(chosen.build).resolve()))
-    print("  runs kept:  " + str(pathlib.Path(chosen.runs).resolve()))
+    print("  runs kept:  " + str(pathlib.Path(chosen.runs).resolve()) +
+          kept_already(chosen.runs))
     print("  wall clock: " + str(chosen.wall_clock) +
           " s per run, a backstop that decides nothing")
     if chosen.host not in LOOPBACK:
