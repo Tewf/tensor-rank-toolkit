@@ -41,7 +41,7 @@ The leaf.
 | member | what it gives |
 |---|---|
 | `cost()` | `Σ r · (dim R_r − dim R_{r−1})`, the minimum-weight basis cost as a closed form |
-| `has_rank_one_basis()` | `dim R[1] == dim V`, the leaf test with no scan and no walk |
+| `has_rank_one_basis()` | `dim R[1] == dim V`, free **once the filtration is built**, and building it is a walk |
 | `reached_by_rank(r)` | `dim R_r`, the filtration itself |
 
 ## The command-line surface

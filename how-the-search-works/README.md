@@ -10,12 +10,13 @@ and **only two of them are wired into this command**, so the table says which.
 | **orbit quotient** | yes, on `-s` | [`../orbit_reduction/orbit_search.h`](../orbit_reduction/orbit_search.h) |
 | **odometer / addressed pool** | yes, automatic | [`../descent_search/candidate_pool.h`](../descent_search/candidate_pool.h) |
 | **McKay canonical augmentation** | **no** | [`../oracle_guided_search/`](../oracle_guided_search/), reached by `enumerate-subspaces` and `factor-over-canonical-basis --route canonical` |
-| **`SortedSpan`** | **no**, built and tested, called by nothing | [`../descent_search/sorted_span.h`](../descent_search/sorted_span.h) |
+| **`SortedSpan`** | **no**, and it belongs in the descent rather than here | [`../descent_search/sorted_span.h`](../descent_search/sorted_span.h) |
 | **GPU leaf** | **no**, a proof of concept wired to nothing | [`../gpu_leaf/`](../gpu_leaf/) |
 
-Three of the five are not in the production path. `SortedSpan` is the one that is
-a gap rather than a decision: it was written to replace the sort in
-`minimum_weight_basis` and its callers were never switched.
+Three of the five are not in the production path, and each is now a decision with
+a number behind it rather than a gap: [`what-to-wire.md`](what-to-wire.md). All
+five composed into one algorithm, with the rule that picks a device:
+[`the-whole-algorithm.md`](the-whole-algorithm.md).
 
 ## The search that runs
 
@@ -64,8 +65,10 @@ at 53x fewer nodes for 25.8x the wall clock while *deciding*, which is why
 deciding does not use it: [the cost model](../canonical_factorisation/canonical-augmentation.md).
 
 **`SortedSpan`** holds `V` as its rank filtration `R[1] ⊆ … ⊆ R[16]` instead of a
-sorted list, making the leaf test `dim R[1] == dim V` free and the minimum-weight
-cost a closed form.
+sorted list, which makes the minimum-weight cost a closed form. It reads as a
+leaf test too, `dim R[1] == dim V`, and that reading is the trap: building the
+filtration walks the same `p^dim` elements the walk route walks, without its
+early exit and with a Gaussian rank where a rank-one test would do.
 
 **The GPU** does one whole `⟨4,4,4⟩` leaf in 1.019 s against 67 minutes of one
 core, and answers no question this repository can currently pose, because the
