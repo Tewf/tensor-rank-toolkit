@@ -88,3 +88,7 @@ spending on, and not a memory system.
   GF(3), GF(5) and the rationals have none of this shape.
 - **Anything about a shape not compiled here.** Four have kernels, 4x4, 5x5, 9x9
   and 16x16, because they are the ones the fixtures reach.
+
+Every number here was taken under rules that differ from the rest of the
+repository's, because a kernel is not a slower or faster version of the thing it
+replaces: [`measuring-on-the-card.md`](measuring-on-the-card.md).
