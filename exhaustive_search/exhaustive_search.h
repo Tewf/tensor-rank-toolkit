@@ -51,8 +51,9 @@ struct SearchBudget {
     /// because a pool too large to scan was refused by `require_room` before any
     /// leaf saw it. An addressed pool removed the refusal, and with it the only
     /// thing that was bounding the leaf: at `<4,4,4>` a single leaf is
-    /// 4 294 836 225 maps rebuilt one at a time, **measured at 785 ns each, so
-    /// 0.9 hours**, and `--node-limit 1` could not make the run return.
+    /// 4 294 836 225 maps formed one at a time, **measured at 129.1 ns each, so
+    /// about 9 minutes**, and `--node-limit 1` could not make the run return.
+    /// It was 785 ns and 0.9 hours before the element was formed in words.
     ///
     /// PROVISIONAL at 100 000 000, which is 78 s of that scan and 7.8 s of a
     /// subspace walk (measured at 78 ns an element on `<4,4,4>` at dimension
