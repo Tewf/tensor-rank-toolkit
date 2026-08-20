@@ -34,14 +34,29 @@ than slow. `PoolSetCanon` replaced that walk with a base and strong generating
 set and the comment stayed, so the route kept paying to enumerate a group in
 order to hand it to something that immediately rebuilt six generators from it.
 
-## What it costs now, which is a different shape of answer
+## What it costs now, and the line that was fitted through the wrong points
 
-`--floor 7` visits 14 nodes and `--floor 6` visits 72, for 0.2068 s and 0.2530 s.
-Two points, one line: **0.196 s to build the presentation, then 0.795 ms a node.**
+**There is no 0.196 s presentation fee. That number was an artefact of the fit
+and it stood here until 2026-08-20.**
 
-A plain node is 2.66 us. So a canonical node costs **299x** a plain one, and the
-route must remove more than 299x the nodes to break even. It removes 53x. That is
-the whole account, and the gap is 5.6x plus an entry fee.
+The line was drawn through two points, `--floor 7` at 14 nodes and 0.2068 s and
+`--floor 6` at 72 nodes and 0.2530 s, and read as an intercept plus 0.795 ms a
+node. But the 58 extra nodes are all at **target 6**, and the original 14 are all
+at **target 7**, where a node costs far more: a target-7 subspace is a dimension
+larger, so its pool scan, its stabiliser and its canonisations all cost more. The
+fit mistook a per-node cost that varies with the target for a fixed entry fee.
+
+Measured directly instead of inferred: building `PoolSetCanon` on the 225 points
+of `⟨2,2,2⟩` takes **0.013 s**, three runs, and that was taken on a loaded
+machine, which can only make it slower. Subtracting it leaves about **13.8 ms** a
+node at target 7 against **0.79 ms** at target 6 — a factor of seventeen between
+two levels of the same sweep.
+
+So the honest account has no single per-node number in it. **What survives is the
+ratio this page already measured: 0.263 s against 0.0102 s, 25.8x**, and the node
+saving of 53x that fails to pay for it. The "299x a node" that used to appear
+here was the target-6 rate against a plain node, quoted as if it were the whole
+sweep's.
 
 **The gap widened while both halves improved.** This route is 10.5x faster than
 the file used to record and lost anyway, because the packed GF(2) leaf made a
