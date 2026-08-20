@@ -23,10 +23,12 @@ std::vector<std::size_t> span_element_ranks(const Field& field,
                  combinations, sizeof(std::size_t));
 
     std::vector<std::size_t> ranks(combinations);
+    std::vector<int64_t> coefficients;
+    Matrix combination;
     for (std::size_t index = 0; index < combinations; ++index) {
-        ranks[index] = linear_algebra::rank(
-            field,
-            linear_combination(field, slices, coefficient_vector(index, slices.size(), field.characteristic())));
+        coefficient_vector_into(index, slices.size(), field.characteristic(), coefficients);
+        linear_combination_into(field, slices, coefficients, combination);
+        ranks[index] = linear_algebra::rank(field, combination);
     }
     return ranks;
 }
@@ -54,14 +56,16 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
 
     std::vector<Candidate> candidates;
     candidates.reserve(combinations - 1);
+    std::vector<int64_t> coefficients;
+    Matrix combination;
     for (std::size_t index = 1; index < combinations; ++index) {
         if (index < ranks_without_last.size()) {
             candidates.push_back({ranks_without_last[index], index});
             continue;
         }
-        const Matrix element =
-            linear_combination(field, slices, coefficient_vector(index, slices.size(), field.characteristic()));
-        candidates.push_back({linear_algebra::rank(field, element), index});
+        coefficient_vector_into(index, slices.size(), field.characteristic(), coefficients);
+        linear_combination_into(field, slices, coefficients, combination);
+        candidates.push_back({linear_algebra::rank(field, combination), index});
     }
 
     // Sort by rank, ties broken by enumeration order, to ensure reproducible
