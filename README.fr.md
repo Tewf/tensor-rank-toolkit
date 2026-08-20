@@ -32,12 +32,12 @@ comme le reste de la documentation technique.
 | Axe | Question | Résultat |
 |---|---|---|
 | [descente](descent_search/) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
-| [exhaustion](exhaustive_search/) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7**, en une demi-seconde |
+| [exhaustion](exhaustive_search/) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
 | [sommes de rangs](linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
 | [faisceaux](pencil_rank/) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
 | [factorisation](canonical_factorisation/) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
 | [satisfiabilité](satisfiability/) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
-| [symétrie](orbit_reduction/) | un membre par orbite | **28x** sur une réfutation, 261 121 applications en **13 orbites** |
+| [symétrie](orbit_reduction/) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
 | [sans isomorphes](oracle_guided_search/) | chaque classe une seule fois | **22 779x moins de nœuds** sur matmul 2x2 |
 | [creusement](matrix_sparsification/) | moins d'additions, rang fixé | les opérateurs de Strassen de **12 non-nuls à 10** |
 
