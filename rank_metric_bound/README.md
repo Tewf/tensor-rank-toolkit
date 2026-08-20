@@ -27,7 +27,9 @@ a bound.
 
 **The headline, stated as narrowly as it is true.** On `f2_5x5` the Griesmer form
 returns **12 where `rank_lower_bound` returns 10**, in under half a millisecond.
-That does not move the repository's bracket, which was already `12 <= rank <= 14`.
-It moves the *cheap* floor onto that 12, which until now came from an exhaustive
-refutation at `--target 11`. The reading is in
+That did not move the repository's bracket, which was already `12 <= rank <= 14`.
+It moved the *cheap* floor onto that 12, which until then came from an exhaustive
+refutation at `--target 11`. **The bracket has since become `13 <= rank <= 14`**,
+by exhausting `--target 12`, so the cheap floor no longer reaches it and the gap
+this closed has reopened one higher. The reading is in
 [`what-each-is-worth.md`](what-each-is-worth.md).

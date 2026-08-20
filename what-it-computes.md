@@ -28,9 +28,9 @@ stabiliser. Which of those a test would catch is recorded in
 **[Rank by exhaustion](exhaustive_search/)**, the expensive direction, which
 proves things. It settles small maps outright, reproducing Karatsuba's 3, the
 classical 3 and 6 for GF(4) and GF(8), and **rank ⟨2,2,2⟩ = 7** decided from the
-tensor in half a second. On F2 5×5 it rules out 9, 10 and 11 products
-exhaustively, so with the descent's 14 this proves **12 ≤ rank ≤ 14** here;
-`[bdez2012]` report 13. On F3 3×6 both sides are proved in about 25 seconds.
+tensor in half a second. On F2 5×5 it rules out 9, 10 and 11 from the bounds
+and 12 by exhaustion, so with the descent's 14 this proves **13 ≤ rank ≤ 14**
+here; `[bdez2012]` report 13. On F3 3×6 both sides are proved in about 25 seconds.
 
 **[Lower bounds without a search](linear_algebra/tensor_rank_sum.h).** Two
 rank-sum bounds return a floor from the tensor alone in milliseconds, and they

@@ -69,7 +69,7 @@ jobs:
           cmake --build build
 
       # Everything, including the three expensive searches and the exhaustions
-      # behind `12 <= rank(F2 5x5)`. Two minutes here, which is the whole point,
+      # behind `13 <= rank(F2 5x5)`. Two minutes here, which is the whole point,
       # so nothing is excluded from CI.
       - name: Reproduce every published number
         run: ctest --test-dir build --output-on-failure -j2
@@ -80,6 +80,15 @@ jobs:
       # results file rather than measured. --check reads counts only.
       - name: The published counts still reproduce
         run: python3 reproduce/measure.py --build build --check
+
+      # The other end of the same chain. The step above re-derives the results
+      # files from the built commands; this one asserts that the front page's
+      # hand-typeset table is those files. The table is typeset by hand on
+      # purpose, so a reader with no JavaScript still sees the evidence, and that
+      # makes it a copy. It needs no build, so it runs whatever else fails.
+      - name: The front page agrees with the results files
+        if: always()
+        run: python3 reproduce/front_page.py
 
       # The GF(16) exhaustion, 105 600 301 nodes: 395 s on the reference core and
       # longer on a shared runner, which is more than every other question in the

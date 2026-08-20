@@ -47,7 +47,7 @@ steps 1 and 2 cost together. Per-step times and the full table:
 ## What the exact search decides
 
 Small maps outright, with proof: Karatsuba's 3, the classical 3 and 6 for GF(4)
-and GF(8), **rank ⟨2,2,2⟩ = 7** in half a second, and **12 ≤ rank ≤ 14** on F2
+and GF(8), **rank ⟨2,2,2⟩ = 7** in half a second, and **13 ≤ rank ≤ 14** on F2
 5x5. Costs, and what a spent budget does and does not mean:
 [`what-the-exact-search-decides.md`](what-the-exact-search-decides.md).
 

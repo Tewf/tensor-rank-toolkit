@@ -61,10 +61,16 @@ the number of output coefficients, which the flattening bound already gives.
 **The Griesmer form wins once, and the win needs stating carefully.** On `f2_5x5`
 it returns 12 where the other three terms of `rank_lower_bound` reach only 10, in 0.46 ms. It does not move the
 repository's bracket: `12 <= rank <= 14` already stood, and its 12 came from
-`decide-rank --target 11` running to exhaustion, which `exhaustive_search` prices
+`decide-rank --target 11` running to exhaustion, which `exhaustive_search` priced
 at 77 s. What changed is the price of that 12, and that the cheap floor every
-caller already reads now reaches it. The rank is 13 by `[bdez2012]`, so the gap
-left is one product. Elsewhere Griesmer ties thirteen times and loses ten, and it
+caller already reads reached it.
+
+**Then the bracket moved and this win became a near miss.** Exhausting
+`--target 12` put the floor at 13, where `[bdez2012]` also puts the rank, so
+Griesmer's 12 is now one *below* the proved floor rather than level with it. The
+cheap bound is still the best of the four terms here by two products, and it is
+still the reason nobody pays 77 s for a floor; what it no longer does is match
+what the search knows. Elsewhere Griesmer ties thirteen times and loses ten, and it
 meets the rank held exactly on seven fixtures, none of them among the six added
 last.
 
