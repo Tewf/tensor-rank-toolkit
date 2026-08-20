@@ -93,7 +93,6 @@ TOOLS = [
              "budget": True,
              "note": "From search_leaf_limit. The node limit bounds how many "
                      "leaves are reached and nothing inside one."},
-            {"flag": "--bottom-up", "kind": "switch", "label": "bottom up"},
             {"flag": "--general-leaf", "kind": "switch",
              "label": "general field path at every leaf",
              "note": "Same tree, same nodes, same answer, and slower."},
