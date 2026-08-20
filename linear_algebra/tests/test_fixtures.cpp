@@ -23,6 +23,18 @@ constexpr Expectation kExpectations[] = {
     {"f2_3x8", 2, 10, 3, 8, 24},
     {"f2_4x7", 2, 10, 4, 7, 28},
     {"f3_3x6", 3, 8, 3, 6, 18},
+    // The six that ship for a published target rather than for a measurement
+    // made here, from `fixtures/published-targets.md`, which carries the same
+    // numbers. Parsing and the naive count is all this asserts about them: the
+    // targets themselves are 13, 15, 13, 19, 25 and 29, and nothing in this
+    // repository reaches any of them, so there is no count here to check them
+    // against.
+    {"gf32_multiplication", 2, 5, 5, 5, 25},
+    {"gf64_multiplication", 2, 6, 6, 6, 36},
+    {"cyclic_f2_7", 2, 7, 7, 7, 49},
+    {"matmul_2x3x4", 2, 8, 6, 12, 24},
+    {"matmul_3x3x4", 2, 12, 9, 12, 36},
+    {"matmul_3x4x4", 2, 12, 12, 16, 48},
 };
 
 }  // namespace

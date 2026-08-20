@@ -32,11 +32,13 @@ using Decomposition = linear_algebra::RankDecomposition<ModularField>;
 /// Every `.tensor` fixture, named rather than globbed, so a fixture that stops
 /// parsing fails the test instead of silently leaving it checking less.
 constexpr const char* kFixtures[] = {
-    "cyclic_f2_5",          "f2_2x2",                  "f2_2x3",
-    "f2_3x8",               "f2_4x7",                  "f2_5x5",
-    "f3_3x6",               "gf16_multiplication",     "gf4_multiplication",
+    "cyclic_f2_5",          "cyclic_f2_7",             "f2_2x2",
+    "f2_2x3",               "f2_3x8",                  "f2_4x7",
+    "f2_5x5",               "f3_3x6",                  "gf16_multiplication",
+    "gf32_multiplication",  "gf4_multiplication",      "gf64_multiplication",
     "gf8_multiplication",   "matmul_2x2x2",            "matmul_2x2x3",
-    "matmul_3x3x3",         "nonconcise_matmul_2x2x2", "pencil_irreducible_f2_4",
+    "matmul_2x3x4",         "matmul_3x3x3",            "matmul_3x3x4",
+    "matmul_3x4x4",         "nonconcise_matmul_2x2x2", "pencil_irreducible_f2_4",
     "pencil_nilpotent_f2_3", "pencil_singular_f2_2x3", "pencil_split_f3_3",
     "w_state",
 };
@@ -211,7 +213,7 @@ int main(int argc, char** argv) {
 
     // Pinned, because it is the reason the fixture below had to be built: if a
     // second non-concise fixture is ever added this line says so, and until then
-    // it says that the eighteen others exercise the identity only.
+    // it says that the twenty-four others exercise the identity only.
     check::equal("fixtures that are not concise", static_cast<long long>(not_concise), 1);
 
     // The one that is not concise, where compression does something and the rank
