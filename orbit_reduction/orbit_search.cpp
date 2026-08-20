@@ -2,8 +2,8 @@
 
 #include "pool_orbits.h"
 
+#include <algorithm>
 #include <atomic>
-#include <memory>
 #include <mutex>
 #include <numeric>
 #include <optional>
@@ -22,23 +22,56 @@ namespace {
 // vector lists, which is 32 768x less at `<4,4,4>` and is what lets this search
 // run at all on a shape whose pool is only addressed.
 using Permutations = PoolAction;
-constexpr std::uint32_t kNotHere = static_cast<std::uint32_t>(-1);
 
-/// Where each candidate sits in the list, one buffer per depth so a node and
-/// its child never write over each other. Allocated once for the whole search.
-using PositionsByDepth = std::vector<std::vector<std::uint32_t>>;
+/// Whether `point` is the least member of its orbit among the candidates still
+/// live, which is `[from, |pool|)`.
+///
+/// This replaces a `struck` array and a `position` table, both one word or one
+/// byte per pool element per depth. At `⟨4,4,4⟩` each was 17.2 GB against 16 GB
+/// of memory, so the quotient could not run there at all; this costs the orbit
+/// and nothing else.
+///
+/// **Breadth first, because `action` may be a generating set.** Applying each
+/// element once reaches part of the orbit and leaves the rest, which is sound
+/// and wastes exactly what the quotient is for.
+///
+/// **The `>= from` guard is the whole of the restriction.** The array version
+/// ignored images outside the candidate list, so the question has always been
+/// least-in-orbit *among the live candidates* rather than least outright.
+/// Without the guard a branch whose smaller twin was consumed by an ancestor is
+/// skipped, and the solutions under it go with it.
+bool least_in_orbit(const Permutations& action, const std::vector<std::uint32_t>& residual,
+                    std::uint32_t point, std::uint32_t from) {
+    std::vector<std::uint32_t> seen{point};
+    std::vector<std::uint32_t> frontier{point};
+    while (!frontier.empty()) {
+        const std::uint32_t reached = frontier.back();
+        frontier.pop_back();
+        for (const std::uint32_t element : residual) {
+            const std::uint32_t image = action.image(element, reached);
+            if (image >= from && image < point) return false;
+            if (std::find(seen.begin(), seen.end(), image) != seen.end()) continue;
+            seen.push_back(image);
+            frontier.push_back(image);
+        }
+    }
+    return true;
+}
 
 /// One branch per orbit: Covanov's Algorithm 3, lines 6 to 11.
 ///
-/// `candidates` is `H` as pool indices in increasing order, `residual` is `U` as
-/// indices into the group, and every element of `residual` stabilises `span` by
-/// induction, which is what makes the descent below a single containment test.
+/// `H` is `[from, |pool|)`, `residual` is `U` as indices into the group, and
+/// every element of `residual` stabilises `span` by induction, which is what
+/// makes the descent below a single containment test.
+///
+/// **`H` is an index because it has always been a suffix.** A child was handed
+/// `candidates[slot..]`, and the root was `0..|pool|`, so the list was
+/// `[from, |pool|)` at every node and holding it cost a copy per branch.
 bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<Matrix>& pool,
-                       const Permutations& action,
-                       const std::vector<std::uint32_t>& candidates,
+                       const Permutations& action, std::uint32_t from,
                        const std::vector<std::uint32_t>& residual, std::size_t target,
                        std::size_t depth, SearchBudget& budget, std::vector<Element>& scratch,
-                       PositionsByDepth& positions, const std::atomic<bool>* found_elsewhere,
+                       const std::atomic<bool>* found_elsewhere,
                        const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
     // Somebody else already has a witness, so this subtree cannot change the
     // answer and every node it spends is spent against the shared budget. The
@@ -61,34 +94,11 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
         return true;
     }
 
-    std::vector<std::uint32_t>& position = positions[depth];
-    for (std::size_t slot = 0; slot < candidates.size(); ++slot) {
-        position[candidates[slot]] = static_cast<std::uint32_t>(slot);
-    }
-    std::vector<char> struck(candidates.size(), 0);
-
     bool found = false;
-    for (std::size_t slot = 0; slot < candidates.size() && !found; ++slot) {
-        if (struck[slot]) continue;
-        const std::uint32_t chosen = candidates[slot];
-
-        // Everything equivalent to this one is answered by trying this one.
-        // Breadth first, because `action` may be a generating set: applying each
-        // element once would strike part of the orbit and leave the rest to be
-        // searched again, which is sound but wastes exactly what this is for.
-        std::vector<std::uint32_t> frontier{chosen};
-        while (!frontier.empty()) {
-            const std::uint32_t reached = frontier.back();
-            frontier.pop_back();
-            for (const std::uint32_t element : residual) {
-                const std::uint32_t image = action.image(element, reached);
-                const std::uint32_t at = position[image];
-                if (at == kNotHere || struck[at]) continue;
-                struck[at] = 1;
-                frontier.push_back(image);
-            }
-        }
-        struck[slot] = 1;
+    for (std::uint32_t chosen = from; chosen < pool.size() && !found; ++chosen) {
+        // Everything equivalent to this one is answered by trying this one, so
+        // only the least member of each orbit opens a branch.
+        if (!least_in_orbit(action, residual, chosen, from)) continue;
 
         if (span.contains(pool[chosen], scratch)) continue;
 
@@ -105,13 +115,12 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
         }
 
         // `H'` is the union of the orbits from here on, which is exactly the
-        // tail: orbits are struck out in increasing order, so no member of a
-        // later orbit sits earlier in the list.
-        const std::vector<std::uint32_t> tail(
-            candidates.begin() + static_cast<std::ptrdiff_t>(slot), candidates.end());
-
-        if (expand_up_to_impl(field, std::move(extended), pool, action, tail, narrowed, target,
-                              depth + 1, budget, scratch, positions, found_elsewhere, binary,
+        // tail: orbits are answered in increasing order, so no member of a later
+        // orbit sits earlier. `chosen` and not `chosen + 1`, which is what the
+        // list version passed and what keeps the node counts identical; the
+        // child skips it on the containment test above.
+        if (expand_up_to_impl(field, std::move(extended), pool, action, chosen, narrowed, target,
+                              depth + 1, budget, scratch, found_elsewhere, binary,
                               products)) {
             found = true;
         } else if (!budget.exhausted) {
@@ -119,12 +128,8 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const std::vector<
         }
     }
 
-    for (const std::uint32_t index : candidates) position[index] = kNotHere;
     return found;
 }
-
-/// A candidate list, shared by every branch that starts inside it.
-using CandidateList = std::shared_ptr<const std::vector<std::uint32_t>>;
 
 /// A subtree of the quotiented tree, carrying everything it needs to be walked
 /// on its own.
@@ -134,23 +139,14 @@ using CandidateList = std::shared_ptr<const std::vector<std::uint32_t>>;
 /// one. That is what makes the split safe: the group was filtered once, at entry,
 /// and no worker touches the filtering.
 ///
-/// **The candidate list is shared and offset into rather than copied**, because
-/// siblings differ only in where their tail starts and a copy each would be
-/// `|pool|` words apiece: 1 MB at `⟨3,3,3⟩`, and a node there can have tens of
-/// thousands of children. Held this way a branch costs its span and its residual,
-/// and the tail is materialised one at a time by whoever walks it.
+/// **The candidate list is an index**, because siblings differ only in where
+/// their tail starts and the tail has always been a suffix. A shared list and an
+/// offset were a `shared_ptr` and a `size_t` where one `uint32_t` says the same.
 struct Branch {
     ReducedBasis span;
-    CandidateList candidates;
-    std::size_t offset = 0;
+    std::uint32_t from = 0;
     std::vector<std::uint32_t> residual;
 };
-
-std::vector<std::uint32_t> tail_of(const Branch& branch) {
-    return std::vector<std::uint32_t>(
-        branch.candidates->begin() + static_cast<std::ptrdiff_t>(branch.offset),
-        branch.candidates->end());
-}
 
 /// Do one node's work and hand back its children rather than recursing into them.
 ///
@@ -163,9 +159,8 @@ std::vector<std::uint32_t> tail_of(const Branch& branch) {
 /// can settle without descending.
 bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix>& pool,
                 const Permutations& action, std::size_t target, SearchBudget& budget,
-                std::vector<Element>& scratch, std::vector<std::uint32_t>& position,
-                std::vector<Branch>& children, const Gf2Leaf<std::vector<Matrix>>* binary,
-                std::vector<Matrix>& products) {
+                std::vector<Element>& scratch, std::vector<Branch>& children,
+                const Gf2Leaf<std::vector<Matrix>>* binary, std::vector<Matrix>& products) {
     if (!budget.try_consume_node()) return false;
 
     const std::size_t dimension = node.span.dimension();
@@ -178,39 +173,14 @@ bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix
         return true;
     }
 
-    // Materialised once and then shared by every child, which is what keeps a wide
-    // node from costing `|candidates|` copies of `|candidates|`.
-    const CandidateList list = std::make_shared<std::vector<std::uint32_t>>(tail_of(node));
-    const std::vector<std::uint32_t>& candidates = *list;
-
-    for (std::size_t slot = 0; slot < candidates.size(); ++slot) {
-        position[candidates[slot]] = static_cast<std::uint32_t>(slot);
-    }
-    std::vector<char> struck(candidates.size(), 0);
-
-    for (std::size_t slot = 0; slot < candidates.size(); ++slot) {
-        if (struck[slot]) continue;
-        const std::uint32_t chosen = candidates[slot];
-
-        std::vector<std::uint32_t> frontier{chosen};
-        while (!frontier.empty()) {
-            const std::uint32_t reached = frontier.back();
-            frontier.pop_back();
-            for (const std::uint32_t element : node.residual) {
-                const std::uint32_t image = action.image(element, reached);
-                const std::uint32_t at = position[image];
-                if (at == kNotHere || struck[at]) continue;
-                struck[at] = 1;
-                frontier.push_back(image);
-            }
-        }
-        struck[slot] = 1;
+    for (std::uint32_t chosen = node.from; chosen < pool.size(); ++chosen) {
+        if (!least_in_orbit(action, node.residual, chosen, node.from)) continue;
 
         if (node.span.contains(pool[chosen], scratch)) continue;
 
         // Braced rather than default-constructed: `ReducedBasis` holds a field
         // reference and so has no empty state to start from.
-        Branch child{node.span, list, slot, {}};
+        Branch child{node.span, chosen, {}};
         child.span.try_add(pool[chosen]);
         for (const std::uint32_t element : node.residual) {
             if (child.span.contains(pool[action.image(element, chosen)], scratch)) {
@@ -220,7 +190,6 @@ bool expand_one(const Field& field, const Branch& node, const std::vector<Matrix
         children.push_back(std::move(child));
     }
 
-    for (const std::uint32_t index : candidates) position[index] = kNotHere;
     return false;
 }
 
@@ -265,11 +234,10 @@ bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matri
     std::size_t taken = 0;
 
     std::vector<Element> prefix_scratch;
-    std::vector<std::uint32_t> position(pool.size(), kNotHere);
     while (taken < frontier.size() && frontier.size() - taken < worker_count()) {
         const Branch node = std::move(frontier[taken]);
         ++taken;
-        if (expand_one(field, node, pool, action, target, budget, prefix_scratch, position, frontier,
+        if (expand_one(field, node, pool, action, target, budget, prefix_scratch, frontier,
                        binary, products)) {
             return true;
         }
@@ -283,14 +251,11 @@ bool expand_in_parallel(const Field& field, Branch root, const std::vector<Matri
         if (!budget.exhausted.load(std::memory_order_relaxed)) return;
 
         const Branch& node = frontier[taken + offset];
-        const std::size_t reached = node.span.dimension();
-        const std::size_t levels = target > reached ? target - reached + 1 : 1;
 
         std::vector<Element> scratch;
-        PositionsByDepth positions(levels, std::vector<std::uint32_t>(pool.size(), kNotHere));
         std::vector<Matrix> mine;
-        if (!expand_up_to_impl(field, node.span, pool, action, tail_of(node), node.residual, target,
-                               0, budget, scratch, positions, &found, binary, mine)) {
+        if (!expand_up_to_impl(field, node.span, pool, action, node.from, node.residual, target,
+                               0, budget, scratch, &found, binary, mine)) {
             return;
         }
         const std::lock_guard<std::mutex> keep(handover);
@@ -314,8 +279,6 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
     const Permutations action(field, stabiliser, subspace.front().rows(),
                               subspace.front().columns());
 
-    std::vector<std::uint32_t> candidates(pool.size());
-    std::iota(candidates.begin(), candidates.end(), std::uint32_t(0));
     std::vector<std::uint32_t> residual(stabiliser.size());
     std::iota(residual.begin(), residual.end(), std::uint32_t(0));
 
@@ -332,17 +295,14 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
 
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
     if (spread_over_cores && worker_count() > 1) {
-        Branch whole{root, std::make_shared<std::vector<std::uint32_t>>(candidates), 0, residual};
+        Branch whole{root, 0, residual};
         return expand_in_parallel(field, std::move(whole), pool, action, target, budget, binary,
                                   products);
     }
 
-    const std::size_t levels = target > root.dimension() ? target - root.dimension() + 1 : 1;
-    PositionsByDepth positions(levels, std::vector<std::uint32_t>(pool.size(), kNotHere));
-
     std::vector<Element> scratch;
-    return expand_up_to_impl(field, root, pool, action, candidates, residual, target, 0, budget,
-                             scratch, positions, nullptr, binary, products);
+    return expand_up_to_impl(field, root, pool, action, 0, residual, target, 0, budget, scratch,
+                             nullptr, binary, products);
 }
 
 }  // namespace bilinear_rank
