@@ -202,13 +202,19 @@ Factorisation by_satisfiability(const ModularField& field,
     return factorisation;
 }
 
-/// The full closed-form group of a product shape, or nothing.
+/// The closed-form symmetries of a product shape as generators, or nothing.
 ///
-/// Deliberately the enumerated group and not the generators: the canonical
-/// parent test walks every element, so generators would silently make the test
-/// wrong rather than slow. `matrix_multiplication_symmetries` refuses above a
-/// list it can hold, which is the honest answer at `<3,3,3>`.
-std::vector<bilinear_rank::Automorphism> full_product_group(
+/// This asked for the enumerated group while the parent test named an orbit by
+/// walking every element, where generators would have made the test wrong
+/// rather than slow. `PoolSetCanon` names the same orbit from a base and strong
+/// generating set and never walks the group, so the list is no longer needed
+/// and costs a presentation built from 216 elements instead of six: the same
+/// change measured 3.04 s to 1.12 s in `oracle_guided_search/`.
+///
+/// It also lifts a shape limit. `matrix_multiplication_symmetries` refuses
+/// above a list it can hold, which was the honest answer at `<3,3,3>` and is no
+/// longer the necessary one, since 4.7 million elements have nine generators.
+std::vector<bilinear_rank::Automorphism> product_group_generators(
     const ModularField& field, const std::vector<ModularMatrix>& slices, std::string& refusal) {
     std::size_t shape[3] = {0, 0, 0};
     if (!inferred_matmul_shape(slices.front().rows(), slices.front().columns(), slices.size(),
@@ -217,7 +223,8 @@ std::vector<bilinear_rank::Automorphism> full_product_group(
         return {};
     }
     try {
-        return bilinear_rank::matrix_multiplication_symmetries(field, shape[0], shape[1], shape[2]);
+        return bilinear_rank::matrix_multiplication_symmetry_generators(field, shape[0],
+                                                                        shape[1], shape[2]);
     } catch (const std::exception& error) {
         refusal = error.what();
         return {};
@@ -266,14 +273,15 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
     const std::vector<ModularMatrix> pool =
         bilinear_rank::all_rank_one_maps(field, slices.front().rows(), slices.front().columns());
 
-    // Canonical augmentation wants the whole group, the quotiented tree wants
-    // the stabiliser, and the two are different objects: the first is walked by
-    // the parent test and the second only has to fix the span. Asking for the
-    // wrong one is the way this reports a false refusal, so each route builds
-    // its own and neither is reused.
+    // Canonical augmentation wants the whole group and the quotiented tree wants
+    // the stabiliser, and the two are different objects: the first names an
+    // orbit and the second only has to fix the span. Asking for the wrong one is
+    // the way this reports a false refusal, so each route builds its own and
+    // neither is reused. Both take generators, and the first only recently
+    // could.
     std::vector<bilinear_rank::Automorphism> group;
     if (route == Route::CanonicalAugmentation) {
-        group = full_product_group(field, slices, factorisation.symmetry_refusal);
+        group = product_group_generators(field, slices, factorisation.symmetry_refusal);
         if (group.empty()) route = Route::Exhaustive;
     }
     if (route != Route::CanonicalAugmentation) {
