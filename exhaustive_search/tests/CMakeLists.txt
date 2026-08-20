@@ -27,3 +27,20 @@ add_executable(test_packed_generation test_packed_generation.cpp)
 target_link_libraries(test_packed_generation PRIVATE exhaustive_search descent_search
                                                      formats testing project_warnings)
 add_test(NAME packed_generation COMMAND test_packed_generation ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The order the general leaf visits a subspace in, asserted on its own. Neither
+# property it rests on — every string once, one digit by one — shows up in a
+# verdict, so a broken successor would come back as a wrong rank rather than as
+# a failure anywhere else.
+add_executable(test_reflected_gray_walk test_reflected_gray_walk.cpp)
+target_link_libraries(test_reflected_gray_walk PRIVATE exhaustive_search testing project_warnings)
+add_test(NAME reflected_gray_walk COMMAND test_reflected_gray_walk)
+
+# And the leaf built on it, against the rebuild it replaced, on the same span
+# over each of the three odd characteristics the fixtures carry. The Gray order
+# changes which rank-one basis comes back and may not change how many, which is
+# the leaf's whole verdict.
+add_executable(test_gray_walk_leaf test_gray_walk_leaf.cpp)
+target_link_libraries(test_gray_walk_leaf PRIVATE exhaustive_search descent_search
+                                                  formats testing project_warnings)
+add_test(NAME gray_walk_leaf COMMAND test_gray_walk_leaf ${PROJECT_SOURCE_DIR}/fixtures)

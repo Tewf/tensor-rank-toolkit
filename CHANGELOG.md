@@ -6,8 +6,38 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **The general-field leaf walks its subspace in base-`p` reflected Gray code
+  order**, so an element costs one row added or subtracted rather than a rebuild
+  from its base-`p` digits: `O(width)` field additions and no multiplication, in
+  place of `O(dim * width)` multiply-accumulates. The successor is Knuth's
+  Algorithm H, `[knuth2011]` §7.2.1.1, which names the digit to move in constant
+  time, in
+  [`exhaustive_search/reflected_gray_walk.h`](exhaustive_search/reflected_gray_walk.h);
+  the leaf itself moved into
+  [`exhaustive_search/subspace_walk.h`](exhaustive_search/subspace_walk.h).
+  Measured on one core at **2.52x** an element over GF(3) at 3x6 dimension 12,
+  **1.74x** over GF(5) and **1.58x** over GF(7), and the `dim` term is gone
+  rather than reduced: the rebuild rises 32 ns an element per dimension added
+  and the walk does not move. GF(2) is untouched and keeps its own packed walk
+  in [`gf2_leaf.h`](exhaustive_search/gf2_leaf.h).
+
+  **The order changed, so the leaf can hand back a different rank-one basis.**
+  Not a different verdict: the leaf answers whether `needed` independent
+  rank-one maps exist, which no reordering moves, and nothing asserted anywhere
+  pins a decomposition. The route it replaced is kept beside it and the two are
+  run against each other on the same span at every odd characteristic the
+  fixtures carry.
+
 ### Added
 
+- **`fixtures/f5_3x3.tensor`**, polynomial multiplication of 3 coefficients by 3
+  over GF(5), and the third characteristic in that directory. It ships for a
+  test rather than for a number: the general-field leaf walks a subspace by its
+  base-`p` digits and every other fixture is over GF(2) or GF(3), so a walk right
+  at `p = 3` and wrong at `p = 5` had nothing to fail against. Its rank is 5,
+  which `decide-rank` closes in one node.
 - **Six order-3 fixtures over GF(2), each aimed at a number somebody has
   published**: `gf32_multiplication` and `gf64_multiplication`, extending the
   field-extension family past the three this repository settles itself;
