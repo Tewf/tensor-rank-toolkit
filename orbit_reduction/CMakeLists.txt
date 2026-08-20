@@ -1,9 +1,11 @@
 # A change of coordinates on each operand preserves rank, so if it also fixes
 # the target subspace it maps solutions to solutions and only one member of each
-# orbit need be visited. The group, the orbits, and each consumer of them are
-# separate jobs, which is why this is six files and not one.
+# orbit need be visited. The group, the orbits, the rule that rejects a repeat,
+# and each consumer of them are separate jobs, which is why this is seven files
+# and not one.
 add_library(orbit_reduction STATIC automorphism.cpp group_construction.cpp orbit_search.cpp
-                                   orbit_heuristic.cpp pool_orbits.cpp orbit_cubes.cpp)
+                                   isomorph_rejection.cpp orbit_heuristic.cpp pool_orbits.cpp
+                                   orbit_cubes.cpp)
 target_include_directories(orbit_reduction PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # PUBLIC where a header of ours includes theirs: orbit_search.h reaches for

@@ -21,6 +21,16 @@ target_link_libraries(test_symmetry_agreement PRIVATE orbit_reduction descent_se
                                                       formats testing project_warnings)
 add_test(NAME symmetry_agreement COMMAND test_symmetry_agreement ${PROJECT_SOURCE_DIR}/fixtures)
 
+# The cheap rejection rule against the exact one. Two claims: the verdicts agree,
+# which is what a rule that removed a whole orbit would break, and no orbit of
+# `⟨2,2,2⟩` is emptied by the generator-only test — checked against a sabotaged
+# rule that empties orbits, so a green line here means something.
+add_executable(test_generator_rejection test_generator_rejection.cpp)
+target_link_libraries(test_generator_rejection PRIVATE orbit_reduction descent_search
+                                                       formats testing project_warnings)
+add_test(NAME generator_rejection COMMAND test_generator_rejection
+                                          ${PROJECT_SOURCE_DIR}/fixtures)
+
 # The same question for the heuristic rather than the tree: quotienting its pool
 # must not move where it stops. That is the argument orbit_heuristic.h makes, and
 # it had no test at all.

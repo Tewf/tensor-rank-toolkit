@@ -2,13 +2,13 @@
 
 #include "pool_orbits.h"
 
-#include <algorithm>
 #include <atomic>
 #include <mutex>
 #include <numeric>
 #include <optional>
 
 #include "gf2_leaf.h"
+#include "isomorph_rejection.h"
 #include "parallel.h"
 #include "rank_one_basis.h"
 #include "span_basis.h"
@@ -22,41 +22,6 @@ namespace {
 // vector lists, which is 32 768x less at `<4,4,4>` and is what lets this search
 // run at all on a shape whose pool is only addressed.
 using Permutations = PoolAction;
-
-/// Whether `point` is the least member of its orbit among the candidates still
-/// live, which is `[from, |pool|)`.
-///
-/// This replaces a `struck` array and a `position` table, both one word or one
-/// byte per pool element per depth. At `⟨4,4,4⟩` each was 17.2 GB against 16 GB
-/// of memory, so the quotient could not run there at all; this costs the orbit
-/// and nothing else.
-///
-/// **Breadth first, because `action` may be a generating set.** Applying each
-/// element once reaches part of the orbit and leaves the rest, which is sound
-/// and wastes exactly what the quotient is for.
-///
-/// **The `>= from` guard is the whole of the restriction.** The array version
-/// ignored images outside the candidate list, so the question has always been
-/// least-in-orbit *among the live candidates* rather than least outright.
-/// Without the guard a branch whose smaller twin was consumed by an ancestor is
-/// skipped, and the solutions under it go with it.
-bool least_in_orbit(const Permutations& action, const std::vector<std::uint32_t>& residual,
-                    std::uint32_t point, std::uint32_t from) {
-    std::vector<std::uint32_t> seen{point};
-    std::vector<std::uint32_t> frontier{point};
-    while (!frontier.empty()) {
-        const std::uint32_t reached = frontier.back();
-        frontier.pop_back();
-        for (const std::uint32_t element : residual) {
-            const std::uint32_t image = action.image(element, reached);
-            if (image >= from && image < point) return false;
-            if (std::find(seen.begin(), seen.end(), image) != seen.end()) continue;
-            seen.push_back(image);
-            frontier.push_back(image);
-        }
-    }
-    return true;
-}
 
 /// One branch per orbit: Covanov's Algorithm 3, lines 6 to 11.
 ///
@@ -98,8 +63,11 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
     bool found = false;
     for (std::uint32_t chosen = from; chosen < pool.size() && !found; ++chosen) {
         // Everything equivalent to this one is answered by trying this one, so
-        // only the least member of each orbit opens a branch.
-        if (!least_in_orbit(action, residual, chosen, from)) continue;
+        // only the least member of each orbit opens a branch — or, under
+        // `--orbit-test generators`, whatever no single element sends earlier,
+        // which is a superset of those. `isomorph_rejection.h` derives why the
+        // superset changes no verdict.
+        if (!opens_a_branch(action, residual, chosen, from)) continue;
 
         if (span.contains(pool[chosen], scratch)) continue;
 
@@ -176,7 +144,7 @@ bool expand_one(const Field& field, const Branch& node, const Candidates& pool,
     }
 
     for (std::uint32_t chosen = node.from; chosen < pool.size(); ++chosen) {
-        if (!least_in_orbit(action, node.residual, chosen, node.from)) continue;
+        if (!opens_a_branch(action, node.residual, chosen, node.from)) continue;
 
         if (node.span.contains(pool[chosen], scratch)) continue;
 
