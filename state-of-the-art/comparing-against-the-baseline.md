@@ -26,19 +26,20 @@ the caveat below before reading the middle column as agreement.
 
 | question | `cpd/skip-axis` (Java) | `cpd_search.py` (Python) | `decide-rank` (C++) |
 |---|---|---|---|
-| refute R = 6 | 25 200, **0.954 s** | 3 376, **30.45 s** | 25 399, **0.0362 s** |
+| refute R = 6 | 25 426, **0.954 s** | 3 376, **30.45 s** | 25 399, **0.0362 s** |
 | refute R = 6, quotiented | — | — | **648**, **0.0013 s** |
 | find 7 | 10 592, 0.407 s | — | 7 436, 0.0214 s |
 | whole sweep | ~1.385 s | — | **0.0554 s** |
 
 **Three readings, and only one of them is about being faster.**
 
-The Java baseline and the plain search here visit **25 200 nodes against 25 399**,
-0.8% apart. Two independently written searches agreeing that closely on a tree
-size is evidence they are the same algorithm, which is what both papers say they
-are. The 25x in wall clock is C++ against Java and a bit-packed leaf against a
-general one. **It is an implementation result and should not be reported as an
-algorithmic one.**
+The Java baseline and the plain search here visit **25 426 nodes against
+25 399**, and the 27 that separate them are accounted for one by one below. Two
+independently written searches agreeing that closely on a tree size is evidence
+they are the same algorithm, which is what both papers say they are. The 25x in
+wall clock is C++ against Java and a bit-packed leaf against a general one.
+**It is an implementation result and should not be reported as an algorithmic
+one.**
 
 The orbit quotient is the algorithmic difference, and it is on the same question:
 **648 nodes, 39x fewer than the baseline visits.** `[yang2025]` prunes by rank
@@ -49,13 +50,13 @@ The Python route is slower than both by three orders of magnitude and visits
 **7.5x fewer nodes than either**, which is the pruners doing real work in a
 language that cannot cash it.
 
-## The caveat that has to be closed before any of this is quoted
+## The caveat, closed
 
-**Their `work` counter and our `nodes` may not count the same event.** Ours
-counts a call to `descend`. Theirs is a list per depth and the numbers above are
-its sum. Until `CPD_DFS.java` has been read closely enough to say the two count
-the same thing, the 0.8% is a coincidence that has not been ruled out, not an
-agreement that has been established.
+The two counters were never known to count the same event, and until they were
+this page's middle column was a coincidence nobody had ruled out. They do, the
+closing corrected this page's own R = 6 figure from 25 200 to 25 426, and what
+survives is 27 nodes traceable to a single line:
+[`do-the-counters-agree.md`](do-the-counters-agree.md).
 
 ## What is not run yet
 

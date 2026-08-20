@@ -24,6 +24,7 @@ One file per question, then one per instrument, then where that leaves us.
 | [`what-is-missing.md`](what-is-missing.md) | the gaps, kept apart from the ones only another design would call gaps |
 | [`a-correction.md`](a-correction.md) | the claim this survey got wrong, and the search that would have caught it |
 | [`comparing-against-the-baseline.md`](comparing-against-the-baseline.md) | the baseline's own code, run here on a matched question, and what its numbers do and do not license saying |
+| [`do-the-counters-agree.md`](do-the-counters-agree.md) | whether their `work` and our `nodes` count the same event: they do, and closing it corrected one of the figures above |
 
 Full citations, with what each contributes:
 [`../references.md`](../references.md).
