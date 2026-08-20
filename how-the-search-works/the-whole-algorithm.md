@@ -40,9 +40,14 @@ descend(V, from):
         if G and not least_in_orbit(G, i, from): continue    orbit reduction
         W <- V + P[i]
         if dim W == dim V: continue        P[i] is already inside
-        if descend(W, i): return YES       i, not i+1
+        if descend(W, i): return YES       or i+1, see below
     return NO
 ```
+
+**`i` or `i + 1` is not a choice about reuse**, which this said until
+2026-08-20. The quotiented search passes `i` and the plain one `i + 1`, to the
+same tree: a map already inside `V` cannot raise the dimension, so the child
+drops it either way.
 
 **McKay replaces those two quotient lines rather than joining them** `[flag]`,
 and drops the suffix with them: it quotients by the stabiliser of *this* node

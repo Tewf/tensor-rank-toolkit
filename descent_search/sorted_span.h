@@ -58,8 +58,21 @@ class SortedSpan {
 
     std::size_t dimension() const { return dimension_; }
 
-    /// The fewest rank-one maps whose span contains this one, which is the
-    /// number of multiplications a basis of it costs.
+    /// The number of multiplications a basis of this span costs: the least
+    /// `sum of ranks` over its bases.
+    ///
+    /// **It is not the fewest rank-one maps whose span contains this one**, which
+    /// it said until 2026-08-20, and the difference is the whole soundness of a
+    /// pruning rule somebody will propose. It is an *upper* bound on that number
+    /// and can be strictly larger: over GF(2), `V = span(diag(1,1,0),
+    /// diag(0,1,1))` has every nonzero element of rank 2, so `cost(V) = 4`, while
+    /// `V` sits inside `span(E11, E22, E33)`, three rank-one maps.
+    ///
+    /// So `cost(V) <= k` **finds** a `k`-product algorithm and `cost(V) > k`
+    /// **refutes nothing**: the example above is a live solution at `k = 3` that
+    /// such a test would throw away. Only the finding direction is used, and it
+    /// was measured not to fire:
+    /// [`../exhaustive_search/what-a-node-cannot-tell-you.md`](../exhaustive_search/what-a-node-cannot-tell-you.md).
     std::size_t cost() const;
 
     /// Whether the span is covered by its own rank-one elements, which is the

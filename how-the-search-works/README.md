@@ -38,7 +38,7 @@ descend(V, from):
         if G is non-empty and not least_in_orbit(G, i, from): continue
         W <- V + P[i]
         if dim W == dim V: continue             P[i] already inside
-        if descend(W, i): return YES            i, not i+1: reuse is allowed
+        if descend(W, i): return YES            or i+1; the child skips it either way
     return NO
 
 leaf(V):                                        has V a rank-one basis?
