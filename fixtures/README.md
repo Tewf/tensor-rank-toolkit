@@ -57,6 +57,18 @@ file along, in [`published-targets.md`](published-targets.md): two more field
 extensions, cyclic convolution of length 7, and the three matrix multiplication
 formats `[wang2026]` leaves open.
 
+## The one that is not for a number
+
+`f5_3x3.tensor` ships for a *test*, and is the only fixture here that does.
+Everything else here is over GF(2) or GF(3), so the general-field leaf, which
+walks a subspace by its base-`p` digits in
+[`subspace_walk.h`](../exhaustive_search/subspace_walk.h), was only ever
+exercised at one odd prime, and a walk right at `p = 3` and wrong at `p = 5` had
+nothing to fail against. Written by `make-tensor --polynomial 5 3 3`, like the
+rest. Its rank is 5, which is `n+m-1` and so optimal by Winograd's bound,
+reachable by interpolation because GF(5) has at least `n+m-2 = 4` elements;
+`decide-rank` closes it in one node.
+
 ## The one that is not concise
 
 Every other `.tensor` here has all three flattenings at full rank, so it is

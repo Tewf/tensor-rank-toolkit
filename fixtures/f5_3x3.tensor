@@ -1,0 +1,35 @@
+# Polynomial multiplication of 3 coefficients by 3, over GF(5).
+# Slice i is the matrix of the bilinear form producing output coefficient c_i,
+# so slice i has a 1 at (j,k) exactly when j+k == i. Naive rank is 3*3 = 9.
+#
+# The third characteristic in this directory, and it ships for that. Every other
+# tensor here is over GF(2) or GF(3), so the general-field leaf was only ever
+# exercised at one odd prime, and the walk of a subspace over GF(p) is where the
+# base-p digits matter: see exhaustive_search/subspace_walk.h.
+#
+# Its rank is 5, which is 3+3-1, so it is optimal and known to be: Winograd's
+# n+m-1 is reachable by interpolation once the field has at least n+m-2 = 4
+# elements, and GF(5) has five. decide-rank agrees, from the tensor and in one
+# node, its flattening bound of 5 meeting the 5 products it finds.
+field 5
+shape 5 3 3
+
+1 0 0
+0 0 0
+0 0 0
+
+0 1 0
+1 0 0
+0 0 0
+
+0 0 1
+0 1 0
+1 0 0
+
+0 0 0
+0 0 1
+0 1 0
+
+0 0 0
+0 0 0
+0 0 1

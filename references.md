@@ -518,6 +518,25 @@ independence functions*, Proc. LMS (3) **7** (1957), 300-320, and J. Edmonds,
 127-136. Those two are named here and cited nowhere, because the numbered result
 the code needs was read in Oxley and not in them.
 
+**`knuth2011`**: D. E. Knuth. *The Art of Computer Programming*, Volume 4A:
+*Combinatorial Algorithms, Part 1*. Addison-Wesley, 2011. **§7.2.1.1, Algorithm
+H** is loop-free reflected mixed-radix Gray generation: it visits every
+mixed-radix digit string exactly once, changing one digit by `+1` or `-1` per
+step, and names the digit to change in constant time through an array of focus
+pointers rather than by scanning. Implemented at one radix, a field's
+characteristic, in
+[`reflected_gray_walk.h`](exhaustive_search/reflected_gray_walk.h).
+
+**The order is why the general leaf costs one row addition an element.** Every
+element of a `dim`-dimensional subspace over `GF(p)` is a digit string read as
+coefficients on a basis; counting in base `p` moves several digits at a step and
+forces the combination to be rebuilt from the basis, whereas this order moves
+one, so the update is a row added or subtracted with no field multiplication in
+it. **Table 1 of §7.2.1.1** is the reflected code itself and the ± property is
+its defining one; the loop-free part is Algorithm H's, and
+[`tests/test_reflected_gray_walk.cpp`](exhaustive_search/tests/test_reflected_gray_walk.cpp)
+asserts both against the implementation.
+
 ## Deciding rank with a solver
 
 **`heule2021`**: M. J. H. Heule, M. Kauers, M. Seidl. *New ways to multiply
