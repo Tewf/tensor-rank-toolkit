@@ -38,6 +38,12 @@
 /// cheaper side is the crossover
 /// [`../exhaustive_search/rank_one_basis.h`](../exhaustive_search/rank_one_basis.h)
 /// already decides per call: `p^dim` against `|pool|`.
+///
+/// **It is not the exact search's leaf**, which is the reading `has_rank_one_basis`
+/// invites. That leaf's walk route visits the same elements, stops at `dim V` of
+/// them, and asks a rank-one test where this asks a Gaussian rank; and at a *node*
+/// the cost identity was measured not to fire. Both verdicts, and the one place
+/// this does belong: [`../how-the-search-works/what-to-wire.md`](../how-the-search-works/what-to-wire.md).
 namespace bilinear_rank {
 
 class SortedSpan {

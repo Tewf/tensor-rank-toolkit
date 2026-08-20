@@ -40,8 +40,8 @@ famous_tensors/          the tensors the literature argues about, and where each
                          search stops on them
 reproduce/               regenerates every published number, with its provenance
 references.md            every paper cited anywhere here, by the keys the code uses
-how-the-search-works/    the exact search in pseudocode, every parameter, and
-                         which of the five pieces usually named are wired in
+how-the-search-works/    the exact search in pseudocode, every parameter, all
+                         five pieces composed, and the verdict on wiring each
 state-of-the-art/        where the research front is, and which parts of it are here
 positioning/             what this library adds to it, and what it does not
 MEASURING.md             how a timing here was taken, and what it does not mean
