@@ -22,16 +22,22 @@ Measured on this machine, one core, at the default node limit:
 | tensor | shape | pool | exhaustive | SAT |
 |---|---|---|---|---|
 | `matmul_2x2x2` | 4x4 over GF(2) | 225 | 7, 1.01 s, 11.9 MB | **7, 0.54 s, 6.0 MB** |
-| `gf16_multiplication` | 4x4 over GF(2) | 225 | **12**, an upper bound, 9 m 52 s | **9, the rank, 2 m 12 s** |
+| `gf16_multiplication` | 4x4 over GF(2) | 225 | **12**, an upper bound, 1 m 31 s | **9, the rank, 2 m 12 s** |
 | `<4,4,4>` | 16x16 over GF(2) | 4 294 836 225 | **refused**: 8.2 TiB against 2.0 GiB | runs |
 
 Two rows carry the argument.
 
 On `gf16_multiplication` the routes differ in more than speed: they return
-**different answers**. The solver reports 9, the rank. The pool route spends
-four and a half times as long, reports 12, and reports it as an *upper bound*,
-because its node budget ran out at 9, 10 and 11 and a question nobody finished
-asking is not a question answered no. That is `minimal` doing its job.
+**different answers**. The solver reports 9, the rank. The pool route reports
+12, and reports it as an *upper bound*, because its node budget ran out at 9,
+10 and 11 and a question nobody finished asking is not a question answered no.
+That is `minimal` doing its job.
+
+**Read that row's clock carefully.** The pool route used to take four and a half
+times the solver's, and the GF(2) leaf and packed generation cut it to 1 m 31 s.
+It has not won anything: it finishes first by *giving up* first, still at 12
+against a true 9. What improved is the rate, 6.5x of it, and the rate is what
+decides the rows a search is allowed to finish.
 
 On `<4,4,4>` the pool route cannot begin, and says so in milliseconds; the
 solver starts on the same tensor without forming anything. Neither finishes it,
