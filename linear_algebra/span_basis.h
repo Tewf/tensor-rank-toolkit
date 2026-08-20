@@ -55,12 +55,27 @@ public:
     /// element per leaf, and the allocation behind the plain overload dominated
     /// everything else it did.
     bool contains(const MatrixOver<Field>& candidate, std::vector<Element>& scratch) const {
-        scratch.assign(candidate.data(), candidate.data() + candidate.entry_count());
+        return contains(candidate.data(), candidate.entry_count(), scratch);
+    }
+
+    /// The same again over a contiguous run of entries, which is what a matrix
+    /// row already is.
+    bool contains(const Element* candidate, std::size_t length,
+                  std::vector<Element>& scratch) const {
+        scratch.assign(candidate, candidate + length);
         reduce(scratch);
         for (const Element& entry : scratch) {
             if (!field_->isZero(entry)) return false;
         }
         return true;
+    }
+
+    /// One row, addressed where it lies: the row-space queries ask this per row
+    /// of every matrix they compare, and `MatrixOver::row` copies to hand one
+    /// over.
+    bool contains_row(const MatrixOver<Field>& matrix, std::size_t row,
+                      std::vector<Element>& scratch) const {
+        return contains(matrix.data() + row * matrix.columns(), matrix.columns(), scratch);
     }
 
     /// Add the candidate if it is outside the span, and say whether it was.
