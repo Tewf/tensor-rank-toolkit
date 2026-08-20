@@ -96,6 +96,12 @@ TOOLS = [
             {"flag": "--general-leaf", "kind": "switch",
              "label": "general field path at every leaf",
              "note": "Same tree, same nodes, same answer, and slower."},
+            {"flag": "--leaf-route", "kind": "choice",
+             "values": ["auto", "scan", "walk"],
+             "label": "leaf route",
+             "note": "auto takes the cheaper by count and is right on every "
+                     "question measured. scan and walk force one, for timing "
+                     "them against each other on a single question."},
             dict(SYMMETRY), dict(THREADS), dict(MEMORY),
         ],
     },

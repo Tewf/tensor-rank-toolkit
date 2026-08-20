@@ -24,6 +24,14 @@
 /// its life. For F2 5x5 it is the other way round: 961 pool elements against
 /// 4 096 subspace elements. So the cheaper route is chosen per call rather than
 /// picked once.
+///
+/// **Cheaper is decided by count, and that is now measured rather than assumed.**
+/// Counting treats a membership test and a rank test as the same price, which
+/// they are not; forced onto each route in turn the rule still picks correctly on
+/// every question timed, including one where it sends a 225-element pool to the
+/// walk and the walk wins. Weighting the comparison by any single cost ratio
+/// breaks that question:
+/// [`which-leaf-route-is-cheaper.md`](which-leaf-route-is-cheaper.md).
 namespace bilinear_rank {
 
 /// Up to `needed` independent rank-one maps inside `span`. Fewer than `needed`
@@ -54,6 +62,25 @@ namespace bilinear_rank {
 /// node limit bounds neither: see `SearchBudget::leaf_element_limit` in
 /// [`exhaustive_search.h`](exhaustive_search.h) for the measurement that says by
 /// how much.
+/// Which of the two routes a leaf takes, when a run wants to say rather than ask.
+///
+/// **It exists so the two can be timed on the same question**, for the reason
+/// `set_gf2_leaf_offered` exists: the rule below picks one route per call, so
+/// neither can be priced against the other without forcing it, and forcing it on
+/// a second question prices two questions instead of two routes.
+///
+/// `Auto` is the rule. `Scan` and `Walk` name a route, and `Walk` is a request
+/// rather than an instruction: the subspace cannot be walked when `p^dim`
+/// overflows the count, and a run asking for the impossible gets the pool scan
+/// rather than a refusal, because this is a measurement switch and not a
+/// promise.
+///
+/// Process-wide, like `set_worker_count`, read once per leaf, written by nothing
+/// but a command line.
+enum class LeafRoute { Auto, Scan, Walk };
+void set_leaf_route(LeafRoute route);
+LeafRoute leaf_route();
+
 template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
                                       const Candidates& pool, std::size_t needed,
