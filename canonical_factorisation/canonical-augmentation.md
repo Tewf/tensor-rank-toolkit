@@ -8,50 +8,61 @@ narrowings, one of which works, are in
 subspace a group-invariant canonical parent and accept an augmentation only from
 that parent's class, so each class is reached exactly once with **no memory** of
 what was generated. It is the standard fix for the duplication the plain tree
-leaves, and `oracle_guided_search/` measures it at **1982x fewer nodes** when
+leaves, and `oracle_guided_search/` measures it at **22 779x fewer nodes** when
 *counting* solution subspaces.
 
-Deciding is not counting, and the first wiring of it lost by 129x. Fixing the
-part that was mine to fix took most of that back. On `matmul_2x2x2`, over the
-whole sweep from the floor:
+Deciding is not counting, and the first wiring of it lost by 129x. Two fixes
+since have taken most of that back. On `matmul_2x2x2`, over the whole sweep from
+the floor:
 
-| route | group | nodes | time |
+| route | group given | nodes | time |
 |---|---|---|---|
-| `exhaustive` | 6, the stabiliser | 3815 | **0.18 s** |
-| `canonical`, as first wired | 216, the full product group | 1057 | 24.62 s |
-| `canonical`, with an early exit | 216 | **235** | 2.76 s |
+| `exhaustive` | 6 generators, the stabiliser | 3815 | **0.0102 s** |
+| `canonical`, as first wired | 216 elements, enumerated | 1057 | 24.62 s |
+| `canonical`, with an early exit | 216 elements | 235 | 2.76 s |
+| `canonical`, from generators | 6 generators | **72** | **0.263 s** |
 
-The early exit is the whole of that 9x. The enumerator was written to *count*
-solution subspaces, so it finishes every level; a rank search only asks whether
-the level is empty, and the level that answers does not have to be finished. It
-is now an argument, off by default, because a count that stopped early is not a
-count.
+The early exit was the first 9x. The enumerator was written to *count* solution
+subspaces, so it finishes every level; a rank search only asks whether the level
+is empty, and the level that answers does not have to be finished. It is an
+argument now, off by default, because a count that stopped early is not a count.
 
-**What is left is the honest result: 16.2x fewer nodes for 15x the wall clock.**
-The quotient works, and pays for itself in the only currency that does not depend
-on the machine. What it does not pay for is its own invariant.
+**The second 10.5x was a comment that outlived its reason.** This route handed
+the parent test the whole 216-element group, deliberately, because the test named
+an orbit by walking every element and generators would have made it wrong rather
+than slow. `PoolSetCanon` replaced that walk with a base and strong generating
+set and the comment stayed, so the route kept paying to enumerate a group in
+order to hand it to something that immediately rebuilt six generators from it.
 
-## The invariant, not the method
+## What it costs now, which is a different shape of answer
 
-`canonical_subspace` finds a canonical code by walking the whole group and taking
-the least, so one parent test costs `|G|` reductions. At 216 elements that is
-about thirty-six times the cost of a plain node, and 16x fewer nodes does not
-cover it.
+`--floor 7` visits 14 nodes and `--floor 6` visits 72, for 0.2068 s and 0.2530 s.
+Two points, one line: **0.196 s to build the presentation, then 0.795 ms a node.**
 
-**That is a property of this implementation and not of canonical augmentation.**
-`oracle_guided_search/deduplication-cost.md` measured the same thing while
-counting, at 1982x fewer nodes and only 1.6x faster, and names the fix: a real
-canonical labelling with **refinement**, which is `nauty`'s actual contribution
-rather than the augmentation scheme built on top of it. That would make the code
-sublinear in `|G|`. With 16x fewer nodes already in hand, it is the one change
-that would plausibly turn this route from losing to winning, and it is the
-substantial piece of work neither module has done.
+A plain node is 2.66 us. So a canonical node costs **299x** a plain one, and the
+route must remove more than 299x the nodes to break even. It removes 53x. That is
+the whole account, and the gap is 5.6x plus an entry fee.
 
-So the route ships behind a flag, never by default, with a slow test asserting it
-still reaches 7, still engages rather than falling back, and still visits strictly
-fewer nodes than the plain route. **A wired route known to lose is worth more than
-an unwired one somebody will propose again**, and it is worth more still when the
-reason it loses is named and fixable.
+**The gap widened while both halves improved.** This route is 10.5x faster than
+the file used to record and lost anyway, because the packed GF(2) leaf made a
+plain node 18x cheaper meanwhile. **An optimisation to the common path raises the
+bar for every quotient competing with it**, which is the reusable lesson.
+
+## Where it could still win
+
+The node saving grows with the group and the group grows fast with the shape, so
+299x is not out of reach the way it was behind a `|G|` walk. What stopped bigger
+shapes being tried was this file's own choice to enumerate, since
+`matrix_multiplication_symmetries` refuses above a list it can hold. From
+generators there is no refusal, and `<3,3,3>`'s 4.7 million elements have nine.
+Whether the crossing arrives before its pool of 261 121 becomes the binding cost
+is unmeasured, and is the open question this route now poses.
+
+So it ships behind a flag, never by default, with a slow test asserting it still
+reaches 7, still engages rather than falling back, and still visits strictly
+fewer nodes than the plain route. **A wired route known to lose is worth more
+than an unwired one somebody will propose again**, and it is worth more still
+when the reason it loses is a number rather than an impression.
 
 **The full `GL(n) x GL(m)` cannot work.** The sandwiching action `M -> mu M nu`
 is *transitive* on nonzero rank-one matrices: given `u v^T` and `u' v'^T`, take
