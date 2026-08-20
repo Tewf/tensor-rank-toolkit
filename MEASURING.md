@@ -79,6 +79,16 @@ regression and a noisy afternoon into the same red tick. Timings are measured by
 hand, on the reference machine, under this protocol, and are quoted as evidence
 of an order of magnitude rather than of a digit.
 
+## A number taken on the card
+
+None of the protocol above transfers to a CUDA kernel unexamined: the baseline
+has to be the path the kernel would replace *as it ships today*, a host figure
+has to be quoted at one core and at twelve, the first launch is discarded, the
+`Containerfile` cannot reproduce any of it, and the survivor sets are compared
+against the CPU's before a single second is reported. Five rules, one per way
+this goes wrong, in
+[`gpu_leaf/measuring-on-the-card.md`](gpu_leaf/measuring-on-the-card.md).
+
 ## One run at a time
 
 Two measurements sharing a machine measure each other. Nothing else may be

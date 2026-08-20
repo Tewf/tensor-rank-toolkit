@@ -4,8 +4,14 @@ NOTICE: scope of the MIT licence, and credit for material that is not mine
 The MIT LICENSE in this repository covers **my own work only**: the C++ in
 linear_algebra/, formats/, cli/, testing/, run_limits/, map_construction/,
 descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
-integer_programme/, matrix_sparsification/, satisfiability/, curve_bounds/ and
-oracle_guided_search/, together with the fixtures and the site.
+integer_programme/, matrix_sparsification/, satisfiability/, curve_bounds/,
+rank_metric_bound/, oracle_guided_search/, pencil_rank/ and
+canonical_factorisation/, the CUDA in gpu_leaf/, the Python in web_interface/
+and reproduce/, together with the fixtures and the site.
+
+The list is every directory CMakeLists.txt adds, and it is written out rather
+than summarised because a folder missing from it is a folder whose licence this
+file does not state. Four were missing until 2026-08-20.
 
 It does **not** cover, and this repository does **not** redistribute, the
 published papers the algorithms come from. **references.md** names every one of

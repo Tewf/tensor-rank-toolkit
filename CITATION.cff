@@ -6,12 +6,13 @@ abstract: >-
   and over the rationals, built on Givaro: a descent heuristic, a complete
   exhaustive search, quotienting by symmetry, SAT and SMT encodings of the rank
   question with DRAT proof checking, operator sparsification, and upper bounds
-  read off an algebraic curve. Every count is computed in exact arithmetic and
-  nothing is ever a float, because a search over ranks and over counts of
-  nonzeros gives a different answer when it is nearly right.
+  read off an algebraic curve, with a CUDA leaf scan measured against the host
+  path it would replace. Every count is computed in exact arithmetic and nothing
+  is ever a float, because a search over ranks and over counts of nonzeros gives
+  a different answer when it is nearly right.
 type: software
-version: 0.1.0
-date-released: "2026-08-18"
+version: 0.2.0
+date-released: "2026-08-20"
 license: MIT
 repository-code: "https://github.com/Tewf/tensor-rank-toolkit"
 authors:
