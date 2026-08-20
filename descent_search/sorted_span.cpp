@@ -28,14 +28,16 @@ SortedSpan::SortedSpan(const Field& field, const std::vector<Matrix>& slices,
     require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
                  combinations, sizeof(std::uint8_t));
     std::vector<std::uint8_t> rank_of(combinations, 0);
+    std::vector<int64_t> coefficients;
+    Matrix combination;
     for (std::size_t index = 1; index < combinations; ++index) {
         if (index < ranks_without_last.size()) {
             rank_of[index] = static_cast<std::uint8_t>(ranks_without_last[index]);
             continue;
         }
-        const Matrix element = linear_combination(
-            field, slices, coefficient_vector(index, slices.size(), characteristic));
-        rank_of[index] = static_cast<std::uint8_t>(linear_algebra::rank(field, element));
+        coefficient_vector_into(index, slices.size(), characteristic, coefficients);
+        linear_combination_into(field, slices, coefficients, combination);
+        rank_of[index] = static_cast<std::uint8_t>(linear_algebra::rank(field, combination));
     }
 
     // The greedy, with the sort replaced by a pass per rank. Ascending rank and,
@@ -47,9 +49,9 @@ SortedSpan::SortedSpan(const Field& field, const std::vector<Matrix>& slices,
         for (std::size_t index = 1; index < combinations; ++index) {
             if (rank_of[index] != rank) continue;
             if (span.dimension() == dimension_) break;
-            const Matrix element = linear_combination(
-                field, slices, coefficient_vector(index, slices.size(), characteristic));
-            span.try_add(element);
+            coefficient_vector_into(index, slices.size(), characteristic, coefficients);
+            linear_combination_into(field, slices, coefficients, combination);
+            span.try_add(combination);
         }
         reached_.push_back(span.dimension());
     }

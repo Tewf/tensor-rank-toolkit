@@ -79,8 +79,9 @@ std::vector<Matrix> all_rank_one_maps(const Field& field, std::size_t rows, std:
 bool row_space_contains(const Field& field, const Matrix& outer, const Matrix& inner) {
     linear_algebra::SpanBasis<Field> rows(field, outer.columns());
     for (std::size_t row = 0; row < outer.rows(); ++row) rows.try_add(outer.row(row));
+    std::vector<Element> scratch;
     for (std::size_t row = 0; row < inner.rows(); ++row) {
-        if (!rows.contains(inner.row(row))) return false;
+        if (!rows.contains_row(inner, row, scratch)) return false;
     }
     return true;
 }

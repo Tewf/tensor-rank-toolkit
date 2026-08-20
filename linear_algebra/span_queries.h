@@ -23,8 +23,9 @@ bool spans_all(const Field& field, const std::vector<MatrixOver<Field>>& spannin
     if (spanning_set.empty()) return false;
     SpanBasis<Field> span(field, spanning_set.front().entry_count());
     for (const MatrixOver<Field>& element : spanning_set) span.try_add(element);
+    std::vector<typename Field::Element> scratch;
     for (const MatrixOver<Field>& target : targets) {
-        if (!span.contains(target)) return false;
+        if (!span.contains(target, scratch)) return false;
     }
     return true;
 }
@@ -46,11 +47,12 @@ bool same_row_space(const Field& field, const MatrixOver<Field>& left,
     for (std::size_t row = 0; row < right.rows(); ++row) right_span.try_add(right.row(row));
     if (left_span.dimension() != right_span.dimension()) return false;
 
+    std::vector<typename Field::Element> scratch;
     for (std::size_t row = 0; row < right.rows(); ++row) {
-        if (!left_span.contains(right.row(row))) return false;
+        if (!left_span.contains_row(right, row, scratch)) return false;
     }
     for (std::size_t row = 0; row < left.rows(); ++row) {
-        if (!right_span.contains(left.row(row))) return false;
+        if (!right_span.contains_row(left, row, scratch)) return false;
     }
     return true;
 }
