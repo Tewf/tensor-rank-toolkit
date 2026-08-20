@@ -8,6 +8,36 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **The GF(2) leaf's pool scan carries a residual instead of reducing every
+  element.** Reduction modulo a subspace is linear, so `reduce(x ^ d)` is
+  `reduce(x) ^ reduce(d)`; the pool is the outer-product grid, so for a fixed
+  left mask two elements whose right masks differ in one bit differ by one of
+  only `columns` patterns. Reducing those once per left leaves one exclusive-or
+  and one zero test an element, the element is never formed, and the dimension
+  leaves the inner loop entirely. Survivors are collected in Gray order, sorted
+  per left and only then offered to the greedy, so the answer is bit-identical
+  rather than merely equivalent — the same argument
+  [`gpu_leaf/why-the-answer-is-the-same.md`](gpu_leaf/why-the-answer-is-the-same.md)
+  already makes for the kernel. The vector lists are now built whether or not the
+  packed table fits, since they cost 2 KB at 9x9 and were the only thing keeping
+  this off the shapes anyone runs.
+
+- **Two published figures were withdrawn as artefacts rather than measurements.**
+  `canonical-augmentation.md` read a two-point line as a 0.196 s presentation fee
+  when the two points sit at different targets, where a node costs seventeen
+  times more; the presentation measures 0.013 s. And
+  `comparing-against-the-baseline.md` published the baseline's deepest `work`
+  level as if it were the array's sum, making the agreement look like 0.8% when
+  it is 0.106%. Both corrections moved this repository's own numbers, not
+  somebody else's.
+
+- **The GPU harness is compiled on every build and linked on none.** It had not
+  compiled since `Gf2Leaf` gained a `field` argument, on any machine, with the
+  suite green throughout, because the directory was only read where the CUDA
+  toolkit was found and no machine that builds this has `nvcc` on its PATH. A
+  directory nothing compiles is a directory that drifts, and its numbers were
+  being quoted meanwhile.
+
 - **The general-field leaf decides rank one without computing a rank**, and its
   per-element path now allocates nothing at all. `linear_algebra::is_rank_one` in
   [`linear_algebra/measures.h`](linear_algebra/measures.h) takes a pointer and a
