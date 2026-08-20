@@ -70,8 +70,14 @@ class SortedSpan {
     ///
     /// So `cost(V) <= k` **finds** a `k`-product algorithm and `cost(V) > k`
     /// **refutes nothing**: the example above is a live solution at `k = 3` that
-    /// such a test would throw away. Only the finding direction is used, and it
-    /// was measured not to fire:
+    /// such a test would throw away.
+    ///
+    /// **It is not monotone either, and the same example shows it.** Adjoining
+    /// the rank-one `diag(1,0,0)` to that plane gives `span(E11, E22, E33)`:
+    /// `cost` falls from 4 to 3 while the dimension rises from 2 to 3. So a
+    /// search *can* reach its target's cost before it reaches its target's
+    /// dimension, which is the one way this could shorten a branch. What it was
+    /// measured never to do is fall far enough, soon enough:
     /// [`../exhaustive_search/what-a-node-cannot-tell-you.md`](../exhaustive_search/what-a-node-cannot-tell-you.md).
     std::size_t cost() const;
 

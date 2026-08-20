@@ -98,6 +98,19 @@ void cost_is_not_the_covering_number() {
     check::equal("counterexample: no rank-one basis",
                  static_cast<long long>(filtration.has_rank_one_basis()), 0LL);
 
+    // And it is not monotone: adjoining one rank-one map raises the dimension and
+    // *lowers* the cost, which is the only way this quantity could ever end a
+    // branch early. Pinned because the search's own page denied it until
+    // 2026-08-20 while its measurements showed it.
+    std::vector<Matrix> extended = plane;
+    extended.push_back(diagonal(1, 0, 0));
+    const bilinear_rank::SortedSpan grown(field, extended);
+    check::equal("counterexample: dimension rose",
+                 static_cast<long long>(grown.dimension()), 3LL);
+    check::equal("counterexample: cost fell", static_cast<long long>(grown.cost()), 3LL);
+    check::equal("counterexample: now a rank-one basis",
+                 static_cast<long long>(grown.has_rank_one_basis()), 1LL);
+
     // And yet it lies inside the span of three rank-one maps, so a search asking
     // k = 3 has a solution here that `cost(V) > k` would have refused.
     linear_algebra::SpanBasis<Field> cover(field, 9);
