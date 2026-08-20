@@ -18,6 +18,10 @@
 /// - **Scan the pool**, testing each rank-one map for membership. Costs
 ///   `|pool|` membership tests. This is what the paper writes, `H ← G ∩ V`.
 /// - **Walk the subspace**, testing each of its `p^dim` elements for rank one.
+///   [`subspace_walk.h`](subspace_walk.h) over a general field,
+///   [`gf2_leaf.h`](gf2_leaf.h) over GF(2); both visit the elements in an order
+///   where consecutive ones differ by one basis row, so forming one is an
+///   addition rather than a rebuild from its digits.
 ///
 /// For `⟨3,3,3⟩` at dimension 11 that is 2 048 rank computations against
 /// 261 121 membership tests, and the leaf is where an exhaustive search spends
@@ -50,7 +54,7 @@ namespace bilinear_rank {
 /// **`binary` is the GF(2) case of both routes**, in
 /// [`gf2_leaf.h`](gf2_leaf.h), which is where the search spends its life over
 /// the field most fixtures here are written over. Passing `nullptr` is the
-/// general path, unchanged and answering for every other field; the choice
+/// general path, which answers for every other field; the choice
 /// between the two routes is made here either way, so the two fields cannot
 /// come to disagree about what a leaf is. It defaults to `nullptr` so that a
 /// caller which has not built one, such as
