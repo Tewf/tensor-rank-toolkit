@@ -91,8 +91,9 @@ struct Plateau {
         // Downhill first, and a strict improvement earns a fresh depth: the
         // plateau it may now be standing on is a different one.
         std::vector<std::vector<Matrix>> level;
+        std::vector<Element> scratch;
         for (const Matrix& candidate : candidates) {
-            if (span.contains(candidate)) continue;
+            if (span.contains(candidate, scratch)) continue;
 
             std::vector<Matrix> attempt = minimum_weight_basis_with(field, slices, candidate, known);
             const std::size_t reached = linear_algebra::multiplication_count(field, attempt);

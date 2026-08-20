@@ -90,8 +90,9 @@ std::vector<std::size_t> survivors_after(const Field& field, const std::vector<M
     for (std::size_t gone = 0; gone <= step; ++gone) trials.forget(queue[gone]);
 
     std::vector<std::size_t> survivors;
+    std::vector<Element> scratch;
     for (std::size_t later = step + 1; later < queue.size(); ++later) {
-        if (reached.contains(candidates[queue[later]])) {
+        if (reached.contains(candidates[queue[later]], scratch)) {
             trials.forget(queue[later]);
         } else {
             survivors.push_back(queue[later]);
@@ -123,9 +124,10 @@ std::vector<Matrix> improving_over(const Field& field, const std::vector<Matrix>
         for (const Matrix& kept : selected) span.try_add(kept);
 
         bool pruned = false;
+        std::vector<Element> scratch;
         for (std::size_t step = 0; step < remaining.size(); ++step) {
             const Matrix& candidate = candidates[remaining[step]];
-            if (span.contains(candidate)) continue;
+            if (span.contains(candidate, scratch)) continue;
 
             const std::vector<Matrix>& attempt =
                 trial_for(field, slices, known, candidates, remaining, step, trials);
@@ -168,10 +170,11 @@ std::vector<Matrix> minimise_rank(const Field& field, std::vector<Matrix> slices
         std::vector<std::size_t> known = span_element_ranks(field, slices);
         ReducedBasis span = linear_algebra::span_of(field, slices);
         bool pruned = false;
+        std::vector<Element> scratch;
 
         for (std::size_t step = 0; step < remaining.size(); ++step) {
             const Matrix& candidate = candidates[remaining[step]];
-            if (span.contains(candidate)) continue;
+            if (span.contains(candidate, scratch)) continue;
 
             const std::vector<Matrix>& attempt =
                 trial_for(field, slices, known, candidates, remaining, step, trials);
