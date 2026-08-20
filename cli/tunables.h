@@ -94,6 +94,12 @@ struct Tunables {
     /// --solver-timeout`. It does not reach the built-in, which has no clock.
     std::size_t ilp_time_limit_seconds = 300;
 
+    /// Elements below which a bulk question stays on the host whatever
+    /// `device_order` says, because a launch costs more than the work.
+    /// PROVISIONAL: arithmetic on a conventional ten-microsecond launch against
+    /// a card measured at 7.4e9 elements a second, neither figure taken here.
+    std::size_t device_launch_floor{100000};
+
     /// Which SAT solver is asked first, of those on `PATH`. kissat leads
     /// because it is the strongest on unsatisfiable instances, and an
     /// unsatisfiable instance is where a lower bound lives. Fills
@@ -109,6 +115,13 @@ struct Tunables {
     /// (`integer_programme/solver_chain.h`), from `curve-bounds` and from
     /// `list-solvers`, which prints the order that would actually run.
     std::vector<std::string> ilp_backend_order{"gurobi", "cbc", "glpk", "lp_solve", "built-in"};
+
+    /// Which processor answers a bulk question first, of those this build can
+    /// reach. Fills `run_limits::set_device_order`
+    /// (`run_limits/device.h`). **No GPU backend is compiled in**, so today this
+    /// only ever resolves to the host, and `decide-rank` says so on its device
+    /// line rather than leaving a reader to wonder.
+    std::vector<std::string> device_order{"gpu", "cpu"};
 };
 
 /// The count-valued tunables, under the names a file spells them with.
@@ -121,6 +134,7 @@ inline const std::vector<std::pair<std::string, std::size_t Tunables::*>>& count
         {"sat_memory_megabytes", &Tunables::sat_memory_megabytes},
         {"sat_timeout_seconds", &Tunables::sat_timeout_seconds},
         {"ilp_time_limit_seconds", &Tunables::ilp_time_limit_seconds},
+        {"device_launch_floor", &Tunables::device_launch_floor},
     };
     return table;
 }
@@ -131,6 +145,7 @@ listed_tunables() {
     static const std::vector<std::pair<std::string, std::vector<std::string> Tunables::*>> table{
         {"sat_solver_order", &Tunables::sat_solver_order},
         {"ilp_backend_order", &Tunables::ilp_backend_order},
+        {"device_order", &Tunables::device_order},
     };
     return table;
 }

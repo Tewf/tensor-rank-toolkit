@@ -5,12 +5,14 @@
 /// algorithm exists, provided the search ran to exhaustion, which is why the
 /// node budget is reported on every line.
 #include <stdexcept>
+#include <limits>
 #include <string>
 
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
 #include "dense_matrix_file.h"
+#include "device.h"
 #include "exhaustive_search.h"
 #include "exit_code.h"
 #include "fewest_products.h"
@@ -63,6 +65,19 @@ int run(int argc, char** argv) {
     // The file first, so that `--node-limit` below can overwrite it: a flag that
     // was given always wins over tunables.conf, and one that was not leaves the
     // file's number standing.
+    // Which processor a bulk question would go to. Applied before anything is
+    // measured, and reported below, because a timing whose device is not on the
+    // line beside it is a timing of an unknown thing. Nothing is compiled in
+    // behind `gpu` yet, so this resolves to the host and says so.
+    {
+        std::string unrecognised;
+        if (!run_limits::set_device_order(cli::tunables().device_order, unrecognised)) {
+            throw cli::ArgumentError("tunables.conf device_order: no device is called '" +
+                                     unrecognised + "'");
+        }
+        run_limits::set_launch_floor(cli::tunables().device_launch_floor);
+    }
+
     std::size_t node_limit = cli::tunables().search_node_limit;
     std::size_t leaf_limit = cli::tunables().search_leaf_limit;
     cli::Symmetry symmetry;
@@ -147,6 +162,16 @@ int run(int argc, char** argv) {
                   << (bilinear_rank::gf2_leaf_applies(field, tensor.columns())
                           ? "GF(2), one bit per entry"
                           : "general field path")
+                  << "\n";
+
+    // The ranking against what this build can reach, rather than a per-leaf
+    // choice: a leaf picks its own route by size and there are many of them, so
+    // what a reader needs is which devices were on the table at all.
+    cli::result() << "  device: " << run_limits::name_of(run_limits::chosen_device(
+                                        std::numeric_limits<std::size_t>::max()))
+                  << (run_limits::available(run_limits::Device::Gpu)
+                          ? ""
+                          : " (no gpu backend compiled in)")
                   << "\n";
 
     std::vector<bilinear_rank::Matrix> pool;
