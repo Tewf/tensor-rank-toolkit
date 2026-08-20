@@ -118,7 +118,7 @@
       "name": "f2_5x5",
       "field": 2,
       "known_rank": null,
-      "known_rank_note": "Not known. The bound established in this repository is 12 <= rank <= 14: 11 products ruled out exhaustively, 14 reached by the heuristic.",
+      "known_rank_note": "Not known. The bound established in this repository is 13 <= rank <= 14: 12 products ruled out exhaustively, 14 reached by the heuristic.",
       "ruled_out_at": null,
       "ruled_out_seconds": null,
       "exhaustive_ruled_out_seconds": null,

@@ -19,7 +19,7 @@ translated into term counts (`n+m+1` is Toom-Cook, so their `(n,m)` is our
 3x5 and 4x4 over `Z2`. So **`f2_2x2` and `f2_2x3` are theirs already**, and
 `f2_3x8`, `f2_4x7` and `f2_5x5` are not. Their rank is not therefore unknown:
 `[bdez2012]` settled `f2_5x5` at 13 and `f3_3x6` at 10 in 2012, and this
-repository brackets `f2_5x5` at 12 ≤ rank ≤ 14 by its own searches, which is
+repository brackets `f2_5x5` at 13 ≤ rank ≤ 14 by its own searches, which is
 narrower than nothing and wider than the published answer. **`f2_4x7` is the one
 genuinely open map here**, at 15 ≤ rank ≤ 16, their lower bound against our
 upper one; deciding 15 would close it and neither side has.

@@ -38,15 +38,16 @@
 
   <figure><div id="ranks"></div><figcaption>Multiplications before and after the search, on four bilinear maps. Source: <code>descent_search/results.json</code>, produced by <code>minimise-rank</code>.</figcaption></figure>
 
-  <div class="tw"><table>
+  <div class="tw"><table id="descent-table">
     <thead><tr><th>Field</th><th>Product</th><th class="n">Naive</th><th class="n">Reached</th><th class="n">Time</th><th>Published rank</th></tr></thead>
     <tbody>
-      <tr><td>F2</td><td>5&times;5</td><td class="n">25</td><td class="n"><strong>14</strong></td><td class="n">1.33 s</td><td>13, <code>[bdez2012]</code></td></tr>
-      <tr><td>F2</td><td>3&times;8</td><td class="n">24</td><td class="n"><strong>15</strong></td><td class="n">3.08 s</td><td>no solution at 14</td></tr>
-      <tr><td>F2</td><td>4&times;7</td><td class="n">28</td><td class="n"><strong>16</strong></td><td class="n">8.96 s</td><td>no solution at 14</td></tr>
-      <tr><td>F3</td><td>3&times;6</td><td class="n">18</td><td class="n"><strong>10</strong></td><td class="n">6.93 s</td><td>10, <code>[bdez2012]</code></td></tr>
+      <tr data-fixture="f2_5x5"><td>F2</td><td>5&times;5</td><td class="n">25</td><td class="n"><strong>14</strong></td><td class="n">1.33 s</td><td>13, <code>[bdez2012]</code></td></tr>
+      <tr data-fixture="f2_3x8"><td>F2</td><td>3&times;8</td><td class="n">24</td><td class="n"><strong>15</strong></td><td class="n">3.08 s</td><td>no solution at 14</td></tr>
+      <tr data-fixture="f2_4x7"><td>F2</td><td>4&times;7</td><td class="n">28</td><td class="n"><strong>16</strong></td><td class="n">8.96 s</td><td>no solution at 14</td></tr>
+      <tr data-fixture="f3_3x6"><td>F3</td><td>3&times;6</td><td class="n">18</td><td class="n"><strong>10</strong></td><td class="n">6.93 s</td><td>10, <code>[bdez2012]</code></td></tr>
     </tbody>
   </table></div>
+  <p id="descent-drift" class="caveat" hidden></p>
 
   <h2>What the timings are, and are not</h2>
   <p>Every figure in the Time column was measured by hand on one core of an i5-12450H at 2.2 GHz, on an otherwise quiet machine, under the protocol in <code>MEASURING.md</code>. Two timings close enough together to be the fan rather than the code are never reported here as a ratio, and no timing is checked by CI, because a shared runner would turn a real regression and a noisy afternoon into the same red tick.</p>
@@ -76,8 +77,9 @@
   <h2>Cheaper routes to the same question</h2>
   <p>Two rank-sum bounds return a floor from the tensor alone in milliseconds, and they are tight often enough to remove the dearest question in a sweep entirely: they raise GF(16) from 4 to <strong>8</strong> and cyclic convolution from 5 to <strong>9</strong>, each of which previously cost a minute of exhaustion.</p>
   <p>H&aring;stad proved deciding tensor rank NP-complete over every finite field, and that cuts both ways. One tool turns 3SAT into a tensor, and three encoders turn the rank question into one a solver answers. A refutation can be written as DRAT and checked by <code>drat-trim</code>, so a lower bound from a solver is verifiable rather than trusted.</p>
-  <p>Symmetry removes work before any of them runs. A change of coordinates fixing the target subspace maps solutions to solutions, so one member of each orbit suffices: <strong>28&times;</strong> on a refutation, and the ⟨3,3,3⟩ candidate pool collapses from 261&nbsp;121 to <strong>13 orbits</strong>. Canonical augmentation goes further, deduplicating with no memory at all, and returns ⟨2,2,2⟩'s 36 solution subspaces as the <strong>1 orbit</strong> they are while visiting <strong>1982&times;</strong> fewer nodes. Wall clock improves only 1.6&times;, because finding a canonical code by walking the whole group spends most of the saving on itself, and that is measured rather than glossed.</p>
-  <p>The same method put to <em>deciding</em> rather than counting is the sharpest measured trade here. Wired into the factorisation search it visits 235 nodes against the plain tree's 3815 and takes <strong>2.76 s against 0.18 s</strong>: 16.2&times; fewer nodes for 15&times; the wall clock. The quotient pays for itself in nodes, the currency that does not depend on the machine, and does not pay for its own invariant: the canonical code is found by walking all 216 group elements, where refinement-based labelling would make it sublinear in the group and is the one change that would plausibly turn this from losing to winning. It ships behind a flag with a test that keeps it honest, never as a default, because a wired route known to lose is worth more than an unwired one somebody will propose again. The lesson that survived is narrower and more useful than the one first written down: <strong>a routine built to count is the wrong shape for a routine that only has to decide</strong>, and saying so cost nine tenths of the gap.</p>
+  <p>Symmetry removes work before any of them runs. A change of coordinates fixing the target subspace maps solutions to solutions, so one member of each orbit suffices: <strong>27.8&times;</strong> on a refutation, and the ⟨3,3,3⟩ candidate pool collapses from 261&nbsp;121 to <strong>13 orbits</strong>. Canonical augmentation goes further, deduplicating with no memory at all, and returns ⟨2,2,2⟩'s 36 solution subspaces as the <strong>1 orbit</strong> they are while visiting <strong>22&nbsp;779&times;</strong> fewer nodes and running <strong>11.8&times;</strong> faster. It did neither until the canonical code stopped being found by walking all 216 group elements and started coming from a base and strong generating set, which is the difference between naming an orbit and searching for it.</p>
+  <p>The same method put to <em>deciding</em> rather than counting is the sharpest measured trade here. Wired into the factorisation search it visits 72 nodes against the plain tree's 3815 and takes <strong>0.263 s against 0.0102 s</strong>: 53&times; fewer nodes for 25.8&times; the wall clock. Two floors give the cost model behind that pair, <strong>0.196 s to build the presentation and then 0.795 ms a node</strong> against a plain node's 2.66&nbsp;&micro;s, so break-even needs 299&times; fewer nodes and the quotient supplies 53&times;. It ships behind a flag with a test that keeps it honest, never as a default, because a wired route known to lose is worth more than an unwired one somebody will propose again.</p>
+  <p>Its deficit <em>grew</em> from 15&times; to 25.8&times; while the route itself got 10.5&times; faster, because the packed GF(2) leaf made a plain node cheaper faster still. That is the durable lesson, and it is not the one first written down: <strong>an optimisation to the common path raises the bar for every quotient competing with it</strong>. A quotient is only ever worth what the work it skips is worth.</p>
 
   <h2>Where no search is needed, and a theorem that stops holding</h2>
   <p>A tensor with two slices is a matrix pencil, and Kronecker's theory settles it by exact linear algebra in <strong>polynomial time, with no candidate pool at all</strong>, in about fifty microseconds on a 4&times;4. What it will not settle is the rank, and that is the finding. Ja'Ja's 1979 formula reads the rank off that canonical form, and it is a theorem <em>over an algebraically closed field</em>: on <code>(I<sub>4</sub>, C)</code> over GF(2) with <code>C</code> the companion of <code>x<sup>4</sup>+x+1</code> it gives 5, and the exhaustive search <strong>proves</strong> no five-product algorithm exists, walking 1&nbsp;897&nbsp;576 nodes to the end of the tree, then exhibits one with six.</p>
@@ -123,34 +125,82 @@ sparsify-operator out_L.sms                                 # 31 -&gt; 27 nonzer
 <script type="module">
 import { beforeAfter, logBars } from './site/chart.js';
 
-beforeAfter(document.getElementById('ranks'), {
-  rows: [
-    { label: 'F2  5x5', from: 25, to: 14 },
-    { label: 'F2  3x8', from: 24, to: 15 },
-    { label: 'F2  4x7', from: 28, to: 16 },
-    { label: 'F3  3x6', from: 18, to: 10 },
-  ],
-  unit: ' multiplications'
-});
+// The numbers are read from the files the captions name, rather than copied
+// beside them. A chart that restates a JSON file is a second place to update
+// and the one nobody remembers, which is how the tables here drifted before.
+const load = async (path) => (await fetch(path)).json();
 
-logBars(document.getElementById('times'), {
-  rows: [
-    { label: 'F2 5x5', value: 1.33, display: '1.3 s', highlight: true },
-    { label: 'F2 3x8', value: 3.08, display: '3.1 s', highlight: true },
-    { label: 'F3 3x6', value: 6.93, display: '6.9 s', highlight: true },
-    { label: 'F2 4x7', value: 8.96, display: '9.0 s', highlight: true },
-  ],
-  note: 'log scale; one core of an i5-12450H at 2.2 GHz'
-});
+const mapLabel = (name) => name.replace(/_/g, ' ')
+  .replace(/^./, (c) => c.toUpperCase())
+  .replace(/\b([a-z])$/, (c) => c.toUpperCase())
+  .replace(/^(F\d)/i, (c) => c.toUpperCase());
 
-beforeAfter(document.getElementById('nonzeros'), {
-  rows: [
-    { label: 'Strassen U',        from: 12, to: 10 },
-    { label: 'Strassen V',        from: 12, to: 10 },
-    { label: 'Alternative basis', from: 21, to: 10 },
-  ],
-  unit: ' nonzeros'
-});
+const explain = (id, why) => {
+  const target = document.getElementById(id);
+  if (target) target.textContent = why;
+};
+
+try {
+  const descent = await load('descent_search/results.json');
+  const rows = descent.fixtures.map((fixture) => ({
+    label: mapLabel(fixture.name),
+    from: fixture.naive,
+    to: fixture.step_3.multiplications,
+    seconds: fixture.step_3.seconds,
+  }));
+
+  beforeAfter(document.getElementById('ranks'), {
+    rows: rows.map(({ label, from, to }) => ({ label, from, to })),
+    unit: ' multiplications',
+  });
+
+  // The table above is typeset by hand so it survives a reader with no
+  // JavaScript, which makes it a second copy of these numbers. It is not
+  // allowed to be a silent one: any row disagreeing with the file the caption
+  // names says so on the page.
+  const drift = descent.fixtures.filter((fixture) => {
+    const row = document.querySelector(`#descent-table tr[data-fixture="${fixture.name}"]`);
+    if (!row) return true;
+    const cells = row.querySelectorAll('td');
+    return Number(cells[2].textContent) !== fixture.naive
+      || Number(cells[3].textContent) !== fixture.step_3.multiplications
+      || parseFloat(cells[4].textContent).toFixed(2) !== fixture.step_3.seconds.toFixed(2);
+  }).map((fixture) => fixture.name);
+
+  if (drift.length) {
+    const warning = document.getElementById('descent-drift');
+    warning.hidden = false;
+    warning.textContent = `This table disagrees with descent_search/results.json on `
+      + `${drift.join(', ')}. The file is the source; the table is stale.`;
+  }
+
+  logBars(document.getElementById('times'), {
+    rows: rows.slice().sort((a, b) => a.seconds - b.seconds).map((row) => ({
+      label: row.label,
+      value: row.seconds,
+      display: `${row.seconds.toFixed(1)} s`,
+      highlight: true,
+    })),
+    note: 'log scale; one core of an i5-12450H at 2.2 GHz',
+  });
+} catch (unreachable) {
+  explain('ranks', 'Chart needs descent_search/results.json, which a file:// page cannot fetch.');
+  explain('times', 'Chart needs descent_search/results.json, which a file:// page cannot fetch.');
+}
+
+try {
+  const sparsification = await load('matrix_sparsification/results.json');
+  beforeAfter(document.getElementById('nonzeros'), {
+    rows: sparsification.fixtures.map((fixture) => ({
+      label: mapLabel(fixture.name),
+      from: fixture.as_given,
+      to: fixture.row_basis_heuristic,
+    })),
+    unit: ' nonzeros',
+  });
+} catch (unreachable) {
+  explain('nonzeros', 'Chart needs matrix_sparsification/results.json, which a file:// page cannot fetch.');
+}
 </script>
 </body>
 </html>

@@ -54,10 +54,13 @@ this repository's worst way: it gave the exhaustive column "146 402 553 nodes,
 column was an extrapolation from `descent_search/method/`, where k=12 is priced
 at `C(961,3)` and about seven hours and is labelled extrapolated, and it arrived
 here as a time and a node count in a table headed "Measured". What this repository
-proves by itself is **12 ≤ rank ≤ 14**, with 14 reached by the heuristic and 11
-refused: an exhaustion of 459 239 nodes and 77 s until 2026-08-19, when the
-Griesmer floor moved this map to 12 and returned that refusal in milliseconds. The
-solver had 700 s on 12, returned unknown, and wrote no proof.
+proves by itself is **13 ≤ rank ≤ 14**, with 14 reached by the heuristic and 12
+refused. Eleven went first: an exhaustion of 459 239 nodes and 77 s until
+2026-08-19, when the Griesmer floor moved this map to 12 and returned that
+refusal in milliseconds. Twelve then went by exhaustion, 146 402 553 nodes. The
+solver had 700 s on 12, returned unknown, and wrote no proof, which is the
+comparison this file exists to record: the tree answered the question the solver
+could not.
 
 **The rank itself is 13 and has been published since 2012.** `[bdez2012]` ran the
 same algorithm on the same map over a complete run: 27 solution subspaces,
