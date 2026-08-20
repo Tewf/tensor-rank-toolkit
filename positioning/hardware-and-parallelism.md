@@ -58,6 +58,12 @@ forces the general path over GF(2) so both columns are the same tree:
 | `matmul_3x3x3 --target 23 --node-limit 300` | scan the pool | 82.28 s | 3.55 s | **23.2x** |
 | `matmul_3x3x3 --target 17 --node-limit 60` | walk the subspace | 16.66 s | 0.420 s | **39.6x** |
 
+**The general column moved on 2026-08-20 and every ratio above is now an upper
+bound.** `is_rank_one` replaced a full Gaussian elimination on that path, so the
+baseline these are measured against got faster. One row re-run: `matmul_2x2x2
+--target 6` is **0.1305 s** where the table says 0.560 s, taken under load, which
+can only slow it — so its 16.2x is at most **3.8x**. The rest are untaken.
+
 **The band was too high and the reasoning behind it was wrong twice over.** The
 loop this page named, the pool scan, reaches 23.2x and not 40x: a bitset shortens
 a reduction by the machine word, so the width ratio was never going to arrive
