@@ -352,6 +352,29 @@ absence of; it now exists as
 `[linton2004]` through `[permlib]` rather than an implementation, and is not yet
 the parent test's canonical form.
 
+**`junttila2020`**: T. Junttila, M. Karppa, P. Kaski, J. Kohonen. *An adaptive
+prefix-assignment technique for symmetry reduction.* Journal of Symbolic
+Computation **99** (2020), 21-49,
+[doi:10.1016/j.jsc.2019.03.002](https://doi.org/10.1016/j.jsc.2019.03.002),
+[arXiv:1706.08325](https://arxiv.org/abs/1706.08325); SAT 2017, LNCS, 101-118.
+`[mckay1998]`'s canonical extension framework, which they cite by that name,
+turned into something a constraint system can use: assign a **prefix** of the
+variables, keep one prefix-assignment per orbit, and hand the rest to a solver.
+Four properties they claim for it, and each is a property this repository wants:
+the prefix is user-prescribed and truncatable, so it stops where the group stops
+being cheap; the prefix-assignments are pairwise non-isomorphic and independent,
+so they **parallelise**, including across nodes by MPI; the group need only be
+expressible as the automorphism group of a vertex-coloured graph; and canonical
+labelling is the only nontrivial subroutine.
+
+**This is what [`orbit_cubes.h`](orbit_reduction/orbit_cubes.h) is a one-term
+special case of.** A cube here fixes the *first* term to one representative per
+orbit; a prefix-assignment fixes as many variables as the group can still afford
+and is the general form of the same trick, with the parallel split as its point
+rather than as a side effect. Implemented and public: `reduce`, MIT-licensed C at
+[github.com/pkaski/reduce](https://github.com/pkaski/reduce). **Read from the
+abstract and the repository's licence only**; no numbered result is quoted here.
+
 **`linton2004`**: S. A. Linton. *Finding the smallest image of a set.* ISSAC 2004,
 229-234, [doi:10.1145/1005285.1005319](https://doi.org/10.1145/1005285.1005319).
 The canonical image of a set under a **prescribed** permutation group, which is
@@ -377,6 +400,52 @@ BSD 3-clause. Vendored at commit `2b4e468`, the `include/` tree unmodified, in
 enough of `permutation.h` and `transversal/` to know that the transversal is a
 Schreier tree rather than explicit, which is what makes a degree of 261 121
 affordable. Not read: everything else.
+
+**`degroote1978`**: H. F. de Groote. *On varieties of optimal algorithms for the
+computation of bilinear mappings. I. The isotropy group of a bilinear mapping.*
+Theoretical Computer Science **7** (1978), 1-24,
+[doi:10.1016/0304-3975(78)90038-5](https://doi.org/10.1016/0304-3975(78)90038-5);
+and *II. Optimal algorithms for 2 × 2-matrix multiplication.* Theoretical
+Computer Science **7** (1978), 127-148,
+[doi:10.1016/0304-3975(78)90045-2](https://doi.org/10.1016/0304-3975(78)90045-2).
+**This is where the group is named.** The title of part I is the definition
+every symmetry claim in this repository is a claim about: a bilinear mapping
+carries a group acting on the variety of its optimal algorithms, and that group
+is its **isotropy group**. Part II is the consequence at the smallest
+interesting size, which `[berger2019]`'s abstract states as: de Groote showed
+that for 2 × 2 matrix multiplication with 7 active multiplications, *"all
+algorithms are essentially equivalent to Strassen's algorithm"*.
+
+**Nothing in this file said the word "isotropy" until 2026-08-20**, which left
+the whole symmetry strand here resting on unnamed ground.
+`[covanov2019, Def. 7]`'s rank-preserving action is this group written for a
+finite field, `[burichenko2014]` is about the isotropy group of Strassen's
+algorithm, `[berger2019]` decides equivalence under it, and
+[`orbit_reduction/`](orbit_reduction/README.md) quotients a search by it.
+**Not read**: both parts are behind Elsevier's paywall and no reachable scan was
+found, so no numbered result of either is quoted anywhere here, and the two
+sentences above are the title of part I and `[berger2019]`'s account of part II.
+
+**`berger2019`**: G. O. Berger, P.-A. Absil, L. De Lathauwer, R. M. Jungers,
+M. Van Barel. *Equivalent Polyadic Decompositions of Matrix Multiplication
+Tensors.* Journal of Computational and Applied Mathematics **406** (2022),
+113941, [arXiv:1902.03950](https://arxiv.org/abs/1902.03950).
+**An algorithm that decides whether two decompositions of a given matrix
+multiplication tensor are equivalent** under the invariance transformations —
+`[degroote1978]`'s group — and with it a count of the equivalence classes at
+several formats. The answer is not the one the 2 × 2 case suggests: at larger
+formats, *"e.g., 2 × 3 by 3 × 2 or 3 × 3 by 3 × 3"*, two decompositions *"are
+very likely to be essentially different"*. They also give a necessary criterion
+for a decomposition to be equivalent to one with integer entries, which is what
+makes a scheme cheap and stable to run.
+
+**This is the test this repository does not have and would need before calling
+anything new.** [`descent_search/`](descent_search/README.md) and
+[`flip_graph/`](flip_graph/README.md) produce decompositions; whether one of them
+is a rediscovery of a published scheme or a genuinely different point of the
+variety is exactly the question this decides, and
+[`positioning/already-published.md`](positioning/already-published.md) currently
+answers it by format and count alone. **Read from the abstract only.**
 
 **`covanov2019`**: S. Covanov. *Improved Method for Finding Optimal Formulae
 for Bilinear Maps in a Finite Field.*
@@ -539,6 +608,19 @@ asserts both against the implementation.
 
 ## Deciding rank with a solver
 
+**`courtois2011`**: N. T. Courtois, G. V. Bard, D. Hulme. *A New General-Purpose
+Method to Multiply 3x3 Matrices Using Only 23 Multiplications.*
+[arXiv:1108.2830](https://arxiv.org/abs/1108.2830), 2011. **Where this method
+starts.** They state the problem as Brent's equations, convert it to SAT, and
+throw *"our portfolio of some 500 SAT solvers"* at it; out comes a new
+23-multiplication scheme for `⟨3,3,3⟩` which they check is **not** an equivalent
+variant of Laderman's, so the solution space is larger than had been assumed and
+22 becomes more plausible rather than less. That is the same conversion the three
+encoders in [`satisfiability/`](satisfiability/README.md) do, ten years before
+`[heule2021]` made it produce results at scale, and it is also the first
+appearance here of the question `[berger2019]` later answers properly: whether a
+scheme a search hands you is genuinely a new one.
+
 **`heule2021`**: M. J. H. Heule, M. Kauers, M. Seidl. *New ways to multiply
 3 × 3-matrices.* Journal of Symbolic Computation **104** (2021), 899-916.
 The SAT encoding of tensor decomposition over `Z/2Z`, and the method that
@@ -601,6 +683,98 @@ p. 482. Its Theta(log W) call count is the bound the measurement in
 [`satisfiability/search/`](satisfiability/search/README.md) does not contradict and
 does not benefit from.
 
+## Breaking the solver's symmetries
+
+`[covanov2019]`'s group is quotiented out of a search *tree*. This is the same
+idea written as clauses, for a solver that has no tree to quotient, and it is
+what [`satisfiability/symmetry_breaking.h`](satisfiability/symmetry_breaking.h)
+implements. The field's words for it are **symmetry-breaking predicate** and
+**lex-leader**; **none of them appeared in this file until 2026-08-20**, which is
+why that header reads as though the technique were local to it.
+
+**`crawford1996`**: J. M. Crawford, M. L. Ginsberg, E. M. Luks, A. Roy.
+*Symmetry-breaking predicates for search problems.* Proc. of the Fifth
+International Conference on Principles of Knowledge Representation and Reasoning
+(KR'96), Cambridge, MA, Morgan Kaufmann, 148-159. The paper the technique is
+from: add constraints
+satisfied by exactly one member of each class of symmetrical points — the
+lexicographic leader — so the solver is never offered the rest. **That is what
+`symmetry_breaking.h` is doing, both halves of it**:
+`order_lexicographically` is a lex-leader predicate for the `r!` orderings of the
+terms, and `normalise_first_nonzero` is one for the scalings of a term. The same
+paper is where **computing a predicate true of only the lex-leader is proved
+NP-hard**, which is why the constraints here are partial and why partial is the
+normal condition rather than a corner cut.
+
+**Not read**, and the NP-hardness above is quoted through `[anders2024]` §1,
+which attributes it to this paper, not from the paper itself: the copy on the
+third author's page, `ix.cs.uoregon.edu/~luks/symmetrybreaking.pdf`, is a scan
+whose text layer is unusable. Only its bibliographic details are first-hand.
+
+**`luksroy2004`**: E. M. Luks, A. Roy. *The complexity of symmetry-breaking
+formulas.* Annals of Mathematics and Artificial Intelligence **41** (2004),
+19-45,
+[doi:10.1023/B:AMAI.0000018578.92398.10](https://doi.org/10.1023/B:AMAI.0000018578.92398.10).
+How much worse it is than NP-hard in the small print. **Read from the authors'
+own copy** at
+[ix.cs.uoregon.edu/~luks/symmetry.pdf](https://ix.cs.uoregon.edu/~luks/symmetry.pdf),
+the journal being paywalled: even for **abelian** groups the number of essential
+clauses in the *natural* lex-leader formula can be exponential; finding any
+expression of lex-leadership **without reordering the variables** is NP-hard even
+for elementary abelian groups with orbits of size 3; and with a reordering
+obtained by computational group theory, small lex-leader formulas for abelian
+groups can be built after all. The last clause is the one that matters here,
+because a variable order is exactly what
+[`order_lexicographically`](satisfiability/symmetry_breaking.h) is handed and
+what nothing in this repository has ever chosen deliberately.
+
+**`katsirelos2010`**: G. Katsirelos, N. Narodytska, T. Walsh. *On the complexity
+and completeness of static constraints for breaking row and column symmetry.*
+CP 2010, 305-320,
+[doi:10.1007/978-3-642-15396-9_26](https://doi.org/10.1007/978-3-642-15396-9_26),
+[arXiv:1007.0602](https://arxiv.org/abs/1007.0602). What a *partial* predicate
+leaves behind, measured instead of assumed. DOUBLELEX and SNAKELEX on a matrix of
+variables with interchangeable rows and columns are *"often effective in
+practice"* and *"can leave a large number of symmetric solutions in the worst
+case"*; propagating DOUBLELEX completely is NP-hard; a unique representative per
+class is computable in polynomial time when the number of rows or of columns is
+bounded; and the paper closes with the first experimental study of how much
+symmetry is left over on benchmarks. It also **corrects a published claim about
+when different symmetry-breaking constraints can safely be combined**, which is
+the exact way a predicate here would become too strong and report a false lower
+bound — the risk `symmetry_breaking.h`'s header calls the most dangerous thing in
+its folder. **Read from the abstract only.**
+
+**This is the measurement this repository owes for its own predicate.** Ordering
+plus scaling is a partial break of the decomposition symmetries, the residual
+duplication has never been counted here, and
+[`satisfiability/choices/two-defaults-that-were-wrong.md`](satisfiability/choices/two-defaults-that-were-wrong.md)
+reports the time the constraint saves, not the symmetry it leaves.
+
+**`anders2024`**: M. Anders, S. Brenner, G. Rattan. *The Complexity of Symmetry
+Breaking Beyond Lex-Leader.* CP 2024, LIPIcs vol. 307, 3:1-3:24,
+[doi:10.4230/LIPIcs.CP.2024.3](https://doi.org/10.4230/LIPIcs.CP.2024.3),
+[arXiv:2407.04419](https://arxiv.org/abs/2407.04419). Why nobody escapes partial
+by being cleverer. **Theorem 1.1** in the arXiv numbering, **Theorem 1** in the
+LIPIcs one: *"Suppose there exists a polynomial time algorithm for generating
+complete symmetry breaking predicates for row-column symmetries. Then GI ∈ co-NP
+holds"* — efficient complete symmetry breaking would hand graph
+non-isomorphism a short certificate. The barrier is not an artefact of
+lex-leader: it holds for predicates using any other order, for predicates given
+as Boolean circuits, and for predicates allowed to introduce extra variables.
+Read from the LIPIcs PDF.
+
+**`sakallah2021`**: K. A. Sakallah. *Symmetry and Satisfiability.* Handbook of
+Satisfiability, 2nd edition, Frontiers in Artificial Intelligence and
+Applications **336**, IOS Press 2021, chapter 13, 509-570,
+[doi:10.3233/FAIA200996](https://doi.org/10.3233/FAIA200996). The survey, and the
+thing to read before a third constraint is added to `symmetry_breaking.h`.
+**Not read**; it is named so that this strand has a map and not only its
+ancestors, the same way `[morgado2013]` is the map for the search over `k`.
+
+The measured baseline for all of this, on this repository's own instance, is
+`[deza2023]` §4.1 and Table 2.
+
 ## Proving that no smaller decomposition exists
 
 The other direction from a search for schemes, and the direction
@@ -639,6 +813,30 @@ of the `⟨3,3,3⟩` bound of 19 that stood for twenty-three years, and of the
 
 Where this repository stands against all of these:
 [`positioning/`](positioning/README.md).
+
+**`smirnov2013`**: A. V. Smirnov. *The bilinear complexity and practical
+algorithms for matrix multiplication.* Computational Mathematics and
+Mathematical Physics **53** (2013), no. 12, 1781-1795,
+[doi:10.1134/S0965542513120129](https://doi.org/10.1134/S0965542513120129);
+Russian original Zh. Vychisl. Mat. Mat. Fiz. **53** (2013), no. 12, 1970-1984.
+A method for deriving bilinear algorithms, new estimates for the bilinear
+complexity of exact and approximate multiplication of rectangular matrices, an
+improved bound on the border rank of 3 × 3, and a practical `n x n` algorithm of
+asymptotic arithmetic complexity `O(n^2.7743)`.
+
+**It is what the search literature was measuring itself against before the
+learning came.** `[deza2023]` §3.1 calls it *"the state-of-the-art local method"*
+— alternating least squares with regularisation — *"the most successful in
+finding fast algorithms whilst remaining computationally tractable"*, scaled to
+`⟨4,4,4⟩` at rank 49, and names three of its limitations: local minima,
+ill-conditioned least-squares, and solutions good only to machine precision.
+**The first is shared and the other two are not.**
+[`minimise_rank.h`](descent_search/minimise_rank.h) is first-improvement with
+irreversible pruning and guarantees nothing, so it stops at local minima too;
+conditioning and machine precision do not exist over `GF(p)`, and an answer here
+is exact or it is not an answer. That is the one clean thing this repository can
+say against a numerical method, and it has never said it. Read from the abstract,
+and from `[deza2023]` §3.1 for the rest.
 
 **`alphatensor2022`**: A. Fawzi et al. *Discovering faster matrix multiplication
 algorithms with reinforcement learning.* Nature **610** (2022), 47-53.
@@ -709,12 +907,49 @@ The field's running record of best known upper bounds.
 
 **`deza2023`**: A. Deza, C. Liu, E. B. Khalil, P. Vaezipoor. *Fast Matrix
 Multiplication Without Tears: A Constraint Programming Approach.* Proc. CP 2023,
-LIPIcs vol. 280, [arXiv:2306.01097](https://arxiv.org/abs/2306.01097).
+LIPIcs vol. 280, 26:1-26:15,
+[doi:10.4230/LIPIcs.CP.2023.26](https://doi.org/10.4230/LIPIcs.CP.2023.26),
+[arXiv:2306.01097](https://arxiv.org/abs/2306.01097), code at
+[github.com/khalil-research/Matrix-Mult-CP](https://github.com/khalil-research/Matrix-Mult-CP).
 The Brent equations solved by constraint programming. The 2x2 and 3x3 cases are
 MIPLIB 2017 benchmarks, so the formulation is standard and nothing here is new.
 This repository stated the same equations for a MILP solver, measured them
 against the SAT strand and the tree search, and retired the encoding:
 [`state-of-the-art/rank-as-a-milp.md`](state-of-the-art/rank-as-a-milp.md).
+
+**That was the whole of this entry until 2026-08-20, and it named the wrong half
+of the paper.** §4.1 and Table 2 are the published baseline for
+[`satisfiability/symmetry_breaking.h`](satisfiability/symmetry_breaking.h),
+measured on the instance this repository measures itself on. Their §4.1 breaks
+the same two symmetries: **§4.1.1** posts `lexicographic-strict` on the concatenated
+`r`-th columns of `U` and `V` against the permutation of the terms, which is
+`order_lexicographically`; **§4.1.2** forces the first nonzero entry of each
+column of `U` to be `−1` against the sign symmetry, which is
+`normalise_first_nonzero` with the other representative chosen, over
+`{−1, 0, 1}` where here the group is the `λμν = 1` scalings of `GF(p)`.
+
+**Table 2 is the `⟨2,2,2⟩` rank-6 refutation, question for question.** Over ten
+seeds with a two-hour limit, the base model `B` does not finish at all and `B+S`
+takes 429.26 s as a shifted geometric mean, with the branch count falling from
+`5.99×10⁹` to `3.28×10⁸`. Their own sentence: proving infeasibility for `R = 6`
+*"is not even currently possible without symmetry-breaking constraints in 2 hours
+whereas the CP model with symmetry-breaking constraints (B+S) requires around 7
+minutes"*. `7200 / 429.26 ≈ 16.8` is therefore **a lower bound and not a ratio**,
+the run without them having never finished, the same shape of number as this
+repository's own "at least seventy-six times" under cryptominisat.
+[`satisfiability/choices/two-defaults-that-were-wrong.md`](satisfiability/choices/two-defaults-that-were-wrong.md)
+measures **24.7 s → 0.31 s, seventy-nine times**, on the same instance and the
+same technique, and cites nothing for it.
+
+**And they ship it off by default too**, which is the part worth having:
+`src/main.py` has `parser.set_defaults(symmetry=False)`, and their conclusion
+gives the reason — *"the base CP model outperforms the addition of symmetry
+constraints and valid inequalities in the case of feasible solutions, likely due
+to the latter's tendency to prune symmetric solutions early in the tree search"*.
+The default here is off for a different reason, that an over-strong constraint
+would turn a satisfiable instance into UNSAT and report a false lower bound. Two
+projects arriving at the same default from two different arguments is worth more
+than either argument.
 
 **`alphaevolve2025`**: Google DeepMind. *AlphaEvolve: A Coding Agent for
 Scientific and Algorithmic Discovery.* 2025. `⟨4,4,4⟩` in 48 multiplications over
