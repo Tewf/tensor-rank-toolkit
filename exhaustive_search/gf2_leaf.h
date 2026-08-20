@@ -53,6 +53,16 @@
 /// where [`rank`](../linear_algebra/measures.h) is a Gaussian elimination, so
 /// those two differ by a factor of the shape and not by a factor of 64.
 ///
+/// **The general column moved on 2026-08-20 and these ratios are now upper
+/// bounds.** `is_rank_one` replaced `rank(...) != 1` on that path, so the column
+/// this file is measured *against* got faster. Re-run on `matmul_2x2x2
+/// --target 6`, the general leaf is **0.1305 s against the 0.560 s above** — and
+/// that re-run was taken under load, which can only slow it, so the quiet figure
+/// is no larger. **That row's 16.2x is therefore at most 3.8x.** The other rows
+/// have not been re-taken. Nothing here is wrong about the day it was measured;
+/// it is wrong about today, which is the failure this repository already had once
+/// with the card's baseline.
+///
 /// **Where it loses.** Packing the pool is a one-off cost the general path
 /// never pays, and a search that reaches no leaf at all pays it for nothing: at
 /// `<3,3,3>` the 261 121-map table costs **40 ms**, against 8.6 us for the same
