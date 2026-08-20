@@ -334,6 +334,164 @@ std::vector<Matrix> Gf2Leaf<Candidates>::by_carrying_a_residual(const ReducedBas
     return found;
 }
 
+namespace {
+
+/// How many of the lowest basis rows one batch of the walk varies.
+///
+/// A batch is `2 ^ digits_per_batch` consecutive elements: everything the Gray
+/// order below is confined to, and everything the survivor list has to hold. It
+/// is a bound on a buffer and not a tuning knob, which is why it is not in
+/// `tunables.conf` — each step of it doubles a 1 KB list and halves a per-batch
+/// cost that is already a copy of four words, at the widest shape this
+/// repository prices, against 256 elements.
+constexpr std::size_t digits_per_batch = 8;
+
+}  // namespace
+
+/// The same walk with the rebuild hoisted out of it: one exclusive or an
+/// element, where rebuilding from the digits of an index is `O(dim)` of them
+/// plus a buffer to clear.
+///
+/// **Consecutive strings of a reflected Gray code differ in one digit.** Over
+/// GF(2) that code is `G(i) = i ^ (i >> 1)`, and the digit that changes between
+/// `G(i - 1)` and `G(i)` is the lowest set bit of `i`, so a running combination
+/// of basis rows is carried from one element to the next by a single
+/// `gf2_xor`. That is `dim / 2` exclusive ors and one buffer clear saved
+/// apiece, so what it is worth grows with the dimension.
+///
+/// **The radix-`p` machinery is deliberately not reused.**
+/// [`reflected_gray_walk.h`](reflected_gray_walk.h) carries the same order for a
+/// general characteristic, where a successor has to know which way each digit is
+/// travelling and needs Knuth's focus pointers to stay `O(1)`. At radix two a
+/// digit only ever flips, the reflection is `i ^ (i >> 1)` in closed form, and
+/// the digit to move is `countr_zero(i)` — one instruction, no state, nothing to
+/// keep in step with the walk. Instantiating the class here would buy a shared
+/// name and pay two vectors and an indirection per element for it.
+///
+/// **The order is the whole risk, and the batching is what answers it.**
+/// `Gf2SpanBasis::try_add` accepts candidates in the order it is offered them,
+/// so the rank-one basis handed back is a fact about that order, and Gray order
+/// is not index order. A leaf here can be 134 million elements, so the survivors
+/// cannot simply be collected and sorted the way
+/// `by_carrying_a_residual` sorts one left vector's row.
+///
+/// So the walk is cut into batches of `2 ^ digits_per_batch` elements and each
+/// batch is drained in index order:
+///
+///  - **A batch is a contiguous, aligned block of indices, and the batches run
+///    in increasing order.** That is why the Gray order is over the *low*
+///    `digits_per_batch` digits only, with the digits above them counted
+///    upward in plain binary. Cutting one global Gray walk into runs of
+///    `2 ^ k` steps would not do it: run `m` of such a walk covers the index
+///    block `G(m)`, so the blocks themselves arrive in Gray order — for
+///    `k = 2` over four digits, blocks 0, 1, 3, 2 — and the greedy would see
+///    block 3 before block 2.
+///  - **So a batch boundary cannot change which element the greedy sees
+///    first.** The drained indices are `1, 2, ... elements - 1` with no gap and
+///    no repeat, exactly the sequence the rebuild offers, and the Gray order
+///    never reaches `try_add` at all: it decides only *whether* an element is
+///    rank one, which is a property of the element and not of when it was
+///    visited.
+///  - **The budget is spent per element examined**, so the drain asks
+///    `may_examine` once at every index of the batch and not only at the
+///    survivors, with the same running count the rebuild passes. A leaf
+///    abandons at the same element either way. It is skipped only where there
+///    is no budget to spend and no survivor to offer, where it has nothing to
+///    do.
+///  - **A survivor is formed again from the batch's first element and the
+///    digits its offset names.** The same rows and the same exclusive or, so
+///    the same words the walk tested, and at most `digits_per_batch` of them
+///    for something that happens once per survivor rather than once per
+///    element.
+///
+/// The batch's own first element is carried across boundaries too: stepping
+/// `first` on by one batch is a binary increment of the digits above
+/// `digits_per_batch`, which flips the trailing ones and the zero above them —
+/// two rows on average, once per batch.
+///
+/// `elements` is below the pool size wherever this route is chosen, so the
+/// dimension is well below the word width and the shift is always defined. It
+/// need not be `2 ^ dim`: a final batch reaching past it is walked whole and
+/// drained only as far as `elements`, which costs a few rank tests nobody
+/// examines and keeps the batch a power of two, which is what makes the Gray
+/// order cover it exactly once.
+template <typename Candidates>
+std::vector<Matrix> Gf2Leaf<Candidates>::by_walking_the_subspace(const ReducedBasis& span,
+                                                                 std::size_t needed,
+                                                                 std::size_t elements,
+                                                                 SearchBudget* budget) const {
+    const std::vector<std::vector<Element>>& basis = span.rows();
+    std::vector<std::uint64_t> rows(basis.size() * words_per_map_);
+    for (std::size_t index = 0; index < basis.size(); ++index) {
+        linear_algebra::gf2_pack(basis[index].data(), width_, &rows[index * words_per_map_]);
+    }
+
+    linear_algebra::Gf2SpanBasis independent(width_);
+    std::vector<std::uint64_t> combination(words_per_map_), scratch(words_per_map_);
+    // The batch's first element, and the buffer a survivor is formed back into.
+    std::vector<std::uint64_t> batch_start(words_per_map_), element(words_per_map_);
+
+    // A basis shorter than the batch is one batch: the digits the Gray order
+    // varies are exactly the ones there are, and no boundary is ever crossed.
+    const std::size_t digits = std::min(basis.size(), digits_per_batch);
+    const std::size_t batch = std::size_t(1) << digits;
+    std::vector<std::uint32_t> survivors;
+    survivors.reserve(batch);
+
+    std::vector<Matrix> found;
+    for (std::size_t first = 0; first < elements; first += batch) {
+        if (first != 0) {
+            const std::size_t batches_done = first >> digits;
+            const auto flipped = static_cast<std::size_t>(std::countr_zero(batches_done));
+            for (std::size_t step = 0; step <= flipped; ++step) {
+                linear_algebra::gf2_xor(batch_start.data(),
+                                        &rows[(digits + step) * words_per_map_], words_per_map_);
+            }
+        }
+
+        survivors.clear();
+        std::copy(batch_start.begin(), batch_start.end(), combination.begin());
+        // Offset zero is the batch's first element, which no step of the walk
+        // below lands on. In the first batch it is the zero map, which the
+        // rebuild never examined either.
+        if (first != 0 && linear_algebra::gf2_is_rank_one(combination.data(), rows_, columns_)) {
+            survivors.push_back(0);
+        }
+        for (std::size_t step = 1; step < batch; ++step) {
+            const auto digit = static_cast<std::size_t>(std::countr_zero(step));
+            linear_algebra::gf2_xor(combination.data(), &rows[digit * words_per_map_],
+                                    words_per_map_);
+            if (linear_algebra::gf2_is_rank_one(combination.data(), rows_, columns_)) {
+                survivors.push_back(static_cast<std::uint32_t>(step ^ (step >> 1)));
+            }
+        }
+        // Gray order into index order, over a list of at most `batch` entries.
+        std::sort(survivors.begin(), survivors.end());
+        if (survivors.empty() && budget == nullptr) continue;
+
+        std::size_t next = 0;
+        for (std::size_t offset = (first == 0 ? 1 : 0); offset < batch; ++offset) {
+            const std::size_t index = first + offset;
+            if (index >= elements) return found;
+            if (budget != nullptr && !budget->may_examine(index)) return found;
+            if (next == survivors.size() || survivors[next] != offset) continue;
+            ++next;
+
+            std::copy(batch_start.begin(), batch_start.end(), element.begin());
+            for (std::size_t digit = 0; digit < digits; ++digit) {
+                if (((offset >> digit) & 1) == 0) continue;
+                linear_algebra::gf2_xor(element.data(), &rows[digit * words_per_map_],
+                                        words_per_map_);
+            }
+            if (independent.try_add(element.data(), scratch)) {
+                found.push_back(unpacked(element.data()));
+                if (found.size() == needed) return found;
+            }
+        }
+    }
+    return found;
+}
+
 /// The subspace element at `index` is the exclusive or of the basis rows whose
 /// bit is set in `index`, which is the binary digits the general path multiplies
 /// by. Same order, same elements, same answer.
@@ -341,10 +499,10 @@ std::vector<Matrix> Gf2Leaf<Candidates>::by_carrying_a_residual(const ReducedBas
 /// `elements` is below the pool size wherever this route is chosen, so the
 /// dimension is well below the word width and the shift is always defined.
 template <typename Candidates>
-std::vector<Matrix> Gf2Leaf<Candidates>::by_walking_the_subspace(const ReducedBasis& span,
-                                                                 std::size_t needed,
-                                                                 std::size_t elements,
-                                                                 SearchBudget* budget) const {
+std::vector<Matrix> Gf2Leaf<Candidates>::by_rebuilding_each_element(const ReducedBasis& span,
+                                                                    std::size_t needed,
+                                                                    std::size_t elements,
+                                                                    SearchBudget* budget) const {
     const std::vector<std::vector<Element>>& basis = span.rows();
     std::vector<std::uint64_t> rows(basis.size() * words_per_map_);
     for (std::size_t index = 0; index < basis.size(); ++index) {

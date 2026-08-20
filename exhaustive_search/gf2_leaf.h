@@ -163,9 +163,33 @@ class Gf2Leaf {
     bool carries_a_residual() const { return !right_index_of_mask_.empty(); }
 
     /// Every one of the `elements` members of `span`, each tested for rank one.
+    ///
+    /// **Two routines answer this one as well, and they are the same answer**,
+    /// not merely the same count: the same maps, in the same order, for every
+    /// span, every `needed` and every budget. `by_rebuilding_each_element`
+    /// below is the plain reading of the sentence above and this is the fast
+    /// one, which forms an element with a single exclusive or by visiting the
+    /// subspace in reflected Gray code order and then hands the survivors to
+    /// the greedy in index order. Why those two are compatible is in the
+    /// source, and
+    /// [`tests/test_gf2_subspace_walk.cpp`](tests/test_gf2_subspace_walk.cpp)
+    /// is what holds them to it.
     std::vector<Matrix> by_walking_the_subspace(const ReducedBasis& span, std::size_t needed,
                                                 std::size_t elements,
                                                 SearchBudget* budget = nullptr) const;
+
+    /// The same answer, rebuilding each element from the binary digits of its
+    /// index.
+    ///
+    /// One buffer clear and `O(dim)` exclusive ors an element, which is what
+    /// the walk was before the Gray order above. It stays for the reason
+    /// `by_scanning_the_pool_directly` stays: it is the obvious reading of
+    /// "every element of the subspace", so it is the thing the fast route is
+    /// held against, and that needs it callable by name. Not called by the
+    /// search.
+    std::vector<Matrix> by_rebuilding_each_element(const ReducedBasis& span, std::size_t needed,
+                                                   std::size_t elements,
+                                                   SearchBudget* budget = nullptr) const;
 
    private:
     /// The scan that never forms an element and never asks the span anything.
