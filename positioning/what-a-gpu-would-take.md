@@ -25,8 +25,9 @@ any candidate is never how fast a kernel could be, it is what `F` is.
 operations: **448** on `<2,2,2>` and about 16 800 on `<3,3,3>`. It looks like the
 GPU-shaped part because it is a matrix product with independent iterations, and it
 is, but it runs once at the end and `F` is on the order of `0.0001`. The ceiling is
-1.0000x. Measured for scale: `factor-over-canonical-basis` on `<2,2,2>` is 0.182 s
-and 3815 nodes, essentially all of it the search.
+1.0000x. Measured for scale: `factor-over-canonical-basis` on `<2,2,2>` is
+0.0102 s and 3815 nodes, essentially all of it the search. That read 0.182 s
+until the packed leaf landed, and the multiply did not move, so `F` fell with it.
 
 ## Pool generation: 4% at one shape and the whole run at another
 
@@ -43,11 +44,15 @@ stops being the constraint. **A measurement at one shape said nothing about the
 other, and quoting it as though it did would have been the mistake this repository
 keeps making.**
 
-That 785 ns is also an artefact rather than a floor. `at(i)` builds a 16x16 matrix
-over GF(2) with **256 Givaro multiplications and a heap allocation**, for an object
-that is 256 bits and an outer product of two 16-bit words. The bit-packed leaf
-elsewhere here measured 6.0x to 39.6x against the general path on the same work,
-so a packed `at(i)` plausibly lands near 20 to 80 ns before any accelerator.
+That 785 ns was an artefact rather than a floor, and this page said so before it
+was fixed: `at(i)` built a 16x16 matrix with **256 Givaro multiplications and a
+heap allocation** for an object that is 256 bits.
+
+**The forecast here was 20 to 80 ns for a packed `at(i)`. It is 129.1 ns** on one
+core and 19.2 on twelve
+([`../gpu_leaf/what-the-card-did.md`](../gpu_leaf/what-the-card-did.md)), so the
+guess was 1.6x optimistic about the baseline it was arguing about and fell inside
+its band only against a row it was not forecasting.
 
 ## The leaf scan: the one part that is actually shaped for it
 
