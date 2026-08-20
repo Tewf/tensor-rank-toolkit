@@ -34,3 +34,10 @@ add_executable(test_descent_guarantees test_descent_guarantees.cpp)
 target_link_libraries(test_descent_guarantees PRIVATE descent_search orbit_reduction
                                                       formats testing project_warnings)
 add_test(NAME descent_guarantees COMMAND test_descent_guarantees ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The filtration answers what the greedy answers, on every fixture and on spans
+# the search grows rather than reads. A rewrite that is nearly right is the way
+# four published step-1 numbers would move without anyone noticing.
+add_executable(test_sorted_span test_sorted_span.cpp)
+target_link_libraries(test_sorted_span PRIVATE descent_search formats testing project_warnings)
+add_test(NAME sorted_span COMMAND test_sorted_span ${PROJECT_SOURCE_DIR}/fixtures)
