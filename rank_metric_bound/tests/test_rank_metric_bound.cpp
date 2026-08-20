@@ -5,8 +5,8 @@
 /// exhibited, which is the one error class nothing downstream catches, since a
 /// rank a bound wrongly forbids is never searched. That runs on every fixture and
 /// then on 120 random tensors built as a sum of a known number of rank-one terms,
-/// because eighteen fixtures reach eighteen slice-space shapes and the shapes that
-/// would break the argument are the awkward ones: dependent terms, and an axis
+/// because twenty-four fixtures reach twenty-four slice-space shapes and the shapes
+/// that would break the argument are the awkward ones: dependent terms, and an axis
 /// longer than its slice space. **Pinned**: the value of each on each fixture, and
 /// the floor `max(rank_lower_bound, Griesmer)` that wiring this in would produce,
 /// so the one fixture where that differs from `rank_lower_bound` today is a
@@ -51,6 +51,15 @@ struct Fixture {
     /// A rank that is known to be achievable, so no lower bound may exceed it.
     /// From `descent_search/known_ranks.md`, `famous_tensors/`,
     /// `pencil_rank/what-the-literature-settles.md` and the fixtures' own table.
+    ///
+    /// **Two of the rows below hold a naive count instead**, and the difference
+    /// matters here more than anywhere: this column is the one thing that would
+    /// catch a bound overshooting a real rank, so a number in it has to be a
+    /// decomposition somebody can produce. `gf32` and `gf64` are published at 13
+    /// and 15, and neither figure was traced to a table anyone here has read, so
+    /// they sit in `fixtures/published-targets.md` as targets and this column
+    /// holds 25 and 36, which is the naive algorithm the fixture itself
+    /// exhibits. Sound and weak beats tight and unsourced.
     long long known_rank;
     /// `k + d - 1`, the best over the three axes.
     /// `sum_j ceil(d / p^j)`, the best over the three axes.
@@ -59,12 +68,13 @@ struct Fixture {
     /// [`../joining-the-shared-floor.md`](../joining-the-shared-floor.md)'s one-line edit to
     /// `linear_algebra/rank_lower_bound.h` were made. Pinned here because it is
     /// this module's whole claim, and because whoever makes that edit needs the
-    /// eighteen numbers it has to produce.
+    /// twenty-four numbers it has to produce.
     long long combined_floor;
 };
 
 constexpr Fixture kFixtures[] = {
     {"cyclic_f2_5", 10, 5, 9},
+    {"cyclic_f2_7", 13, 7, 12},
     {"f2_2x2", 3, 3, 3},
     {"f2_2x3", 5, 5, 5},
     {"f2_3x8", 15, 14, 14},
@@ -72,11 +82,16 @@ constexpr Fixture kFixtures[] = {
     {"f2_5x5", 13, 12, 12},
     {"f3_3x6", 10, 9, 9},
     {"gf16_multiplication", 9, 8, 8},
+    {"gf32_multiplication", 25, 12, 12},
     {"gf4_multiplication", 3, 3, 3},
+    {"gf64_multiplication", 36, 14, 14},
     {"gf8_multiplication", 6, 6, 6},
     {"matmul_2x2x2", 7, 5, 6},
     {"matmul_2x2x3", 11, 7, 9},
+    {"matmul_2x3x4", 20, 13, 14},
     {"matmul_3x3x3", 23, 12, 14},
+    {"matmul_3x3x4", 29, 15, 18},
+    {"matmul_3x4x4", 38, 19, 21},
     {"pencil_irreducible_f2_4", 6, 6, 6},
     {"pencil_nilpotent_f2_3", 4, 3, 4},
     {"pencil_singular_f2_2x3", 3, 3, 3},
