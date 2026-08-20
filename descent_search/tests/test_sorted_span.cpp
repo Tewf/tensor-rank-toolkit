@@ -74,6 +74,44 @@ void agrees(const std::string& label, const Field& field, const std::vector<Matr
 
 }  // namespace
 
+/// `cost(V)` is an upper bound on the fewest rank-one maps covering `V`, and can
+/// be strictly larger. Pinned because the header said they were equal until
+/// 2026-08-20, and that reading makes `cost(V) > k` look like a sound prune when
+/// it would throw away a live solution.
+void cost_is_not_the_covering_number() {
+    const Field field(2);
+    auto diagonal = [&field](int a, int b, int c) {
+        Matrix m(3, 3);
+        for (std::size_t row = 0; row < 3; ++row) {
+            for (std::size_t column = 0; column < 3; ++column) m(row, column) = field.zero;
+        }
+        m(0, 0) = a;
+        m(1, 1) = b;
+        m(2, 2) = c;
+        return m;
+    };
+    // Every nonzero element of this plane has rank two, so no basis is cheaper.
+    const std::vector<Matrix> plane{diagonal(1, 1, 0), diagonal(0, 1, 1)};
+    const bilinear_rank::SortedSpan filtration(field, plane);
+    check::equal("counterexample: dimension", static_cast<long long>(filtration.dimension()), 2LL);
+    check::equal("counterexample: cost", static_cast<long long>(filtration.cost()), 4LL);
+    check::equal("counterexample: no rank-one basis",
+                 static_cast<long long>(filtration.has_rank_one_basis()), 0LL);
+
+    // And yet it lies inside the span of three rank-one maps, so a search asking
+    // k = 3 has a solution here that `cost(V) > k` would have refused.
+    linear_algebra::SpanBasis<Field> cover(field, 9);
+    for (const Matrix& unit : {diagonal(1, 0, 0), diagonal(0, 1, 0), diagonal(0, 0, 1)}) {
+        cover.try_add(unit);
+    }
+    check::equal("counterexample: cover dimension",
+                 static_cast<long long>(cover.dimension()), 3LL);
+    for (const Matrix& element : plane) {
+        check::equal("counterexample: covered by three rank-one maps",
+                     static_cast<long long>(cover.contains(element)), 1LL);
+    }
+}
+
 int main(int argc, char** argv) {
     if (argc <= 1) {
         std::cout << "usage: test_sorted_span <fixtures>\n";
@@ -109,6 +147,8 @@ int main(int argc, char** argv) {
             agrees(std::string(name) + " grown by " + std::to_string(step + 1), field, grown);
         }
     }
+
+    cost_is_not_the_covering_number();
 
     return check::report("sorted span");
 }
