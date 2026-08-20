@@ -23,6 +23,7 @@ One file per question, then one per instrument, then where that leaves us.
 | [`where-we-stand.md`](where-we-stand.md) | how close each strand is to the front, question by question |
 | [`what-is-missing.md`](what-is-missing.md) | the gaps, kept apart from the ones only another design would call gaps |
 | [`a-correction.md`](a-correction.md) | the claim this survey got wrong, and the search that would have caught it |
+| [`comparing-against-the-baseline.md`](comparing-against-the-baseline.md) | the baseline's own code, run here on a matched question, and what its numbers do and do not license saying |
 
 Full citations, with what each contributes:
 [`../references.md`](../references.md).
