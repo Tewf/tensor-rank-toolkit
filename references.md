@@ -221,6 +221,32 @@ CDCL, but it names the system in prose as FastFourierSAT and cites no key, so a
 reader there has nothing to look up. This entry said it was named there, which
 was the wrong half of that sentence to state.
 
+**`delaurentis2026`**: G. De Laurentis, J. Franklin. *Linac: linear algebra with
+CUDA over finite fields.* [arXiv:2605.25863](https://arxiv.org/abs/2605.25863),
+2026. A high-performance, open-source, parallel implementation of Gaussian
+elimination over finite fields and over floating point on GPUs, written for the
+analytic reconstruction of scattering amplitudes in quantum field theory, on the
+argument that Gaussian elimination is cubic, is a bottleneck, and is inherently
+parallel.
+
+**This is the honest prior art for this repository's GPU claim**, and it narrows
+it rather than sinking it. [`gpu_leaf/README.md`](gpu_leaf/README.md) measures a
+leaf kernel at 3962x one core, and
+[`positioning/hardware-and-parallelism.md`](positioning/hardware-and-parallelism.md)
+closes with *"Nothing in this literature reports an exact finite-field rank
+search on a GPU"*. That sentence stands as written, because a rank search is not
+Gaussian elimination; what it must not be read as saying is that finite-field
+linear algebra on a card is unexplored ground. It is published, packaged and
+maintained by other people, and only the search on top of it is ours.
+
+**It is not a drop-in.** Its fields are prime fields, integers modulo a prime,
+where [`pool_scan.cu`](gpu_leaf/pool_scan.cu) and
+[`subspace_walk.cu`](gpu_leaf/subspace_walk.cu) are built out of GF(2) as 16-bit
+masks and exclusive or, which is the whole reason nothing is transferred per
+element. **Only the abstract was read; the code was not**, so what it would be
+worth for the `GF(p)` half of this repository, which is the half with no kernel,
+is not something this entry settles.
+
 **`schaefer2018`**: M. Schaefer, D. Štefankovič. *The Complexity of Tensor
 Rank.* Theory of Computing Systems **62** (2018), 1161-1174.
 [preprint](https://www.cs.rochester.edu/~stefanko/Publications-new/J36.pdf).
@@ -243,6 +269,59 @@ Every leaf of the searches here is MinRank at `r = 1` over the span in hand,
 which is why the leaf and not the branching is where the time goes:
 [`rank_one_basis.h`](exhaustive_search/rank_one_basis.h) chooses between two
 ways of asking it per call because neither is cheap.
+
+**`huang2023`**: H. Huang, J. M. Landsberg. *On linear spaces of matrices of
+bounded rank.* [arXiv:2306.14428](https://arxiv.org/abs/2306.14428), 2023.
+Spaces of bounded rank three were classified in 1983 and the rank-four case was
+open; this gives the classification of the **basic** spaces of bounded rank
+four, of which there are **exactly four up to isomorphism**, and exhibits the
+first non-classical examples of such a space.
+
+**The object it classifies is the object the search carries.** The subspace `V`
+held at every node of
+[`expand_subspace`](exhaustive_search/exhaustive_search.h) is a linear space of
+matrices, and the leaf test is a question about which of its elements have rank
+one:
+[`generating-candidates-from-the-span.md`](exhaustive_search/generating-candidates-from-the-span.md)
+writes that as `deficit(V) == 0`. **Only the abstract was read**, and the base
+field the classification is stated over was not checked, so nothing here quotes
+a result of it; what the paper supplies is the name of the object and the
+reason to expect its structure to be worth knowing, not a bound. The record
+carries no journal-ref. Its own title field reads *"On Linear spaces of of
+matrices bounded rank"*, a typo in the arXiv metadata; the form quoted above is
+the one the abstract uses.
+
+**`faugere2013`**: J.-C. Faugère, M. Safey El Din, P.-J. Spaenlehauer. *On the
+complexity of the generalized MinRank problem.* Journal of Symbolic Computation
+**55** (2013), 30-58, [arXiv:1112.4411](https://arxiv.org/abs/1112.4411).
+The algorithmic half of `[buss1999]`. The points where a polynomial matrix has
+rank at most `r` are the zeroes of a **determinantal ideal**, the one generated
+by all `(r+1)`-minors of the matrix, and this gives complexity bounds for
+computing a Gröbner basis of it, along with the families of generalized MinRank
+problems where the arithmetic cost of solving is polynomial in the number of
+solutions.
+
+**`bardet2025`**: M. Bardet, A. Gilard. *Computation of the Hilbert Series for
+the Support-Minors Modeling of the MinRank Problem.*
+[arXiv:2502.12721](https://arxiv.org/abs/2502.12721), 2025. MinRank has three
+main algebraic modellings, which this names as Kipnis-Shamir, Minors and
+Support-Minors, and the Hilbert series of a modelling is what prices a Gröbner
+basis over it. Faugère et al. did the Minors modelling in 2010; Bardet et al.
+gave the first terms of the Support-Minors series in 2020 heuristically and
+experimentally; this proves the **complete** series for generic instances.
+
+**Both of those hold for generic instances, and that caveat is the load-bearing
+one here.** A matrix multiplication tensor is about the least generic object in
+this subject: its slices are sparse matrices of zeroes and ones, and it carries
+a symmetry group large enough that
+[`orbit_reduction/`](orbit_reduction/README.md) exists to quotient by it, which
+is exactly the hypothesis both complexity statements exclude. They are a
+reference point for what solving MinRank algebraically is known to cost, not a
+forecast of what it would cost on [`fixtures/`](fixtures/README.md). **Neither
+was read past its abstract**, and no Hilbert series has been computed here for
+any shape in this repository. Where all three of these entries land, and what
+the leaf test is called once it is named properly:
+[`state-of-the-art/rank-one-elements-of-a-subspace.md`](state-of-the-art/rank-one-elements-of-a-subspace.md).
 
 ## The exact search
 
@@ -449,6 +528,25 @@ actually produced new schemes at that size.
 **`heule2019`**: M. J. H. Heule, M. Kauers, M. Seidl. *Local search for fast
 matrix multiplication.* SAT 2019, [arXiv:1903.11391](https://arxiv.org/abs/1903.11391).
 
+**`matrixchallenges`**: M. J. H. Heule. *Challenging SAT benchmarks for matrix
+multiplication.*
+[github.com/marijnheule/matrix-challenges](https://github.com/marijnheule/matrix-challenges).
+The instances behind `[heule2019]`, which the front page names as the article
+the details are in. Four challenges at `⟨3,3,3⟩`: ten satisfiable formulas for
+local search without streamlining constraints, ten for proving subproblems at 23
+multiplications unsatisfiable, one blocking type-3 terms from the last summand,
+and one asking for 22.
+
+**This is the standard [`satisfiability/`](satisfiability/README.md) should be
+tested against, and it has not been.**
+[`satisfiability/measurements.md`](satisfiability/measurements.md) times this
+repository's encoders on this repository's own fixtures against this
+repository's own exhaustive search, which is a consistency check between two
+things written here and not a comparison with anyone. A published benchmark
+suite, whose instances someone else generated and whose difficulty someone else
+calibrated, is the missing half of that. **Read from the front page only**: no
+instance was downloaded, none was run, and the front page states no licence.
+
 **`ozdemir2023`**: A. Ozdemir, G. Kremer, C. Tinelli, C. Barrett.
 *Satisfiability Modulo Finite Fields.* CAV 2023,
 [eprint.iacr.org/2023/091](https://eprint.iacr.org/2023/091). The decision
@@ -595,6 +693,30 @@ Scientific and Algorithmic Discovery.* 2025. `⟨4,4,4⟩` in 48 multiplications
 [arXiv:2602.13171](https://arxiv.org/abs/2602.13171), 2026. Converts a complex
 scheme to a rational one or proves none exists, generalising Dumas, Pernet and
 Sedoglavic (2025).
+
+**`yang2024`**: J. Yang. *Fixed-parameter tractability of canonical polyadic
+decomposition over finite fields.*
+[arXiv:2405.11699](https://arxiv.org/abs/2405.11699), 2024. Finding a rank-`R`
+CPD of a 3-dimensional tensor over a finite field `F` is **fixed-parameter
+tractable in `R` and `|F|`**. Theorem 1 is
+`O(f(|F|, R) + poly(n₀, n₁, n₂, R))` time and `O(poly(n₀, n₁, n₂, R))` space, so
+the shape of the tensor enters the cost only polynomially and everything that
+explodes sits in the two parameters. **That is the complexity-theoretic
+statement about exactly the question every search in this repository asks**, and
+it is the one `[buss1999]`'s NP-completeness leaves open: hard in general says
+nothing about hard at fixed `R` over a fixed field, which is the only regime
+`decide-rank` is ever run in.
+
+**The concrete exponent is in the body, not the abstract**, which promises *"a
+nontrivial upper bound on the time complexity"* and does not state it. §3.2.3 of
+the **v2** HTML reduces to a tensor of shape at most `R x R x R` and reaches
+`F(2R² − 3R + 4, 2R)` for `R ≥ 4`, with
+`F(n, k) := O(|F|^n / (|F|−1)^k · R^O(1))` defined in §1.1. That was read from
+the HTML rendering and not the PDF, and the v1 record's comments field says some
+of its proofs are copied from arXiv:2401.06857, which was not read at all.
+**How that bound compares with `[yang2025]`'s at any shape here was not worked
+out**, the two being stated over different reductions, and neither is
+implemented in this repository.
 
 **`yang2025`**: J. Yang. *Faster search for tensor decomposition over finite
 fields.* ISSAC 2025, 132-139, [doi:10.1145/3747199.3747555](https://doi.org/10.1145/3747199.3747555),

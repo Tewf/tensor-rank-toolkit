@@ -19,6 +19,7 @@ One file per question, then one per instrument, then where that leaves us.
 | [`the-exponent.md`](the-exponent.md) | why the asymptotic question shares no machinery with either |
 | [`refutation-baseline.md`](refutation-baseline.md) | `[wang2026]`, and what a refutation here is measured against |
 | [`rank-as-a-milp.md`](rank-as-a-milp.md) | an instrument built here, measured, and retired |
+| [`rank-one-elements-of-a-subspace.md`](rank-one-elements-of-a-subspace.md) | what the leaf test is called in algebraic geometry, and the MinRank machinery that comes with the name |
 | [`where-we-stand.md`](where-we-stand.md) | how close each strand is to the front, question by question |
 | [`what-is-missing.md`](what-is-missing.md) | the gaps, kept apart from the ones only another design would call gaps |
 | [`a-correction.md`](a-correction.md) | the claim this survey got wrong, and the search that would have caught it |
