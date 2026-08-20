@@ -7,7 +7,7 @@ this repository is, and the front is much closer to us:
   [`exhaustive_search/`](../exhaustive_search/) implements.
 - `[covanov2019]` adding the automorphism group, which the orbit work implements.
 - `[heule2021]` encoding the question for a SAT solver, which
-  [`satisfiability/`](../satisfiability/) implements, and `[heule2024]` using SAT
+  [`satisfiability/`](../satisfiability/) implements, and `[yang2024sat]` using SAT
   specifically to rule decompositions out under assumed symmetries.
 - `[yang2025]`, and this entry has now been wrong twice, so it is written out at
   length. Exact decision over finite fields in

@@ -18,7 +18,7 @@ construction again.
 **`[alphaevolve2025]`** then found **`⟨4,4,4⟩` in 48 multiplications over `ℂ`**,
 the first improvement on Strassen applied twice, 49, in fifty-six years. That
 one needed complex coefficients, which cost arithmetic, so the follow-up work is
-about removing them: `[dumas2026]` gives a systematic method that either
+about removing them: `[moran2026]` gives a systematic method that either
 converts a complex scheme to a rational one or proves no rational equivalent
 exists, generalising Dumas, Pernet and Sedoglavic's earlier ad hoc results.
 
