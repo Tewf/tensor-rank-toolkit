@@ -68,8 +68,15 @@ Measured, the cheapest `cost(V)` seen at each depth:
 | `f2_2x3` | 5 | 5 | **5 at the root** |
 
 It fires only where the minimum-weight basis is already the answer, and there the
-search is two nodes anyway. `cost(V)` does not fall as the search descends,
-because covering `V` gets harder exactly as fast as the added maps help.
+search is two nodes anyway. **`cost(V)` does fall as the search descends** — the
+`gf8` row above goes 9 to 7 — which this file denied until 2026-08-20; the
+minimal case is in
+[`../descent_search/sorted_span.h`](../descent_search/sorted_span.h). What it
+never does here is fall far enough to reach the target before `dim V` does. And
+it cannot help a **sweep** whatever it does, because every question below the
+rank is a refutation, where `cost(V) <= k` would exhibit the very algorithm that
+question denies: it can fire only on the one satisfiable question, while costing
+`p^dim` ranks a node on all the refutations under it.
 
 ## What the four have in common
 
