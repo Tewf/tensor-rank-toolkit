@@ -491,15 +491,27 @@ The other direction from a search for schemes, and the direction
 against these.
 
 **`wang2026`**: C. Wang. *Automated Lower Bounds for Bilinear Complexity over
-Finite Fields.* [arXiv:2603.07280](https://arxiv.org/abs/2603.07280), March 2026.
+Finite Fields.* [arXiv:2603.07280](https://arxiv.org/abs/2603.07280), first
+posted March 2026 and **cited here at v10, 30 July 2026**.
 Classifies the orbits of constraint subspaces under a group of rank-preserving
 symmetries acting on one argument, runs a dynamic program over the orbits
 combining flattening, degenerate reduction, forced product and substitution with
 backtracking, and emits a certificate a separate verifier rechecks. **Raises
 `⟨3,3,3⟩` over F₂ from 19 to 20**, plus `⟨2,3,4⟩` to 19, `⟨3,3,4⟩` to 25 and
 `⟨3,4,4⟩` to 29, and eighteen new bounds for polynomial multiplication over F₂
-and F₃. Implemented and public: MIT-licensed C++ at
+and F₃, cyclic convolution of length 7 over F₂ among them at 13, which meets the
+best known upper bound and so settles that one outright. Implemented and public:
+MIT-licensed C++ at
 [github.com/wcgbg/tensor-rank-lower-bound](https://github.com/wcgbg/tensor-rank-lower-bound).
+
+**The version is part of the citation here, unusually for this file**, because
+this preprint's table grew across ten revisions rather than being corrected in
+place: v1 carries the matrix multiplication formats alone, with neither `⟨3,3,4⟩`
+nor `⟨3,4,4⟩` in it, and the polynomial and cyclic convolution bounds arrive
+later. Four of the six fixtures in
+[`fixtures/published-targets.md`](fixtures/published-targets.md) are aimed at
+numbers that exist only from a later version, so quoting the bare arXiv
+identifier would name a document that does not contain them.
 
 **`blaser2003`**: M. Bläser. *On the complexity of the multiplication of matrices
 of small formats.* Journal of Complexity **19** (2003), no. 1, 43-60. The source

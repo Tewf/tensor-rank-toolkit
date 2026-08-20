@@ -4,6 +4,16 @@ All notable changes to this project are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the version
 numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **`[wang2026]` is now cited at the arXiv version its numbers come from**, v10,
+  because that preprint's table grew across ten revisions rather than being
+  corrected in place, and three of the four bounds quoted from it are absent from
+  v1. A citation that names a document not containing the number is the one
+  failure [`references.md`](references.md) exists to prevent.
+
 ## [0.1.0] - 2026-08-18
 
 First public release: a C++20 library on Givaro for exact tensor and bilinear rank,
