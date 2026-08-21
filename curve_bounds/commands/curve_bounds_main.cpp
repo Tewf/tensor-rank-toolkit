@@ -16,6 +16,7 @@
 #include "exit_code.h"
 #include "interpolation_by_solver.h"
 #include "interpolation_programme.h"
+#include "memory_budget.h"
 #include "report.h"
 #include "solver_chain.h"
 #include "symmetric_bound_table.h"
@@ -57,6 +58,9 @@ void usage() {
                    "                  seconds an outside solver may run, from\n"
                    "                  ilp_time_limit_seconds in tunables.conf when this is not\n"
                    "                  given. --route chain only: the built-in has no clock\n"
+                   "  --max-memory N  bytes one bulk allocation may take, 2G by default. The\n"
+                   "                  frontier is quadratic in --degree, so this is the flag\n"
+                   "                  that refuses a degree this machine cannot hold\n"
                    "  --help          print this and stop, as exit 2\n"
                    "\n"
                    "  The result is an envelope, not a bound on mu_sym_q(m): steps 2 and 4 of\n"
@@ -175,6 +179,11 @@ int run(int argc, char** argv) {
             divisor_degree = arguments.whole_number();
         } else if (arguments.is("--points")) {
             supply.push_back(parse_supply(arguments.text()));
+        } else if (arguments.is("--max-memory")) {
+            // The frontier `plan_for` builds is quadratic in `--degree`, so the
+            // one flag that could refuse it is this one, and the refusal
+            // `require_room` writes names it by name.
+            bilinear_rank::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--node-limit")) {
             curve_bounds::set_solver_node_limit(arguments.count());
         } else if (arguments.is("--solver-timeout")) {
