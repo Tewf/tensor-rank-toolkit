@@ -37,6 +37,16 @@ struct Automorphism {
 /// `μᵀ M ν`.
 Matrix act_on(const Field& field, const Automorphism& sigma, const Matrix& form);
 
+/// The map divided through by its first entry that is not zero.
+///
+/// A pool holds one representative per scalar class, so both a pool and an image
+/// looked up in it have to be scaled the same way first.
+/// [`permutation_action_on`](automorphism.h) below scales every image it looks
+/// up, which is only half of the requirement: a caller assembling a list to
+/// quotient owes the other half. **Over GF(2) this does nothing**, which is why
+/// it is easy to forget and then wrong over GF(3).
+Matrix scalar_class_representative(const Field& field, Matrix matrix);
+
 /// The pair that does nothing.
 Automorphism identity_automorphism(const Field& field, std::size_t rows, std::size_t columns);
 

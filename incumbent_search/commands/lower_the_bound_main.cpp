@@ -21,6 +21,7 @@
 #include "minimum_weight_basis.h"
 #include "fewest_products.h"
 #include "report.h"
+#include "requested_group.h"
 #include "sms_file.h"
 #include "tensor_file.h"
 
@@ -29,7 +30,9 @@ namespace {
 void usage() {
     cli::note() << "usage: lower-the-bound <tensor-file> [--from basis|descent] [--nodes N]\n"
                    "                       [--width N] [--summand-rank r] [--whole-pool]\n"
-                   "                       [--below k] [--emit-operators <stem>] [--help]\n"
+                   "                       [--below k] [--orbit-moves]\n"
+                   "                       [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
+                   "                       [--emit-operators <stem>] [--help]\n"
                    "\n"
                    "  --from basis|descent  the root and the first incumbent: the minimum-\n"
                    "                        weight basis of span(T), or the descent's own\n"
@@ -55,7 +58,13 @@ void usage() {
                    "                        improve. A round that exhausted its tree can\n"
                    "                        still improve from the subspace it ended on,\n"
                    "                        which is a different root\n"
-                   "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
+                   "  --orbit-moves         offer one move per orbit at each node instead of\n"
+                   "                        every move, under the group --symmetry names.\n"
+                   "                        Off by default: every count published for this\n"
+                   "                        search was taken without it, and no group is\n"
+                   "                        available for most fixtures here\n"
+                << cli::symmetry_usage()
+                << "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
                    "  --help                print this and stop, as exit 2";
 }
 
@@ -78,6 +87,7 @@ int run(int argc, char** argv) {
     bool from_descent = true;
     std::size_t rounds = 8;
     std::string operator_stem;
+    cli::Symmetry symmetry;
 
     cli::Arguments arguments(argc, argv);
     while (arguments.next_flag()) {
@@ -103,6 +113,10 @@ int run(int argc, char** argv) {
             limits.whole_pool = true;
         } else if (arguments.is("--below")) {
             limits.below = arguments.count();
+        } else if (arguments.is("--orbit-moves")) {
+            limits.quotient_moves = true;
+        } else if (arguments.is("--symmetry", "-s")) {
+            symmetry = arguments.parsed_by(cli::parse_symmetry);
         } else if (arguments.is("--rounds")) {
             rounds = arguments.count();
         } else if (arguments.is("--emit-operators")) {
@@ -118,6 +132,24 @@ int run(int argc, char** argv) {
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
     const bilinear_rank::Field field(tensor.characteristic);
+
+    // The **ambient** group, which each node narrows to its own stabiliser.
+    //
+    // Built before anything else runs, because `--symmetry auto` **refuses**
+    // rather than building 9.99872e13 automorphisms for a 5x5 map over GF(2),
+    // and a refusal belongs before a run and not after the descent has spent a
+    // minute earning the root it will never search from.
+    std::vector<bilinear_rank::Automorphism> ambient;
+    if (limits.quotient_moves) {
+        if (symmetry.kind == cli::SymmetryKind::None) {
+            cli::note() << "--orbit-moves without --symmetry has no group to quotient by, so "
+                           "every move is offered and the run is the unquotiented one";
+        }
+        ambient = bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry);
+        cli::note() << "ambient group: " << ambient.size() << " automorphisms";
+    } else if (symmetry.kind != cli::SymmetryKind::None) {
+        cli::note() << "--symmetry was given without --orbit-moves, so nothing reads it";
+    }
 
     const std::vector<bilinear_rank::Matrix> start =
         from_descent ? bilinear_rank::descend_from_own_basis(field, tensor.slices)
@@ -145,10 +177,17 @@ int run(int argc, char** argv) {
     std::size_t reached = linear_algebra::multiplication_count(field, start);
     for (std::size_t round = 0; round < rounds; ++round) {
         std::vector<bilinear_rank::Matrix> next =
-            bilinear_rank::search_from_above(field, answer, pool, limits, &round_report);
+            bilinear_rank::search_from_above(field, answer, pool, limits, &round_report, ambient);
         report.nodes += round_report.nodes;
         report.children += round_report.children;
         report.moves_offered += round_report.moves_offered;
+        report.moves_entered += round_report.moves_entered;
+        report.smallest_stabiliser =
+            report.largest_stabiliser == 0
+                ? round_report.smallest_stabiliser
+                : std::min(report.smallest_stabiliser, round_report.smallest_stabiliser);
+        report.largest_stabiliser =
+            std::max(report.largest_stabiliser, round_report.largest_stabiliser);
         report.improvements += round_report.improvements;
         report.bounded += round_report.bounded;
         report.deepest = std::max(report.deepest, round_report.deepest);
@@ -181,6 +220,15 @@ int run(int argc, char** argv) {
     // Said in words rather than left to be inferred from the count, and said
     // both ways round: a run that did not reach `k` has proved nothing about
     // `k`, and the branches it cut were cut by `k` itself.
+    // What the quotient did, printed whether it did anything or not: a stabiliser
+    // of one quotients nothing, and a run should say so rather than leave a
+    // reader to infer it from an unchanged count.
+    if (limits.quotient_moves) {
+        cli::note() << "orbit-moves: " << report.moves_entered << " of " << report.moves_offered
+                    << " moves entered, stabiliser " << report.smallest_stabiliser << " to "
+                    << report.largest_stabiliser << " over the nodes";
+    }
+
     if (limits.below != 0) {
         if (report.reached_below) {
             cli::note() << "--below " << limits.below << ": reached, at "

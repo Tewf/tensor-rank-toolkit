@@ -100,13 +100,7 @@ std::vector<Automorphism> stabiliser_of(const Field& field, const std::vector<Ma
     return stabiliser;
 }
 
-namespace {
-
-/// The pool holds one representative per scalar class, so an image has to be
-/// scaled the same way before it can be looked up: divide through by the first
-/// entry that is not zero. Over GF(2) this does nothing, which is why it is
-/// easy to forget and then wrong over GF(3).
-Matrix normalised(const Field& field, Matrix matrix) {
+Matrix scalar_class_representative(const Field& field, Matrix matrix) {
     for (std::size_t entry = 0; entry < matrix.entry_count(); ++entry) {
         if (field.isZero(matrix.data()[entry])) continue;
 
@@ -119,8 +113,6 @@ Matrix normalised(const Field& field, Matrix matrix) {
     }
     return matrix;
 }
-
-}  // namespace
 
 std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field,
                                                   const std::vector<Automorphism>& group,
@@ -140,7 +132,8 @@ std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field
     for (const Automorphism& sigma : group) {
         std::vector<std::uint32_t> images(pool.size());
         for (std::size_t index = 0; index < pool.size(); ++index) {
-            const Matrix moved = normalised(field, act_on(field, sigma, pool[index]));
+            const Matrix moved =
+                scalar_class_representative(field, act_on(field, sigma, pool[index]));
             const char* start = reinterpret_cast<const char*>(moved.data());
             const auto found =
                 index_of.find(std::string(start, moved.entry_count() * sizeof(Element)));
