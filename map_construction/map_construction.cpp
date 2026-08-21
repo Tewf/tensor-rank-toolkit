@@ -4,6 +4,9 @@
 #include <givaro/givpoly1factor.h>
 
 #include <stdexcept>
+#include <string>
+
+#include "memory_budget.h"
 
 namespace bilinear_rank {
 
@@ -100,6 +103,22 @@ std::vector<Matrix> matrix_multiplication_tensor(std::size_t rows, std::size_t i
     const std::size_t left_width = rows * inner;      // A, read row by row
     const std::size_t right_width = inner * columns;  // B, read row by row
 
+    // `rows*columns` slices of `rows*inner` by `inner*columns`, which is
+    // `(rows*inner*columns)^2` entries: cubic in each dimension and quadratic in
+    // the whole, from three numbers `make-tensor --matmul` takes without a
+    // ceiling. `--matmul 2 100 100 100` is 10^12 entries, and a caller who asked
+    // for it got a kill rather than the number.
+    //
+    // Asked as one slice and then as a count of slices, rather than as one
+    // product: `left_width * right_width` is itself a multiplication that can
+    // wrap on the input this exists to refuse, and one slice inside the budget
+    // makes `bytes_per_matrix` safe by construction.
+    const std::string product = std::to_string(rows) + "x" + std::to_string(inner) + "x" +
+                                std::to_string(columns) + " matrix product";
+    require_room("one slice of a " + product, left_width, right_width * sizeof(Element));
+    require_room("the slices of a " + product, rows * columns,
+                 bytes_per_matrix(left_width * right_width));
+
     std::vector<Matrix> slices;
     slices.reserve(rows * columns);
     for (std::size_t row = 0; row < rows; ++row) {
@@ -116,6 +135,13 @@ std::vector<Matrix> matrix_multiplication_tensor(std::size_t rows, std::size_t i
 }
 
 std::vector<Matrix> cyclic_convolution_tensor(std::size_t length) {
+    // `length` slices of `length` by `length`, so cubic in the one number
+    // `--cyclic` takes: 1.25e11 entries at `--cyclic 2 5000`. One slice, then the
+    // count of them, for the reason the matrix product above gives.
+    const std::string convolution = "a cyclic convolution of length " + std::to_string(length);
+    require_room("one slice of " + convolution, length, length * sizeof(Element));
+    require_room("the slices of " + convolution, length, bytes_per_matrix(length * length));
+
     std::vector<Matrix> slices;
     slices.reserve(length);
     for (std::size_t output = 0; output < length; ++output) {

@@ -11,7 +11,7 @@ map is how many multiplications it needs. Strassen's seven-instead-of-eight for
 2×2 matrices is where fast matrix multiplication comes from, and finding such
 decompositions in general is open.
 
-It attacks that from nine directions, from a cheap descent to a solver to a
+It attacks that from ten directions, from a cheap descent to a solver to a
 canonical form that needs no search at all. **Nothing here is ever a float**, so
 a reported rank is a fact about the map rather than an artefact of rounding, and
 every count below is asserted by the test suite. Timings are not and are not
@@ -61,7 +61,11 @@ sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 
 ## What is where
 
-Thirteen modules and **twelve tools**, in [`what-is-where.md`](what-is-where.md),
+Thirteen modules — the directories that own a question, which is every
+`add_subdirectory` except the eight that carry no question of their own (`cli`,
+`testing`, `run_limits`, `linear_algebra`, `formats`, `map_construction`,
+`search_plan`, `gpu_leaf`) — and **twelve tools**, in
+[`what-is-where.md`](what-is-where.md),
 with which tool answers which question. The one question each answers that no
 other does, and why twelve rather than eight:
 [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).

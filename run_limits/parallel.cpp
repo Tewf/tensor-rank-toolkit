@@ -1,6 +1,8 @@
 #include "parallel.h"
 
 #include <atomic>
+#include <exception>
+#include <mutex>
 #include <thread>
 #include <vector>
 
@@ -36,16 +38,39 @@ void parallel_for(std::size_t count, const std::function<void(std::size_t)>& bod
     std::vector<std::thread> pool;
     pool.reserve(threads - 1);
 
+    // **What a worker throws is carried out rather than dropped on the floor.**
+    // An exception that leaves a `std::thread`'s function calls `std::terminate`,
+    // so before this every `require_room` refusal raised under `--threads 2` or
+    // more was a SIGABRT instead of the sentence naming the number — and the
+    // refusal exists precisely so that a machine smaller than the one a run was
+    // written on degrades rather than dies. The first one wins and the rest are
+    // dropped, because a caller wants the reason and not `threads` copies of it;
+    // `stop` makes the others give up their remaining indices, so a refused run
+    // ends at once instead of finishing the work it has already been told it
+    // cannot afford.
+    std::atomic<bool> stop(false);
+    std::mutex first_failure;
+    std::exception_ptr failure;
+
     const auto run = [&] {
         for (;;) {
+            if (stop.load(std::memory_order_relaxed)) return;
             const std::size_t index = next.fetch_add(1);
             if (index >= count) return;
-            body(index);
+            try {
+                body(index);
+            } catch (...) {
+                const std::lock_guard<std::mutex> only_the_first(first_failure);
+                if (!failure) failure = std::current_exception();
+                stop.store(true, std::memory_order_relaxed);
+                return;
+            }
         }
     };
     for (std::size_t worker = 0; worker + 1 < threads; ++worker) pool.emplace_back(run);
     run();  // this thread works too, rather than waiting on the others
     for (std::thread& worker : pool) worker.join();
+    if (failure) std::rethrow_exception(failure);
 }
 
 }  // namespace bilinear_rank
