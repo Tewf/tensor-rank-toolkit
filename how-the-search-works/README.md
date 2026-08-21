@@ -84,3 +84,5 @@ verdict on the card is suspended for that reason and for one more in
 [`what-to-wire.md`](what-to-wire.md).
 
 Every parameter each of these takes: [`parameters.md`](parameters.md).
+What the 2026-08-20 rewrites came to on whole questions:
+[`what-the-rewrites-were-worth.md`](what-the-rewrites-were-worth.md).
