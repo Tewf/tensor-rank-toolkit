@@ -2,7 +2,7 @@
 
 The four commands that ask how few multiplications a map needs and disagree
 about what they can prove. Precedence and `BILINEAR_TUNABLES`:
-[`../OPTIONS.md`](../OPTIONS.md).
+[`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 ## `minimise-rank`
 

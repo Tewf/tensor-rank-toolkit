@@ -64,7 +64,7 @@ def of_exit_status(status, tool_verdicts):
     """What one finished run means. `status` is what the process returned.
 
     `tool_verdicts` is the tool's own reading of 0 and 1, from the catalogue,
-    because the twelve do not all answer the same question: 0 is a decomposition
+    because the tools do not all answer the same question: 0 is a decomposition
     for `decide-rank`, an accepted candidate for `deflate-strictly` and simply a
     completed pass for `minimise-rank`. The header's own sentence comes back
     beside it as `standing`, and `show_standing` says whether it is the faithful
@@ -92,7 +92,7 @@ def of_exit_status(status, tool_verdicts):
         # a rank, and quoting it under `make-tensor` would claim a verification
         # that never happened. It is shown whenever it is the faithful reading:
         # for 2, 3, 4 and 5 always, since those four mean the same from all
-        # twelve and are the ones that must never be softened, and for 0 and 1
+        # of them and are the ones that must never be softened, and for 0 and 1
         # when the tool declares no reading of its own.
         named["show_standing"] = status not in (0, 1) or not tools_own
         return named

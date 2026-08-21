@@ -79,6 +79,14 @@ regression and a noisy afternoon into the same red tick. Timings are measured by
 hand, on the reference machine, under this protocol, and are quoted as evidence
 of an order of magnitude rather than of a digit.
 
+**That line is structural and not a convention to remember.** The two binaries
+whose whole output is timings — `measure-leaf`, which moves
+`device_launch_floor`, and `price-canonical-route`, which moves `CanonicalPrices`
+and with it whether `--route canonical` pays — are built outside their strand's
+`commands/`. Neither is a tool, in [`OPTIONS.md`](OPTIONS.md), or offered by the
+console; each ships beside the constant it decides, because a constant nobody can
+re-measure is a constant nobody can move.
+
 ## A number taken on the card
 
 None of the protocol above transfers to a CUDA kernel unexamined: the baseline

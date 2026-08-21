@@ -1,7 +1,8 @@
 # Committing to candidates
 
 The tree-refutation and isomorph-free routes: one orbit representative at a time.
-Precedence and `BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
+Precedence and `BILINEAR_TUNABLES`:
+[`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 The third route, `find-at-rank`, is on the `rejected-experiments` branch and its
 flags are gone with it. Its defaults and what chose them are recorded there, and

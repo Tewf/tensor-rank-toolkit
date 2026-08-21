@@ -1,7 +1,7 @@
 """Where one run's files live, under a path a reader can retype.
 
 A map that arrives pasted into a browser has to become a file before any of the
-twelve can read it, and the name it gets is not a detail. Two reasons.
+tools can read it, and the name it gets is not a detail. Two reasons.
 
 The first is reproducibility: the command this interface shows is worth
 something only if the file it names is still there afterwards, so the map is

@@ -47,7 +47,7 @@ double product_group_order(const RouteShape& shape) {
 /// The break-even, assembled from the shape alone.
 ///
 /// Each block is one clause of the derivation in
-/// [`when-canonical-pays.md`](when-canonical-pays.md), in the order that file
+/// [`when-canonical-pays/`](when-canonical-pays/README.md), in the order that file
 /// argues them: what one membership test costs, what a plain node costs, what a
 /// canonical node costs, what the presentation costs, and only then the two ratios.
 RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrices& prices) {
