@@ -46,6 +46,9 @@ add_subdirectory(descent_search)
 add_subdirectory(exhaustive_search)
 add_subdirectory(orbit_reduction)
 add_subdirectory(flip_graph)
+# After descent_search, whose minimum-weight basis it grows, and before nothing:
+# the upper-bound search links the heuristic and is linked by no other module.
+add_subdirectory(incumbent_search)
 add_subdirectory(integer_programme)
 add_subdirectory(matrix_sparsification)
 add_subdirectory(satisfiability)
