@@ -8,6 +8,27 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **`operators-to-tensor`, and with it a way in for somebody else's algorithm.**
+  Nobody publishes a tensor: PLinOpt's `data/` is 153 SMS operators in
+  `stem_{L,R,P}` triples, `[fmm-catalogue]` publishes the same triple as Maple
+  matrices, and the matrix multiplication tensor is determined by its three
+  dimensions. So the `.tensor` format is this repository's alone, and a
+  collaborator arrives holding three `.sms` files that `--emit-operators` could
+  write and nothing here could read. The command takes its three filenames and
+  its `-q` in the order `PMchecker` takes them, and the arithmetic is
+  `map_computed_by` unchanged. That the two sides mean the same thing by
+  ⟨L,R,P⟩ is now arithmetic rather than prose: his published Strassen rebuilds
+  `matmul_2x2x2` entry for entry, his Karatsuba rebuilds `f2_2x2`, and his
+  63-product ⟨3,4,7⟩ rebuilds that map, which the two square triples cannot
+  check because a transposed slice rebuilds them correctly.
+  [`formats/plinopt_interoperability/exchanging-files.md`](formats/plinopt_interoperability/exchanging-files.md)
+  is the page for whoever has such files.
+
+- **Twelve of PLinOpt's own operators, vendored under CeCILL-B** in
+  [`fixtures/plinopt/`](fixtures/plinopt/README.md) with a copy of that licence
+  beside them, as Article 5.3.1 asks. Three were already there and neither
+  `NOTICE` nor the directory said where they came from or under what terms.
+
 - **A predicate that says whether canonical augmentation will pay, before the
   search runs.** `oracle_guided_search/canonical_route_price.h` weighs the node
   saving against the parent test from the characteristic, the shape, the pool
@@ -56,7 +77,24 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- **Twelve command-line tools, audited down from fourteen**, with the one
+- **The SMS reader refuses what LinBox would read differently**, which is three
+  corrections read off his sources rather than off our notes about them. Its
+  comment said the format does not fix how many triples go on a line; it does,
+  because LinBox reads a value with Givaro's line-greedy rational operator, so
+  `1 1 5 3 2 7` is one entry of 5327 and `sms2pretty` prints exactly that with
+  no warning — accepting it meant holding a different matrix from his out of the
+  same bytes. Entries are not always rationals: three of his 153 carry
+  polynomials in an indeterminate, now refused by name. And the type letter
+  carries nothing, since `PMchecker` reads every operator over the rationals and
+  takes the field from `-q`, so `read_sms` gained the modular overload that
+  `write_sms(ostream, ModularMatrix)` never had a partner for. The field-by-field
+  comparison, with the file and line on both sides, is
+  [`formats/plinopt_interoperability/what-both-sides-do.md`](formats/plinopt_interoperability/what-both-sides-do.md);
+  149 of his 153 matrices round-trip through the two halves and print
+  identically under his own reader.
+
+- **Twelve command-line tools, audited down from fourteen** and back to thirteen
+  with `operators-to-tensor` above, with the one
   question each answers that no other does in
   [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
   It was fourteen and not thirteen because `list-solvers` is the one command
@@ -76,6 +114,10 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   descent and the incumbent search collide on no name but leave four flags dead
   on half the command; `walk-scheme` collides on `--steps` and on `--from`; and
   the two in `oracle_guided_search/` share a directory rather than a question.
+  A fifth was refused when the thirteenth arrived: `operators-to-tensor` into
+  `make-tensor`, on the build order rather than on the flags, since building a
+  map from its definition sits below the search and rebuilding one from a
+  decomposition sits above it.
 
   The retired `list-solvers` still builds, no longer links `integer_programme`,
   and prints the line to type before leaving as 2. Deleting it would have been

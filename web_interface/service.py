@@ -32,6 +32,47 @@ LONGEST_WALL_CLOCK_SECONDS = 86_400
 NOT_YET = "<this run>"
 
 
+def _slices_in(text):
+    """The slice count off the `shape` line, or None if there is not one.
+
+    The same two words `map_box.js` restates under the box, read here so the
+    warning and the reading cannot disagree. It judges nothing else:
+    `formats/tensor_file.h` is the authority on whether a map is well formed and
+    its refusal is what a run shows.
+    """
+    for raw in (text or "").split("\n"):
+        line = raw.split("#")[0].strip()
+        words = line.split()
+        if len(words) >= 4 and words[0] == "shape":
+            try:
+                return int(words[1])
+            except ValueError:
+                return None
+    return None
+
+
+def _shape_warning(request, tool):
+    """A tool that takes only so many slices, said before Run rather than after.
+
+    `decide-rank-by-pencil` is the one tool with a shape it cannot take, and
+    until this existed the console offered it for any map, let you press Run, and
+    handed back the binary's refusal. The refusal was right and the press was
+    wasted. `most_slices` is declared in `catalogue.py` beside the question, so
+    this stays one rule rather than a name checked here.
+    """
+    most = tool.get("most_slices")
+    if most is None:
+        return []
+    slices = _slices_in((request.get("input") or {}).get("text"))
+    if slices is None or slices <= most:
+        return []
+    return [tool["name"] + " decides pencils, and this map says " + str(slices) +
+            " slices. Two is the whole method: a pencil A + xB has a complete "
+            "invariant and three slices do not, which is where deciding rank "
+            "becomes NP-complete. decide-rank takes this map, and takes the "
+            "pencil route itself on the maps where it applies."]
+
+
 class Service:
     def __init__(self, build, runs_root, wall_clock_seconds=DEFAULT_WALL_CLOCK_SECONDS):
         self.build = pathlib.Path(build).resolve()
@@ -71,7 +112,7 @@ class Service:
         """
         chosen = request.get("options") or {}
         seconds = self._wall_clock(request)
-        said = []
+        said = _shape_warning(request, tool)
         for option in tool["options"]:
             if not option.get("carries_wall_clock"):
                 continue

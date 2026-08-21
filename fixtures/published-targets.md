@@ -29,7 +29,7 @@ both searches actually say. Counts are exact and reproduce anywhere.
 
 | Fixture | floor, proved | step 1 | step 2 | step 3 | shortlist | incumbent | gap to target |
 |---|---|---|---|---|---|---|---|
-| `gf32_multiplication` | **12** | 25 | 17 | 16 | 9 | **14** | floor 1 under, ceiling 1 over |
+| `gf32_multiplication` | **12** | 25 | 17 | 16 | 9 | **13** | floor 1 under, **ceiling met** |
 | `gf64_multiplication` | **14** | 36 | 23 | **20** | 15 | 20 | floor 1 under, ceiling 5 over |
 | `cyclic_f2_7` | **12** | 19 | 15 | 15 | 0 | **13** | floor 1 under, **ceiling met** |
 | `matmul_2x3x4` | **14** | 24 | 24 | not run | | not run | floor 5 under |
@@ -40,7 +40,7 @@ The `incumbent` column is
 [`lower-the-bound`](../incumbent_search/README.md), which walks the same tree the
 exact search does and cuts it at `dim V + 1 >= best` instead of at a target. It
 moves the two rows the descent cannot: **`cyclic_f2_7` reaches the published 13
-in 22 nodes**, and `gf32_multiplication` reaches 14 in 139. Both counts are
+in 22 nodes**, and `gf32_multiplication` reaches 13 in 1 873. Both counts are
 verified in the tool and again outside this repository, from the emitted `.sms`
 operators. Node counts per fixture:
 [`../incumbent_search/what-it-reaches.md`](../incumbent_search/what-it-reaches.md).

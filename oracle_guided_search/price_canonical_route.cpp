@@ -17,6 +17,7 @@
 /// presentation, prints them in the units `tunables.conf` spells, and then prints
 /// the predicate's verdict for the shape so a reading can be checked against a
 /// sweep without arithmetic in between.
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -26,6 +27,7 @@
 #include "canonical_route_price.h"
 #include "exit_code.h"
 #include "group_construction.h"
+#include "pool_orbits.h"
 #include "pool_set_canon.h"
 #include "report.h"
 #include "span_basis.h"
@@ -48,6 +50,42 @@ void usage() {
                    "  --help       print this and stop, as exit 2\n"
                    "\n"
                    "  exit: 0 priced  2 usage  5 error";
+}
+
+/// The orbits of the pool under the group, and the sum of their squared sizes.
+///
+/// The one input to `price_canonical_route` that no closed form gives, and the
+/// one the one-level clause turns on: `least_in_orbit` names a representative by
+/// a breadth-first walk whose `seen` list is scanned linearly, so the plain root
+/// costs `sum |O_i|^2` where `orbit_representatives` costs `|P|`.
+///
+/// It is found here the way the plain search's root finds it — from the same
+/// `PoolAction`, over the same pool — so the count this reports is the number of
+/// children either route's root emits, and `count + 1` is the node count of both.
+bilinear_rank::PoolOrbits pool_orbits(const bilinear_rank::PoolAction& action,
+                                      std::size_t generators, std::size_t pool_size) {
+    std::vector<std::uint32_t> home(pool_size, 0xffffffffu);
+    bilinear_rank::PoolOrbits orbits;
+    for (std::uint32_t index = 0; index < pool_size; ++index) {
+        if (home[index] != 0xffffffffu) continue;
+        const std::uint32_t mark = static_cast<std::uint32_t>(orbits.count++);
+        std::vector<std::uint32_t> frontier{index};
+        home[index] = mark;
+        double reached = 0;
+        while (!frontier.empty()) {
+            const std::uint32_t taken = frontier.back();
+            frontier.pop_back();
+            ++reached;
+            for (std::size_t element = 0; element < generators; ++element) {
+                const std::uint32_t image = action.image(element, taken);
+                if (home[image] != 0xffffffffu) continue;
+                home[image] = mark;
+                frontier.push_back(image);
+            }
+        }
+        orbits.summed_squares += reached * reached;
+    }
+    return orbits;
 }
 
 /// A subspace of `target` dimensions above the slices, and its pool content.
@@ -149,8 +187,18 @@ int run(int argc, char** argv) {
     shape.target = level;
     shape.generators = generators.size();
 
+    // Timed on `orbit_representatives`, which is the call the canonical route's
+    // root actually makes, and not on `pool_orbits` below, which is this file's
+    // own pass and is cheaper because it wants nothing back but the sizes.
+    const bilinear_rank::PoolAction action(field, generators, tensor.rows(), tensor.columns());
+    std::vector<std::uint32_t> every(pool.size());
+    for (std::uint32_t index = 0; index < pool.size(); ++index) every[index] = index;
+    const double orbit_pass =
+        fastest(calls, [&] { (void)bilinear_rank::orbit_representatives(action, every); });
+    const bilinear_rank::PoolOrbits orbits = pool_orbits(action, generators.size(), pool.size());
+
     const bilinear_rank::RouteVerdict predicted =
-        bilinear_rank::price_canonical_route(shape, bilinear_rank::CanonicalPrices());
+        bilinear_rank::price_canonical_route(shape, bilinear_rank::CanonicalPrices(), orbits);
 
     cli::result() << "shape: <" << shape.rows << "," << shape.inner << "," << shape.columns
                   << ">, pool " << pool.size() << ", degree " << predicted.degree << ", group "
@@ -167,7 +215,12 @@ int run(int argc, char** argv) {
     cli::result() << "  presentation: " << presentation << " s, "
                   << presentation / predicted.degree * 1e9
                   << " ns an axis point  (presentation_nanoseconds)\n";
-    cli::result() << "predicted, from the shape alone:\n";
+    cli::result() << "  orbit pass: " << orbit_pass << " s, " << orbit_pass / pool.size() * 1e9
+                  << " ns a pool element  (orbit_pass_nanoseconds)\n";
+    cli::result() << "orbits of the pool: " << orbits.count << ", sum of squared sizes "
+                  << orbits.summed_squares << ", so a root of either route has "
+                  << orbits.count << " children\n";
+    cli::result() << "predicted, from the shape and those orbits:\n";
     cli::result() << "  plain node " << predicted.plain_node_seconds << " s, pool scan "
                   << predicted.pool_scan_seconds << " s, canonical image "
                   << predicted.image_seconds << " s, setwise stabiliser "

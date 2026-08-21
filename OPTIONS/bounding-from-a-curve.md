@@ -17,6 +17,7 @@ Precedence and `BILINEAR_TUNABLES`:
 | `--node-limit N` | `ilp_node_limit`, `200000` | **Nothing.** No measurement anywhere. Reaching it returns `Exhausted`, which falls back to the dynamic programme rather than bounding anything. |
 | `--solver-timeout N` | `ilp_time_limit_seconds`, `300` | **Nothing measured.** It exists because of an incident rather than a table: five leaked solvers once sat at full tilt for half an hour and spoiled another session's measurements. It bounds `--route chain` only; the built-in has no wall clock anywhere. |
 | backend order (no flag) | `ilp_backend_order` | **Nothing measured.** Gurobi leads where a licence exists and the built-in trails because it is the slowest. `--route built-in` is how a caller sidesteps the order entirely. |
+| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. The interpolation frontier is quadratic in `--degree`, so this is what refuses a degree the machine cannot hold. |
 
 Agreement, which is measured and is a correctness result rather than a timing:
 the three routes were compared on **140 questions over ten supplies, 95 of them

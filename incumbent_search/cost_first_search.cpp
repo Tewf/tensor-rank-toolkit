@@ -7,6 +7,7 @@
 #include "level_lowering_moves.h"
 #include "minimum_weight_basis.h"
 #include "orbit_moves.h"
+#include "parallel.h"
 #include "span_basis.h"
 
 namespace bilinear_rank {
@@ -115,23 +116,49 @@ struct Ascent {
             report.largest_stabiliser = std::max(report.largest_stabiliser, stabiliser);
         }
 
+        // Which moves are children, then what each child costs, in that order and
+        // not interleaved — because only the second half may leave this core.
+        //
+        // **The filter carries state and stays sequential.** `reached` decides a
+        // move by what earlier moves put in it, so which of two moves with the
+        // same residue survives is the offering order and nothing else. Running
+        // it on one core keeps that order, keeps `report.children`, and keeps the
+        // slot each survivor lands in.
+        //
+        // **The basis each survivor opens carries none and goes to the workers.**
+        // `minimum_weight_basis_with` reads `basis`, `known` and its own move,
+        // none of which anybody writes, and each answer is written to its own
+        // slot. So the children are the same children in the same order at any
+        // `--threads`, and the `stable_sort` below sees the same vector — which
+        // is what makes this the one search here that threads without an argument
+        // about node counts. It is the same trade
+        // [`../descent_search/minimise_rank.cpp`](../descent_search/minimise_rank.cpp)
+        // already makes with the identical call.
         const ReducedBasis span = linear_algebra::span_of(field, basis);
         std::set<std::vector<Element>> reached;
         std::vector<Element> scratch;
-        std::vector<Child> children;
+
+        std::vector<const Matrix*> surviving;
         for (const Matrix& move : moves) {
             if (span.contains(move, scratch)) continue;
             if (!reached.insert(residue_of(field, span, move)).second) continue;
+            surviving.push_back(&move);
+        }
+        report.children += surviving.size();
+
+        std::vector<Child> children(surviving.size());
+        parallel_for(surviving.size(), [&](std::size_t slot) {
             // The cost comes back with the basis. It is the sum of the ranks the
             // greedy picked, which it knew before it had a basis to hand over;
             // ranking those matrices again here was one Gaussian elimination per
-            // basis element per child, 17 371 of them on `cyclic_f2_7`.
-            std::size_t reached_cost = 0;
+            // basis element per child, 17 371 of them on `cyclic_f2_7` and
+            // 1 258 756 on the `gf32_multiplication` run that reaches 13.
+            std::size_t cost = 0;
             std::vector<Matrix> attempt =
-                minimum_weight_basis_with(field, basis, move, known, &reached_cost);
-            ++report.children;
-            children.push_back({reached_cost, std::move(attempt)});
-        }
+                minimum_weight_basis_with(field, basis, *surviving[slot], known, &cost);
+            children[slot].cost = cost;
+            children[slot].basis = std::move(attempt);
+        });
 
         // Cheapest first, ties in generation order, which is fixed. Stable so
         // that the run is reproducible rather than merely deterministic.

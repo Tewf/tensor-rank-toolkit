@@ -23,6 +23,23 @@ add_executable(test_algorithm_recovery test_algorithm_recovery.cpp)
 target_link_libraries(test_algorithm_recovery PRIVATE descent_search formats testing project_warnings)
 add_test(NAME algorithm_recovery COMMAND test_algorithm_recovery ${PROJECT_SOURCE_DIR}/fixtures)
 
+# The other direction of algorithm_recovery.h, and the only place the ⟨L,R,P⟩
+# convention is checked against somebody else's rather than against itself: his
+# published operators are made to rebuild a fixture written here from the
+# definition of the map.
+add_executable(test_operators_to_tensor test_operators_to_tensor.cpp)
+target_link_libraries(test_operators_to_tensor PRIVATE descent_search map_construction formats
+                                                       testing project_warnings)
+add_test(NAME operators_to_tensor
+         COMMAND test_operators_to_tensor ${PROJECT_SOURCE_DIR}/fixtures)
+
+# And the command, because the test above reads the three files itself and so
+# cannot see the order they are passed in, which is the whole of the interface.
+add_test(NAME operators_to_tensor_command
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_operators_to_tensor.sh
+                 $<TARGET_FILE:operators-to-tensor> ${PROJECT_SOURCE_DIR}/fixtures)
+set_tests_properties(operators_to_tensor_command PROPERTIES TIMEOUT 60)
+
 add_executable(test_candidate_pool test_candidate_pool.cpp)
 target_link_libraries(test_candidate_pool PRIVATE descent_search testing project_warnings)
 add_test(NAME candidate_pool COMMAND test_candidate_pool)

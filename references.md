@@ -1415,10 +1415,23 @@ Routines for Linear, Bilinear & Trilinear Straight-line Programs.*
 [github.com/jgdumas/plinopt](https://github.com/jgdumas/plinopt), CeCILL-B.
 The reference implementation for this problem area, and the one to check
 against: `bin/sparsifier`, `bin/factorizer`,
-`bin/orbiter`. It reaches sparsity by a different route from `beniamini2020`;
+`bin/orbiter`, and for the exchange `bin/PMchecker`, `bin/MMchecker` and
+`bin/sms2pretty`. It reaches sparsity by a different route from `beniamini2020`;
 sparse QLUP elimination and bounded coefficient search rather than the Ω-valid
 oracles; so the two are worth comparing rather than one replacing the other.
 Not a dependency here: it needs LinBox, which this repository does not.
+Twelve of its `data/` operators are vendored under
+[`fixtures/plinopt/`](fixtures/plinopt/README.md) with its licence; what was read
+each way is [`formats/plinopt_interoperability/`](formats/plinopt_interoperability/README.md).
+
+**`fmm-catalogue`**: A. Sedoglavic. *Yet another catalogue of fast matrix
+multiplication algorithms*, [fmm.univ-lille.fr](https://fmm.univ-lille.fr/).
+Over five thousand formats with their best known rank, and the reason the
+`.tensor` format here has no counterpart in the wild: each entry is published as
+a *decomposition*, `_LRP.mpl.bz2` and `_tensor.mpl.bz2`, both of them the same
+⟨L,R,P⟩ triple written as Maple matrices, never as the tensor. Not read here;
+`operators-to-tensor` reads the SMS spelling of the same object, which PLinOpt
+uses and which needs no Maple parser.
 
 **`cbc`**, **`glpsol`**, **`lp_solve`**, **`gurobi_cl`**: The integer programming
 backends of [`integer_programme/`](integer_programme/README.md), which is what

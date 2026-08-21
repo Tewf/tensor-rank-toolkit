@@ -40,8 +40,8 @@ independent walks, not a seed value; each walk's seed is its index.
 | `--node-limit N` | `decide-rank`, `deflate-strictly`, `factor-over-canonical-basis` | search-tree nodes, from `search_node_limit` |
 | | `curve-bounds` | branch-and-bound nodes, from `ilp_node_limit`, whose default is 25x smaller |
 | | `lower-the-bound` spells the same idea `--nodes N`, from no tunable at all |
-| `--max-memory` | the three searches | the pool budget, in bytes |
-| | `decide-rank-by-sat`, `deflate-strictly` | the solver's cap, in megabytes, from `sat_memory_megabytes` |
+| `--max-memory` | the three searches | the bulk-allocation budget (`set_memory_budget`), in bytes |
+| | `decide-rank-by-sat`, `deflate-strictly` | the child solver's address-space cap via `RLIMIT_AS` (**not** the bulk-allocation budget), in bytes, from `sat_memory_megabytes` — see [`asking-a-sat-solver.md`](asking-a-sat-solver.md) |
 | `--route` | see the table above | two different sets of values |
 
 ## What a bad value gets you
