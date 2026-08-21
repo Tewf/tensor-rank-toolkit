@@ -2,11 +2,14 @@
 
 #include <algorithm>
 
+#include "device.h"
+#include "gf2_bits.h"
 #include "memory_budget.h"
 #include "measures.h"
 #include "reflected_gray_walk.h"
 #include "span_basis.h"
 #include "span_enumeration.h"
+#include "span_ranks_on_card.h"
 
 namespace bilinear_rank {
 
@@ -88,6 +91,51 @@ class SpanElements {
     std::size_t index_ = 0;
 };
 
+/// The same ranks from a card, or false and nothing written.
+///
+/// **Five reasons to decline, and none of them is a failure.** No backend was
+/// registered, which is every build without `nvcc`; a field that is not GF(2),
+/// where the bit-packed arithmetic a kernel does is not this arithmetic; a shape
+/// no kernel was compiled for; a span too small to be worth a launch, which
+/// [`../run_limits/device.h`](../run_limits/device.h) decides and not this
+/// function; or the backend itself declining. On this machine the fourth is what
+/// almost always answers, and that is the correct answer:
+/// [`span_ranks_on_card.h`](span_ranks_on_card.h) says why the seam exists
+/// anyway.
+///
+/// **The launch floor is asked here rather than inside the backend**, for the
+/// reason `Gf2Leaf` asks it rather than letting a leaf backend decide: one place
+/// decides where work goes, for the host too.
+bool ranks_from_a_card(const Field& field, const std::vector<Matrix>& slices,
+                       std::size_t combinations, std::vector<std::size_t>& ranks) {
+    const SpanRanksOnCard* card = span_ranks_on_card();
+    if (card == nullptr || slices.empty()) return false;
+    if (field.characteristic() != 2) return false;
+
+    const std::size_t rows = slices.front().rows();
+    const std::size_t columns = slices.front().columns();
+    if (!card->handles(rows, columns)) return false;
+    if (run_limits::chosen_device(combinations) != run_limits::Device::Gpu) return false;
+
+    // The slices in the order they were given, because over GF(2) that order is
+    // the index: element `i` is the exclusive or of the slices whose bit is set
+    // in `i`.
+    const std::size_t width = rows * columns;
+    const std::size_t words = linear_algebra::gf2_word_count(width);
+    std::vector<std::uint64_t> packed(slices.size() * words);
+    for (std::size_t slice = 0; slice < slices.size(); ++slice) {
+        linear_algebra::gf2_pack(slices[slice].data(), width, &packed[slice * words]);
+    }
+
+    PackedSpan span;
+    span.rows = rows;
+    span.columns = columns;
+    span.words = words;
+    span.slices = slices.size();
+    span.slice_rows = packed.data();
+    return card->ranks(span, combinations, ranks);
+}
+
 }  // namespace
 
 std::vector<std::size_t> span_element_ranks(const Field& field,
@@ -97,6 +145,8 @@ std::vector<std::size_t> span_element_ranks(const Field& field,
                  combinations, sizeof(std::size_t));
 
     std::vector<std::size_t> ranks(combinations);
+    if (ranks_from_a_card(field, slices, combinations, ranks)) return ranks;
+
     SpanElements walk(field, slices);
     ranks[0] = linear_algebra::rank(field, walk.at());
     while (walk.advance()) {

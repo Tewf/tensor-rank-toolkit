@@ -27,8 +27,11 @@ enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
-# The two kernels and the backend that offers them to the search, compiled once
-# and linked by both the harness and the command. 8.9 is the RTX 4060 this was
+# The three kernels and the two backends that offer them, compiled once and
+# linked by both the harness and the commands. Two leaf routes and one that
+# ranks every element of a span, which is a different question for a different
+# caller: `span_ranks.cu` answers `descent_search`'s and the other two answer
+# `exhaustive_search`'s. 8.9 is the RTX 4060 this was
 # measured on. The ptxas report is how the register and local-memory counts in
 # README.md were read off; a kernel that spills is measuring the memory system
 # rather than the arithmetic, so the report is on by default.
@@ -37,7 +40,8 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 # guard, so linking it here warns the C++ and leaves nvcc's device compilation
 # alone. The guard lives with the options because CMake refuses a
 # COMPILE_LANGUAGE genex inside `target_link_libraries`.
-add_library(gpu_leaf_kernels STATIC pool_scan.cu subspace_walk.cu leaf_backend.cpp)
+add_library(gpu_leaf_kernels STATIC pool_scan.cu subspace_walk.cu leaf_backend.cpp
+                                    span_ranks.cu span_ranks_backend.cpp)
 target_include_directories(gpu_leaf_kernels PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # `CUDA::cudart` is PUBLIC because both things that link this are ordinary C++
 # executables now: CMake adds the runtime for a target that has `.cu` sources of
@@ -64,10 +68,18 @@ add_library(gpu_leaf_registration OBJECT register_the_card.cpp)
 target_include_directories(gpu_leaf_registration PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(gpu_leaf_registration PRIVATE gpu_leaf_kernels run_limits project_warnings)
 
-# Reaching into `exhaustive_search/commands/` from here rather than guarding
-# there: whether a card is compiled in is this directory's fact, and the command
+# Reaching into the command directories from here rather than guarding in each
+# of them: whether a card is compiled in is this directory's fact, and a command
 # should not have to ask. Where there is no toolkit this file has already
-# returned and `decide-rank` is byte for byte what it was.
-target_link_libraries(decide-rank PRIVATE gpu_leaf_registration gpu_leaf_kernels)
+# returned and all four are byte for byte what they were.
+#
+# Four and not one because there are two seams now. `decide-rank` is the one that
+# reaches a leaf; the other three call `span_element_ranks`, directly or through
+# the descent they start with, so the span seam is offered a card exactly where
+# something asks it for ranks. Linking the registration into a command that never
+# ranks a span would cost a CUDA context and buy nothing.
+foreach(command decide-rank minimise-rank lower-the-bound walk-scheme)
+  target_link_libraries(${command} PRIVATE gpu_leaf_registration gpu_leaf_kernels)
+endforeach()
 
 add_subdirectory(tests)

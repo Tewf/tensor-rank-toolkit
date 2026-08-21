@@ -10,6 +10,7 @@
 
 #include "candidate_pool.h"
 #include "check_agreement.h"
+#include "check_span_agreement.h"
 #include "exhaustive_search.h"
 #include "gf2_leaf.h"
 #include "gpu_leaf.h"
@@ -156,6 +157,37 @@ void check_walk(const Question& question, std::uint64_t elements, std::size_t ne
     announce(name, passed, card.indices.size(), rebuilt.size());
 }
 
+void announce_ranks(const char* name, bool passed, std::size_t elements, std::size_t differ) {
+    std::printf("  %-46s %s  %8zu elements, %3zu differ\n", name, passed ? "agree" : "DIFFER",
+                elements, differ);
+    std::fflush(stdout);
+    if (!passed) ++failures;
+}
+
+/// Every rank of a span, the card against `span_element_ranks`, slot for slot.
+///
+/// **The host column here cannot become the card**, which is the same property
+/// that makes the leaf rows trustworthy and holds for the same reason:
+/// `measure-leaf` does not link `gpu_leaf_registration`, so
+/// `span_ranks_on_card()` is null in this program and `span_element_ranks`
+/// answers on the host whatever hardware is present.
+///
+/// `scattered_slices` rather than anything structured, because a span whose every
+/// element has the same rank would compare two vectors of one number and pass
+/// whatever the kernel did.
+void check_span_ranks(std::size_t rows, std::size_t columns, std::size_t slices,
+                      const char* name) {
+    const std::vector<Matrix> made = gpu_leaf::scattered_slices(rows, columns, slices, 0x5EEDull);
+    const Field field(2);
+    const std::vector<std::size_t> host = bilinear_rank::span_element_ranks(field, made);
+
+    const gpu_leaf::SpanQuestion question = gpu_leaf::packed_span(made);
+    const gpu_leaf::GpuRanks card = gpu_leaf::rank_span_on_gpu(question, 0, question.elements());
+
+    const std::size_t differ = gpu_leaf::ranks_that_differ(host, card.ranks);
+    announce_ranks(name, differ == 0, host.size(), differ);
+}
+
 void check_everything() {
     std::printf("\nAgreement, survivor by survivor and map by map\n\n");
     check_scan(Question(4, 4, 6, false), 15, 6, "scan 4x4 dim 6, whole pool");
@@ -171,6 +203,16 @@ void check_everything() {
     check_walk(Question(9, 9, 17, false), 1ull << 17, 17, "walk 9x9 dim 17");
     check_walk(Question(16, 16, 16, true), 1ull << 16, 47, "walk 16x16 dim 16 dense");
     check_walk(Question(16, 16, 20, false), 1ull << 20, 47, "walk 16x16 dim 20");
+
+    // The span seam, on the four shapes a kernel is compiled for. The dimensions
+    // are the ones `lower-the-bound` actually reaches, 11 to 13, which is also
+    // why every one of them is below the 8 192 launch floor: what is checked
+    // here is that the two agree, not that the card would be asked.
+    std::printf("\nAgreement, rank by rank, over a span's elements\n\n");
+    check_span_ranks(4, 4, 11, "span ranks 4x4, dimension 11");
+    check_span_ranks(5, 5, 12, "span ranks 5x5, dimension 12");
+    check_span_ranks(9, 9, 13, "span ranks 9x9, dimension 13");
+    check_span_ranks(16, 16, 12, "span ranks 16x16, dimension 12");
 }
 
 // --- weight -----------------------------------------------------------------

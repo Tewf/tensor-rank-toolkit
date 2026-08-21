@@ -2,8 +2,9 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <string>
 #include <vector>
+
+#include "card_failure.h"
 
 /// How a card offers to answer a GF(2) leaf, and how the search asks it to.
 ///
@@ -17,9 +18,11 @@
 /// **Every entry may decline, and declining is not a failure.** A shape with no
 /// kernel, a span wider than a kernel holds, a leaf under the launch floor: all
 /// of those are the host's job and none of them is news. What *is* news is a
-/// CUDA call that failed, which is recorded by `note_card_failure` and printed
-/// once by the command, because a card that silently stopped being used would
-/// otherwise show up as a run that got mysteriously slower.
+/// CUDA call that failed, which is recorded by
+/// [`note_card_failure`](../descent_search/card_failure.h) and printed once by
+/// the command, because a card that silently stopped being used would otherwise
+/// show up as a run that got mysteriously slower. That record is shared with
+/// every seam that offers work to a card, because there is one card.
 ///
 /// **A backend never decides whether it should run.** `Gf2Leaf` asks
 /// `run_limits::chosen_device` first and bounds the range by `may_examine`
@@ -80,12 +83,5 @@ struct LeafOnCard {
 /// machine without `nvcc`, and `leaf_on_card()` is then null for the whole run.
 void register_leaf_on_card(const LeafOnCard* backend);
 const LeafOnCard* leaf_on_card();
-
-/// The first thing that went wrong on the card, if anything has, in the words
-/// the runtime used. Empty while nothing has. Kept rather than printed here,
-/// because a library that writes to a stream cannot be used by a command that
-/// pipes its results.
-void note_card_failure(const std::string& what);
-const std::string& card_failure();
 
 }  // namespace bilinear_rank
