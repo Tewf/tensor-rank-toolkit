@@ -91,6 +91,32 @@ else
     failures=$((failures + 1))
 fi
 
+# The loop closed: what leaves here comes back unchanged. `--emit-operators` and
+# this command are inverse, and neither was ever run against the other. f2_2x3
+# rather than f2_2x2 because 2 coefficients by 2 is symmetric in its operands and
+# the descent recovers L = R on it, exactly as Karatsuba's own files do, so
+# writing the two out the wrong way round is invisible there. Here L is 5x2 and R
+# is 5x3, and five products still decide instantly.
+echo "and what --emit-operators writes reads back as the map it was written from"
+minimise=$(dirname "$command")/minimise-rank
+if [ ! -x "$minimise" ]; then
+    echo "  FAIL  $minimise is not built, so the loop cannot be closed"
+    failures=$((failures + 1))
+fi
+"$minimise" "$fixtures/f2_2x3.tensor" --emit-operators "$scratch/loop" \
+    >"$scratch/out" 2>"$scratch/err"
+"$command" "$scratch/loop_L.sms" "$scratch/loop_R.sms" "$scratch/loop_P.sms" -q 2 \
+    >"$scratch/out" 2>"$scratch/err"
+grep -v '^#' "$scratch/out" >"$scratch/loop_back"
+grep -v '^#' "$fixtures/f2_2x3.tensor" >"$scratch/loop_from"
+if diff -q "$scratch/loop_back" "$scratch/loop_from" >/dev/null; then
+    echo "  ok    f2_2x3 -> L,R,P -> f2_2x3"
+else
+    echo "  FAIL  the round trip through our own operators changed the map"
+    diff "$scratch/loop_from" "$scratch/loop_back" | head -8
+    failures=$((failures + 1))
+fi
+
 if [ "$failures" -ne 0 ]; then
     echo "operators-to-tensor: $failures failed"
     exit 1
