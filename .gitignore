@@ -27,3 +27,8 @@ build-cuda/
 
 # Agent worktrees live inside the repo directory; they are checkouts, not content.
 .claude/
+
+# The compile database clangd reads, written by -DCMAKE_EXPORT_COMPILE_COMMANDS=ON.
+# Generated, machine-specific, and a symlink into a build directory that is
+# already ignored.
+compile_commands.json
