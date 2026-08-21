@@ -313,6 +313,7 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
                                                            components, /*canonical=*/true,
                                                            /*stop_at_first=*/true);
             factorisation.nodes_visited += pass.nodes;
+            factorisation.canonisations += pass.canonisations;
             if (!pass.decompositions.empty()) {
                 products = pass.decompositions.front();
                 found = true;
