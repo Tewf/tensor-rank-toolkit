@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "level_lowering_moves.h"
-#include "measures.h"
 #include "minimum_weight_basis.h"
 #include "orbit_moves.h"
 #include "parallel.h"
@@ -58,8 +57,10 @@ struct Ascent {
         std::vector<Matrix> basis;
     };
 
-    void visit(const std::vector<Matrix>& basis, std::size_t depth) {
-        const std::size_t cost = linear_algebra::multiplication_count(field, basis);
+    /// `cost` is the subspace's own cost, carried in rather than recomputed: the
+    /// greedy that built this basis summed the ranks it picked, and both callers
+    /// below already hold that sum.
+    void visit(const std::vector<Matrix>& basis, std::size_t cost, std::size_t depth) {
         if (cost < report.best) {
             report.best = cost;
             best = basis;
@@ -147,9 +148,15 @@ struct Ascent {
 
         std::vector<Child> children(surviving.size());
         parallel_for(surviving.size(), [&](std::size_t slot) {
+            // The cost comes back with the basis. It is the sum of the ranks the
+            // greedy picked, which it knew before it had a basis to hand over;
+            // ranking those matrices again here was one Gaussian elimination per
+            // basis element per child, 17 371 of them on `cyclic_f2_7` and
+            // 1 258 756 on the `gf32_multiplication` run that reaches 13.
+            std::size_t cost = 0;
             std::vector<Matrix> attempt =
-                minimum_weight_basis_with(field, basis, *surviving[slot], known);
-            children[slot].cost = linear_algebra::multiplication_count(field, attempt);
+                minimum_weight_basis_with(field, basis, *surviving[slot], known, &cost);
+            children[slot].cost = cost;
             children[slot].basis = std::move(attempt);
         });
 
@@ -162,7 +169,7 @@ struct Ascent {
         const std::size_t entered =
             limits.width == 0 ? children.size() : std::min(limits.width, children.size());
         for (std::size_t index = 0; index < entered; ++index) {
-            visit(children[index].basis, depth + 1);
+            visit(children[index].basis, children[index].cost, depth + 1);
             if (!report.exhausted || report.reached_below) return;
         }
     }
@@ -177,17 +184,18 @@ std::vector<Matrix> search_from_above(const Field& field, const std::vector<Matr
     // A basis, not whatever the caller happened to hold: the bound reads
     // `basis.size()` as the dimension, and a spanning set with a redundant slice
     // would make it read high and cut branches that were never bounded.
-    const std::vector<Matrix> root = minimum_weight_basis(field, start);
+    std::size_t root_cost = 0;
+    const std::vector<Matrix> root = minimum_weight_basis(field, start, {}, &root_cost);
 
     Ascent ascent{field, pool, ambient, limits, {}, root, 0};
-    ascent.report.best = linear_algebra::multiplication_count(field, root);
+    ascent.report.best = root_cost;
     // The incumbent the bound reads, which `--below` may set below anything
     // built. `below + 1` and not `below`, because the question is "at `below` or
     // better" and a subspace of dimension `below` may still cost exactly that.
     ascent.ceiling = limits.below == 0
                          ? ascent.report.best
                          : std::min(ascent.report.best, limits.below + 1);
-    ascent.visit(root, 0);
+    ascent.visit(root, root_cost, 0);
 
     if (report != nullptr) *report = ascent.report;
     return ascent.best;

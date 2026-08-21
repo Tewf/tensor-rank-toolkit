@@ -40,17 +40,37 @@ namespace bilinear_rank {
 /// `p^(k)` elements whose coefficient on the candidate is zero are the same
 /// elements every single time. Handing them over skips both the combination and
 /// the rank for that half of the enumeration.
+///
+/// **Most of the other half is skipped too, and no answer moves.** The dearest
+/// element the greedy can take is bounded by the dearest of the slices it was
+/// handed, so every element above that ceiling is dropped before it is ranked —
+/// on the strength of `|rank(v) - rank(g)|`, which needs no elimination. The
+/// argument and its two lines are in
+/// [`minimum_weight_basis.cpp`](minimum_weight_basis.cpp); what it buys is 2 043
+/// ranks a call down to 187 on `cyclic_f2_7`, and it is a claim about the answer
+/// rather than about the search, so a basis that came up short under it throws
+/// instead of being returned.
+///
+/// `cost` takes the answer's cost, which is the sum of the ranks the greedy
+/// picked and is therefore already known when the basis is handed back.
+/// [`multiplication_count`](../linear_algebra/measures.h) recovers the same
+/// number by ranking every basis element again, and stays the right call for
+/// anyone holding only matrices; a caller of this function is not one of those.
 std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
-                                   const std::vector<std::size_t>& ranks_without_last = {});
+                                   const std::vector<std::size_t>& ranks_without_last = {},
+                                   std::size_t* cost = nullptr);
 
 /// The basis of `slices` with one more map thrown in: the answer to "what would
 /// adopting this candidate cost?".
 ///
 /// Both walks over a candidate pool ask exactly this, so it lives here with the
-/// step it calls rather than twice in the two callers.
+/// step it calls rather than twice in the two callers. `cost` is the answer to
+/// the question as asked — the count, not the basis — and every caller here
+/// wants it, which is why it comes back rather than being asked for again.
 std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vector<Matrix>& slices,
                                const Matrix& candidate,
-                               const std::vector<std::size_t>& known = {});
+                               const std::vector<std::size_t>& known = {},
+                               std::size_t* cost = nullptr);
 
 /// The rank of every element of the span, indexed the way `coefficient_vector`
 /// indexes it, for feeding back in above.
