@@ -80,7 +80,17 @@ public:
 
     /// Add the candidate if it is outside the span, and say whether it was.
     bool try_add(const std::vector<Element>& candidate) {
-        std::vector<Element> entries = candidate;
+        return try_add(candidate.data(), candidate.size());
+    }
+
+    /// The same over a contiguous run, which is what a matrix row already is.
+    ///
+    /// The copy here is not waste: on success it becomes the row that is kept.
+    /// What was waste is the one in front of it, since `Matrix::row` returns a
+    /// vector by value and `rank` calls it once per row, so every rank cost two
+    /// allocations a row where one is needed.
+    bool try_add(const Element* candidate, std::size_t length) {
+        std::vector<Element> entries(candidate, candidate + length);
         reduce(entries);
 
         std::size_t pivot = width_;
@@ -113,7 +123,9 @@ public:
         return true;
     }
 
-    bool try_add(const MatrixOver<Field>& candidate) { return try_add(flatten(candidate)); }
+    bool try_add(const MatrixOver<Field>& candidate) {
+        return try_add(candidate.data(), candidate.entry_count());
+    }
 
     /// The basis itself, in echelon form.
     ///

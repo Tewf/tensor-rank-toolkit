@@ -20,7 +20,11 @@ template <class Field>
 std::size_t rank(const Field& field, const MatrixOver<Field>& matrix) {
     if (matrix.rows() == 0 || matrix.columns() == 0) return 0;
     SpanBasis<Field> span(field, matrix.columns());
-    for (std::size_t row = 0; row < matrix.rows(); ++row) span.try_add(matrix.row(row));
+    // The row by pointer, not by value: `Matrix::row` would allocate a vector
+    // for each one and `try_add` copies it anyway.
+    for (std::size_t row = 0; row < matrix.rows(); ++row) {
+        span.try_add(matrix.data() + row * matrix.columns(), matrix.columns());
+    }
     return span.dimension();
 }
 
