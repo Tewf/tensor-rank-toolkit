@@ -273,6 +273,9 @@ NOT_TOOLS = {
     # and is CUDA-only, so it is usually not in the build tree at all.
     "oracle_guided_search/price-canonical-route",
     "gpu_leaf/measure-leaf",
+    # Retired into `curve-bounds --solvers`. It prints the line to type and
+    # leaves as 2, so offering it here would offer a refusal.
+    "integer_programme/list-solvers",
 }
 
 

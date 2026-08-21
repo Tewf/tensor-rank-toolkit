@@ -1,7 +1,7 @@
 # Bounding from a curve
 
 `curve-bounds` answers a different question from every search here, and
-`list-solvers` reports the backend chain it may hand that question to.
+`--solvers` reports the backend chain it may hand that question to.
 Precedence and `BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
 
 ## `curve-bounds`
@@ -11,6 +11,7 @@ Precedence and `BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
 | `--degree G` | none; required | Nothing to measure. The divisor's degree is spent exactly and not as a budget: a `<=` would always answer "one rational point, cost 1", which is a bound on nothing. |
 | `--points d:n` | none; required | Nothing to measure. This is step 2's output, and step 2 is not in this repository. |
 | `--table` | off | Nothing to measure: prints `[rambaud2014, Table 1]` as transcribed and stops. |
+| `--solvers` | off | Nothing to measure: prints the backend chain and stops. Was the command `list-solvers`; see below. |
 | `--route built-in\|chain\|enumeration` | `built-in` | Measured, and read the measurement honestly. On degree-1 supplies at G = 500, 1000, 2000 and 4000 the built-in takes **0.00 s at every size**, the chain 0.01 to 0.02 s, and the enumeration 0.00 to 0.34 s and 10 to 442 MB. The built-in column being all zeros shows it is **not slower**; it does not rank the two. What settles the default is the second reason, which is not a timing: the built-in's optimum is a proof, and an outside solver's is only feasibility-verified. The chain's loss is 10 to 50 ms of process startup. `--route chain` **was** the default, and the measurement is why it is not. |
 | `--node-limit N` | `ilp_node_limit`, `200000` | **Nothing.** No measurement anywhere. Reaching it returns `Exhausted`, which falls back to the dynamic programme rather than bounding anything. |
 | `--solver-timeout N` | `ilp_time_limit_seconds`, `300` | **Nothing measured.** It exists because of an incident rather than a table: five leaked solvers once sat at full tilt for half an hour and spoiled another session's measurements. It bounds `--route chain` only; the built-in has no wall clock anywhere. |
@@ -20,16 +21,24 @@ Agreement, which is measured and is a correctness result rather than a timing:
 the three routes were compared on **140 questions over ten supplies, 95 of them
 with an answer**, and all agreed.
 
-## `list-solvers`
+## `--solvers`, which was the command `list-solvers`
 
-No flags but `--help`. It prints the integer programme backends in preference
-order and whether each is on `PATH`. Anything else on the line is refused as
-exit 2: `main` took no arguments at all, so every word was dropped in silence
-and `list-solvers --help` printed the table and left as 0.
+It prints the integer programme backends in preference order and whether each is
+on `PATH`, and stops, leaving as **0** — the same shape as `--table` above and
+the same unusual exit, which
+[`one-idea-several-spellings.md`](one-idea-several-spellings.md) records as a
+wart rather than a rule.
 
-It reads `ilp_backend_order` from `tunables.conf`, because this command's whole
-output **is** the ranking: printing the compiled order while the file had moved
-it would make the one place a caller looks the one place that lies.
+**It was a command of its own until 2026-08-21.** The ranking is only ever read
+to decide what `--route chain` will reach, so a caller with no curve to bound had
+no use for it, and it is now a flag on the command that does:
+[`one-question-per-command.md`](one-question-per-command.md). `list-solvers`
+still exists, prints the line to type instead and leaves as 2 rather than
+printing an empty ranking somebody could read as "no backends installed".
+
+It reads `ilp_backend_order` from `tunables.conf` rather than the compiled order,
+because this output **is** the ranking: printing the compiled one while the file
+had moved it would make the one place a caller looks the one place that lies.
 
 The built-in is always present and is the only backend whose answer needs no
 checking, so it is also the only one that may report a problem infeasible. That

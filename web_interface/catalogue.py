@@ -388,19 +388,15 @@ TOOLS = [
              "verdicts": {"0": {"badge": "printed",
                           "means": "the transcribed table was printed and the "
                                    "run stopped. Nothing was minimised."}}},
+            {"flag": "--solvers", "kind": "switch",
+             "label": "print the backends this machine has and stop",
+             "note": "The integer programming backends in preference order, and "
+                     "whether each is on PATH. Every solver here is optional "
+                     "and found at run time. Was the command `list-solvers`.",
+             "verdicts": {"0": {"badge": "listed",
+                          "means": "the machine was asked which backends it "
+                                   "has. Nothing was minimised."}}},
         ],
-    },
-    {
-        "name": "list-solvers",
-        "binary": "integer_programme/list-solvers",
-        "input": "none",
-        "asks": "Which backends does this machine have?",
-        "answers": "The integer programming backends in preference order, and "
-                   "whether each is on PATH. Every solver here is optional and "
-                   "found at run time.",
-        "verdicts": {"0": {"badge": "listed",
-                     "means": "the machine was asked which backends it has"}},
-        "options": [],
     },
     {
         "name": "make-tensor",
