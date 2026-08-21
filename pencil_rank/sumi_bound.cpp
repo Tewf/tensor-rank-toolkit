@@ -1,6 +1,9 @@
 #include "sumi_bound.h"
 
+#include <string>
+
 #include "matrix_ops.h"
+#include "memory_budget.h"
 #include "pencil_divisors.h"
 #include "solver.h"
 
@@ -10,8 +13,17 @@ namespace {
 
 /// `x^p - x`, whose divisors are exactly the polynomials that split into
 /// distinct linear factors over GF(p).
+///
+/// **Linear in the characteristic, which is read off the tensor file and checked
+/// only for primality.** `field 2147483647` is a legal header, and this then
+/// asked for a 17 GB polynomial with nothing in front of it — the one allocation
+/// in this module that a *file* rather than a flag can make unsurvivable. Priced
+/// like every other bulk allocation here, so it is refused with the number and
+/// `--max-memory` moves it where the machine has the room.
 Polynomial split_completely(const ModularField& field) {
     const std::size_t characteristic = static_cast<std::size_t>(field.residu());
+    bilinear_rank::require_room("the polynomial x^" + std::to_string(characteristic) + " - x",
+                                characteristic + 1, sizeof(int64_t));
     Polynomial result(characteristic + 1, 0);
     result[characteristic] = 1;
     field.neg(result[1], static_cast<int64_t>(1));

@@ -5,7 +5,8 @@ add_library(pencil_rank STATIC polynomial.cpp prime_power_factors.cpp pencil_div
                                projection_lower_bound.cpp
                                sumi_bound.cpp)
 target_include_directories(pencil_rank PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(pencil_rank PUBLIC linear_algebra formats PRIVATE project_warnings)
+target_link_libraries(pencil_rank PUBLIC linear_algebra formats run_limits
+                                  PRIVATE project_warnings)
 
 add_subdirectory(commands)
 add_subdirectory(tests)
