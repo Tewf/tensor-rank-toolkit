@@ -216,7 +216,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   place of `O(dim * width)` multiply-accumulates. The successor is Knuth's
   Algorithm H, `[knuth2011]` §7.2.1.1, which names the digit to move in constant
   time, in
-  [`exhaustive_search/reflected_gray_walk.h`](exhaustive_search/reflected_gray_walk.h);
+  [`descent_search/reflected_gray_walk.h`](descent_search/reflected_gray_walk.h);
   the leaf itself moved into
   [`exhaustive_search/subspace_walk.h`](exhaustive_search/subspace_walk.h).
   Measured on one core at **2.52x** an element over GF(3) at 3x6 dimension 12,
