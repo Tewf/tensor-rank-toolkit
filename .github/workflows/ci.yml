@@ -37,11 +37,15 @@ jobs:
       # nothing installed that chain would fall straight through to the built-in
       # and `external_solver.cpp` would never run under CI. That is the file that
       # used to leak solvers, which makes it the last one worth leaving untested.
-      - name: Install Givaro, and the solvers so no step skips itself
+      # libboost-dev is here because `vendor/permlib/` needs it: PermLib calls
+      # `boost::next` and holds its groups in `boost::shared_ptr`. It built on a
+      # developer machine that happened to have Boost and nowhere else, which is
+      # what a CI job is for.
+      - name: Install Givaro and Boost, and the solvers so no step skips itself
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libgivaro-dev libgmp-dev \
-            ninja-build cryptominisat coinor-cbc glpk-utils
+            libboost-dev ninja-build cryptominisat coinor-cbc glpk-utils
 
       # Neither of these is in the Ubuntu archive, and that absence is why the
       # proof step has been verifying nothing since it was written: with only
