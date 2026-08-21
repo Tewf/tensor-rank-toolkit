@@ -11,6 +11,7 @@
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
+#include "kronecker_structure.h"
 #include "card_failure_note.h"
 #include "dense_matrix_file.h"
 #include "device.h"
@@ -214,6 +215,49 @@ int run(int argc, char** argv) {
         cli::result() << "  NO: there is no algorithm with " << target
                       << " products, which the polynomial bounds already refute.\n";
         return cli::exit_status(cli::ExitCode::No);
+    }
+
+    // Two slices is a different problem, and a polynomial one. A pencil `A + xB`
+    // has a complete invariant — Kronecker's minimal indices and elementary
+    // divisors — so where that invariant settles the rank there is nothing to
+    // search for and no pool to build. Håstad's NP-completeness is about tensors
+    // whose third dimension grows; it does not reach this case, and declining to
+    // use the closed form here would be walking an exponential tree past an
+    // answer already in hand.
+    //
+    // **Only when `exact`.** `pencil_rank_of` also returns a proved *bound* when
+    // it cannot settle the rank, and that bound is not worth taking: on a random
+    // 8x8 pencil over GF(2) it says 9 where `flattening_floor` above already says
+    // 11, and `projection_lower_bound.h` records the same ordering. So an
+    // inexact pencil falls through to the search with nothing borrowed from it.
+    //
+    // **Where it fires is a question about the field, not the shape**, and that is
+    // what makes it worth having. `[sumi2009, Thm. 3.3]` settles the regular case
+    // whenever `Card(K) >= deg p_1(A)`, so over a large enough field almost every
+    // pencil is exact and over GF(2) many are not. Measured 2026-08-21: a random
+    // 7x7 pencil over GF(11) is settled here in 51 microseconds, and the pool the
+    // tree would otherwise need for that shape is `((11^7-1)/10)^2`, about
+    // 3.8e12 rank-one maps, which `require_room` refuses long before any search.
+    // Over GF(2) the same construction is usually inexact and falls through.
+    if (tensor.slices.size() <= 2 && !tensor.slices.empty()) {
+        const pencil_rank::ModularField pencil_field(tensor.characteristic);
+        const pencil_rank::PencilRank settled =
+            pencil_rank::pencil_rank_of(pencil_field, tensor.slices);
+        if (settled.exact) {
+            cli::result() << "  pencil: two slices, so the Kronecker canonical form settles it"
+                          << " in polynomial time and no pool is built\n";
+            if (target < 0) {
+                cli::result() << "  rank: " << settled.proved << " (exact, over GF("
+                              << tensor.characteristic << "))\n";
+                return cli::exit_status(cli::ExitCode::Yes);
+            }
+            const bool reachable = static_cast<std::size_t>(target) >= settled.proved;
+            cli::result() << (reachable ? "  YES: " : "  NO: there is no algorithm with ")
+                          << target << " products"
+                          << (reachable ? " suffice, the rank being " : ", the rank being ")
+                          << settled.proved << ".\n";
+            return cli::exit_status(reachable ? cli::ExitCode::Yes : cli::ExitCode::No);
+        }
     }
 
     // The pool is addressed rather than materialised where it would not fit. The

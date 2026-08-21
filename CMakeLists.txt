@@ -43,6 +43,9 @@ add_subdirectory(linear_algebra)
 add_subdirectory(formats)
 add_subdirectory(map_construction)
 add_subdirectory(descent_search)
+# Before exhaustive_search, because `decide-rank` asks it whether a two-slice
+# tensor is settled in polynomial time before it builds any pool.
+add_subdirectory(pencil_rank)
 add_subdirectory(exhaustive_search)
 add_subdirectory(orbit_reduction)
 add_subdirectory(flip_graph)
@@ -55,7 +58,6 @@ add_subdirectory(satisfiability)
 add_subdirectory(curve_bounds)
 add_subdirectory(rank_metric_bound)
 add_subdirectory(oracle_guided_search)
-add_subdirectory(pencil_rank)
 add_subdirectory(canonical_factorisation)
 # After both of the modules whose enums a plan names, and after run_limits,
 # whose device ranking it routes: search_plan owns no rule and links every

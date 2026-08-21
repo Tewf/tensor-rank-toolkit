@@ -12,6 +12,7 @@
 #include "greedy_sparsifier.h"
 #include "heuristic_sparsifier.h"
 #include "linear_algebra.h"
+#include "memory_budget.h"
 #include "oracle_sparsifier.h"
 #include "report.h"
 #include "sms_file.h"
@@ -23,12 +24,17 @@ using matrix_sparsification::Field;
 using matrix_sparsification::Matrix;
 
 void usage() {
-    cli::note() << "usage: sparsify-operator <matrix-file|.sms> [--show] [--help]\n"
+    cli::note() << "usage: sparsify-operator <matrix-file|.sms> [--show] [--max-memory N]\n"
+                   "       sparsify-operator --help\n"
                    "\n"
                    "  Runs every method on one operator and reports what each reached, so\n"
                    "  the output is the comparison and nothing here is chosen for you.\n"
-                   "  --show  print the sparsified matrix as well as its count\n"
-                   "  --help  print this and stop, as exit 2";
+                   "  --show          print the sparsified matrix as well as its count\n"
+                   "  --max-memory N  bytes one bulk allocation may take, 2G by default. Every\n"
+                   "                  method here enumerates column subsets, which is C(b, a-1)\n"
+                   "                  and is 35 for the 7x4 operators shipped and 1.6e13 for a\n"
+                   "                  <4,4,4> one. This is what refuses the second\n"
+                   "  --help          print this and stop, as exit 2";
 }
 
 /// Report a result only once it is known to be the same operator. Sparsity is
@@ -62,6 +68,8 @@ int run(int argc, char** argv) {
             return cli::exit_status(cli::ExitCode::Usage);
         } else if (arguments.is("--show")) {
             show_matrix = true;
+        } else if (arguments.is("--max-memory")) {
+            bilinear_rank::set_memory_budget(arguments.memory_size());
         } else {
             arguments.refuse();
         }
