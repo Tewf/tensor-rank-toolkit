@@ -43,6 +43,7 @@ void below(const bilinear_rank::Field& field, const std::vector<bilinear_rank::M
     // makes this the search's tree and not a wider one.
     const std::vector<std::vector<std::uint32_t>> action =
         canon.stabiliser_generators(cosets.inside());
+    const std::vector<std::size_t> current_name = canon.canonical(cosets.inside());
 
     for (const std::uint32_t index :
          bilinear_rank::orbit_representatives(action, cosets.outside())) {
@@ -50,7 +51,8 @@ void below(const bilinear_rank::Field& field, const std::vector<bilinear_rank::M
         child.push_back(pool[index]);
         visit(child);
         const bilinear_rank::ParentTest test = bilinear_rank::is_canonical_augmentation(
-            field, base, child, current_code, index, cosets.extended_by(index), pool, canon);
+            field, base, child, current_code, current_name, index, cosets.extended_by(index),
+            pool, canon);
         if (!test.accepted) continue;
         below(field, base, pool, canon, child, dimension + 1, target, visit);
     }

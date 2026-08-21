@@ -138,12 +138,17 @@ void offer_children(Walk& walk, const std::vector<Matrix>& current, std::size_t 
 
     const SubspaceCode current_code = subspace_code(field, current);
     const PoolCosets cosets(field, pool, current);
+    // This node's own canonical name, which every one of its children's parent
+    // tests would otherwise compute again: they all have the same parent, and it
+    // is this node. Charged as the canonisation it is.
+    const std::vector<std::size_t> current_name = walk.canon->canonical(cosets.inside());
+    ++walk.report.canonisations;
     for (const std::size_t index : augmentations(walk, cosets)) {
         std::vector<Matrix> child = current;
         child.push_back(pool[index]);
-        const ParentTest test =
-            is_canonical_augmentation(field, walk.tensor->slices, child, current_code, index,
-                                      cosets.extended_by(index), pool, *walk.canon);
+        const ParentTest test = is_canonical_augmentation(
+            field, walk.tensor->slices, child, current_code, current_name, index,
+            cosets.extended_by(index), pool, *walk.canon);
         walk.report.group_visits += test.group_visits;
         walk.report.canonisations += test.canonisations;
         if (!test.accepted) continue;
