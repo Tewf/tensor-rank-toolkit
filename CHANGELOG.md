@@ -8,6 +8,26 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **A predicate that says whether canonical augmentation will pay, before the
+  search runs.** `oracle_guided_search/canonical_route_price.h` weighs the node
+  saving against the parent test from the characteristic, the shape, the pool
+  size, the factored degree, the group order and the generator count.
+  [`when-canonical-pays/`](oracle_guided_search/when-canonical-pays/README.md)
+  has the derivation, the four operations priced by the new
+  `price-canonical-route`, and the ten sweeps it was corrected against. The
+  saving side has `[mckay1998, Thm 3]` under it and orbit counting bounding it;
+  the price side has `[linton2004]` §3.4 for the canonical image, whose
+  candidate bound `k|G|` is the binding one here and whose "polynomial in `n` for
+  any `k`" criterion this presentation meets at every shape, and nothing at all
+  for the setwise stabiliser, which is GI-hard and measured rather than bounded.
+
+- **`factor-over-canonical-basis --ceiling k`**, so a sweep can stop short of a
+  rank neither route can settle, and the run reports its node count and its
+  canonical images whether or not it found anything. A refutation sweep used to
+  report one sentence and no number, which made the two routes uncomparable at
+  every shape above `<2,2,2>`.
+
+
 - **`--orbit-test full|generators` is documented**, which it was not anywhere
   outside the binary that parses it. It is in
   [`OPTIONS/searching-for-rank.md`](OPTIONS/searching-for-rank.md) with the
@@ -43,6 +63,21 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   still be the characters the tools print.
 
 ### Changed
+
+- **The canonical route stopped scanning the pool once per candidate child, and
+  stopped asking the parent test for a minimum it never wanted.** Measured at
+  five shapes, seven to fourteen whole pool scans a node were 98% of a canonical
+  node at `<2,3,3>`, against 1.0% in the setwise stabiliser and 1.1% in the
+  canonical image — the two operations the factored presentation and Linton's
+  algorithm exist to make cheap were cheap, and the cost was somewhere else.
+  [`pool_cosets.h`](oracle_guided_search/pool_cosets.h) gets every child's
+  content from one pass a node by grouping pool residues into cosets of the
+  current span, and the parent test now exits at the first candidate parent that
+  beats its own rather than naming all of them. `<2,3,3>` at 8 went from **98.0 s
+  to 11.4 s**, `<2,2,4>` at 10 from 0.500 s to 0.144 s, and `<3,3,3>` at 10 from
+  1.33x faster than the plain route to **2.07x**. Every node count at every shape
+  and level is unchanged, which is how it is known that only the clock moved.
+
 
 - **A budget that ran out no longer shares a colour with a refutation.** The
   console's cards were worded apart and painted alike, so `outcome.py` now

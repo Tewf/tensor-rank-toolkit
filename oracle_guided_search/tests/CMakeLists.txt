@@ -91,3 +91,21 @@ target_link_libraries(test_stabiliser_order PRIVATE oracle_guided_search formats
                                                     map_construction testing project_warnings)
 add_test(NAME stabiliser_order COMMAND test_stabiliser_order)
 set_tests_properties(stabiliser_order PROPERTIES TIMEOUT 1800)
+
+# The price model against the ten sweeps it was corrected on. No clock runs here:
+# the seconds are constants measured once by hand, and what is checked is that the
+# arithmetic still agrees with them. This predicate has no caller yet, so a change
+# that quietly stopped agreeing would otherwise go unnoticed.
+add_executable(test_route_price test_route_price.cpp)
+target_link_libraries(test_route_price PRIVATE oracle_guided_search testing project_warnings)
+add_test(NAME route_price COMMAND test_route_price)
+
+# The whole of `PoolCosets`'s correctness: a child's content read off the cosets
+# has to be the list the pool scan returns, element for element and in order, on
+# every child of every subspace tried. GF(3) and GF(5) are in it because over GF(2)
+# the residue's scalar class is trivial and a dropped normalisation would pass.
+add_executable(test_pool_cosets test_pool_cosets.cpp)
+target_link_libraries(test_pool_cosets PRIVATE oracle_guided_search formats testing
+                                               project_warnings)
+add_test(NAME pool_cosets COMMAND test_pool_cosets ${PROJECT_SOURCE_DIR}/fixtures)
+set_tests_properties(pool_cosets PROPERTIES TIMEOUT 900)

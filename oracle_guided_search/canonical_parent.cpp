@@ -81,11 +81,12 @@ bool is_distinguished_cell(const PoolSetCanon& canon, const std::vector<std::siz
 
 ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matrix>& base,
                                     const std::vector<Matrix>& child,
-                                    const SubspaceCode& parent_code, const Matrix& added,
+                                    const SubspaceCode& parent_code,
+                                    const std::vector<std::size_t>& parent_name,
+                                    std::size_t added, const std::vector<std::size_t>& inside,
                                     const std::vector<Matrix>& pool,
                                     const PoolSetCanon& canon) {
     ParentTest test;
-    const std::vector<std::size_t> inside = pool_inside(field, pool, child);
     const std::vector<Matrix> chosen(child.begin() + base.size(), child.end());
     const std::vector<CandidateParent> parents =
         candidate_parents(field, base, chosen, pool, inside);
@@ -94,21 +95,24 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
     // prescribed group rather than by walking it. `canonical_subspace` took the
     // least code over every element, which is what made this route lose: 16.2x
     // fewer nodes for 15x the wall clock, because one test cost `|G|` reductions.
-    std::vector<std::size_t> least;
-    std::vector<SubspaceCode> least_codes;
+    //
+    // **Asked as an early exit rather than as a minimum.** The condition is that
+    // the parent's class is least, and one candidate strictly below it settles that
+    // in the negative; the minimum itself is never wanted. Two hyperplanes of one
+    // quotient are distinct subspaces with distinct codes, so "the parent attains
+    // the least name" and "the parent's code is among those attaining it" are the
+    // same statement, which is what lets the loop stop where it does.
+    bool parent_seen = false;
     for (const CandidateParent& parent : parents) {
+        if (subspace_code(field, parent.generators) == parent_code) {
+            parent_seen = true;
+            continue;
+        }
         const std::vector<std::size_t> name = canon.canonical(parent.content);
         ++test.canonisations;
-        if (least.empty() || name < least) {
-            least = name;
-            least_codes.assign(1, subspace_code(field, parent.generators));
-        } else if (name == least) {
-            least_codes.push_back(subspace_code(field, parent.generators));
-        }
+        if (name < parent_name) return test;
     }
-    if (std::find(least_codes.begin(), least_codes.end(), parent_code) == least_codes.end()) {
-        return test;
-    }
+    if (!parent_seen) return test;
 
     // The distinguished pool element of the child, by canonising the **pair**
     // rather than by minimising over the group elements that attain the child's
@@ -122,19 +126,13 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
     // set's least point and that point is the key's first entry, so the other
     // cells' keys were a minimum whose value was already in hand.
     // `is_distinguished_cell` sets the argument out in full.
-    const SubspaceCode added_code = subspace_code(field, {added});
-
-    std::size_t marked = 0;
-    bool added_seen = false;
-    for (const std::size_t index : inside) {
-        if (subspace_code(field, {pool[index]}) != added_code) continue;
-        marked = index;
-        added_seen = true;
-    }
-    if (!added_seen) return test;
-
+    //
+    // `added` is the mark, directly. It used to be found by scanning `inside` for
+    // the element whose single-map code matched, which is a search for something
+    // the caller had just chosen by index: `all_rank_one_maps` holds each rank-one
+    // map once, so exactly one index could ever match and it is this one.
     ++test.canonisations;
-    test.accepted = is_distinguished_cell(canon, inside, marked);
+    test.accepted = is_distinguished_cell(canon, inside, added);
     return test;
 }
 
