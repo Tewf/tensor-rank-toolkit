@@ -31,10 +31,9 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 # linked by both the harness and the commands. Two leaf routes and one that
 # ranks every element of a span, which is a different question for a different
 # caller: `span_ranks.cu` answers `descent_search`'s and the other two answer
-# `exhaustive_search`'s. 8.9 is the RTX 4060 this was
-# measured on. The ptxas report is how the register and local-memory counts in
-# README.md were read off; a kernel that spills is measuring the memory system
-# rather than the arithmetic, so the report is on by default.
+# `exhaustive_search`'s. The ptxas report is how the register and local-memory
+# counts in README.md were read off; a kernel that spills is measuring the memory
+# system rather than the arithmetic, so the report is on by default.
 #
 # `project_warnings` carries -Wall -Wextra -Wpedantic behind a COMPILE_LANGUAGE
 # guard, so linking it here warns the C++ and leaves nvcc's device compilation
@@ -49,7 +48,40 @@ target_include_directories(gpu_leaf_kernels PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # not any more.
 target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive_search CUDA::cudart
                                        PRIVATE project_warnings)
-set_target_properties(gpu_leaf_kernels PROPERTIES CUDA_ARCHITECTURES "89")
+# **Which card, asked of the machine rather than written down.**
+#
+# This said `"89"`, which is the RTX 4060 every number in README.md was measured
+# on and nothing else. A build on any other card — 8.0 on an A100, 8.6 on a 3090,
+# 9.0 on an H100, anything newer — produced a fatbin with no image the device
+# could run, so every launch failed with `cudaErrorNoKernelImageForDevice`,
+# `answered_or_the_host` in leaf_backend.cpp caught it as designed, and the run
+# was **silently several hundred times slower** with one line on stderr to say
+# so. A number fitted to one laptop is not a constant, and shipping it as one is
+# a bug on somebody else's hardware.
+#
+# `native` asks the installed driver what is actually in the machine, which is
+# the same question `card_present` asks at run time and the only one whose answer
+# is right everywhere. It needs CMake 3.24; below that `all-major` builds one
+# image per major architecture, which is larger and slower to compile but runs.
+# A packager cross-compiling for hardware that is not present sets
+# `CMAKE_CUDA_ARCHITECTURES` and is left alone: the property is only written
+# where nobody has chosen, so an explicit choice always wins over this guess.
+if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    set(gpu_leaf_architectures native)
+  elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 3.23)
+    set(gpu_leaf_architectures all-major)
+  else()
+    # 3.22 has neither keyword, and 3.22 is what cmake_minimum_required allows.
+    # One image per major architecture, written out: Pascal through Ada, which is
+    # every card CUDA 11 and 12 both support.
+    set(gpu_leaf_architectures 60 70 75 80 86 89)
+  endif()
+  set_target_properties(gpu_leaf_kernels PROPERTIES
+                        CUDA_ARCHITECTURES "${gpu_leaf_architectures}")
+  message(STATUS "gpu_leaf: CUDA architectures '${gpu_leaf_architectures}'. "
+                 "Set CMAKE_CUDA_ARCHITECTURES to build for a card this machine does not have.")
+endif()
 target_compile_options(gpu_leaf_kernels PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--ptxas-options=-v>)
 
 add_executable(measure-leaf measure_leaf.cpp)

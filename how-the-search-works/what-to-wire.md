@@ -11,7 +11,7 @@ behind its flag.
 | odometer | **wired**, automatic | the only route at `⟨4,4,4⟩`, where a held pool is 8.2 TiB |
 | GPU leaf | **verdict suspended** — the host moved under it | was 81x on the hardest comparison; the host leaf has since changed twice |
 | `SortedSpan` | **wire the cost query, not the search** | 1.10x there; refuted at a node, dominated at a leaf |
-| McKay | **leave it on `--route canonical`** | 53x fewer nodes at 299x a node |
+| McKay | **leave it on `--route canonical`**, and the predicate that says so is now wired to nothing on purpose | the one row it wins is 99x of the baseline's own orbit test |
 
 ## The GPU: the verdict is suspended, because the host moved
 
@@ -80,13 +80,33 @@ chassis moves by and so is not a speed-up this repository may publish. Wire it
 for the sort it deletes and the byte an element it holds instead of sixteen, and
 claim nothing about the clock.
 
-## McKay: the flag is where it belongs
+## McKay: the flag is where it belongs, and now for a stated reason
 
-25.8x slower on the wall clock while removing 53x the nodes. (This said "299x a
-node plus a 0.196 s entry fee" until 2026-08-20; the fee was a fitting artefact
-and the per-node cost varies seventeen-fold across the sweep's own levels.) Both
-sides of that comparison
-already had the group, so this is the marginal value of the parent test **over**
-the orbit quotient and not over nothing. It stays wired and off, because a route
-known to lose is worth more than an unwired one somebody proposes again:
+It stays wired and off, because a route known to lose is worth more than an
+unwired one somebody proposes again:
 [`../canonical_factorisation/canonical-augmentation.md`](../canonical_factorisation/canonical-augmentation.md).
+What follows is why the predicate that could switch it on is **also** wired to
+nothing, which is the harder half and was an open objection until 2026-08-21.
+
+**There is a condition and it is sound.** `L = target - n*k` is the levels of
+augmentation. At `L >= 2` the route loses by 1.9x to 15x structurally: a plain
+node scans the live suffix `[from, |P|)` and a canonical node must scan the whole
+pool, so the per-node price grows with the pool (73x to 3 204x) where the node
+saving does not (11x to 226x). At `L == 1` both routes visit the **identical**
+tree, `orbits + 1` nodes either way, and the route wins at `<3,3,3>`: 2.26 s
+against 4.87 s. `price_canonical_route` now carries both arms and gets ten rows
+of ten.
+
+**Nothing consults it, and that is the finding rather than an omission.** Both
+roots name one child per orbit from the same six generators; the plain route asks
+`least_in_orbit` per pool element, which costs `Theta(sum |O_i|^2)`, where
+`orbit_representatives` answers identically in `Theta(|P|)`. At the `<3,3,3>`
+root that is **5.05 s against 51.2 ms for the same 13 children**, and the plain
+route's whole 4.87 s run *is* that one call. So the row is 99x of the baseline's
+own orbit test, on the one level a real sweep never reaches — `rank_lower_bound`
+is 14 at `<3,3,3>` — at a pool 13x past where `--route auto` has already left for
+the solver. The fix worth making is the `Theta(|P|)` pass, not the route.
+
+The whole argument, the five-shape table behind it, the partial-symmetry-break
+verdict and the one question where canonical augmentation wins outright:
+[`../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md`](../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md).

@@ -68,3 +68,9 @@ add_test(NAME gray_walk_leaf COMMAND test_gray_walk_leaf ${PROJECT_SOURCE_DIR}/f
 add_executable(test_rank_one_predicate test_rank_one_predicate.cpp)
 target_link_libraries(test_rank_one_predicate PRIVATE linear_algebra testing project_warnings)
 add_test(NAME rank_one_predicate COMMAND test_rank_one_predicate)
+
+# Asked of the built command rather than of the function, because the thing being
+# asserted is a routing decision `main` makes: which of two modules answers.
+add_test(NAME pencil_shortcut
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_pencil_shortcut.sh
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)

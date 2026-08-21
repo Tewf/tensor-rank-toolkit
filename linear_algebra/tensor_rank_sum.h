@@ -7,6 +7,7 @@
 #include "field.h"
 #include "matrix.h"
 #include "measures.h"
+#include "parallel.h"
 #include "tensor_contraction.h"
 
 /// **Rank-sum lower bounds**: what many contractions of one axis can hold
@@ -137,6 +138,25 @@ inline std::size_t rank_sum_work(std::size_t characteristic, std::size_t length)
 /// `rk(v ·_axis T)` for every `v`, indexed by the base-`p` encoding of `v` with
 /// position 0 as the least significant digit, the encoding
 /// `descent_search/span_enumeration.cpp::coefficient_vector` uses.
+/// **The one loop in this directory that spreads over cores.** Element `index` is
+/// built from the digits of `index` and reduced against `slices`, which nobody
+/// writes, and written to its own slot: no loop-carried dependency, uniform cost,
+/// and up to a million of them. Three commands offer `--threads` and every one of
+/// them stopped at this function's door until now, so the whole rank-sum floor —
+/// 469 ms at its most expensive fixture, paid before a search starts — ran on one
+/// core whatever was asked for.
+///
+/// **The one-worker path is left exactly as it was**, scratch and all. The
+/// parallel path gives each item its own `coefficients`, because one shared
+/// buffer is the only thing here that could not be shared; it costs a small
+/// allocation per item, which is noise beside the `Matrix` that `contraction`
+/// already returns by value, and it is paid only by a caller who asked for cores.
+///
+/// It stays on the host at any thread count. It is the closest thing in this
+/// repository to the shape `run_limits/device.h` describes, and
+/// `run_limits/adapting-to-the-machine/the-audit.md` says why it still gets no
+/// kernel: it is the general-field path, and that field has none of the bit
+/// arithmetic the two kernels are made of.
 template <class Field>
 std::vector<std::size_t> contraction_ranks(const Field& field,
                                            const std::vector<MatrixOver<Field>>& slices,
@@ -145,15 +165,25 @@ std::vector<std::size_t> contraction_ranks(const Field& field,
     const std::size_t length = axis_dimension<Field>(slices, axis);
     std::vector<std::size_t> ranks(rank_sum_vector_count(characteristic, length));
 
-    std::vector<typename Field::Element> coefficients(length);
-    for (std::size_t index = 0; index < ranks.size(); ++index) {
+    const auto rank_at = [&](std::size_t index,
+                             std::vector<typename Field::Element>& coefficients) {
         std::size_t rest = index;
         for (std::size_t position = 0; position < length; ++position) {
             field.init(coefficients[position], static_cast<int64_t>(rest % characteristic));
             rest /= characteristic;
         }
         ranks[index] = rank(field, contraction(field, slices, axis, coefficients));
+    };
+
+    if (bilinear_rank::worker_count() <= 1) {
+        std::vector<typename Field::Element> coefficients(length);
+        for (std::size_t index = 0; index < ranks.size(); ++index) rank_at(index, coefficients);
+        return ranks;
     }
+    bilinear_rank::parallel_for(ranks.size(), [&](std::size_t index) {
+        std::vector<typename Field::Element> coefficients(length);
+        rank_at(index, coefficients);
+    });
     return ranks;
 }
 
