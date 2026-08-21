@@ -246,17 +246,33 @@ int run(int argc, char** argv) {
         if (settled.exact) {
             cli::result() << "  pencil: two slices, so the Kronecker canonical form settles it"
                           << " in polynomial time and no pool is built\n";
+            // **Without a target the caller wants an algorithm, not a number**,
+            // and the pencil has no algorithm to give: it reads a rank off a
+            // canonical form and never builds a decomposition. Returning here
+            // would answer a different question from the one `decide-rank`
+            // without `--target` has always answered, which is what
+            // `reproduce/measure.py` caught on `gf4_multiplication`.
+            //
+            // So the rank becomes the target instead. The sweep that would have
+            // climbed from the flattening floor now asks one question, at the
+            // value already proved to be the answer, and comes back with the
+            // decomposition the caller asked for.
             if (target < 0) {
-                cli::result() << "  rank: " << settled.proved << " (exact, over GF("
-                              << tensor.characteristic << "))\n";
-                return cli::exit_status(cli::ExitCode::Yes);
+                cli::result() << "  rank: " << settled.proved
+                              << " (exact, over GF(" << tensor.characteristic
+                              << ")), so the search below asks for it once instead"
+                              << " of sweeping up to it\n";
+                target = static_cast<long long>(settled.proved);
+            } else {
+            // A target below the rank is refuted by the form itself, and one at
+            // or above it needs the search to exhibit the products.
+            if (static_cast<std::size_t>(target) < settled.proved) {
+                cli::result() << "  NO: there is no algorithm with " << target
+                              << " products, the rank being " << settled.proved
+                              << ".\n";
+                return cli::exit_status(cli::ExitCode::No);
             }
-            const bool reachable = static_cast<std::size_t>(target) >= settled.proved;
-            cli::result() << (reachable ? "  YES: " : "  NO: there is no algorithm with ")
-                          << target << " products"
-                          << (reachable ? " suffice, the rank being " : ", the rank being ")
-                          << settled.proved << ".\n";
-            return cli::exit_status(reachable ? cli::ExitCode::Yes : cli::ExitCode::No);
+            }
         }
     }
 
