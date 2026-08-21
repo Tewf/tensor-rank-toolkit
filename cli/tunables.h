@@ -95,10 +95,12 @@ struct Tunables {
     std::size_t ilp_time_limit_seconds = 300;
 
     /// Elements below which a bulk question stays on the host whatever
-    /// `device_order` says, because a launch costs more than the work.
-    /// PROVISIONAL: arithmetic on a conventional ten-microsecond launch against
-    /// a card measured at 7.4e9 elements a second, neither figure taken here.
-    std::size_t device_launch_floor{100000};
+    /// `device_order` says, because a launch costs more than the work. Fills
+    /// `run_limits::set_launch_floor` (`run_limits/device.h`), from `decide-rank
+    /// --device`, which sets it to zero when a run asks for the card outright.
+    /// Measured 2026-08-21 by `measure-leaf floor`; the table of crossovers and
+    /// what was swept against what is in `run_limits/device.cpp`.
+    std::size_t device_launch_floor{8192};
 
     /// Which SAT solver is asked first, of those on `PATH`. kissat leads
     /// because it is the strongest on unsatisfiable instances, and an
@@ -117,10 +119,12 @@ struct Tunables {
     std::vector<std::string> ilp_backend_order{"gurobi", "cbc", "glpk", "lp_solve", "built-in"};
 
     /// Which processor answers a bulk question first, of those this build can
-    /// reach. Fills `run_limits::set_device_order`
-    /// (`run_limits/device.h`). **No GPU backend is compiled in**, so today this
-    /// only ever resolves to the host, and `decide-rank` says so on its device
-    /// line rather than leaving a reader to wonder.
+    /// reach. Fills `run_limits::set_device_order` (`run_limits/device.h`),
+    /// which `decide-rank` then overwrites from the plan it chose, so this is
+    /// the order the *rule* starts from and `--device` is what settles it. A
+    /// build without `nvcc` has no backend behind `gpu` and resolves to the
+    /// host, which the plan's device line says rather than leaving a reader to
+    /// wonder.
     std::vector<std::string> device_order{"gpu", "cpu"};
 };
 

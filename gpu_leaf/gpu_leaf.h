@@ -46,4 +46,11 @@ GpuSurvivors walk_subspace_on_gpu(const LeafQuestion& question, std::uint64_t be
 /// The card the two calls above will run on, for the record a measurement keeps.
 std::string device_description();
 
+/// Whether a card this build can launch on is present right now.
+///
+/// **It never throws**, where everything else here does: it is the probe
+/// `run_limits::available` asks on every question, and a driver that has gone
+/// away between leaves is an answer of no rather than a run that stops.
+bool card_present();
+
 }  // namespace gpu_leaf

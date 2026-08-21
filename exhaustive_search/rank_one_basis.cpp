@@ -10,10 +10,12 @@ namespace bilinear_rank {
 
 namespace {
 
-/// How many elements the subspace has, or zero if that overflows what is worth
-/// counting.
-std::size_t elements_of(const Field& field, std::size_t dimension, std::size_t ceiling) {
-    const auto characteristic = static_cast<std::size_t>(field.characteristic());
+LeafRoute chosen_route = LeafRoute::Auto;
+
+}  // namespace
+
+std::size_t subspace_elements(std::size_t characteristic, std::size_t dimension,
+                              std::size_t ceiling) {
     std::size_t count = 1;
     for (std::size_t step = 0; step < dimension; ++step) {
         if (count > ceiling / characteristic) return 0;
@@ -21,10 +23,6 @@ std::size_t elements_of(const Field& field, std::size_t dimension, std::size_t c
     }
     return count;
 }
-
-LeafRoute chosen_route = LeafRoute::Auto;
-
-}  // namespace
 
 void set_leaf_route(LeafRoute route) { chosen_route = route; }
 LeafRoute leaf_route() { return chosen_route; }
@@ -48,7 +46,8 @@ std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& sp
     // the only leaves worth forcing are the ones the rule sends to the pool.
     const std::size_t ceiling =
         chosen_route == LeafRoute::Walk ? std::numeric_limits<std::size_t>::max() : pool.size();
-    const std::size_t elements = elements_of(field, span.dimension(), ceiling);
+    const std::size_t elements = subspace_elements(
+        static_cast<std::size_t>(field.characteristic()), span.dimension(), ceiling);
     const bool walk = elements != 0
                       && (chosen_route == LeafRoute::Walk || (chosen_route == LeafRoute::Auto
                                                               && elements < pool.size()));
