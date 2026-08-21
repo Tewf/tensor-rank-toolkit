@@ -6,12 +6,13 @@ search at all. Precedence and `BILINEAR_TUNABLES`:
 
 ## `decide-rank-by-pencil`
 
-Takes a tensor path and `--help`. The Kronecker canonical form of a two-slice
-tensor, exactly and in polynomial time, and the rank bound it gives.
-
-There is nothing else to choose, which is the point: there is no budget, no
-schedule and no pool, so nothing is tunable. On a 4x4 pencil it answers in about
+The Kronecker canonical form of a two-slice tensor, exactly and in polynomial
+time, and the rank bound it gives. On a 4x4 pencil it answers in about
 50 microseconds.
+
+| Flag | Default | What chose the default |
+|---|---|---|
+| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. The Sumi bound builds `x^p - x`, linear in the characteristic the *file* names, so this is the one number a caller may have to move to run at all. |
 
 **Its exit code is the unusual part and is deliberate.** `0` when the rank is
 settled, which is when the pencil is diagonalisable over GF(p); **`3`

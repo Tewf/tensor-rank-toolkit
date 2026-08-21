@@ -40,6 +40,7 @@ about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 | `--flips N` | `20000` | **Nothing.** It is the setting the published runs used, not a tuned choice: `⟨3,3,3⟩` reaches 24 products in 38.1 s at `--flips 20000 --seeds 8`. **`--steps N` is an accepted older spelling of this flag** and means flips here, where in `minimise-rank` the same word means pipeline stages. Both are parsed; only `--flips` is the name the tool leads with. |
 | `--seeds N` | `8` | **Nothing**, for the same reason. |
 | `--from k` | off, walk from naive | Measured: on `f3_3x6`, four seeds of 20 000 flips reach **12** products from the naive scheme and hold the heuristic's **10** when started there (`../flip_graph/README.md`). |
+| `--max-memory N` | `2G` | Argument: same default and source. `--from k` runs the heuristic first, whose span table is p^dim. |
 
 ## `lower-the-bound`
 
@@ -58,3 +59,5 @@ and no default below is claimed to be the best value.
 | `--rounds N` | `8` | **Measured, and it bought nothing here.** Restarting from the answer starts the next round at a different root under a tighter incumbent, but every improvement in the table was found in the first round. |
 | `--whole-pool` | off | **Not measured on anything it could finish.** Offers every rank-one map of the shape instead of the generated moves, at `\|pool\|` minimum-weight bases a node: 16 129 at 7x7 over GF(2), against the 20 678 moves the whole 22-node `cyclic_f2_7` run offered. |
 | `--emit-operators <stem>` | off | Nothing to measure. Same three SMS files as `minimise-rank`, and what the external check of the 13-product `cyclic_f2_7` scheme was run on. |
+| `--threads N` | `1` | Argument, asserted rather than measured: one worker so a run reproduces what this repository published. The children of one node are prepared in parallel and entered in the same order, so counts are identical at any thread count — asserted on `matmul_2x2x3` (341 nodes, 159 860 children) in `run_limits/tests/check_the_limits_reach_the_commands.sh`. |
+| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. `--summand-rank r` asks for p^r vectors and this is what refuses an r the machine cannot hold. |
