@@ -38,7 +38,9 @@ matrix_sparsification/   fewest nonzeros in an operator
 satisfiability/          the same rank question put to a SAT or SMT solver
 curve_bounds/            bounds from interpolation on an algebraic curve
 integer_programme/       the linear and integer programme layer the curve strand uses
-fixtures/                the maps and operators everything is run on
+fixtures/                the maps and operators everything is run on; its
+                         plinopt/ is twelve of PLinOpt's own, under CeCILL-B,
+                         so the interoperability is tested against his bytes
 famous_tensors/          the tensors the literature argues about, and where each
                          search stops on them
 reproduce/               regenerates every published number, with its provenance
@@ -59,7 +61,7 @@ tools/                   scripts that are not part of the build: one asks every
                          backend the same question and tabulates the cost
 ```
 
-**Twelve command-line tools**, and the one question each answers that no other
+**Thirteen command-line tools**, and the one question each answers that no other
 does: [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md),
 which is also where four tempting merges are refused with what each would cost.
 It is the list; this file is the folders under it, and neither restates the
