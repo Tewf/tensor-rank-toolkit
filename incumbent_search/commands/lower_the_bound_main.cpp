@@ -29,7 +29,7 @@ namespace {
 void usage() {
     cli::note() << "usage: lower-the-bound <tensor-file> [--from basis|descent] [--nodes N]\n"
                    "                       [--width N] [--summand-rank r] [--whole-pool]\n"
-                   "                       [--emit-operators <stem>] [--help]\n"
+                   "                       [--below k] [--emit-operators <stem>] [--help]\n"
                    "\n"
                    "  --from basis|descent  the root and the first incumbent: the minimum-\n"
                    "                        weight basis of span(T), or the descent's own\n"
@@ -45,6 +45,11 @@ void usage() {
                    "                        moves at (p^r - 1)p^(r-1)/(p-1) per element\n"
                    "  --whole-pool          offer every rank-one map of the shape instead,\n"
                    "                        which is |pool| minimum-weight bases a node\n"
+                   "  --below k             look only for k products or fewer, and stop the\n"
+                   "                        moment one is reached. The incumbent is seeded at\n"
+                   "                        k+1 instead of the start, so the bound cuts at\n"
+                   "                        dimension k straight away and the tree is smaller.\n"
+                   "                        Not reaching k refutes nothing: nothing here does\n"
                    "  --rounds N            restart from the answer up to N times, 8 by\n"
                    "                        default, stopping as soon as a round does not\n"
                    "                        improve. A round that exhausted its tree can\n"
@@ -96,6 +101,8 @@ int run(int argc, char** argv) {
             limits.summand_rank = arguments.count();
         } else if (arguments.is("--whole-pool")) {
             limits.whole_pool = true;
+        } else if (arguments.is("--below")) {
+            limits.below = arguments.count();
         } else if (arguments.is("--rounds")) {
             rounds = arguments.count();
         } else if (arguments.is("--emit-operators")) {
@@ -147,9 +154,13 @@ int run(int argc, char** argv) {
         report.deepest = std::max(report.deepest, round_report.deepest);
         report.exhausted = round_report.exhausted;
         report.best = round_report.best;
+        report.reached_below = round_report.reached_below;
         if (round_report.best >= reached) break;
         reached = round_report.best;
         answer = std::move(next);
+        // What `--below` asked for is held, so another round is another search
+        // for something nobody asked about.
+        if (report.reached_below) break;
     }
 
     bilinear_rank::Algorithm algorithm;
@@ -167,6 +178,23 @@ int run(int argc, char** argv) {
                 << " improvements, " << report.bounded << " branches bounded, depth "
                 << report.deepest << (report.exhausted ? ", tree exhausted" : ", budget spent");
 
+    // Said in words rather than left to be inferred from the count, and said
+    // both ways round: a run that did not reach `k` has proved nothing about
+    // `k`, and the branches it cut were cut by `k` itself.
+    if (limits.below != 0) {
+        if (report.reached_below) {
+            cli::note() << "--below " << limits.below << ": reached, at "
+                        << algorithm.product_count() << " products";
+        } else {
+            cli::note() << "--below " << limits.below << ": not reached"
+                        << (report.exhausted ? ", the tree above the root ran out"
+                                             : ", the node budget ran out")
+                        << ". That is not a lower bound: this search only ever finds, and "
+                           "the branches it cut were cut by " << limits.below
+                        << " and not by anything built";
+        }
+    }
+
     if (!operator_stem.empty()) {
         // The stem and the three suffixes are PLinOpt's interface, not a naming
         // choice here: `PMchecker stem_{L,R,P}.sms -q p` is how anything outside
@@ -182,6 +210,12 @@ int run(int argc, char** argv) {
                                        origin + " Combines the products into the outputs.",
                                        algorithm.decode);
         cli::note() << "wrote " << operator_stem << "_{L,R,P}.sms";
+    }
+    // `Undecided` and never `No`: a `--below` run that ran out has exhausted a
+    // budget and refuted nothing, which is the distinction `cli/exit_code.h`
+    // exists to keep. The answer it still holds was printed and verified above.
+    if (limits.below != 0 && !report.reached_below) {
+        return cli::exit_status(cli::ExitCode::Undecided);
     }
     return cli::exit_status(cli::ExitCode::Yes);
 }
