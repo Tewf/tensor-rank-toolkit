@@ -20,6 +20,12 @@ to give: a construction that threw leaves as exit 5 and never as exit 1.
 | `--cyclic <p> <length>` | field, length | Multiplying modulo `x^length - 1` over GF(p). |
 | `--field <p> <modulus...>` | field, modulus coefficients highest degree first | Multiplying in GF(p^d). `--field 2 1 1 1` is GF(2^2), modulus `x^2 + x + 1`. |
 
-No measurement chose anything here, and none could: the output is determined by
-the arguments, and the maps are the fixtures every timing elsewhere is taken on
-rather than something timed themselves.
+No measurement chose anything here for the modes, and none could: the output is
+determined by the arguments, and the maps are the fixtures every timing elsewhere
+is taken on rather than something timed themselves.
+
+## Options
+
+| Flag | Default | What chose the default |
+|---|---|---|
+| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. Every mode is cubic in the numbers it takes; `--matmul 2 100 100 100` is 7.2 TiB of slices. |
