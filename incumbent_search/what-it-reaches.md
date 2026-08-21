@@ -47,8 +47,14 @@ default `--width 4` this row stopped at 14 in 139 nodes with the tree exhausted 
 not out of budget, out of tree. Doubling to `--width 8` exhausts a tree of 1 873
 nodes and reaches 13. So on this fixture the binding constraint was never the
 node limit; it was how many children a node is allowed to enter, and the two are
-not interchangeable. `--width 16` and `--width 0` did not finish in fifty
-minutes on one core, which is the other half of the same fact.
+not interchangeable. `--width 0` did not finish in fifty minutes on one core.
+
+**And the width does not keep paying, which is the more useful half.** `--width
+16`, on four workers, exhausts a tree of 13 593 nodes and 9 222 176 children —
+**7.3x the nodes of `--width 8` for the same 13**. The gain arrives once, between
+4 and 8, and stops. Closing the last product to the proved floor of 12 needs a
+different mechanism and not more of this one, which is worth knowing before
+anybody rents a machine to run it wider.
 
 The 13 was checked outside the search that found it: the emitted `⟨L, R, P⟩` were
 read back by [`operators-to-tensor`](../formats/) and rebuilt the fixture's 125
