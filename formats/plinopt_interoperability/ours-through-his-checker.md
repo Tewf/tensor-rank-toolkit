@@ -3,6 +3,12 @@
 `minimise-rank <fixture> --emit-operators <stem>`, then
 `PMchecker <stem>_{L,R,P}.sms -q p`. `P` is outputs by products.
 
+Re-run 2026-08-21 against PLinOpt at `5b16d98`, built from source on LinBox
+1.7.0 and Givaro 4.2.0 from the Ubuntu 24.04 archive. All four rows still hold,
+word for word. Naming the version is not ceremony: this table is the only claim
+here that depends on somebody else's code, so it is the only one that can go
+stale without anything in this repository changing.
+
 | fixture | products | shapes | PMchecker |
 |---|---|---|---|
 | `f2_2x2` | 3 | L 3x2, R 3x2, P 3x3 | `SUCCESS: correct 1o1o2 ... modulo 2` |

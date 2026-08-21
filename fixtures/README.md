@@ -57,6 +57,14 @@ file along, in [`published-targets.md`](published-targets.md): two more field
 extensions, cyclic convolution of length 7, and the three matrix multiplication
 formats `[wang2026]` leaves open.
 
+## The ones that are not ours
+
+[`plinopt/`](plinopt/README.md) is twelve `.sms` operators copied unmodified from
+PLinOpt's `data/`, under **CeCILL-B**, with a copy of that licence beside them.
+They are here so the exchange with the reference toolchain is exercised against
+his bytes rather than against something written here to resemble them, which is
+the same argument the rest of this directory rests on one step further out.
+
 ## The one that is not for a number
 
 `f5_3x3.tensor` ships for a *test*, and is the only fixture here that does.

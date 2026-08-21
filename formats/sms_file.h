@@ -16,17 +16,24 @@ namespace linear_algebra {
 /// and blank lines may appear anywhere, including before the header, which is
 /// where PLinOpt's shipped matrices put them.
 ///
+/// One triple per line, and a value is refused if anything follows it on its
+/// line. That is not house style: LinBox reads `1 1 5 3 2 7` as a single entry
+/// of 5327, silently, so accepting it would mean holding a different matrix from
+/// the reference tools out of the same bytes. The argument, and the run that
+/// showed it, are in `sms_file.cpp`.
+///
 /// The type letter says which ring, not which storage: LinBox writes `R` when
 /// the field has cardinality zero, meaning the integers or the rationals, and
 /// `M` for a finite field. Reading accepts everything LinBox accepts,
 /// `M m I i R r P p`, and returns fractions either way since an integer is one.
 ///
-/// **That is the convention, not an enforced one.** It is what both sides write
-/// and what both sides accept, checked in each direction against PLinOpt's own
-/// binaries. Nothing was ever handed a deliberately wrong letter, so there is no
-/// evidence that a file carrying the other one would be refused. Write the right
-/// letter because it tells a reader where the entries live, not because something
-/// downstream will catch it.
+/// **The letter carries no information downstream, and that is now measured
+/// rather than assumed.** PLinOpt reads every operator over the rationals
+/// whatever the letter says and takes the field from `-q` on the command line
+/// (`src/PMchecker.cpp:213-219`); of the 153 matrices it ships, 15 are typed `M`
+/// and 9 of those hold negative entries with no modulus anywhere in the file.
+/// Write the right letter because it tells a reader where the entries live, not
+/// because anything downstream will catch it.
 ///
 /// Enables interchange with the exact-linear-algebra ecosystem: LinBox, Givaro,
 /// and external solvers all speak this format. What was measured
@@ -35,6 +42,22 @@ namespace linear_algebra {
 RationalMatrix read_sms(std::istream& input);
 
 RationalMatrix read_sms_file(const std::string& path);
+
+/// The same file over GF(p), which is where an operator has to land before
+/// anything here can compute with it.
+///
+/// The field is a parameter because the file does not carry it: this is the
+/// reading half of `write_sms(std::ostream&, const ModularMatrix&)`, which had
+/// none, and it is how a published algorithm becomes a tensor in
+/// [`operators_to_tensor_main.cpp`](../descent_search/commands/operators_to_tensor_main.cpp).
+///
+/// `4/9` is reduced rather than refused, since a fast algorithm's operators are
+/// full of ninths and mod 2 a ninth is 1. A denominator that vanishes is refused:
+/// `4/9` modulo 3 has no residue to stand for, and returning anything would be
+/// answering a different question.
+ModularMatrix read_sms(std::istream& input, const ModularField& field);
+
+ModularMatrix read_sms_file(const std::string& path, const ModularField& field);
 
 /// Rationals and integers alike are cardinality zero, so the type is `R`.
 void write_sms(std::ostream& output, const RationalMatrix& matrix);

@@ -16,7 +16,8 @@ round tripped, so its reader is only ever checked against files somebody typed,
 and the tensor format was in exactly that state while `write_tensor` lived
 inside `make-tensor`. The commands write through these headers now:
 `make-tensor` through `write_tensor`, `minimise-rank --emit-operators` through
-`write_sms_file`.
+`write_sms_file`, and `operators-to-tensor` reads through `read_sms_file` and
+writes through `write_tensor`, which is the round trip taken across two formats.
 
 Both text formats ignore blank lines and `#` comments, so a fixture can say what
 it is. Both refuse what they do not understand: a parse error throws rather than
@@ -41,11 +42,19 @@ Reading is by extension, so
 
 Entries are one-based `row column value` triples after a `rows columns type`
 header, and `0 0 0` terminates. The terminator's value is ignored, as the
-format's own writers vary on it. Which letter the type is, and how much that is
-known to matter, is [`sms_file.h`](sms_file.h).
+format's own writers vary on it. One triple per line, which is not a style rule:
+LinBox reads a second one on the same line into the first one's value. Which
+letter the type is, and how little it turns out to matter, is
+[`sms_file.h`](sms_file.h).
+
+**The file does not carry its field**, so reading over `GF(p)` takes the field as
+a parameter, exactly as PLinOpt's checkers take it as `-q`. Three of them are an
+algorithm: `operators-to-tensor` reads a ⟨L,R,P⟩ triple back into the `.tensor`
+above, which is how somebody else's published algorithm becomes an input here.
 
 It is worth exchanging files with somebody only if you have checked that you can.
-Both directions have been run against PLinOpt's own binaries, and his checker
+Both directions have been run against PLinOpt's own binaries — his checker
 confirms the published 14 products on `f2_5x5` and 10 on `f3_3x6` from our
-operators alone:
+operators alone, and his published Strassen operators rebuild our `⟨2,2,2⟩`
+fixture entry for entry:
 [`plinopt_interoperability/`](plinopt_interoperability/README.md).

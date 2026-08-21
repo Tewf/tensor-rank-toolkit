@@ -18,4 +18,8 @@ add_test(NAME parallel COMMAND test_parallel)
 add_test(NAME limits_reach_the_commands
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_the_limits_reach_the_commands.sh
                  $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
-set_tests_properties(limits_reach_the_commands PROPERTIES TIMEOUT 300)
+# 174 s idle on an i5-12450H, so 300 was a ceiling fitted to a quiet machine and
+# this test is the one that exists to catch exactly that. It timed out at load
+# 6.07 while three other things built. Labelled slow and given room, because a
+# test that flakes under load teaches people to rerun rather than to read.
+set_tests_properties(limits_reach_the_commands PROPERTIES TIMEOUT 1200 LABELS slow)
