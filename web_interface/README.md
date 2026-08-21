@@ -24,7 +24,12 @@ are `--build`, `--port`, `--host`, `--runs` and `--wall-clock`; `--help` lists t
 
 ## What you do with it
 
-**Start here.** Six worked examples sit above the panels, in
+Four panes side by side, all of them on the screen at once: the map, what was
+read back, the question, and the answer. Only a pane scrolls, never the page,
+because the four are one working state and a reader compares them. `layout.css`
+is the shell and `console.css` is what the panes are filled with.
+
+**Start here.** Six worked examples, behind the button of that name, in
 [`worked_examples.py`](worked_examples.py). Each fills the map, the tool and the
 flags and then stops, so the line is read before it is run. Four of them are the
 same map one flag apart, which is the shortest way to see the difference between
@@ -75,7 +80,7 @@ to be discovered.
 ## Checking it
 
 ```sh
-python3 web_interface/tests/check_web_interface.py     # 37 checks
+python3 web_interface/tests/check_web_interface.py     # 40 checks
 ```
 
 It starts a console, drives it over HTTP and asserts against real runs of real
