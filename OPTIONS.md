@@ -20,7 +20,7 @@ rather than described, in
 ## Before the tables
 
 - [**One question per command**](OPTIONS/one-question-per-command.md): the one
-  thing each tool answers that no other does, why there are twelve rather than
+  thing each tool answers that no other does, why there are thirteen rather than
   eight, and which two binaries are instruments rather than tools.
 - [**Precedence, and the file the numbers come from**](OPTIONS/precedence-and-tunables.md):
   flag, then `tunables.conf`, then the compiled default; where the file is looked
@@ -42,7 +42,7 @@ rather than described, in
 - [Bounding from a curve](OPTIONS/bounding-from-a-curve.md): `curve-bounds`, and
   the `--solvers` that was the command `list-solvers`
 - [Sparsifying operators](OPTIONS/sparsifying-operators.md): `sparsify-operator`
-- [Building maps](OPTIONS/building-maps.md): `make-tensor`
+- [Building maps](OPTIONS/building-maps.md): `make-tensor`, `operators-to-tensor`
 
 `decide-rank-by-pencil` and `factor-over-canonical-basis` are documented in
 [`OPTIONS/reading-the-answer-off.md`](OPTIONS/reading-the-answer-off.md).
