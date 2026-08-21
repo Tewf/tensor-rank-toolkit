@@ -26,7 +26,7 @@ exponential. `step 3` is the descent's full pool scan, from
 | `f3_3x6` | 9 | 11 | 10 | **10** | 1 | 2 569 | 10, `[bdez2012]` |
 | `cyclic_f2_5` | 9 | 12 | 10 | **10** | 2 | 1 530 | |
 | `cyclic_f2_7` | 12 | 15 | 15 | **13** * | 22 | 17 371 | 13 |
-| `gf32_multiplication` | 12 | 17 | 16 | **14** * | 139 | 90 281 | `mu_2(5) = 13` |
+| `gf32_multiplication` | 12 | 17 | 16 | **13** * | 1 873 | 1 258 756 | `mu_2(5) = 13`, met |
 | `gf64_multiplication` | 14 | 23 | 20 | **20** | 3 | 2 016 | `mu_2(6) = 15` |
 
 **The two rows that matter are `cyclic_f2_7` and `gf32_multiplication`, and they
@@ -39,8 +39,23 @@ is nothing under it. **What this repository proves on its own is still only
 12 ≤ rank ≤ 13**: the floor is `rank_lower_bound`'s and the 13 from below is a
 citation, so closing it here means a refutation at 12 that nobody has run.
 
-`gf32_multiplication` goes 16 to 14 in 139 nodes, one product above
-`mu_2(5) = 13`, and is the other row where the descent's step 3 had stopped.
+`gf32_multiplication` goes 16 to **13** in 1 873 nodes, meeting `mu_2(5) = 13`,
+and is the other row where the descent's step 3 had stopped.
+
+**It took a wider beam, and that is the finding rather than the 13.** At the
+default `--width 4` this row stopped at 14 in 139 nodes with the tree exhausted —
+not out of budget, out of tree. Doubling to `--width 8` exhausts a tree of 1 873
+nodes and reaches 13. So on this fixture the binding constraint was never the
+node limit; it was how many children a node is allowed to enter, and the two are
+not interchangeable. `--width 16` and `--width 0` did not finish in fifty
+minutes on one core, which is the other half of the same fact.
+
+The 13 was checked outside the search that found it: the emitted `⟨L, R, P⟩` were
+read back by [`operators-to-tensor`](../formats/) and rebuilt the fixture's 125
+entries exactly. `PMchecker` is the wrong checker here and says so —
+[`four-false-failures.md`](../formats/plinopt_interoperability/four-false-failures.md)
+covers that case: it checks polynomial multiplication, and this is multiplication
+in GF(32).
 
 **`f2_5x5` now has both sides inside this repository.** The exhaustive search
 refutes 12 in 146 402 553 nodes; this exhibits 13 in 80. `[bdez2012]` reached
