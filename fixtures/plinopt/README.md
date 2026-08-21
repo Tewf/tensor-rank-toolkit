@@ -1,6 +1,6 @@
 # PLinOpt's own operators, unmodified
 
-Eight `.sms` files copied byte for byte from `data/` in **PLinOpt**, by
+Twelve `.sms` files copied byte for byte from `data/` in **PLinOpt**, by
 Jean-Guillaume Dumas, Bruno Grenet, Clément Pernet and Alexandre Sedoglavic
 ([github.com/jgdumas/plinopt](https://github.com/jgdumas/plinopt)), which is
 distributed under the **CeCILL-B** free software licence. A copy of that licence
@@ -19,8 +19,9 @@ being discovered by him.
 |---|---|
 | `2x2x2_7_Strassen_{L,R,P}.sms` | a complete triple, so the map it computes can be rebuilt and compared with [`../matmul_2x2x2.tensor`](../matmul_2x2x2.tensor) |
 | `1o1o2_3_Karatsuba_{L,R,P}.sms` | a second complete triple, over GF(2), typed `M`, rebuilding [`../f2_2x2.tensor`](../f2_2x2.tensor) |
+| `3x4x7_63_rational_{L,R,P}.sms` | a shape whose two operands differ, L 63x12 against R 63x28, so that a slice built transposed is caught. Both other triples have L and R the same width |
+| `2x2x2_7_DPS-smallrat-12.2034_{L,R,P}.sms` | rationals, triples not in lexicographic order, and a modulus the algorithm does not survive: ninths and halves, so GF(2), GF(3) and GF(5) are refused and GF(7) rebuilds the map |
 | `2x2x2_7_Winograd_L.sms` | integers under an `R` header, and negatives |
-| `2x2x2_7_DPS-smallrat-12.2034_L.sms` | rationals, and triples that are not in lexicographic order |
 
 Three families of his `data/` are deliberately **not** here, and each is a
 finding rather than an omission: the `-X` operators, whose entries are
