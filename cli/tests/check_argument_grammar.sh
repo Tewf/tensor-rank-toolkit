@@ -18,8 +18,8 @@ fixtures=$2
 failures=0
 
 # The others sit beside this one, one directory per strand, so each path is the
-# one ctest passes with the strand swapped. Passing eleven more paths in would
-# only restate that.
+# one ctest passes with the strand swapped. Passing the rest in as arguments
+# would only restate that, and would need editing every time the list moves.
 binaries=$(dirname "$(dirname "$command")")
 minimise=$binaries/descent_search/minimise-rank
 
@@ -95,9 +95,10 @@ for relative in \
     matrix_sparsification/sparsify-operator \
     satisfiability/decide-rank-by-sat \
     curve_bounds/curve-bounds \
-    integer_programme/list-solvers \
+    incumbent_search/lower-the-bound \
     oracle_guided_search/deflate-strictly \
     oracle_guided_search/enumerate-subspaces \
+    oracle_guided_search/price-canonical-route \
     pencil_rank/decide-rank-by-pencil \
     canonical_factorisation/factor-over-canonical-basis
 do
@@ -137,6 +138,13 @@ do
     fi
     echo "  ok    2  $name --help"
 done
+
+# A spelling that has been published and then merged away has one job left: to
+# name what to type instead. Silence would be worse than the old command, because
+# `list-solvers | grep gurobi` going quiet reads as "no backends installed".
+echo "a retired spelling names its replacement rather than going quiet"
+refuses 2 "curve-bounds --solvers" "$binaries/integer_programme/list-solvers"
+refuses 2 "curve-bounds --solvers" "$binaries/integer_programme/list-solvers" --help
 
 if [ "$failures" -ne 0 ]; then
     echo "argument grammar: $failures failed"

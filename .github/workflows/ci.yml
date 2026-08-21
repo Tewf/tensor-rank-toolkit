@@ -226,7 +226,7 @@ jobs:
       # from the supply at any published price.
       - name: Bounds from curves, step 3 of the roadmap
         run: |
-          ./build/integer_programme/list-solvers
+          ./build/curve_bounds/curve-bounds --solvers
           ./build/curve_bounds/curve-bounds --table
           # Every route on the same two questions, because the point of having
           # three is that they agree. The two numbers are the ones the unit test

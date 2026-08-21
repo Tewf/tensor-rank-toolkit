@@ -12,7 +12,7 @@
 /// generator count.
 ///
 /// The derivation, its primary sources and the measured table it was corrected
-/// against are [`when-canonical-pays.md`](when-canonical-pays.md). The short form:
+/// against are [`when-canonical-pays/`](when-canonical-pays/README.md). The short form:
 ///
 ///     saving ratio  rho = plain nodes / canonical nodes
 ///     price ratio   pi  = one canonical node / one plain node

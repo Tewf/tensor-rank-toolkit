@@ -30,7 +30,7 @@ LOOPBACK = {"127.0.0.1", "localhost", "::1"}
 
 def arguments():
     parser = argparse.ArgumentParser(
-        description="A browser console for the twelve tools.")
+        description="A browser console for the toolkit's commands.")
     parser.add_argument("--build", default=str(repository.ROOT / "build"),
                         help="the directory the toolkit was built into")
     parser.add_argument("--runs", default=str(pathlib.Path(__file__).resolve().parent / "runs"),
@@ -50,7 +50,7 @@ def arguments():
 def check_the_build(build):
     """Every binary the console offers, before it offers any of them.
 
-    A console that lists twelve tools and fails on the first press is worse than
+    A console that lists its tools and fails on the first press is worse than
     one that will not start, because the failure looks like the tool's.
     """
     import catalogue

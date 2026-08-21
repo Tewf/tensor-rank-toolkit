@@ -19,9 +19,10 @@ tool should be told where it means something else. That is what this page is.
 | | `curve-bounds` | `--solver-timeout N` |
 | where the search starts | `decide-rank-by-sat` | `--from a` |
 | | `factor-over-canonical-basis` | `--floor k` |
+| | `decide-rank` | `--anchor map\|heuristic` |
 | more than one core | five tools | `--threads N`, `0` for every core |
 | | `deflate-strictly` | `--parallel`, which is all cores or none |
-| write a file | `minimise-rank` | `--emit-operators <stem>`, three files from it |
+| write a file | `minimise-rank`, `lower-the-bound` | `--emit-operators <stem>`, three files from it |
 | | `decide-rank-by-sat` | `--emit-cnf <path>`, the path itself |
 
 **There is no `--seed` anywhere.** `walk-scheme --seeds N` is a count of
@@ -35,8 +36,10 @@ independent walks, not a seed value; each walk's seed is its index.
 | | `walk-scheme` | flips per seed — an accepted older spelling of `--flips` |
 | `--from k` | `decide-rank-by-sat` | the bottom of the sweep |
 | | `walk-scheme` | the k-product scheme to start walking from |
+| | `lower-the-bound` | `basis` or `descent`: which root — an enum, not a count |
 | `--node-limit N` | `decide-rank`, `deflate-strictly`, `factor-over-canonical-basis` | search-tree nodes, from `search_node_limit` |
 | | `curve-bounds` | branch-and-bound nodes, from `ilp_node_limit`, whose default is 25x smaller |
+| | `lower-the-bound` spells the same idea `--nodes N`, from no tunable at all |
 | `--max-memory` | the three searches | the pool budget, in bytes |
 | | `decide-rank-by-sat`, `deflate-strictly` | the solver's cap, in megabytes, from `sat_memory_megabytes` |
 | `--route` | see the table above | two different sets of values |
@@ -46,24 +49,34 @@ independent walks, not a seed value; each walk's seed is its index.
 `cli/arguments.h` exists so that a refusal names the flag and quotes the word:
 `--target abc` reported as `stoull` names neither, and there are five numeric
 flags it could have been. Its typed parsers keep that promise. **It has no helper
-for an enum-like value**, and the nine flags that take one hand-roll the branch
-five different ways:
+for an enum-like value**, and the ten flags that take one hand-roll the branch
+four different ways. Checked by running each against a fixture, 2026-08-21,
+because two rows of this table had gone stale in the direction that flatters:
 
 | Behaviour | Flags |
 |---|---|
-| names the flag and quotes the word | `--orbit-test`, `--route` on `factor-over-canonical-basis` |
+| names the flag and quotes the word | `--anchor`, `--leaf-route`, `--orbit-test`, `--device`, `--route` on `factor-over-canonical-basis` |
 | reprints the whole usage; the word is never named | `--tune`, `--refuter`, `--route` on `curve-bounds` |
-| reports a bad **value** as an unrecognised **flag** | `--leaf-route` |
-| accepts anything as the non-default, silently | `--anchor`, `--backend` |
+| reports a bad **value** as an unrecognised **flag** | `--from` on `lower-the-bound` |
+| accepts anything as the non-default, silently | `--backend` |
 
 So `decide-rank --orbit-test bogus` says `--orbit-test expects full or
-generators, not 'bogus'`, and `decide-rank --leaf-route bogus`, four lines away
-in the same file, says `unrecognised option: --leaf-route` — naming neither the
-word that was wrong nor the three that would have been right. And
-`--anchor heruistic` runs from the map without a word. The source comment at
-`exhaustive_search/commands/decide_rank_main.cpp` already names the first of
-these as the fault it declined to copy.
+generators, not 'bogus'`, while `lower-the-bound --from sideways` says
+`unrecognised option: --from` — of a flag it recognises perfectly well, naming
+neither the wrong word nor the two right ones. And `--backend smtt` runs the CNF
+backend without a word, which is the quieter fault: it answers, and about a
+question the caller did not ask.
 
-Two more shapes worth knowing: `curve-bounds --table` leaves as **exit 0** where
-every other early-out flag leaves as 2, and a malformed `--points` term leaves as
-**exit 5** rather than 2, because its parser throws outside the argument system.
+**`--leaf-route` and `--anchor` were this page's two examples**, and both were
+fixed in `decide_rank_main.cpp` — beside the comment naming the first as the
+fault it declined to copy — without the page being sent back to check.
+`--device`, which is right, never reached it at all. What is left is `--from`,
+`--backend` and the three that reprint a usage block, and the fix for all five is
+one helper in `cli/arguments.h` rather than five more hand-rolled branches. The
+console refuses all ten from `catalogue.py`'s `values` before starting anything,
+so this is a terminal wart and not a browser one.
+
+Two more shapes worth knowing: `curve-bounds --table` and `--solvers` leave as
+**exit 0** where every other early-out flag leaves as 2, and a malformed
+`--points` term leaves as **exit 5** rather than 2, because its parser throws
+outside the argument system.

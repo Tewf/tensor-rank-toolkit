@@ -26,6 +26,7 @@ namespace {
 void usage() {
     cli::note() << "usage: curve-bounds --degree G --points d:n [--points d:n ...]\n"
                    "       curve-bounds --table\n"
+                   "       curve-bounds --solvers\n"
                    "       curve-bounds --help\n"
                    "\n"
                    "  --degree G      the divisor's degree, spent exactly and not as a budget.\n"
@@ -36,6 +37,11 @@ void usage() {
                    "                  for each degree. This is step 2's output, and step 2 is\n"
                    "                  not in this repository.\n"
                    "  --table         print [rambaud2014, Table 1] as transcribed, and stop\n"
+                   "  --solvers       print the integer programming backends in preference\n"
+                   "                  order, and whether each is on PATH, and stop. The order\n"
+                   "                  is ilp_backend_order in tunables.conf, which is why this\n"
+                   "                  reads the file rather than printing the compiled one.\n"
+                   "                  Was the separate command `list-solvers`\n"
                    "  --route built-in|chain|enumeration\n"
                    "                  which minimiser answers. built-in is the default: exact\n"
                    "                  branch and bound in rationals, whose optimum is a proof,\n"
@@ -109,6 +115,25 @@ void print_table() {
     }
 }
 
+/// Which backends this machine has, best first, as `list-solvers` printed them.
+///
+/// It lives beside `--route` rather than in a command of its own because the
+/// ranking is only ever read to decide what `--route chain` will reach: a caller
+/// with no curve to bound has no use for it. The order printed is the one that
+/// would really run — `run` puts `ilp_backend_order` in force before it walks a
+/// single argument — because printing the compiled order while the file had
+/// moved it would make the one place a caller looks the one place that lies.
+void print_backends() {
+    cli::result() << "integer programming backends, in preference order:\n";
+    for (const optimisation::Backend backend : optimisation::ranked_backends()) {
+        cli::result() << "  " << (optimisation::is_available(backend) ? "present" : "absent ")
+                      << "  " << optimisation::name_of(backend) << "\n";
+    }
+    cli::result() << "\nThe first present backend answers; the built-in is always present and is"
+                     " the\nonly one whose answer needs no checking, so it is also the only one"
+                     " that may\nreport a problem infeasible.\n";
+}
+
 enum class Route { Chain, BuiltIn, Enumeration };
 
 int run(int argc, char** argv) {
@@ -142,6 +167,9 @@ int run(int argc, char** argv) {
             return cli::exit_status(cli::ExitCode::Usage);
         } else if (arguments.is("--table")) {
             print_table();
+            return cli::exit_status(cli::ExitCode::Yes);
+        } else if (arguments.is("--solvers")) {
+            print_backends();
             return cli::exit_status(cli::ExitCode::Yes);
         } else if (arguments.is("--degree")) {
             divisor_degree = arguments.whole_number();

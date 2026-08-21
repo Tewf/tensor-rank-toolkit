@@ -3,7 +3,7 @@
 `sparsify-operator` runs every method on one operator and reports what each
 reached. **None of them is a default**: the command's output is the comparison,
 so nothing here is chosen on the caller's behalf. Precedence and
-`BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
+`BILINEAR_TUNABLES`: [`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 | Flag | Default | What chose the default |
 |---|---|---|

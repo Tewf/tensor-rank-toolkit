@@ -55,7 +55,7 @@ is a front end keeping it.
 make-tensor --matmul 2 2 2 2 > strassen.tensor      # or --polynomial, --cyclic, --field
 minimise-rank strassen.tensor --emit-operators out  # 8 -> 7 products
 sparsify-operator out_L.sms                         # then the additions
-list-solvers                                        # which backends this machine has
+curve-bounds --solvers                              # which backends this machine has
 ```
 
 ## Timing one choice against another on one question

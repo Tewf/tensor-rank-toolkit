@@ -5,7 +5,7 @@ toolkit; all of it is this interface. What has since been closed is at the
 bottom, with what closing it did and did not reach.
 
 **Progress is what the tool prints, and no more.** There is no percentage and no
-node counter, because none of the twelve emits one while it works. What a card
+node counter, because no tool here emits one while it works. What a card
 shows is the plan the tool printed before it started, both streams as they
 arrive, the elapsed clock and the wall clock it is running against. For a search
 that prints nothing for an hour, that is a plan, an elapsed clock and a stop
@@ -53,8 +53,9 @@ prints at startup is how many are there, how large, and the one command that
 clears them.
 
 **`curve-bounds --table` sat among the questions.** It is grouped under "on
-nothing but its own arguments" with `list-solvers`, and its exit 0 carries its
-own reading — the table was printed and nothing was minimised — rather than the
-tool's. What remains untidy is that it is a mode wearing the shape of a flag, in
-the same list as the flags that tune a minimisation, and that is the tool's
-shape rather than this interface's.
+nothing but its own arguments", and its exit 0 carries its own reading — the
+table was printed and nothing was minimised — rather than the tool's. What
+remains untidy is that it is a mode wearing the shape of a flag, in the same list
+as the flags that tune a minimisation, and that is the tool's shape rather than
+this interface's. `--solvers`, which arrived when `list-solvers` stopped being a
+command of its own, is the same shape and carries the same kind of reading.

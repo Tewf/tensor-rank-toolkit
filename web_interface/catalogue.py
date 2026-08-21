@@ -1,4 +1,13 @@
-"""The twelve tools, what each one asks, and the flags it takes.
+"""The tools this console offers, what each one asks, and the flags it takes.
+
+**The list is the interface, so it is checked against the build rather than
+counted.** `tests/check_web_interface.py` asserts in both directions: every
+binary named here exists, and every command the build produces is either here or
+named there as not a tool. A literal count is what let this drift —
+`lower-the-bound` shipped on 2026-08-21 and did not reach this file for a day,
+while `len(TOOLS) == 12` stayed true throughout. Which command answers what, and
+which binaries are deliberately not tools:
+`../OPTIONS/one-question-per-command.md`.
 
 A table and not behaviour: every entry is transcribed from the tool's own
 `--help` and from `OPTIONS.md`, which is where a flag's default and the
@@ -8,7 +17,7 @@ precedence then applies unchanged: an explicit flag, else `tunables.conf`, else
 the number compiled in.
 
 `verdicts` is the one place a tool's own reading of exit 0 and exit 1 is
-recorded, because the twelve do not all answer the same question with them and
+recorded, because the tools do not all answer the same question with them and
 `cli/exit_code.h`'s sentence is the standing claim rather than the tool's
 wording. `budget` marks a flag that bounds the run: the interface passes its own
 wall clock through those where a tool has one, so the limit is named in the
@@ -75,6 +84,51 @@ TOOLS = [
              "note": "From plateau_state_budget. Never measured."},
             {"flag": "--json", "kind": "switch", "label": "results as JSON"},
             dict(SYMMETRY), dict(THREADS), dict(MEMORY),
+        ],
+    },
+    {
+        "name": "lower-the-bound",
+        "binary": "incumbent_search/lower-the-bound",
+        "input": "tensor",
+        "asks": "How much cheaper can a branch and bound make an algorithm?",
+        "answers": "The exact search's tree cut by what has been built rather "
+                   "than by a target, so it finds and never refutes. Every "
+                   "count it prints was rebuilt and multiplied out first.",
+        "verdicts": {"0": {"badge": "reached",
+                     "means": "the search ran and reported the cheapest verified "
+                              "algorithm it holds. Nothing here refutes, so a "
+                              "spent budget is a weaker answer and not no answer."}},
+        "options": [
+            {"flag": "--from", "kind": "choice", "values": ["basis", "descent"],
+             "label": "root and first incumbent",
+             "note": "descent by default, because a loose incumbent bounds "
+                     "nothing. basis is a looser incumbent and therefore a "
+                     "taller tree, which is what reaches 13 on f2_5x5 where "
+                     "descent exhausts at 14: "
+                     "incumbent_search/what-it-reaches.md."},
+            {"flag": "--nodes", "kind": "count", "label": "subspaces to expand",
+             "budget": True,
+             "note": "20000 by default. Spending it withdraws no answer."},
+            {"flag": "--width", "kind": "count", "label": "children entered per node",
+             "note": "4 by default, cheapest first. 0 enters every child, "
+                     "which is the branch and bound rather than a beam and is "
+                     "affordable on matmul_2x2x2 and nothing larger here."},
+            {"flag": "--summand-rank", "kind": "count",
+             "label": "largest rank a move may split",
+             "note": "3 by default. An element of rank r offers "
+                     "(p^r - 1)p^(r-1)/(p-1) moves, so 6 at rank 2, 28 at 3 "
+                     "and 120 at 4 over GF(2)."},
+            {"flag": "--rounds", "kind": "count", "label": "restarts from the answer",
+             "budget": True,
+             "note": "8 by default, stopping as soon as a round does not "
+                     "improve. It paid on nothing measured here."},
+            {"flag": "--whole-pool", "kind": "switch",
+             "label": "offer every rank-one map instead of generated moves",
+             "note": "|pool| minimum-weight bases a node: 16 129 at 7x7 over "
+                     "GF(2). Not measured on anything it could finish."},
+            {"flag": "--emit-operators", "kind": "emit_operators",
+             "label": "write the operators (L, R, P as SMS)",
+             "note": "The same three .sms files minimise-rank writes."},
         ],
     },
     {
@@ -334,19 +388,15 @@ TOOLS = [
              "verdicts": {"0": {"badge": "printed",
                           "means": "the transcribed table was printed and the "
                                    "run stopped. Nothing was minimised."}}},
+            {"flag": "--solvers", "kind": "switch",
+             "label": "print the backends this machine has and stop",
+             "note": "The integer programming backends in preference order, and "
+                     "whether each is on PATH. Every solver here is optional "
+                     "and found at run time. Was the command `list-solvers`.",
+             "verdicts": {"0": {"badge": "listed",
+                          "means": "the machine was asked which backends it "
+                                   "has. Nothing was minimised."}}},
         ],
-    },
-    {
-        "name": "list-solvers",
-        "binary": "integer_programme/list-solvers",
-        "input": "none",
-        "asks": "Which backends does this machine have?",
-        "answers": "The integer programming backends in preference order, and "
-                   "whether each is on PATH. Every solver here is optional and "
-                   "found at run time.",
-        "verdicts": {"0": {"badge": "listed",
-                     "means": "the machine was asked which backends it has"}},
-        "options": [],
     },
     {
         "name": "make-tensor",
