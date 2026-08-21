@@ -202,6 +202,30 @@ def checks(port, build):
           "--timeout" in cleared["warnings"][0] and
           "hold a core" in cleared["warnings"][0])
 
+    # A shape a tool cannot take, said before the press rather than after it.
+    # Both directions, because a warning that never fires and one that always
+    # fires are equally useless and look the same from one call.
+    four = {"text": repository.fixture_text("matmul_2x2x2.tensor"),
+            "name": "matmul_2x2x2.tensor", "fixture": "matmul_2x2x2.tensor"}
+    _, wrong_shape = ask(port, "POST", "/api/preview",
+                         {"tool": "decide-rank-by-pencil", "options": {},
+                          "wall_clock_seconds": 120, "input": four})
+    check("four slices offered to the pencil are warned about before Run",
+          len(wrong_shape["warnings"]) == 1 and
+          "4 slices" in wrong_shape["warnings"][0] and
+          "decide-rank" in wrong_shape["warnings"][0])
+    two = {"text": repository.fixture_text("pencil_split_f3_3.tensor"),
+           "name": "pencil_split_f3_3.tensor", "fixture": "pencil_split_f3_3.tensor"}
+    _, right_shape = ask(port, "POST", "/api/preview",
+                         {"tool": "decide-rank-by-pencil", "options": {},
+                          "wall_clock_seconds": 120, "input": two})
+    check("and two slices are not", right_shape["warnings"] == [])
+    _, other_tool = ask(port, "POST", "/api/preview",
+                        {"tool": "decide-rank", "options": {},
+                         "wall_clock_seconds": 120, "input": four})
+    check("and a tool with no shape limit is never warned about one",
+          other_tool["warnings"] == [])
+
     print("\nrefusals, before anything is started")
     status, why = ask(port, "POST", "/api/runs",
                       {"tool": "decide-rank", "options": {"--nonsense": "1"},
