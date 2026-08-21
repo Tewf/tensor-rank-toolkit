@@ -1,9 +1,11 @@
 #include "level_lowering_moves.h"
 
+#include <limits>
 #include <set>
 
 #include "candidate_pool.h"
 #include "matrix.h"
+#include "memory_budget.h"
 #include "row_space_coordinates.h"
 #include "span_basis.h"
 #include "span_enumeration.h"
@@ -16,10 +18,29 @@ namespace {
 /// which is the order [`coefficient_vector`](../descent_search/span_enumeration.h)
 /// already fixes for spans. Used for `b`, which is not normalised: `bᵀa = 1`
 /// pins the scalar that `a`'s normalisation leaves free.
+///
+/// **`p^length` is priced, because `--summand-rank` reaches it.** `length` is the
+/// rank of the element being split, which `level_lowering_moves` bounds by the
+/// cutoff that flag sets, and the flag takes any count. At `--summand-rank 34`
+/// over GF(2) this asked for 17 billion vectors and the run was killed; now it is
+/// refused with the number. The count is accumulated with its overflow checked,
+/// since a wrapped `p^length` reserves a plausible figure and then fills it to
+/// the real end.
 std::vector<std::vector<int64_t>> every_vector(const Field& field, std::size_t length) {
     const auto characteristic = static_cast<std::size_t>(field.characteristic());
+    const std::size_t how_many = std::numeric_limits<std::size_t>::max();
     std::size_t count = 1;
-    for (std::size_t position = 0; position < length; ++position) count *= characteristic;
+    for (std::size_t position = 0; position < length; ++position) {
+        if (count > how_many / characteristic) {
+            require_room("the vectors of GF(" + std::to_string(characteristic) + ")^" +
+                             std::to_string(length) + " a level-lowering summand needs",
+                         how_many, sizeof(int64_t) * length);
+        }
+        count *= characteristic;
+    }
+    require_room("the vectors of GF(" + std::to_string(characteristic) + ")^" +
+                     std::to_string(length) + " a level-lowering summand needs",
+                 count, sizeof(std::vector<int64_t>) + sizeof(int64_t) * length);
 
     std::vector<std::vector<int64_t>> vectors;
     vectors.reserve(count);
