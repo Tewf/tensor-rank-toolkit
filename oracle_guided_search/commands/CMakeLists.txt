@@ -13,10 +13,6 @@ add_executable(enumerate-subspaces enumerate_subspaces_main.cpp)
 target_link_libraries(enumerate-subspaces PRIVATE oracle_guided_search cli formats
                                                   project_warnings)
 
-# The prices `canonical_route_price.h` decides from, measured rather than guessed.
-# It ships beside the predicate for the same reason `measure-leaf` ships beside
-# `device_launch_floor`: a constant whose measurement cannot be repeated is a
-# constant nobody can move when the machine changes.
-add_executable(price-canonical-route price_canonical_route_main.cpp)
-target_link_libraries(price-canonical-route PRIVATE oracle_guided_search cli formats
-                                                    project_warnings)
+# `price-canonical-route` was here and is not a command: its output is
+# nanoseconds. It is built one directory up, beside the predicate it prices,
+# where `measure-leaf` already sits relative to `device_launch_floor`.

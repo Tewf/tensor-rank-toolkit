@@ -89,6 +89,17 @@ against the CPU's before a single second is reported. Five rules, one per way
 this goes wrong, in
 [`gpu_leaf/measuring-on-the-card.md`](gpu_leaf/measuring-on-the-card.md).
 
+## The instruments, which are not tools
+
+Two binaries print seconds rather than a fact about a map: `measure-leaf`, which
+moves `device_launch_floor`, and `price-canonical-route`, which moves
+`CanonicalPrices` and with it whether `--route canonical` pays. **Both are built
+outside their strand's `commands/`**, so the line this file draws between a count
+and a timing is structural rather than a sentence to remember. Neither is in
+[`OPTIONS.md`](OPTIONS.md) or offered by the console;
+[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md)
+argues the split.
+
 ## One run at a time
 
 Two measurements sharing a machine measure each other. Nothing else may be
