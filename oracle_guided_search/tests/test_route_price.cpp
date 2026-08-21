@@ -84,7 +84,7 @@ int main() {
 
     // **Every one of the ten, since the one-level clause stopped pricing a root as
     // though it were a tree.** It used to be nine, with `<3,3,3>` at 10 named
-    // rather than modelled: canonical augmentation wins there by 2.07x with a node
+    // rather than modelled: canonical augmentation wins there by 2.15x with a node
     // saving of exactly nothing, and the margin is in how each route names its
     // root's children. `least_in_orbit` costs `O(sum |O_i|^2)` and
     // `orbit_representatives` costs `O(|P|)` for the identical answer, which is a
