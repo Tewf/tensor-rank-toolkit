@@ -89,6 +89,7 @@ refuses 2 "only one file is read" \
 echo "--help prints the usage and leaves as 2, on every command"
 for relative in \
     descent_search/minimise-rank \
+    descent_search/operators-to-tensor \
     exhaustive_search/decide-rank \
     flip_graph/walk-scheme \
     map_construction/make-tensor \

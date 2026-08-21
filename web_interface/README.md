@@ -40,11 +40,14 @@ found, proved impossible, and a budget that ran out.
    file, or build one with `make-tensor`. The format is the one that already
    exists, `formats/tensor_file.h`, and nothing new was invented. The fixtures
    the chosen tool cannot read are greyed rather than hidden.
-2. **The question.** Every tool but `make-tensor`, which fills the pane above
-   instead, each stating what it asks. Which tools those are is checked against
-   the build rather than counted, so one shipping without reaching this console
-   is a failing check and not a quiet omission. The flags are those of
-   `OPTIONS.md`, each carrying the note that says what it costs.
+2. **The question.** Every tool but two, each stating what it asks.
+   `make-tensor` fills the pane above instead, and `operators-to-tensor` is not
+   here at all because it reads three files at once and this console offers one.
+   Which tools those are is checked against the build rather than counted, so one
+   shipping without reaching this console is a failing check and not a quiet
+   omission, and the two exceptions are named with their reasons in that check.
+   The flags are those of `OPTIONS.md`, each carrying the note that says what it
+   costs.
 3. **The command.** Shown before you run it and again beside the answer, as a
    line you can retype at a terminal, with a button that copies it. Anything
    worth knowing before you press Run is said underneath it.

@@ -276,6 +276,13 @@ NOT_TOOLS = {
     # Retired into `curve-bounds --solvers`. It prints the line to type and
     # leaves as 2, so offering it here would offer a refusal.
     "integer_programme/list-solvers",
+    # A tool, and on the list in OPTIONS/one-question-per-command.md, but it
+    # reads three files at once and this console offers one: `repository.py`
+    # hands a tool a single fixture name and `workspace.py` writes a single
+    # typed map. Offering it with two of its three operands missing would be
+    # worse than not offering it. A limit of the console, named here so that it
+    # is a decision rather than a drift.
+    "descent_search/operators-to-tensor",
 }
 
 
