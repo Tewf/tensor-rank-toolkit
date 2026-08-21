@@ -10,12 +10,13 @@ The expensive direction, and what it proves. What the descent reaches is in
 | F2 2×3 | **exactly 5** | a 2×3 product: five instead of six |
 | GF(4) over GF(2) | **exactly 3** | classical |
 | GF(8) over GF(2) | **exactly 6** | classical |
-| F2 5×5 | **13 ≤ rank ≤ 14** here, and **13** in the literature | 9 to 12 ruled out exhaustively here; 14 reached by the heuristic; 13 is `[bdez2012]`'s |
+| F2 5×5 | **exactly 13**, both sides here | 9 to 12 ruled out exhaustively here; 13 exhibited by [`lower-the-bound`](../incumbent_search/README.md) in 80 nodes. `[bdez2012]` report the same 13 |
 
-This library narrows 5×5 from both sides without closing it: the exhaustive search
-rules out 12 products, which puts the rank at 13 or more, and the heuristic
-exhibits 14. **Ruling out 13 has not been run**, and it is the one that would
-close the map here.
+This library closes 5×5 from both sides: the exhaustive search rules out 12
+products, which puts the rank at 13 or more, and the incumbent search exhibits 13.
+It was `13 ≤ rank ≤ 14` until 2026-08-21, the descent reaching only 14 and the 13
+being `[bdez2012]`'s. **Nothing on this page moved**; what closed the map is a
+construction, which this search cannot make and does not have to.
 
 **Ruling out 12 has now been run**, 2026-08-19, on a quiet machine:
 `decide-rank fixtures/f2_5x5.tensor --target 12 --node-limit 300000000 --threads 6`

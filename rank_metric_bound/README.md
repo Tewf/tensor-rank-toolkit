@@ -29,7 +29,8 @@ a bound.
 returns **12 where `rank_lower_bound` returns 10**, in under half a millisecond.
 That did not move the repository's bracket, which was already `12 <= rank <= 14`.
 It moved the *cheap* floor onto that 12, which until then came from an exhaustive
-refutation at `--target 11`. **The bracket has since become `13 <= rank <= 14`**,
-by exhausting `--target 12`, so the cheap floor no longer reaches it and the gap
-this closed has reopened one higher. The reading is in
+refutation at `--target 11`. **The bracket has since closed at 13**, the floor by
+exhausting `--target 12` and the ceiling by
+[`lower-the-bound`](../incumbent_search/README.md), so the cheap floor no longer
+reaches the exhaustive one and the gap this closed has reopened one higher. The reading is in
 [`what-each-is-worth.md`](what-each-is-worth.md).

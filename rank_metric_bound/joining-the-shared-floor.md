@@ -42,5 +42,6 @@ reproduces. `f2_5x5` is the only fixture whose floor changes, and no other file
 publishes a floor for it: the `12 <= rank <= 14` in `satisfiability/results.json`,
 `descent_search/known_ranks.md` and `state-of-the-art/where-we-stand.md` is the
 exhaustive search's bracket, which this reaches rather than improves. That
-bracket is `13 <= rank <= 14` since `--target 12` was exhausted, and all three
-files say so; the sentence above is what was true when the floor moved.
+bracket was `13 <= rank <= 14` once `--target 12` was exhausted and is `13` since
+[`lower-the-bound`](../incumbent_search/README.md) exhibited one; the sentence
+above is what was true when the floor moved.
