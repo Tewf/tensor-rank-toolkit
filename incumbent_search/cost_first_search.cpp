@@ -40,6 +40,15 @@ struct Ascent {
     IncumbentReport report;
     std::vector<Matrix> best;
 
+    /// The incumbent the bound reads, which is the cheapest cost reached except
+    /// where `--below` handed one over that nothing has reached.
+    ///
+    /// It is held apart from `report.best` so that the report stays a statement
+    /// about what was built. Seeding `report.best` with `below + 1` directly
+    /// would cut the same branches and then print a cost for an algorithm the
+    /// run does not hold.
+    std::size_t ceiling = 0;
+
     /// One child, kept only until its parent has sorted them.
     struct Child {
         std::size_t cost;
@@ -53,12 +62,20 @@ struct Ascent {
             best = basis;
             ++report.improvements;
         }
+        ceiling = std::min(ceiling, cost);
         report.deepest = std::max(report.deepest, depth);
+
+        // What `--below` asked for, reached. Nothing under this node can be
+        // asked for as well, and nothing above it: the run is over.
+        if (limits.below != 0 && cost <= limits.below) {
+            report.reached_below = true;
+            return;
+        }
 
         // The bound, and the whole of it. Every `W` strictly above this node has
         // `dim W >= basis.size() + 1` and `cost(W) >= dim W`, so nothing below
         // can come in under an incumbent that low.
-        if (basis.size() + 1 >= report.best) {
+        if (basis.size() + 1 >= ceiling) {
             ++report.bounded;
             return;
         }
@@ -101,7 +118,7 @@ struct Ascent {
             limits.width == 0 ? children.size() : std::min(limits.width, children.size());
         for (std::size_t index = 0; index < entered; ++index) {
             visit(children[index].basis, depth + 1);
-            if (!report.exhausted) return;
+            if (!report.exhausted || report.reached_below) return;
         }
     }
 };
@@ -116,8 +133,14 @@ std::vector<Matrix> search_from_above(const Field& field, const std::vector<Matr
     // would make it read high and cut branches that were never bounded.
     const std::vector<Matrix> root = minimum_weight_basis(field, start);
 
-    Ascent ascent{field, pool, limits, {}, root};
+    Ascent ascent{field, pool, limits, {}, root, 0};
     ascent.report.best = linear_algebra::multiplication_count(field, root);
+    // The incumbent the bound reads, which `--below` may set below anything
+    // built. `below + 1` and not `below`, because the question is "at `below` or
+    // better" and a subspace of dimension `below` may still cost exactly that.
+    ascent.ceiling = limits.below == 0
+                         ? ascent.report.best
+                         : std::min(ascent.report.best, limits.below + 1);
     ascent.visit(root, 0);
 
     if (report != nullptr) *report = ascent.report;

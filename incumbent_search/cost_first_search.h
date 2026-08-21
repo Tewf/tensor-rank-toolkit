@@ -70,6 +70,25 @@ struct IncumbentLimits {
     /// moves. Complete where the generated set is a restriction, and priced at
     /// `|pool|` minimum-weight bases a node against a few hundred.
     bool whole_pool = false;
+
+    /// Only look for something costing `below` or less, and stop the moment one
+    /// is reached. Zero asks the ordinary question, "how cheap can this get".
+    ///
+    /// **It is the incumbent and not a second mechanism.** The bound already
+    /// reads an incumbent, so a caller who cares about nothing above `k` is a
+    /// caller handing over `k + 1` as one: `dim V + 1 >= k + 1` cuts at
+    /// dimension `k` immediately, and the tree below that is never entered. It
+    /// is the same lever [`what-it-reaches.md`](what-it-reaches.md) prices for
+    /// `--from descent` against `--from basis`, pushed the other way — a tighter
+    /// incumbent is a shorter tree — and pushed past anything the search has
+    /// actually built.
+    ///
+    /// **A run that does not reach `k` has refuted nothing.** The whole file can
+    /// only find, and a tree cut by a number nobody has built is cut by a
+    /// hypothesis rather than by an algorithm, so the run says which of the two
+    /// happened and never turns the second into a bound.
+    /// [`IncumbentReport::reached_below`](#) is that answer.
+    std::size_t below = 0;
 };
 
 /// What the search spent, and what it found. Counts, not seconds: they are exact
@@ -84,6 +103,12 @@ struct IncumbentReport {
     std::size_t deepest = 0;       ///< adjunctions on the longest path entered
     std::size_t best = 0;          ///< the cheapest cost reached
     bool exhausted = true;         ///< false once the node budget stopped it
+
+    /// True once `IncumbentLimits::below` was met, which is what stopped the
+    /// run. False after a `--below` run means the tree or the budget ran out
+    /// first, and **that is not a refutation of anything**: the branches this
+    /// setting cuts were cut by a number nobody built.
+    bool reached_below = false;
 };
 
 /// Search upward from `start`, which must span what the answer has to span.
