@@ -20,7 +20,13 @@ the floor:
 | `exhaustive` | 6 generators, the stabiliser | 3815 | **0.0102 s** |
 | `canonical`, as first wired | 216 elements, enumerated | 1057 | 24.62 s |
 | `canonical`, with an early exit | 216 elements | 235 | 2.76 s |
-| `canonical`, from generators | 6 generators | **72** | **0.263 s** |
+| `canonical`, from generators | 6 generators | **72** | 0.263 s |
+| `canonical`, one pool pass a node | 6 generators | **72** | **0.0458 s** |
+
+The last row is [`../oracle_guided_search/pool_cosets.h`](../oracle_guided_search/pool_cosets.h),
+and the plain route moved under it too: 0.0102 s to 0.00742 s on the same sweep,
+because the two rows were not measured on the same afternoon. **The ratio that
+stands today is 6.2x against, from 25.8x.**
 
 The early exit was the first 9x. The enumerator was written to *count* solution
 subspaces, so it finishes every level; a rank search only asks whether the level
@@ -59,10 +65,10 @@ and the entry fee stopped being a term in any account of this route. What the tw
 levels cost apart is unchanged and is the real content of the paragraph above.
 
 So the honest account has no single per-node number in it. **What survives is the
-ratio this page already measured: 0.263 s against 0.0102 s, 25.8x**, and the node
-saving of 53x that fails to pay for it. The "299x a node" that used to appear
-here was the target-6 rate against a plain node, quoted as if it were the whole
-sweep's.
+ratio: 0.263 s against 0.0102 s when this paragraph was written, 25.8x, and
+0.0458 s against 0.00742 s now, 6.2x**, against a node saving of 53x that still
+fails to pay for it. The "299x a node" that used to appear here was the target-6
+rate against a plain node, quoted as if it were the whole sweep's.
 
 **The gap widened while both halves improved.** This route is 10.5x faster than
 the file used to record and lost anyway, because the packed GF(2) leaf made a
@@ -81,15 +87,16 @@ Three results from it bear on this page. The node saving is **nothing at all** a
 one level of augmentation, because the baseline's generator rejection has already
 taken that quotient. It is 11x to 212x at two, which is 0.017% to 5% of `|G|` and
 nowhere near the orbit-counting bound. And at `⟨3,3,3⟩` the canonical route is
-**1.33x faster** with both routes visiting the same 14 nodes, so its first win here
+**2.17x faster** with both routes visiting the same 14 nodes, so its first win here
 is not a node saving at all but one orbit computation replacing 261 121
 per-element generator tests.
 
-What decides the rest is a pool scan and not the group: seven to fourteen of them
-per canonical node, 98% of the cost at `⟨2,3,3⟩`, where the setwise stabiliser is
-1.0% and the canonical image 1.1%. The 18x this page credits the packed GF(2) leaf
-with is still sitting on the table for the parent test, which walks the pool
-through the general path.
+What decided the rest was a pool scan and not the group: seven to fourteen of them
+per canonical node, 98% of the cost at `⟨2,3,3⟩`, where the setwise stabiliser was
+1.0% and the canonical image 1.1%. Most of those were one per candidate child, and
+`pool_cosets.h` replaced the lot with one pass a node — 98.0 s to 13.1 s at
+`⟨2,3,3⟩`, with every node count unchanged. The 18x this page credits the packed
+GF(2) leaf with is still sitting on the table for the pass that is left.
 
 So it ships behind a flag, never by default, with a slow test asserting it still
 reaches 7, still engages rather than falling back, and still visits strictly
