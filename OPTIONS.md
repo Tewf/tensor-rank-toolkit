@@ -10,7 +10,7 @@ Timings quoted here were taken under [`MEASURING.md`](MEASURING.md), whose
 **13% noise floor** applies to all of them. Two timings inside that band are not
 distinguishable and are not reported here as a ratio.
 
-**`--help` is the one flag all twelve share.** It prints the usage and leaves as
+**`--help` is the one flag all thirteen share.** It prints the usage and leaves as
 **exit 2**: a line asking for help asked no question, and `cli/exit_code.h` has
 one code for a line that did not parse. It is not repeated in the tables below.
 
@@ -73,7 +73,7 @@ against the built command rather than against the parser.
 
 ## The tables, one page per question
 
-- [Searching for rank](OPTIONS/searching-for-rank.md): `minimise-rank`,
+- [Searching for rank](OPTIONS/searching-for-rank.md): `minimise-rank`, `lower-the-bound`,
   `decide-rank`, `walk-scheme`
 - [Asking a SAT solver](OPTIONS/asking-a-sat-solver.md): `decide-rank-by-sat`
 - [Committing to candidates](OPTIONS/committing-to-candidates.md):
