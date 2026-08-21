@@ -114,9 +114,18 @@ bool is_distinguished_cell(const PoolSetCanon& canon, const std::vector<std::siz
 /// `canon` replaces the walk. Built once for the whole enumeration, because its
 /// presentation of the group costs more than one test does and every test wants
 /// the same one.
+///
+/// **`inside` is handed in rather than scanned for, and `added` is a pool index
+/// rather than a matrix.** Both were the same mistake: this function used to open
+/// with `pool_inside(field, pool, child)`, a whole pool scan, and then walk that
+/// list comparing single-element codes to find where `added` sat in it. The caller
+/// knows both — it chose `added` by index and
+/// [`pool_cosets.h`](pool_cosets.h) gives it every child's content from one scan a
+/// node. Measured, that scan was 98% of a node's cost at `<2,3,3>`.
 ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matrix>& base,
                                     const std::vector<Matrix>& child,
-                                    const SubspaceCode& parent_code, const Matrix& added,
+                                    const SubspaceCode& parent_code, std::size_t added,
+                                    const std::vector<std::size_t>& inside,
                                     const std::vector<Matrix>& pool,
                                     const PoolSetCanon& canon);
 

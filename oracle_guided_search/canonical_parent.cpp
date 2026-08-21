@@ -81,11 +81,11 @@ bool is_distinguished_cell(const PoolSetCanon& canon, const std::vector<std::siz
 
 ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matrix>& base,
                                     const std::vector<Matrix>& child,
-                                    const SubspaceCode& parent_code, const Matrix& added,
+                                    const SubspaceCode& parent_code, std::size_t added,
+                                    const std::vector<std::size_t>& inside,
                                     const std::vector<Matrix>& pool,
                                     const PoolSetCanon& canon) {
     ParentTest test;
-    const std::vector<std::size_t> inside = pool_inside(field, pool, child);
     const std::vector<Matrix> chosen(child.begin() + base.size(), child.end());
     const std::vector<CandidateParent> parents =
         candidate_parents(field, base, chosen, pool, inside);
@@ -122,19 +122,13 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
     // set's least point and that point is the key's first entry, so the other
     // cells' keys were a minimum whose value was already in hand.
     // `is_distinguished_cell` sets the argument out in full.
-    const SubspaceCode added_code = subspace_code(field, {added});
-
-    std::size_t marked = 0;
-    bool added_seen = false;
-    for (const std::size_t index : inside) {
-        if (subspace_code(field, {pool[index]}) != added_code) continue;
-        marked = index;
-        added_seen = true;
-    }
-    if (!added_seen) return test;
-
+    //
+    // `added` is the mark, directly. It used to be found by scanning `inside` for
+    // the element whose single-map code matched, which is a search for something
+    // the caller had just chosen by index: `all_rank_one_maps` holds each rank-one
+    // map once, so exactly one index could ever match and it is this one.
     ++test.canonisations;
-    test.accepted = is_distinguished_cell(canon, inside, marked);
+    test.accepted = is_distinguished_cell(canon, inside, added);
     return test;
 }
 

@@ -33,21 +33,24 @@ struct Observation {
 };
 
 /// Measured 2026-08-21 on the reference machine, `factor-over-canonical-basis
-/// --route exhaustive|canonical --floor t --ceiling t`, the lock held. The machine
-/// was **not** idle — `/proc/loadavg` ran 1.2 to 2.6 — so the absolute seconds are
-/// over-estimates. Both routes of a row ran back to back against the same
-/// background, so the ratio within a row is what these are evidence of.
+/// --route exhaustive|canonical --floor t --ceiling t`, the lock held, **after**
+/// `pool_cosets.h` removed the per-child pool scan. The machine was **not** idle —
+/// `/proc/loadavg` ran 1.2 to 4.4 — so the absolute seconds are over-estimates.
+/// Both routes of a row ran back to back against the same background, so the ratio
+/// within a row is what these are evidence of. Every node and canonisation count
+/// is unchanged from before that removal, which is how it is known that nothing
+/// about the answer moved.
 const Observation observations[] = {
-    {"<2,2,2> at 5", {2, 2, 2, 2, 5, 6}, 6, 6, 10, 0.000203193, 0.000557479},
-    {"<2,2,2> at 6", {2, 2, 2, 2, 6, 6}, 648, 58, 784, 0.00142795, 0.0164453},
-    {"<2,2,2> at 7", {2, 2, 2, 2, 7, 6}, 3167, 14, 2146, 0.00594943, 0.0427039},
-    {"<2,2,3> at 7", {2, 2, 2, 3, 7, 6}, 6, 6, 10, 0.000909333, 0.0025114},
-    {"<2,2,3> at 8", {2, 2, 2, 3, 8, 6}, 2748, 85, 1092, 0.00789853, 0.0926958},
-    {"<2,2,4> at 9", {2, 2, 2, 4, 9, 6}, 6, 6, 10, 0.00715115, 0.0128771},
-    {"<2,2,4> at 10", {2, 2, 2, 4, 10, 6}, 11130, 92, 1125, 0.0778568, 0.500045},
-    {"<2,3,3> at 7", {2, 2, 3, 3, 7, 6}, 11, 11, 20, 0.105456, 0.197995},
-    {"<2,3,3> at 8", {2, 2, 3, 3, 8, 6}, 229870, 1083, 25664, 0.847374, 98.0218},
-    {"<3,3,3> at 10", {2, 3, 3, 3, 10, 6}, 14, 14, 26, 4.91855, 3.69509},
+    {"<2,2,2> at 5", {2, 2, 2, 2, 5, 6}, 6, 6, 10, 0.000286278, 0.000704712},
+    {"<2,2,2> at 6", {2, 2, 2, 2, 6, 6}, 648, 58, 784, 0.00119227, 0.0112401},
+    {"<2,2,2> at 7", {2, 2, 2, 2, 7, 6}, 3167, 14, 2146, 0.00638669, 0.0358991},
+    {"<2,2,3> at 7", {2, 2, 2, 3, 7, 6}, 6, 6, 10, 0.000905064, 0.0019352},
+    {"<2,2,3> at 8", {2, 2, 2, 3, 8, 6}, 2748, 85, 1092, 0.00850385, 0.0442532},
+    {"<2,2,4> at 9", {2, 2, 2, 4, 9, 6}, 6, 6, 10, 0.00554831, 0.00977788},
+    {"<2,2,4> at 10", {2, 2, 2, 4, 10, 6}, 11130, 92, 1125, 0.0807891, 0.164078},
+    {"<2,3,3> at 7", {2, 2, 3, 3, 7, 6}, 11, 11, 20, 0.10357, 0.130268},
+    {"<2,3,3> at 8", {2, 2, 3, 3, 8, 6}, 229870, 1083, 25664, 0.845986, 13.1204},
+    {"<3,3,3> at 10", {2, 3, 3, 3, 10, 6}, 14, 14, 26, 5.23285, 2.41062},
 };
 
 /// Whether two numbers are within a factor, which is the only claim a model with a
@@ -70,11 +73,12 @@ int main() {
     const bilinear_rank::CanonicalPrices prices;
 
     // Nine of the ten verdicts, and the tenth named rather than fitted. `<3,3,3>`
-    // at 10 is the one row where canonical augmentation wins, and it wins with a
-    // saving of exactly nothing: both routes visit 14 nodes. The win is one
-    // `orbit_representatives` call replacing 261 121 per-element generator tests,
-    // which is a mechanism this model does not carry, and bending a constant until
-    // one row flipped would have hidden that rather than found it.
+    // at 10 is the one row where canonical augmentation wins — 2.17x — and it wins
+    // with a node saving of exactly nothing: both routes visit 14 nodes. The margin
+    // is in how each route picks a node's children, one `orbit_representatives`
+    // call against a per-element test over 261 121 pool elements, and that is a
+    // mechanism this model does not carry. Bending a constant until the row flipped
+    // would have hidden it rather than found it.
     std::cout << "the verdict, against which route actually finished first\n";
     std::size_t misses = 0;
     for (const Observation& seen : observations) {
@@ -97,7 +101,7 @@ int main() {
         const bilinear_rank::RouteVerdict verdict =
             bilinear_rank::price_canonical_route(seen.shape, prices);
         within(std::string(seen.name) + " canonical over plain", verdict.predicted_cost,
-               seen.canonical / seen.plain, 20);
+               seen.canonical / seen.plain, 15);
     }
 
     // The correction this model exists to carry. Orbit counting bounds the saving
@@ -114,7 +118,7 @@ int main() {
         const bool measured_pays = seen.canonical < seen.plain;
         if ((uncorrected < 1) != measured_pays) ++disagreements;
     }
-    check::equal("rows the |G| cap gets wrong", static_cast<long long>(disagreements), 7);
+    check::equal("rows the |G| cap gets wrong", static_cast<long long>(disagreements), 8);
 
     // `rho` is 1 at one level of augmentation, whatever the group, because the
     // baseline's single-generator rejection already produced one node per orbit.
