@@ -132,7 +132,7 @@ CARRIED = (
      "not a count but a note: the scan was stopped at 45 minutes against a projected 4.2 "
      "hours. Steps 1 and 2 are re-derived, and cost 0.05 s."),
     ("descent_search/results.json", "f2_5x5", "ruling out 12 products",
-     "146 402 553 nodes, NO and exhaustive, which is the floor of `13 <= rank <= 14` and "
+     "146 402 553 nodes, NO and exhaustive, which is the floor of `rank(f2_5x5) = 13` and "
      "this repository's own rather than `[bdez2012]`'s. It ran once, on 2026-08-19, in "
      "535.59 s on six cores. That is 273 000 nodes a second across them, so one core is "
      "the better part of an hour by arithmetic rather than by measurement, against CI's 35 "

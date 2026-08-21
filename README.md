@@ -20,12 +20,13 @@ claimed to be: [`MEASURING.md`](MEASURING.md) has the protocol,
 
 ## What it computes
 
-Nine strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
+Ten strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
 
 | Strand | Asks | Headline |
 |---|---|---|
 | [descent](descent_search/) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
 | [exhaustion](exhaustive_search/) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
+| [incumbent](incumbent_search/) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
 | [pencils](pencil_rank/) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
 | [factorisation](canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
@@ -60,10 +61,10 @@ sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 
 ## What is where
 
-Twelve modules and twelve tools, in [`what-is-where.md`](what-is-where.md), with
-which tool answers which question. Every flag, its default, the measurement that
-chose it and the recipes people actually type: [`OPTIONS.md`](OPTIONS.md). Any of
-the twelve can be driven from a browser instead, on Python 3's standard library
+Thirteen modules and thirteen tools, in [`what-is-where.md`](what-is-where.md),
+with which tool answers which question. Every flag, its default, the measurement
+that chose it and the recipes people actually type: [`OPTIONS.md`](OPTIONS.md).
+Twelve of the thirteen can be driven from a browser instead, on Python 3's standard library
 and nothing else: [`web_interface/`](web_interface/). Every paper any of it
 implements is named once, in [`references.md`](references.md), by the key the
 code cites.

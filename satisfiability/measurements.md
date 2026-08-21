@@ -54,8 +54,9 @@ this repository's worst way: it gave the exhaustive column "146 402 553 nodes,
 column was an extrapolation from `descent_search/method/`, where k=12 is priced
 at `C(961,3)` and about seven hours and is labelled extrapolated, and it arrived
 here as a time and a node count in a table headed "Measured". What this repository
-proves by itself is **13 ≤ rank ≤ 14**, with 14 reached by the heuristic and 12
-refused. Eleven went first: an exhaustion of 459 239 nodes and 77 s until
+proves by itself is **rank = 13**, with 12 refused here and 13 exhibited by
+[`../incumbent_search/`](../incumbent_search/README.md); it was 13 ≤ rank ≤ 14
+until 2026-08-21, the heuristic reaching only 14. Eleven went first: an exhaustion of 459 239 nodes and 77 s until
 2026-08-19, when the Griesmer floor moved this map to 12 and returned that
 refusal in milliseconds. Twelve then went by exhaustion, 146 402 553 nodes. The
 solver had 700 s on 12, returned unknown, and wrote no proof, which is the
