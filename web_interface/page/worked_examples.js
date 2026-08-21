@@ -1,10 +1,11 @@
 /* The six starters, and what pressing one does.
 
-   A starter fills the three panels below it — the map, the tool, its flags —
+   A starter fills the panes behind the drawer — the map, the tool, its flags —
    and then stops. It does not run anything. That is deliberate: the point of
    this console is that a command is shown before it is run, and a button that
    skipped straight to an answer would teach the opposite of what the interface
-   is for. So the line appears in panel 4 and Run is one more press. */
+   is for. So the drawer closes onto the filled-in command, and Run is one more
+   press. */
 
 function renderExamples() {
   const holder = $("examples");
@@ -31,5 +32,5 @@ async function fillFrom(example) {
   Object.assign(state.chosen, example.options);
   renderOptions();
   preview();
-  $("run-panel").scrollIntoView({behavior: "smooth", block: "nearest"});
+  $("starters").close();
 }
