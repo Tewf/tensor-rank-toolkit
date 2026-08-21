@@ -1,6 +1,8 @@
 #include "minimum_weight_basis.h"
 
 #include <algorithm>
+#include <stdexcept>
+#include <string>
 
 #include "device.h"
 #include "gf2_bits.h"
@@ -14,10 +16,11 @@
 namespace bilinear_rank {
 
 std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vector<Matrix>& slices,
-                               const Matrix& candidate, const std::vector<std::size_t>& known) {
+                               const Matrix& candidate, const std::vector<std::size_t>& known,
+                               std::size_t* cost) {
     std::vector<Matrix> enlarged = slices;
     enlarged.push_back(candidate);
-    return minimum_weight_basis(field, enlarged, known);
+    return minimum_weight_basis(field, enlarged, known, cost);
 }
 
 namespace {
@@ -91,6 +94,82 @@ class SpanElements {
     std::size_t index_ = 0;
 };
 
+/// The largest rank the answer is allowed to hold, from the slices alone.
+///
+/// The greedy basis is not merely cheapest in total: sorted by rank it is
+/// **dominated position by position** by every other basis. For each `t` the
+/// number of its elements of rank at most `t` is the dimension of the span of
+/// everything in the span that cheap, `[oxley, Lem. 1.8.3]`, and no independent
+/// set can hold more members that cheap than that dimension. So the `i`-th
+/// cheapest element of the answer is no dearer than the `i`-th cheapest of any
+/// other basis, and in particular its **dearest** element is no dearer than the
+/// dearest element of any basis drawn from `slices` themselves — of which there
+/// is one, since a spanning set contains a basis.
+///
+/// That is the whole licence for the three lines in the walk below that drop an
+/// element instead of ranking it. An element above this ceiling cannot enter the
+/// answer, and one that cannot enter the answer cannot change it either: the
+/// greedy stops the moment the basis fills, so it never reaches past the dearest
+/// element it took.
+///
+/// It costs one rank per slice and saves one per span element above it. On
+/// `cyclic_f2_7` that is 12 ranks a call to skip 1 856 of them.
+std::size_t highest_rank_the_answer_can_hold(const Field& field,
+                                             const std::vector<Matrix>& slices) {
+    std::size_t ceiling = 0;
+    for (const Matrix& slice : slices) {
+        ceiling = std::max(ceiling, linear_algebra::rank(field, slice));
+    }
+    return ceiling;
+}
+
+/// A floor under the rank of a span element nobody has ranked yet.
+///
+/// The elements this is asked about are the ones `ranks_without_last` does not
+/// cover: those whose coefficient `c` on the last slice `g` is not zero. Such an
+/// element is `v + c·g`, where `v` is the element of the span without `g` at
+/// `index % p^k` and its rank is already held. Rank is subadditive and
+/// `rank(c·g) == rank(g)` for every `c != 0`, so
+///
+///     rank(v + c·g) >= rank(v) - rank(g)   and   rank(v + c·g) >= rank(g) - rank(v),
+///
+/// which together are `|rank(v) - rank(g)|`: one subtraction against the
+/// Gaussian elimination the true rank costs.
+///
+/// **Zero, and not one, is the floor where the two ranks agree.** `v + c·g` can
+/// be the zero matrix, whose rank is zero, and a floor above a true rank is
+/// exactly what would make dropping an element unsound.
+struct RankFloor {
+    /// The ranks of the span without the last slice, read by index.
+    const std::vector<std::size_t>& known;
+    /// `p^k`, or zero where there is nothing to read and no floor to give.
+    std::size_t period = 0;
+    /// The rank of the slice the last coefficient multiplies.
+    std::size_t added = 0;
+
+    std::size_t under(std::size_t index) const {
+        if (period == 0) return 0;
+        const std::size_t held = known[index % period];
+        return held > added ? held - added : added - held;
+    }
+};
+
+/// The floor, where the ranks handed over really are the span without the last
+/// slice.
+///
+/// A caller may hand over any prefix it likes and the walk believes it only for
+/// the indices it covers, so a vector of another length reads here as "no floor"
+/// rather than as an error. The one rank this costs is paid once a call.
+RankFloor floor_under_the_unranked(const Field& field, const std::vector<Matrix>& slices,
+                                   const std::vector<std::size_t>& ranks_without_last) {
+    if (slices.empty() || ranks_without_last.empty()) return {ranks_without_last};
+    if (ranks_without_last.size() != span_size(field, slices.size() - 1)) {
+        return {ranks_without_last};
+    }
+    return {ranks_without_last, ranks_without_last.size(),
+            linear_algebra::rank(field, slices.back())};
+}
+
 /// The same ranks from a card, or false and nothing written.
 ///
 /// **Five reasons to decline, and none of them is a failure.** No backend was
@@ -156,13 +235,14 @@ std::vector<std::size_t> span_element_ranks(const Field& field,
 }
 
 std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
-                                   const std::vector<std::size_t>& ranks_without_last) {
+                                   const std::vector<std::size_t>& ranks_without_last,
+                                   std::size_t* cost) {
     const std::size_t width = linear_algebra::flattened_width<Field>(slices);
     const std::size_t dimension = linear_algebra::span_of(field, slices).dimension();
     const std::size_t combinations = span_size(field, slices.size());
 
-    // Every element of the span, cheapest first. Index 0 is the zero
-    // combination and is skipped: it can never enter a basis.
+    // The elements of the span that could enter a basis, cheapest first. Index 0
+    // is the zero combination and is skipped: it can never enter one.
     //
     // Only the rank and the index are held. The element itself is rebuilt from
     // its index by `linear_combination` when the greedy actually reaches it, which is at
@@ -173,11 +253,15 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
         std::size_t rank;
         std::size_t index;
     };
+    // The whole span, and not what the walk keeps: this is the budget the
+    // enumeration is allowed to ask for, and a run refused before is refused
+    // still. Nothing is reserved against it, because the ceiling below leaves a
+    // fraction of the span standing and the reserve would be the largest
+    // allocation in the function for room it never fills.
     require_room("the span of " + std::to_string(slices.size()) + " slices",
                  combinations - 1, sizeof(Candidate));
 
     std::vector<Candidate> candidates;
-    candidates.reserve(combinations - 1);
     // The same Gray walk `span_element_ranks` takes, for the same saving: the
     // element is one slice away from the one before it rather than `k`
     // multiply-accumulates away from its own index. The walk starts on the
@@ -189,14 +273,27 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
     // is the whole of that optimisation; they are stepped over rather than
     // skipped, because the walk is what carries the element to the ones that
     // are. One pass over the entries against the `k` the rebuild cost.
+    //
+    // **What the ceiling drops, it drops for good**, and that is what makes it
+    // free rather than a trade: an element the answer cannot hold changes
+    // neither the basis nor its cost, so it need not be ranked, sorted or
+    // rebuilt. The floor decides that for the unranked half without looking at
+    // the matrix at all.
+    const std::size_t ceiling = highest_rank_the_answer_can_hold(field, slices);
+    const RankFloor floor = floor_under_the_unranked(field, slices, ranks_without_last);
+
     SpanElements walk(field, slices);
     while (walk.advance()) {
         const std::size_t index = walk.index();
         if (index < ranks_without_last.size()) {
+            if (ranks_without_last[index] > ceiling) continue;
             candidates.push_back({ranks_without_last[index], index});
             continue;
         }
-        candidates.push_back({linear_algebra::rank(field, walk.at()), index});
+        if (floor.under(index) > ceiling) continue;
+        const std::size_t rank = linear_algebra::rank(field, walk.at());
+        if (rank > ceiling) continue;
+        candidates.push_back({rank, index});
     }
 
     // Sort by rank, ties broken by enumeration order, to ensure reproducible
@@ -210,15 +307,34 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
               });
 
     std::vector<Matrix> basis;
+    std::size_t weight = 0;
     ReducedBasis span(field, width);
     for (const Candidate& candidate : candidates) {
         if (basis.size() == dimension) break;
         Matrix element = linear_combination(
             field, slices, coefficient_vector(candidate.index, slices.size(), field.characteristic()));
         if (span.try_add(element)) {
+            // The rank of what was just taken, already computed above: the sum
+            // of these is what `multiplication_count` would recover from the
+            // matrices, one Gaussian elimination per basis element at a time
+            // when the answer is already known.
+            weight += candidate.rank;
             basis.push_back(std::move(element));
         }
     }
+
+    // The ceiling is a claim about what the answer holds, and a basis that came
+    // up short under it would compute a different map rather than compute the
+    // same one slower — the one failure nothing downstream would catch, since
+    // every count taken from it would be lower and look better. Checked here,
+    // where the claim is spent, and not only in the test that holds the filtered
+    // walk against the unfiltered one.
+    if (basis.size() != dimension) {
+        throw std::runtime_error("a minimum-weight basis of " + std::to_string(dimension) +
+                                 " dimensions came out holding " + std::to_string(basis.size()) +
+                                 ": the rank ceiling dropped an element the answer needed");
+    }
+    if (cost != nullptr) *cost = weight;
     return basis;
 }
 
