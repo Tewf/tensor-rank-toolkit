@@ -2,7 +2,7 @@
 
 The two tools that do not search a candidate pool for their answer, or do not
 search at all. Precedence and `BILINEAR_TUNABLES`:
-[`../OPTIONS.md`](../OPTIONS.md).
+[`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 ## `decide-rank-by-pencil`
 

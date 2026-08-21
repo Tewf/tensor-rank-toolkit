@@ -61,13 +61,15 @@ sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 
 ## What is where
 
-Thirteen modules and thirteen tools, in [`what-is-where.md`](what-is-where.md),
-with which tool answers which question. Every flag, its default, the measurement
-that chose it and the recipes people actually type: [`OPTIONS.md`](OPTIONS.md).
-Twelve of the thirteen can be driven from a browser instead, on Python 3's standard library
-and nothing else: [`web_interface/`](web_interface/). Every paper any of it
-implements is named once, in [`references.md`](references.md), by the key the
-code cites.
+Thirteen modules and **twelve tools**, in [`what-is-where.md`](what-is-where.md),
+with which tool answers which question. The one question each answers that no
+other does, and why twelve rather than eight:
+[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
+Every flag, its default, the measurement that chose it and the recipes people
+actually type: [`OPTIONS.md`](OPTIONS.md). All twelve can be driven from a
+browser instead, on Python 3's standard library and nothing else:
+[`web_interface/`](web_interface/). Every paper any of it implements is named
+once, in [`references.md`](references.md), by the key the code cites.
 
 ## Building
 

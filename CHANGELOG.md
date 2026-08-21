@@ -56,6 +56,51 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Twelve command-line tools, audited down from fourteen**, with the one
+  question each answers that no other does in
+  [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
+  It was fourteen and not thirteen because `list-solvers` is the one command
+  whose source is not a `*_main.cpp`, so every list built from that pattern had
+  missed it. Two left, neither by merging into another tool's flag surface:
+  `list-solvers` became **`curve-bounds --solvers`**, beside the `--route` its
+  answer is only ever read to decide and the `--table` that already prints and
+  stops there; and `price-canonical-route` moved out of `commands/` to be built
+  beside the predicate it prices, as an instrument rather than a tool, because
+  what it prints is nanoseconds and [`MEASURING.md`](MEASURING.md)'s line is that
+  counts reproduce anywhere and timings do not.
+
+  **Four merges were refused and the audit says what each would have cost**, the
+  rule being that a command carrying two mutually exclusive flag sets is worse
+  than two commands: the three deciders would have carried eight tree-only flags
+  against thirteen solver-only ones and two meanings of `--max-memory`; the
+  descent and the incumbent search collide on no name but leave four flags dead
+  on half the command; `walk-scheme` collides on `--steps` and on `--from`; and
+  the two in `oracle_guided_search/` share a directory rather than a question.
+
+  The retired `list-solvers` still builds, no longer links `integer_programme`,
+  and prints the line to type before leaving as 2. Deleting it would have been
+  quieter and worse: `command not found` names no replacement, and a stub
+  printing an empty ranking with 0 would read as a machine with no backends.
+
+- **The console's tool list is checked against the build rather than counted.**
+  `lower-the-bound` shipped and never reached `web_interface/catalogue.py`, and
+  `len(tools) == 12` stayed true throughout, because it counted instead of
+  corresponding. Both directions are now asserted: every binary the catalogue
+  names exists, and every command the build produces is either offered or on a
+  list of names deliberately not offered, each with its reason. Nine files that
+  said "the twelve" where they meant "the tools" stopped naming a number.
+
+- **Two stale rows in
+  [`OPTIONS/one-idea-several-spellings.md`](OPTIONS/one-idea-several-spellings.md)**,
+  found by running each enum-like flag against a fixture rather than reading the
+  page. `--leaf-route` and `--anchor` were listed as the two bad patterns and
+  both had been fixed in `decide_rank_main.cpp` without the page being sent back
+  to check; `--device`, which is right, had never reached it. What is actually
+  left is `--from` on `lower-the-bound`, which reports a bad value as an
+  unrecognised flag, `--backend`, which accepts anything silently, and three that
+  reprint a usage block. Ten such flags, four behaviours, where the page said
+  nine and five.
+
 - **`f2_5x5` is settled at 13 inside this repository**, and was
   `13 ≤ rank ≤ 14` before. The exhaustive search refutes 12 in 146 402 553 nodes
   and `lower-the-bound` exhibits 13 in 80, so `[bdez2012]`'s 9.65·10⁹ tests

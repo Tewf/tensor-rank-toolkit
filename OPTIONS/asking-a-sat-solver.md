@@ -2,7 +2,7 @@
 
 `decide-rank-by-sat` states the rank question once and hands it to a program
 built for questions of that shape. Precedence and `BILINEAR_TUNABLES`:
-[`../OPTIONS.md`](../OPTIONS.md).
+[`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 | Flag | Default | What chose the default |
 |---|---|---|

@@ -63,11 +63,14 @@ sparsify-operator out_L.sms                                 # 31 -> 27 coefficie
 
 ## Ce qu'il y a, et où
 
-Douze modules et douze outils, détaillés dans
+Treize modules et **douze outils**, détaillés dans
 [`what-is-where.md`](what-is-where.md) : ce que sert chaque dossier et quel outil
-répond à quelle question. Chaque option, sa valeur par défaut et la mesure qui
-l'a choisie : [`OPTIONS.md`](OPTIONS.md). Chaque article implémenté est nommé une
-seule fois, dans [`references.md`](references.md), et le code en cite la clé.
+répond à quelle question. La question à laquelle chacun répond et qu'aucun autre
+ne traite, et pourquoi douze plutôt que huit :
+[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
+Chaque option, sa valeur par défaut et la mesure qui l'a choisie :
+[`OPTIONS.md`](OPTIONS.md). Chaque article implémenté est nommé une seule fois,
+dans [`references.md`](references.md), et le code en cite la clé.
 ## Compilation
 
 Il faut un compilateur C++20, CMake >= 3.22 et **Givaro** (`sudo apt install

@@ -53,30 +53,26 @@ OPTIONS.md               every flag of every tool, its default, and what
 article/                 the write-up: definitions, theorems, proofs, negative results
 site/                    the stylesheet, the hand-drawn charts and the shared
                          navigation index.html is assembled from
-web_interface/           a browser console for the twelve tools, and the
+web_interface/           a browser console for every tool here, and the
                          commands behind it
 tools/                   scripts that are not part of the build: one asks every
                          backend the same question and tabulates the cost
 ```
 
-**Thirteen command-line tools.** Four ask how few multiplications a map needs and
-disagree about what they can prove: `minimise-rank` (descent), `decide-rank`
-(complete), `walk-scheme` (a walk that moves sideways) and `lower-the-bound` (the
-complete one's tree, cut by an incumbent, so it finds and never refutes). `decide-rank-by-sat` puts
-that question to somebody else's solver and `list-solvers` says which backends
-this machine has. `deflate-strictly` refutes a committed candidate from the tree
-rather than from a solver, and `enumerate-subspaces` counts solution subspaces
-once per orbit. `decide-rank-by-pencil` reads the answer off a canonical form for
-two slices and searches for nothing at all, and `factor-over-canonical-basis`
-returns the rank as the factorisation it is, with a receipt anybody can multiply
-out. `curve-bounds` bounds the rank from a curve's points rather than searching.
-Then `sparsify-operator` for the other strand, and `make-tensor` to build a map
-to run any of them on.
+**Twelve command-line tools**, and the one question each answers that no other
+does: [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md),
+which is also where four tempting merges are refused with what each would cost.
+It is the list; this file is the folders under it, and neither restates the
+other. Three of the folders above hold a binary that is **not** on it:
+`measure-leaf` and `price-canonical-route` are instruments, built outside a
+`commands/` because what they print is nanoseconds ([`MEASURING.md`](MEASURING.md)),
+and `list-solvers` was a command until 2026-08-21 and now prints the line that
+replaced it, `curve-bounds --solvers`.
 
-A fourteenth, `find-at-rank`, is on the `rejected-experiments` branch. It asked
-only questions it expected to be satisfiable, on an assumed asymmetry between
-acceptance and refutation that measured as about one, and it is dominated by the
-descent on every fixture.
+`find-at-rank` is on the `rejected-experiments` branch. It asked only questions
+it expected to be satisfiable, on an assumed asymmetry between acceptance and
+refutation that measured as about one, and it is dominated by the descent on
+every fixture.
 
 Every paper any of it implements is named once, in
 [`references.md`](references.md), and the code cites a key.

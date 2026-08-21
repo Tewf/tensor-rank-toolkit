@@ -2,7 +2,7 @@
 
 `make-tensor` writes a bilinear map out as a tensor file, on standard output.
 It is the input side of every other command here. Precedence and
-`BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
+`BILINEAR_TUNABLES`: [`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 Its four flags are **modes rather than settings**: exactly one is given, each
 takes its own positional arguments, and none has a default to measure. That is
