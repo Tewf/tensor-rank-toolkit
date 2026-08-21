@@ -114,8 +114,8 @@ struct Tunables {
     /// built-in trails because it is the slowest, and it is also the only one
     /// whose `infeasible` is believed without being checked against the model.
     /// Fills `optimisation::set_backend_order`
-    /// (`integer_programme/solver_chain.h`), from `curve-bounds` and from
-    /// `list-solvers`, which prints the order that would actually run.
+    /// (`integer_programme/solver_chain.h`), from `curve-bounds`, whose
+    /// `--solvers` prints the order that would actually run.
     std::vector<std::string> ilp_backend_order{"gurobi", "cbc", "glpk", "lp_solve", "built-in"};
 
     /// Which processor answers a bulk question first, of those this build can

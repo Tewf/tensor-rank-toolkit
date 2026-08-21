@@ -1,73 +1,24 @@
-/// Which integer programming solvers this machine has, best first.
-#include <string>
-
-#include "arguments.h"
+/// The retired spelling of `curve-bounds --solvers`, kept so a script says why.
+///
+/// The ranking is only ever read to decide what `curve-bounds --route chain`
+/// will reach, so it moved beside that flag rather than standing as a command of
+/// its own; [`../../OPTIONS/one-question-per-command.md`](../../OPTIONS/one-question-per-command.md)
+/// is the audit that says so.
+///
+/// This file is what is left, and it is here rather than deleted for one reason:
+/// a shell answering `list-solvers: command not found` names no replacement, and
+/// somebody's `list-solvers | grep gurobi` would go quiet without saying what to
+/// type instead. It prints the new line and leaves as **2**, so a caller that
+/// checks its exit code stops rather than reading an empty ranking as "no
+/// backends installed" — which is the one wrong answer this file could give.
 #include "exit_code.h"
 #include "report.h"
-#include "solver_chain.h"
-#include "tunables.h"
 
-namespace {
-
-void usage() {
-    cli::note() << "usage: list-solvers\n"
-                   "       list-solvers --help\n"
+int main() {
+    cli::note() << "list-solvers is now `curve-bounds --solvers`, which prints the same\n"
+                   "ranking from the same tunable, ilp_backend_order. Nothing else about it\n"
+                   "changed: same order, same present/absent column, same exit 0.\n"
                    "\n"
-                   "  Prints the integer programming backends in preference order, and\n"
-                   "  whether each is on PATH. It takes no settings: the order comes from\n"
-                   "  ilp_backend_order in tunables.conf, which is why this reads the file.\n"
-                   "  --help  print this and stop, as exit 2";
-}
-
-/// The order the chain would really walk, and not the compiled one.
-///
-/// This command's whole output is the ranking, so reading `tunables.conf` here
-/// is not decoration: printing the compiled order while `ilp_backend_order` had
-/// moved it would make this the one place a caller looks that lies.
-int run(int argc, char** argv) {
-    // Walked rather than ignored. `main` took no arguments at all, so every word
-    // on the line was dropped in silence and `list-solvers --help` printed the
-    // table and left as 0: a command that answered a question nobody asked.
-    cli::Arguments arguments(argc, argv);
-    while (arguments.next_flag()) {
-        if (arguments.is("--help", "-h")) {
-            usage();
-            return cli::exit_status(cli::ExitCode::Usage);
-        }
-        arguments.refuse();
-    }
-    if (!arguments.filename().empty()) {
-        throw cli::ArgumentError("nothing here reads a file, and '" + arguments.filename() +
-                                 "' is not a flag");
-    }
-
-    std::string unrecognised;
-    if (!optimisation::set_backend_order(cli::tunables().ilp_backend_order, unrecognised)) {
-        throw cli::ArgumentError("tunables.conf ilp_backend_order: no backend is called '" +
-                                 unrecognised + "'");
-    }
-
-    cli::result() << "integer programming backends, in preference order:\n";
-    for (const optimisation::Backend backend : optimisation::ranked_backends()) {
-        cli::result() << "  " << (optimisation::is_available(backend) ? "present" : "absent ")
-                      << "  " << optimisation::name_of(backend) << "\n";
-    }
-    cli::result() << "\nThe first present backend answers; the built-in is always present and is"
-                     " the\nonly one whose answer needs no checking, so it is also the only one"
-                     " that may\nreport a problem infeasible.\n";
-    return cli::exit_status(cli::ExitCode::Yes);
-}
-
-}  // namespace
-
-int main(int argc, char** argv) {
-    try {
-        return run(argc, argv);
-    } catch (const cli::ArgumentError& problem) {
-        // A word on the command line, or a line of tunables.conf, that could not
-        // be read. Nothing was listed, so Usage rather than Error: the run never
-        // started.
-        cli::note() << "list-solvers: " << problem.what();
-        return cli::exit_status(cli::ExitCode::Usage);
-    }
+                   "usage: curve-bounds --solvers";
+    return cli::exit_status(cli::ExitCode::Usage);
 }

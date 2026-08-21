@@ -37,9 +37,11 @@ curve strand uses and not a strand of its own.
 
 The ranking is fixed; what is installed is not. A machine with nothing gets the
 built-in and a slower answer, a machine that acquires a Gurobi licence tomorrow
-uses it without a line changing, and `list-solvers` says which is which:
+uses it without a line changing, and `curve-bounds --solvers` says which is
+which — it was the command `list-solvers` until 2026-08-21, and that spelling now
+prints this line and stops:
 
-    $ ./build/integer_programme/list-solvers
+    $ ./build/curve_bounds/curve-bounds --solvers
 
 Backends are found on `PATH` at run time and never linked, which is how the
 satisfiability strand already treats `kissat` and `cvc5`. The tree therefore

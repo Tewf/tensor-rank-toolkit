@@ -18,7 +18,8 @@ failures=0
 
 # The other commands sit beside this one in the build tree, one directory per
 # strand, so each path is the one ctest passes with the strand swapped. Passing
-# seven more paths in would only restate that.
+# the rest in as arguments would only restate that, and would need editing every
+# time the list moves.
 binaries=$(dirname "$(dirname "$command")")
 
 expect() {
@@ -116,15 +117,22 @@ echo "curve-bounds"
 expect 2
 expect 2 --nonsense
 expect 0 --table
+# The ranking `list-solvers` used to print. Both early-outs leave as 0, unlike
+# every other flag that prints and stops, which is a wart this file records.
+expect 0 --solvers
 expect 0 --degree 4 --points 2:4
 # An odd degree out of degree-2 points only: infeasible as a fact about the
 # supply, which is a refusal and not a budget that ran out.
 expect 1 --degree 3 --points 2:4
 expect 5 --degree 4 --points bogus
 
+# The retired spelling. It leaves as 2 and names `curve-bounds --solvers`, and 2
+# rather than 0 is the assertion: a caller that checked the code stops, where one
+# reading an empty ranking would conclude the machine has no backends.
 command=$binaries/integer_programme/list-solvers
-echo "list-solvers"
-expect 0
+echo "list-solvers, retired"
+expect 2
+expect 2 --help
 
 command=$binaries/pencil_rank/decide-rank-by-pencil
 echo "decide-rank-by-pencil"

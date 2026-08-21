@@ -55,7 +55,7 @@ different numbers in one run.
 | `sat_timeout_seconds` | `decide-rank-by-sat`, `deflate-strictly` | `--timeout`, `--candidate-timeout` |
 | `ilp_time_limit_seconds` | `curve-bounds` | `--solver-timeout` |
 | `sat_solver_order` | `decide-rank-by-sat`, `deflate-strictly` | `--solver` |
-| `ilp_backend_order` | `curve-bounds`, `list-solvers` | none; `--route built-in` sidesteps it |
+| `ilp_backend_order` | `curve-bounds` | none; `--route built-in` sidesteps it, `--solvers` prints it |
 
 A name the file spells wrongly is refused rather than ignored, and the refusal
 leaves as exit 2. That is asserted end to end in
@@ -81,8 +81,8 @@ against the built command rather than against the parser.
 - [Asking a SAT solver](OPTIONS/asking-a-sat-solver.md): `decide-rank-by-sat`
 - [Committing to candidates](OPTIONS/committing-to-candidates.md):
   `deflate-strictly`, `enumerate-subspaces`
-- [Bounding from a curve](OPTIONS/bounding-from-a-curve.md): `curve-bounds`,
-  `list-solvers`
+- [Bounding from a curve](OPTIONS/bounding-from-a-curve.md): `curve-bounds`, and
+  the `--solvers` that was the command `list-solvers`
 - [Sparsifying operators](OPTIONS/sparsifying-operators.md): `sparsify-operator`
 - [Building maps](OPTIONS/building-maps.md): `make-tensor`
 
