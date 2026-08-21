@@ -1,11 +1,12 @@
 # The parent test was bound by a pool scan, not by the group
 
-**The first item at the bottom of this page has since been done**, and the shares
-below are the ones that asked for it. What it was worth: `<2,3,3>` at 8 from 98.0 s
-to **13.1 s**, `<2,2,4>` at 10 from 0.500 s to 0.164 s, `<3,3,3>` at 10 from 3.70 s
-to 2.41 s and from a 1.33x win to a **2.17x** one — with every node count and every
-canonical-image count unchanged, which is the check that it was a cost and not an
-answer that moved. [`../pool_cosets.h`](../pool_cosets.h) is the mechanism.
+**The first two items at the bottom of this page have since been done**, and the
+shares below are the ones that asked for them. What they were worth: `<2,3,3>` at 8
+from 98.0 s to **11.4 s**, `<2,2,4>` at 10 from 0.500 s to 0.144 s, `<3,3,3>` at 10
+from a 1.33x win to a **2.07x** one — with every node count unchanged, which is the
+check that it was a cost and not an answer that moved.
+[`../pool_cosets.h`](../pool_cosets.h) is the first mechanism and the parent test's
+early exit is the second.
 
 Take each canonical node of [against-the-sweeps.md](against-the-sweeps.md) apart,
 using the canonical-image count the run reports and the per-operation prices in
@@ -63,13 +64,24 @@ and `../tests/test_route_price.cpp` records the miss rather than fitting it away
    a node; the seven to fourteen above are now **one**. Worth 7.5x at `<2,3,3>`,
    and the win grows with the pool, which is what a removed `|P|`-proportional term
    does.
-2. **Still open: give what is left of the pool pass the packed GF(2) leaf.**
+2. **Done: ask the parent test for an exit, not for a minimum.** The condition is
+   that the parent's class is least among the candidate parents', and one candidate
+   below it settles that; the minimum was never wanted. The parent's own name is
+   also the same for every child of a node, so it is computed once a node instead
+   of once a test. Canonical images fell **31% to 45%** and the node counts did not
+   move.
+3. **Still open: give what is left of the pool pass the packed GF(2) leaf.**
    `PoolCosets` and `independent_rank_one_maps_in` both walk the pool through the
-   general path, one reduction at a time, where
-   `exhaustive_search/gf2_leaf.h` already does that walk packed for the other
-   route. That pass is now most of what a canonical node spends.
-3. **Only then the group work**, where `[linton2004]` §4's advanced algorithm and a
-   factored stabiliser sit. Priced against the shares above they were worth 1% to
-   62% depending on the shape, and the shapes where they were worth most are the
-   small ones nobody needs. Section 4 reports 67x to 100x on its own benchmark, in
-   a regime that matches ours; 100x on 1.1% of a node is 1.1% of a node.
+   general path, one reduction at a time, where `exhaustive_search/gf2_leaf.h`
+   already does that walk packed for the other route and measures 6x to 40x for it.
+   That pass is now most of what a canonical node spends at the large shapes. It
+   needs `Gf2Leaf` to expose the packed pool and the packed span it already holds
+   privately, which is a change in `exhaustive_search/` rather than here.
+4. **Only then the rest of the group work**, where `[linton2004]` §4's advanced
+   algorithm and a factored stabiliser sit. §4 loops over orbit representatives of
+   a subgroup `H` of the setwise stabiliser **acting on the set itself**, and
+   reports 67x to 100x where that induced group is large — his benchmark is 20
+   points with a stabiliser of order 2 880 acting faithfully on them. Ours are sets
+   of three to ten cells whose stabilisers induce very little on so few points, so
+   the regime that produced his figure is not the one here, and the figure should
+   not be carried across. It is worth measuring before it is worth building.

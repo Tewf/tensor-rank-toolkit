@@ -81,8 +81,9 @@ bool is_distinguished_cell(const PoolSetCanon& canon, const std::vector<std::siz
 
 ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matrix>& base,
                                     const std::vector<Matrix>& child,
-                                    const SubspaceCode& parent_code, std::size_t added,
-                                    const std::vector<std::size_t>& inside,
+                                    const SubspaceCode& parent_code,
+                                    const std::vector<std::size_t>& parent_name,
+                                    std::size_t added, const std::vector<std::size_t>& inside,
                                     const std::vector<Matrix>& pool,
                                     const PoolSetCanon& canon) {
     ParentTest test;
@@ -94,21 +95,24 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
     // prescribed group rather than by walking it. `canonical_subspace` took the
     // least code over every element, which is what made this route lose: 16.2x
     // fewer nodes for 15x the wall clock, because one test cost `|G|` reductions.
-    std::vector<std::size_t> least;
-    std::vector<SubspaceCode> least_codes;
+    //
+    // **Asked as an early exit rather than as a minimum.** The condition is that
+    // the parent's class is least, and one candidate strictly below it settles that
+    // in the negative; the minimum itself is never wanted. Two hyperplanes of one
+    // quotient are distinct subspaces with distinct codes, so "the parent attains
+    // the least name" and "the parent's code is among those attaining it" are the
+    // same statement, which is what lets the loop stop where it does.
+    bool parent_seen = false;
     for (const CandidateParent& parent : parents) {
+        if (subspace_code(field, parent.generators) == parent_code) {
+            parent_seen = true;
+            continue;
+        }
         const std::vector<std::size_t> name = canon.canonical(parent.content);
         ++test.canonisations;
-        if (least.empty() || name < least) {
-            least = name;
-            least_codes.assign(1, subspace_code(field, parent.generators));
-        } else if (name == least) {
-            least_codes.push_back(subspace_code(field, parent.generators));
-        }
+        if (name < parent_name) return test;
     }
-    if (std::find(least_codes.begin(), least_codes.end(), parent_code) == least_codes.end()) {
-        return test;
-    }
+    if (!parent_seen) return test;
 
     // The distinguished pool element of the child, by canonising the **pair**
     // rather than by minimising over the group elements that attain the child's

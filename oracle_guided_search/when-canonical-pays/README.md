@@ -39,6 +39,6 @@ reading can be argued with rather than merely obeyed.
 ## The state of it, in one line
 
 The predicate refuses at every shape swept, and it is wrong about one of them:
-`<3,3,3>` at 10, where the canonical route is **2.17x faster with a node saving of
+`<3,3,3>` at 10, where the canonical route is **2.07x faster with a node saving of
 exactly zero**. **Nothing consults it yet**, and until it stops refusing the one
 shape where the route wins, nothing should.

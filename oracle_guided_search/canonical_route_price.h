@@ -88,11 +88,12 @@ struct CanonicalPrices {
     /// `[seress2003, Thm 4.5.5]`; measured 2.7 to 4.6 us a point here.
     std::size_t presentation_nanoseconds_per_point = 3000;
     /// Candidate children per canonical node, which is `[mckay1998, Thm 3]`'s `c`.
-    /// **Fitted, and 3 rather than the 5 to 12 the sweeps show**, because it stands
+    /// **Fitted, and 2 rather than the 5 to 12 the sweeps show**, because it stands
     /// in this model for more than the branching alone: it multiplies the canonical
-    /// images a node asks for, and `candidate_parents` keeps only the *reachable*
-    /// hyperplanes where `parents` below counts them all.
-    std::size_t branching = 3;
+    /// images a node asks for, `candidate_parents` keeps only the *reachable*
+    /// hyperplanes where `parents` below counts them all, and the parent test stops
+    /// at the first candidate that beats the parent rather than naming every one.
+    std::size_t branching = 2;
 };
 
 /// A shape and the level being decided, which is all the predicate is given.
