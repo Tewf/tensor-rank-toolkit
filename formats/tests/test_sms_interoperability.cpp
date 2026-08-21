@@ -14,6 +14,14 @@
 /// All three open with a `#` comment on the first line, which the previous
 /// reader could not get past: it took the header with `input >> rows`, so the
 /// hash ended the read before the matrix began.
+///
+/// The checks below the round trip are the four places where his reader and this
+/// one were compared line by line rather than assumed to agree, each one run
+/// against `plinopt/bin/sms2pretty` on the same bytes before it was written
+/// down: a value that does not end its line, an entry that is not a rational, a
+/// file holding more than one matrix, and the field, which the file does not
+/// carry at all. `../plinopt_interoperability/what-both-sides-do.md` is the
+/// table, with the file and line on his side of each row.
 #include <cstdio>
 #include <fstream>
 #include <sstream>
@@ -49,6 +57,47 @@ long long as_integer(const Givaro::Integer& value) {
     return static_cast<long long>(static_cast<int64_t>(value));
 }
 
+/// What the reader says when it refuses `text`, or the empty string if it did
+/// not refuse. The sentence is the interface: a message that does not say which
+/// entry, or which line, sends the reader back to the bytes with nothing to go on.
+std::string refusal(const std::string& text) {
+    std::istringstream input(text);
+    try {
+        linear_algebra::read_sms(input);
+    } catch (const std::exception& problem) {
+        return problem.what();
+    }
+    return "";
+}
+
+std::string refusal_over(int64_t characteristic, const std::string& text) {
+    const linear_algebra::ModularField field(characteristic);
+    std::istringstream input(text);
+    try {
+        linear_algebra::read_sms(input, field);
+    } catch (const std::exception& problem) {
+        return problem.what();
+    }
+    return "";
+}
+
+/// A read reported as a number rather than as an exception, `-1` when refused.
+///
+/// The difference matters when a check is deliberately broken to see whether it
+/// bites: a reader that throws where the test expected a matrix ends the process
+/// with no output at all, which looks the same as a suite that never ran. These
+/// two turn that into a `FAIL` line naming what was expected.
+long long nonzeros_in(const std::string& text);
+
+long long first_entry(const std::string& text) {
+    std::istringstream input(text);
+    try {
+        return as_integer(linear_algebra::read_sms(input)(0, 0).nume());
+    } catch (const std::exception&) {
+        return -1;
+    }
+}
+
 long long nonzero_count(const RationalMatrix& matrix) {
     const linear_algebra::RationalField field;
     long long counted = 0;
@@ -58,6 +107,15 @@ long long nonzero_count(const RationalMatrix& matrix) {
         }
     }
     return counted;
+}
+
+long long nonzeros_in(const std::string& text) {
+    std::istringstream input(text);
+    try {
+        return nonzero_count(linear_algebra::read_sms(input));
+    } catch (const std::exception&) {
+        return -1;
+    }
 }
 
 }  // namespace
@@ -116,6 +174,53 @@ int main(int argc, char** argv) {
     check::equal("round trip keeps every nonzero", nonzero_count(reread),
                  nonzero_count(small_rational));
     check::equal("round trip keeps 4/9", as_integer(reread(0, 0).nume()), 4);
+
+    // Two triples on one line, which the reader used to take as two triples and
+    // LinBox takes as one number. `plinopt/bin/sms2pretty` on exactly these
+    // bytes prints `[ 5327 0]` and reports one nonzero, with no warning, so a
+    // reader that accepted them would hold a different matrix from his out of
+    // the same file. Splitting a triple across lines stays legal, because his
+    // reader accepts that: only the value is greedy, and only to end of line.
+    check::text("two triples on one line are refused", refusal("3 2 R\n1 1 5 3 2 7\n0 0 0\n"),
+                "SMS value '5' is not the last word on its line, and LinBox would read it "
+                "together with what follows as a single number");
+    check::equal("a triple split across lines is read",
+                 first_entry("3 2 R\n1 1\n5\n2 2 7\n0 0 0\n"), 5);
+
+    // Entries are not always rationals. `sms2pretty` opens a stream over a
+    // polynomial ring, and three of his 153 matrices use it: the `-X` family
+    // from the accuracy paper, checked with `-P "X^2-3"`. Refusing them by
+    // name beats reporting a digit that was not found.
+    check::text("an indeterminate is named rather than reported as a bad digit",
+                refusal("3 2 R\n1 1 2X\n0 0 0\n"),
+                "SMS value '2X' is a polynomial in an indeterminate, not a rational. Entries "
+                "here live in Q or in GF(p); PLinOpt's -P family does not");
+
+    // One file may hold several matrices, and `4o4o4_F32_Montgomery_P.sms` holds
+    // four. His checkers read the first and stop, and so does this; only
+    // `sms2pretty` loops with `newmatrix()`. What must not happen is reading on
+    // past the terminator and mixing two matrices into one.
+    check::equal("a file of several matrices yields the first and none of the second",
+                 nonzeros_in("2 2 R\n1 1 1\n0 0 0\n\n# the second\n2 2 R\n2 2 9\n0 0 0\n"), 1);
+
+    // The reading half of `write_sms(ostream, ModularMatrix)`, which had none.
+    // SMS carries no field, so the field is a parameter, exactly as PLinOpt
+    // takes it on the command line with `-q`.
+    {
+        const linear_algebra::ModularField gf7(7);
+        std::istringstream input("2 2 R\n1 1 4/9\n2 2 -8\n0 0 0\n");
+        const ModularMatrix reduced = linear_algebra::read_sms(input, gf7);
+        check::equal("4/9 modulo 7 is 2", reduced(0, 0), 2);
+        check::equal("-8 modulo 7 is 6", reduced(1, 1), 6);
+    }
+    // A denominator that vanishes has no residue to stand for. PLinOpt reaches
+    // the same verdict on the same file by a different route: `MMchecker
+    // data/2x2x2_7_DPS-smallrat-12.2034_{L,R,P}.sms -q 2` reports "not a 2x2x2
+    // MM algorithm", which is true but does not say that a denominator was the
+    // reason.
+    check::text("a vanishing denominator is refused, and says which entry",
+                refusal_over(2, "2 2 R\n1 1 1/2\n0 0 0\n"),
+                "SMS entry 1 1 is 1/2, whose denominator vanishes modulo 2");
 
     // The comment-writing path, which is the one that actually leaves here.
     // `--emit-operators` attaches a two-line provenance block, and every line of
