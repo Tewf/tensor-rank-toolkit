@@ -1,6 +1,6 @@
 # Searching for rank
 
-The three commands that ask how few multiplications a map needs and disagree
+The four commands that ask how few multiplications a map needs and disagree
 about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 [`../OPTIONS.md`](../OPTIONS.md).
 
@@ -40,3 +40,21 @@ about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 | `--flips N` | `20000` | **Nothing.** It is the setting the published runs used, not a tuned choice: `⟨3,3,3⟩` reaches 24 products in 38.1 s at `--flips 20000 --seeds 8`. **`--steps N` is an accepted older spelling of this flag** and means flips here, where in `minimise-rank` the same word means pipeline stages. Both are parsed; only `--flips` is the name the tool leads with. |
 | `--seeds N` | `8` | **Nothing**, for the same reason. |
 | `--from k` | off, walk from naive | Measured: on `f3_3x6`, four seeds of 20 000 flips reach **12** products from the naive scheme and hold the heuristic's **10** when started there (`../flip_graph/README.md`). |
+
+## `lower-the-bound`
+
+Nothing on this page is a tuned default. The command shipped on 2026-08-21 and
+its knobs were **explored rather than measured**: what is recorded per fixture is
+the answer reached and the node count, in
+[`../incumbent_search/what-it-reaches.md`](../incumbent_search/what-it-reaches.md),
+and no default below is claimed to be the best value.
+
+| Flag | Default | What chose the default |
+|---|---|---|
+| `--from basis\|descent` | `descent` | **Explored, and the trade is the point rather than a tuning.** `descent` starts at `descend_from_own_basis`, `basis` at the minimum-weight basis alone. The looser incumbent is a *taller* tree, since `dim V + 1 >= best` cuts later: on `f2_5x5` `basis` reaches **13** where `descent` exhausts at 14, and on `f2_4x7` the same looseness made the run unaffordable. Both effects are one effect. |
+| `--width N` | `4` | **Not measured.** Children entered per node, cheapest first; `0` enters every child, which is what makes a `tree exhausted` a statement about the whole tree and is affordable on `matmul_2x2x2` (184 nodes) and on nothing larger here. |
+| `--summand-rank r` | `3` | **Not measured, and it is the cost knob.** An element of rank `r` offers `(p^r − 1)p^(r−1)/(p−1)` moves, so 6 at rank 2, 28 at rank 3 and 120 at rank 4 over GF(2). Raising it strictly enlarges the move set and never changes what a move is. |
+| `--nodes N` | `20000` | **An argument only.** Spending it withdraws nothing: this search refutes nothing, so a budget that runs out leaves a weaker algorithm rather than a claim. |
+| `--rounds N` | `8` | **Measured, and it bought nothing here.** Restarting from the answer starts the next round at a different root under a tighter incumbent, but every improvement in the table was found in the first round. |
+| `--whole-pool` | off | **Not measured on anything it could finish.** Offers every rank-one map of the shape instead of the generated moves, at `\|pool\|` minimum-weight bases a node: 16 129 at 7x7 over GF(2), against the 20 678 moves the whole 22-node `cyclic_f2_7` run offered. |
+| `--emit-operators <stem>` | off | Nothing to measure. Same three SMS files as `minimise-rank`, and what the external check of the 13-product `cyclic_f2_7` scheme was run on. |

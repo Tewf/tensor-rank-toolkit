@@ -27,19 +27,30 @@ visible disagreement rather than a silent one.
 that is only checked for its shape is a file, not a benchmark, so here is what
 both searches actually say. Counts are exact and reproduce anywhere.
 
-| Fixture | floor, proved | step 1 | step 2 | step 3 | shortlist | gap to target |
-|---|---|---|---|---|---|---|
-| `gf32_multiplication` | **12** | 25 | 17 | **16** | 9 | floor 1 under, ceiling 3 over |
-| `gf64_multiplication` | **14** | 36 | 23 | **20** | 15 | floor 1 under, ceiling 5 over |
-| `cyclic_f2_7` | **12** | 19 | 15 | **15** | 0 | floor 1 under, ceiling 2 over |
-| `matmul_2x3x4` | **14** | 24 | 24 | not run | | floor 5 under |
-| `matmul_3x3x4` | **18** | 36 | 36 | not run | | floor 7 under |
-| `matmul_3x4x4` | **21** | 48 | 48 | not run | | floor 8 under |
+| Fixture | floor, proved | step 1 | step 2 | step 3 | shortlist | incumbent | gap to target |
+|---|---|---|---|---|---|---|---|
+| `gf32_multiplication` | **12** | 25 | 17 | 16 | 9 | **14** | floor 1 under, ceiling 1 over |
+| `gf64_multiplication` | **14** | 36 | 23 | **20** | 15 | 20 | floor 1 under, ceiling 5 over |
+| `cyclic_f2_7` | **12** | 19 | 15 | 15 | 0 | **13** | floor 1 under, **ceiling met** |
+| `matmul_2x3x4` | **14** | 24 | 24 | not run | | not run | floor 5 under |
+| `matmul_3x3x4` | **18** | 36 | 36 | not run | | not run | floor 7 under |
+| `matmul_3x4x4` | **21** | 48 | 48 | not run | | not run | floor 8 under |
+
+The `incumbent` column is
+[`lower-the-bound`](../incumbent_search/README.md), which walks the same tree the
+exact search does and cuts it at `dim V + 1 >= best` instead of at a target. It
+moves the two rows the descent cannot: **`cyclic_f2_7` reaches the published 13
+in 22 nodes**, and `gf32_multiplication` reaches 14 in 139. Both counts are
+verified in the tool and again outside this repository, from the emitted `.sms`
+operators. Node counts per fixture:
+[`../incumbent_search/what-it-reaches.md`](../incumbent_search/what-it-reaches.md).
 
 **The floor is one product short of the published rank on all three that the
 descent can finish**, from `rank_lower_bound` alone and in under a millisecond.
 Closing any of them means refuting one more product by exhaustion, which is the
-same question `f2_5x5` at 12 answered in 146 402 553 nodes.
+same question `f2_5x5` at 12 answered in 146 402 553 nodes. **`cyclic_f2_7` is
+the one where that is now the only thing left**: 12 from below and 13 exhibited
+from above, so a refutation at 12 would settle it. Nothing here has run one.
 
 **Step 3 is not run on the three matrix multiplication rows** because their pools
 are 257 985, 2 092 545 and 268 365 825 rank-one maps. It would also find nothing:
