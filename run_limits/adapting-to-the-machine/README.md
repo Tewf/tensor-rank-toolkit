@@ -45,6 +45,11 @@ machine loses:
   sorted into the ones that are facts about the arithmetic and the ones that are
   facts about an RTX 4060 and an i5-12450H. **A fitted number shipped as a
   constant is a bug on someone else's hardware**, and there are four of them.
+- [**what-was-closed.md**](what-was-closed.md) — the diff: two dead
+  `parallel_for`s given the flag they were waiting for, one that aborted the
+  process instead of refusing, five unpriced allocations, six commands given the
+  `--max-memory` their own refusals already named, and one line of CMake that
+  made the card useless on every card but this one.
 
 ## What "GPU-shaped" means here, so the column is falsifiable
 
