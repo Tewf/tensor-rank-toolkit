@@ -11,12 +11,21 @@
 /// at once, and a walker that maintains anything derived from the string has to
 /// rebuild it.
 ///
-/// That is the whole reason this exists.
-/// [`subspace_walk.h`](subspace_walk.h) keeps a linear combination of basis rows
-/// alongside the string; under this order the update between two consecutive
-/// strings is one row added or one row subtracted, so the combination costs one
-/// pass over the row rather than one pass per nonzero digit, and no field
-/// multiplication at all.
+/// That is the whole reason this exists. Its two callers keep a linear
+/// combination of basis rows alongside the string —
+/// [`../exhaustive_search/subspace_walk.h`](../exhaustive_search/subspace_walk.h)
+/// over the elements of a leaf's subspace, and
+/// [`span_element_ranks`](minimum_weight_basis.h) over the elements of a span —
+/// and under this order the update between two consecutive strings is one row
+/// added or one row subtracted, so the combination costs one pass over the row
+/// rather than one pass per nonzero digit, and no field multiplication at all.
+///
+/// **It sits here rather than beside the leaf that first wanted it** because the
+/// second caller is in this module and this module is the one both can reach:
+/// `exhaustive_search` links `descent_search` and not the other way round. It is
+/// the same enumeration [`span_enumeration.h`](span_enumeration.h) walks in index
+/// order, in the order that makes consecutive elements one step apart, which is
+/// why the two live side by side.
 ///
 /// **The successor is loop-free**, which is the other half of the point: it is
 /// Knuth's Algorithm H, `[knuth-4a]` 7.2.1.1, the focus-pointer method. A

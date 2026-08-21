@@ -54,6 +54,26 @@ std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vec
 
 /// The rank of every element of the span, indexed the way `coefficient_vector`
 /// indexes it, for feeding back in above.
+///
+/// **Walked in reflected Gray order, and that is invisible to the answer.** The
+/// order the `p^k` elements are visited in decides only how each one is formed:
+/// under [`ReflectedGrayWalk`](reflected_gray_walk.h) consecutive elements differ
+/// by one slice added or subtracted, so forming one costs `O(width)` field
+/// additions and no multiplication, against the `O(k * width)` multiply-
+/// accumulates a rebuild from `coefficient_vector(index)` costs. The index is
+/// carried alongside, `± p^digit` a step.
+///
+/// **Nothing downstream can see the order**, which is why this one was safe to
+/// change and others were not. The result is written to `ranks[index]`, an
+/// index-addressed slot, so the vector that comes out is the vector that came
+/// out before, entry for entry, whatever sequence filled it. Every caller reads
+/// it by index too: [`minimum_weight_basis`](minimum_weight_basis.h) above as
+/// `ranks_without_last`, `SortedSpan` as its filtration, and
+/// [`level_lowering_moves`](../incumbent_search/level_lowering_moves.h) as a
+/// filter on which elements are cheap enough to split. Where a routine instead
+/// *consumes* elements in order — a greedy taking the first that pays — this
+/// order is not available and the fix is to collect and sort back, as
+/// `Gf2Leaf::by_carrying_a_residual` does.
 std::vector<std::size_t> span_element_ranks(const Field& field,
                                             const std::vector<Matrix>& slices);
 

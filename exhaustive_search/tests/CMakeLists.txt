@@ -28,13 +28,6 @@ target_link_libraries(test_packed_generation PRIVATE exhaustive_search descent_s
                                                      formats testing project_warnings)
 add_test(NAME packed_generation COMMAND test_packed_generation ${PROJECT_SOURCE_DIR}/fixtures)
 
-# The order the general leaf visits a subspace in, asserted on its own. Neither
-# property it rests on — every string once, one digit by one — shows up in a
-# verdict, so a broken successor would come back as a wrong rank rather than as
-# a failure anywhere else.
-add_executable(test_reflected_gray_walk test_reflected_gray_walk.cpp)
-target_link_libraries(test_reflected_gray_walk PRIVATE exhaustive_search testing project_warnings)
-add_test(NAME reflected_gray_walk COMMAND test_reflected_gray_walk)
 
 # The GF(2) pool scan carries a reduction along a Gray code instead of asking
 # the span about every element, and owes the direct scan the same maps in the

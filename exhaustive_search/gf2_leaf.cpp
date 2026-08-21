@@ -486,7 +486,7 @@ constexpr std::size_t digits_per_batch = 8;
 /// apiece, so what it is worth grows with the dimension.
 ///
 /// **The radix-`p` machinery is deliberately not reused.**
-/// [`reflected_gray_walk.h`](reflected_gray_walk.h) carries the same order for a
+/// [`reflected_gray_walk.h`](../descent_search/reflected_gray_walk.h) carries the same order for a
 /// general characteristic, where a successor has to know which way each digit is
 /// travelling and needs Knuth's focus pointers to stay `O(1)`. At radix two a
 /// digit only ever flips, the reflection is `i ^ (i >> 1)` in closed form, and

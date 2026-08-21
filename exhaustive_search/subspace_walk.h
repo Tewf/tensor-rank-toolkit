@@ -30,7 +30,7 @@ namespace bilinear_rank {
 /// **This is the route that ships.** Consecutive elements differ by one basis
 /// row added or subtracted, so forming one costs `O(width)` field additions and
 /// no multiplication, against `O(dim * width)` multiply-accumulates to rebuild
-/// it from the digits. See [`reflected_gray_walk.h`](reflected_gray_walk.h) for
+/// it from the digits. See [`reflected_gray_walk.h`](../descent_search/reflected_gray_walk.h) for
 /// the order and for why its successor is loop-free.
 ///
 /// **The order of the elements changed when this replaced the rebuild, so the
