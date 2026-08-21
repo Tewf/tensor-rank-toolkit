@@ -1,6 +1,6 @@
 """Six runs that fill the console in, for somebody who has read none of this.
 
-The interface's first screen used to be an empty box and a list of eleven tools,
+The interface's first screen used to be an empty box and a list of tool names,
 which asks a newcomer to know both a map and a question before anything happens
 at all. Each example below is a fixture, a tool and its flags, so the first thing
 a reader does is press one button and read a real answer.

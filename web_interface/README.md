@@ -1,8 +1,8 @@
-# A console for the twelve tools
+# A console for the toolkit
 
 A local web interface that takes a bilinear map typed, pasted or loaded from a
-file, runs any of the twelve command-line tools on it, and shows the answer with
-the exact command that produced it. It shells out to the built binaries and
+file, runs any of the command-line tools on it, and shows the answer with the
+exact command that produced it. It shells out to the built binaries and
 implements no mathematics of its own.
 
 ## Running it
@@ -39,8 +39,11 @@ found, proved impossible, and a budget that ran out.
    file, or build one with `make-tensor`. The format is the one that already
    exists, `formats/tensor_file.h`, and nothing new was invented. The fixtures
    the chosen tool cannot read are greyed rather than hidden.
-2. **The question.** Eleven tools, each stating what it asks. The flags are
-   those of `OPTIONS.md`, each carrying the note that says what it costs.
+2. **The question.** Every tool but `make-tensor`, which fills the pane above
+   instead, each stating what it asks. Which tools those are is checked against
+   the build rather than counted, so one shipping without reaching this console
+   is a failing check and not a quiet omission. The flags are those of
+   `OPTIONS.md`, each carrying the note that says what it costs.
 3. **The command.** Shown before you run it and again beside the answer, as a
    line you can retype at a terminal, with a button that copies it. Anything
    worth knowing before you press Run is said underneath it.
@@ -80,11 +83,12 @@ to be discovered.
 ## Checking it
 
 ```sh
-python3 web_interface/tests/check_web_interface.py     # 40 checks
+python3 web_interface/tests/check_web_interface.py     # 41 checks
 ```
 
 It starts a console, drives it over HTTP and asserts against real runs of real
 binaries: that exit 3 arrives as undecided and never as a refutation, that the
-plan lines it promotes are still the characters the tools print, and that each of
-the six worked examples still ends where it says it does. It is deliberately not
+plan lines it promotes are still the characters the tools print, that the tools
+it offers are the binaries the build produced, and that each of the six worked
+examples still ends where it says it does. It is deliberately not
 registered with `ctest`, whose count is quoted elsewhere and means something else.

@@ -98,7 +98,7 @@ def main():
     print("console on 127.0.0.1:" + str(port))
 
     try:
-        checks(port)
+        checks(port, pathlib.Path(chosen.build))
     finally:
         console.registry.stop_everything()
         server.shutdown()
@@ -108,13 +108,13 @@ def main():
     return 1 if FAILED else 0
 
 
-def checks(port):
+def checks(port, build):
     print("\nthe catalogue")
     status, setup = ask(port, "GET", "/api/setup")
-    check("twelve tools are offered", len(setup["tools"]) == 12)
     check("and every starter names a tool that is there",
           all(example["tool"] in {tool["name"] for tool in setup["tools"]}
               for example in setup["examples"]))
+    catalogue_matches_the_build(setup, build)
 
     page_is_whole(port)
 
@@ -262,6 +262,39 @@ def checks(port):
         check("a request from another origin is refused", False)
     except urllib.error.HTTPError as refused:
         check("a request from another origin is refused", refused.code == 403)
+
+
+# Binaries the build produces that are deliberately not offered here, each with
+# the reason, because a name on this list is a decision and not an oversight.
+# `OPTIONS/one-question-per-command.md` is where the decisions are argued.
+NOT_TOOLS = {
+    # An instrument: its output is nanoseconds, and MEASURING.md's line is that
+    # counts reproduce anywhere and timings do not. `measure-leaf` is its model
+    # and is CUDA-only, so it is usually not in the build tree at all.
+    "oracle_guided_search/price-canonical-route",
+    "gpu_leaf/measure-leaf",
+}
+
+
+def catalogue_matches_the_build(setup, build):
+    """The offered tools against the binaries that exist, in both directions.
+
+    A count asserted as a literal is what let this drift: two commands shipped
+    without ever reaching the catalogue and one stayed in it after it stopped
+    being a command, and `len(tools) == 12` was true throughout. So the question
+    asked here is the one that was actually wrong — does the list *correspond* —
+    and the number falls out of it.
+    """
+    offered = {tool["binary"] for tool in setup["tools"]}
+    missing = sorted(name for name in offered if not (build / name).is_file())
+    check("every tool offered is a binary that is there" +
+          (" (" + ", ".join(missing) + ")" if missing else ""), not missing)
+
+    built = {str(path.relative_to(build)) for path in build.glob("*/*")
+             if path.is_file() and os.access(path, os.X_OK)}
+    unoffered = sorted(built - offered - NOT_TOOLS)
+    check("and every command in the build tree is offered or named as not a tool" +
+          (" (" + ", ".join(unoffered) + ")" if unoffered else ""), not unoffered)
 
 
 def page_is_whole(port):

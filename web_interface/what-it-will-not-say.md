@@ -1,6 +1,6 @@
 # What this interface will not say
 
-`cli/exit_code.h` states the rule the twelve tools keep: **a question that was
+`cli/exit_code.h` states the rule every tool here keeps: **a question that was
 not answered is not a question answered no.** A budget running out proves
 nothing, and folding it into a refusal turns giving up into a lower bound. That
 mistake has been published from this repository once already, which is why half
@@ -50,7 +50,7 @@ and a limit imposed from outside is not.
 
 ## Why the badge and the sentence are two things
 
-The twelve do not answer the same question with the same code. Exit 0 from
+The tools do not answer the same question with the same code. Exit 0 from
 `decide-rank` is a verified decomposition; from `minimise-rank` it is a descent
 that finished, which claims an upper bound and nothing about the rank; from
 `make-tensor` it is a file that got written. So each card leads with the tool's
@@ -61,7 +61,7 @@ faithful reading. Quoting "an algorithm with that many products exists, and it
 was verified" under `make-tensor` would claim a verification that never
 happened, which is the same fault as the one above with the sign reversed. For
 2, 3, 4 and 5 it is always shown, because those four mean the same thing from
-all twelve and are the ones that must never be softened.
+every one of them and are the ones that must never be softened.
 
 A flag can change the claim too. `decide-rank-by-sat --emit-cnf` writes the
 question and stops, so its exit 0 is a file that got written and not a
