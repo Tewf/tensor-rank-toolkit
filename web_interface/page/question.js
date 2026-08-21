@@ -45,6 +45,7 @@ function chooseTool(tool) {
   renderTools();
   renderOptions();
   offerFixturesFor(tool.input);
+  $("no-question").hidden = true;
   $("options-panel").hidden = false;
   $("run-panel").hidden = false;
   $("answers").textContent = tool.answers;

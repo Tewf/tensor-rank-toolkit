@@ -24,10 +24,11 @@ are `--build`, `--port`, `--host`, `--runs` and `--wall-clock`; `--help` lists t
 
 ## What you do with it
 
-Four panes side by side, all of them on the screen at once: the map, what was
-read back, the question, and the answer. Only a pane scrolls, never the page,
-because the four are one working state and a reader compares them. `layout.css`
-is the shell and `console.css` is what the panes are filled with.
+Four columns, all on the screen at once: the map, what was read back, the
+question, and how it is asked over the answer it gave. That last one is stacked
+rather than beside because its two are read in sequence — the flags, then the
+command they built, then that same command again under the answer. Only a pane
+scrolls, never the page. `layout.css` is the shell, `console.css` the filling.
 
 **Start here.** Six worked examples, behind the button of that name, in
 [`worked_examples.py`](worked_examples.py). Each fills the map, the tool and the
