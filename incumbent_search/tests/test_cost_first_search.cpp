@@ -142,6 +142,68 @@ void it_reaches_a_known_answer(const std::string& name, std::size_t expected) {
     check::equal(name + ": products", algorithm.product_count(), expected);
 }
 
+/// Claim 4: `--below k` is the same answer from a smaller tree, and says
+/// truthfully which of the two things happened.
+///
+/// Three questions of one fixture, because the setting has three outcomes and
+/// only one of them is the interesting one:
+///
+/// - `below` at the answer reaches it, and reaches it entering **no more nodes**
+///   than the plain run — the whole point of seeding the incumbent low;
+/// - `below` under anything the search can build does not reach it, and
+///   `reached_below` stays false. Nothing else may be read off that;
+/// - `below` at or above the start is already held, so nothing is searched.
+void below_finds_the_same_answer_sooner(const std::string& name, std::size_t answer) {
+    int64_t characteristic = 0;
+    const std::vector<Matrix> slices = slices_of(name, characteristic);
+    const Field field(characteristic);
+    const std::vector<Matrix> start = bilinear_rank::minimum_weight_basis(field, slices);
+    const std::size_t start_cost = linear_algebra::multiplication_count(field, start);
+
+    bilinear_rank::IncumbentLimits limits;
+    limits.width = 0;
+    limits.node_limit = 200'000;
+    limits.summand_rank = std::min(slices.front().rows(), slices.front().columns());
+
+    bilinear_rank::IncumbentReport plain;
+    bilinear_rank::search_from_above(field, start, {}, limits, &plain);
+    check::equal(name + ": the plain run reaches the answer", plain.best, answer);
+    check::equal(name + ": the plain run claims nothing about a ceiling",
+                 plain.reached_below, 0);
+
+    limits.below = answer;
+    bilinear_rank::IncumbentReport asked;
+    const std::vector<Matrix> found = bilinear_rank::search_from_above(field, start, {}, limits,
+                                                                      &asked);
+    check::equal(name + ": --below at the answer reaches it", asked.reached_below, 1);
+    check::equal(name + ": --below at the answer costs the answer",
+                 linear_algebra::multiplication_count(field, found), answer);
+    check::equal(name + ": --below at the answer enters no more nodes",
+                 asked.nodes <= plain.nodes, 1);
+
+    bilinear_rank::Algorithm algorithm;
+    check::equal(name + ": the --below answer rebuilds the map",
+                 bilinear_rank::recovers_map(field, slices,
+                                             bilinear_rank::rank_one_candidates(field, found),
+                                             algorithm),
+                 1);
+
+    // Under the answer. The tree runs out and the report says so; it is not a
+    // refutation of `answer - 1` and nothing here reads it as one.
+    limits.below = answer - 1;
+    bilinear_rank::IncumbentReport missed;
+    bilinear_rank::search_from_above(field, start, {}, limits, &missed);
+    check::equal(name + ": --below under what is reachable is not reached",
+                 missed.reached_below, 0);
+
+    // At the start. Nothing to search for, so nothing is searched.
+    limits.below = start_cost;
+    bilinear_rank::IncumbentReport already;
+    bilinear_rank::search_from_above(field, start, {}, limits, &already);
+    check::equal(name + ": --below at the start is reached at once", already.reached_below, 1);
+    check::equal(name + ": --below at the start expands no node", already.nodes, 0);
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -156,5 +218,8 @@ int main(int argc, char** argv) {
 
     it_reaches_a_known_answer("gf4_multiplication", 3);
     it_reaches_a_known_answer("matmul_2x2x2", 7);
+
+    below_finds_the_same_answer_sooner("gf4_multiplication", 3);
+    below_finds_the_same_answer_sooner("matmul_2x2x2", 7);
     return check::report("cost_first_search");
 }

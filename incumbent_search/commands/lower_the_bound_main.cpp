@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "card_failure_note.h"
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
@@ -21,6 +22,7 @@
 #include "minimum_weight_basis.h"
 #include "fewest_products.h"
 #include "report.h"
+#include "requested_group.h"
 #include "sms_file.h"
 #include "tensor_file.h"
 
@@ -29,6 +31,8 @@ namespace {
 void usage() {
     cli::note() << "usage: lower-the-bound <tensor-file> [--from basis|descent] [--nodes N]\n"
                    "                       [--width N] [--summand-rank r] [--whole-pool]\n"
+                   "                       [--below k] [--orbit-moves]\n"
+                   "                       [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                    "                       [--emit-operators <stem>] [--help]\n"
                    "\n"
                    "  --from basis|descent  the root and the first incumbent: the minimum-\n"
@@ -45,12 +49,23 @@ void usage() {
                    "                        moves at (p^r - 1)p^(r-1)/(p-1) per element\n"
                    "  --whole-pool          offer every rank-one map of the shape instead,\n"
                    "                        which is |pool| minimum-weight bases a node\n"
+                   "  --below k             look only for k products or fewer, and stop the\n"
+                   "                        moment one is reached. The incumbent is seeded at\n"
+                   "                        k+1 instead of the start, so the bound cuts at\n"
+                   "                        dimension k straight away and the tree is smaller.\n"
+                   "                        Not reaching k refutes nothing: nothing here does\n"
                    "  --rounds N            restart from the answer up to N times, 8 by\n"
                    "                        default, stopping as soon as a round does not\n"
                    "                        improve. A round that exhausted its tree can\n"
                    "                        still improve from the subspace it ended on,\n"
                    "                        which is a different root\n"
-                   "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
+                   "  --orbit-moves         offer one move per orbit at each node instead of\n"
+                   "                        every move, under the group --symmetry names.\n"
+                   "                        Off by default: every count published for this\n"
+                   "                        search was taken without it, and no group is\n"
+                   "                        available for most fixtures here\n"
+                << cli::symmetry_usage()
+                << "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
                    "  --help                print this and stop, as exit 2";
 }
 
@@ -73,6 +88,7 @@ int run(int argc, char** argv) {
     bool from_descent = true;
     std::size_t rounds = 8;
     std::string operator_stem;
+    cli::Symmetry symmetry;
 
     cli::Arguments arguments(argc, argv);
     while (arguments.next_flag()) {
@@ -96,6 +112,12 @@ int run(int argc, char** argv) {
             limits.summand_rank = arguments.count();
         } else if (arguments.is("--whole-pool")) {
             limits.whole_pool = true;
+        } else if (arguments.is("--below")) {
+            limits.below = arguments.count();
+        } else if (arguments.is("--orbit-moves")) {
+            limits.quotient_moves = true;
+        } else if (arguments.is("--symmetry", "-s")) {
+            symmetry = arguments.parsed_by(cli::parse_symmetry);
         } else if (arguments.is("--rounds")) {
             rounds = arguments.count();
         } else if (arguments.is("--emit-operators")) {
@@ -111,6 +133,24 @@ int run(int argc, char** argv) {
 
     const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
     const bilinear_rank::Field field(tensor.characteristic);
+
+    // The **ambient** group, which each node narrows to its own stabiliser.
+    //
+    // Built before anything else runs, because `--symmetry auto` **refuses**
+    // rather than building 9.99872e13 automorphisms for a 5x5 map over GF(2),
+    // and a refusal belongs before a run and not after the descent has spent a
+    // minute earning the root it will never search from.
+    std::vector<bilinear_rank::Automorphism> ambient;
+    if (limits.quotient_moves) {
+        if (symmetry.kind == cli::SymmetryKind::None) {
+            cli::note() << "--orbit-moves without --symmetry has no group to quotient by, so "
+                           "every move is offered and the run is the unquotiented one";
+        }
+        ambient = bilinear_rank::requested_ambient_group(field, tensor.slices, symmetry);
+        cli::note() << "ambient group: " << ambient.size() << " automorphisms";
+    } else if (symmetry.kind != cli::SymmetryKind::None) {
+        cli::note() << "--symmetry was given without --orbit-moves, so nothing reads it";
+    }
 
     const std::vector<bilinear_rank::Matrix> start =
         from_descent ? bilinear_rank::descend_from_own_basis(field, tensor.slices)
@@ -138,19 +178,32 @@ int run(int argc, char** argv) {
     std::size_t reached = linear_algebra::multiplication_count(field, start);
     for (std::size_t round = 0; round < rounds; ++round) {
         std::vector<bilinear_rank::Matrix> next =
-            bilinear_rank::search_from_above(field, answer, pool, limits, &round_report);
+            bilinear_rank::search_from_above(field, answer, pool, limits, &round_report, ambient);
         report.nodes += round_report.nodes;
         report.children += round_report.children;
         report.moves_offered += round_report.moves_offered;
+        report.moves_entered += round_report.moves_entered;
+        report.smallest_stabiliser =
+            report.largest_stabiliser == 0
+                ? round_report.smallest_stabiliser
+                : std::min(report.smallest_stabiliser, round_report.smallest_stabiliser);
+        report.largest_stabiliser =
+            std::max(report.largest_stabiliser, round_report.largest_stabiliser);
         report.improvements += round_report.improvements;
         report.bounded += round_report.bounded;
         report.deepest = std::max(report.deepest, round_report.deepest);
         report.exhausted = round_report.exhausted;
         report.best = round_report.best;
+        report.reached_below = round_report.reached_below;
         if (round_report.best >= reached) break;
         reached = round_report.best;
         answer = std::move(next);
+        // What `--below` asked for is held, so another round is another search
+        // for something nobody asked about.
+        if (report.reached_below) break;
     }
+
+    bilinear_rank::note_if_the_card_failed();
 
     bilinear_rank::Algorithm algorithm;
     if (!verified(field, tensor.slices, answer, algorithm)) {
@@ -167,6 +220,32 @@ int run(int argc, char** argv) {
                 << " improvements, " << report.bounded << " branches bounded, depth "
                 << report.deepest << (report.exhausted ? ", tree exhausted" : ", budget spent");
 
+    // Said in words rather than left to be inferred from the count, and said
+    // both ways round: a run that did not reach `k` has proved nothing about
+    // `k`, and the branches it cut were cut by `k` itself.
+    // What the quotient did, printed whether it did anything or not: a stabiliser
+    // of one quotients nothing, and a run should say so rather than leave a
+    // reader to infer it from an unchanged count.
+    if (limits.quotient_moves) {
+        cli::note() << "orbit-moves: " << report.moves_entered << " of " << report.moves_offered
+                    << " moves entered, stabiliser " << report.smallest_stabiliser << " to "
+                    << report.largest_stabiliser << " over the nodes";
+    }
+
+    if (limits.below != 0) {
+        if (report.reached_below) {
+            cli::note() << "--below " << limits.below << ": reached, at "
+                        << algorithm.product_count() << " products";
+        } else {
+            cli::note() << "--below " << limits.below << ": not reached"
+                        << (report.exhausted ? ", the tree above the root ran out"
+                                             : ", the node budget ran out")
+                        << ". That is not a lower bound: this search only ever finds, and "
+                           "the branches it cut were cut by " << limits.below
+                        << " and not by anything built";
+        }
+    }
+
     if (!operator_stem.empty()) {
         // The stem and the three suffixes are PLinOpt's interface, not a naming
         // choice here: `PMchecker stem_{L,R,P}.sms -q p` is how anything outside
@@ -182,6 +261,12 @@ int run(int argc, char** argv) {
                                        origin + " Combines the products into the outputs.",
                                        algorithm.decode);
         cli::note() << "wrote " << operator_stem << "_{L,R,P}.sms";
+    }
+    // `Undecided` and never `No`: a `--below` run that ran out has exhausted a
+    // budget and refuted nothing, which is the distinction `cli/exit_code.h`
+    // exists to keep. The answer it still holds was printed and verified above.
+    if (limits.below != 0 && !report.reached_below) {
+        return cli::exit_status(cli::ExitCode::Undecided);
     }
     return cli::exit_status(cli::ExitCode::Yes);
 }

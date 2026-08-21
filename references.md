@@ -594,7 +594,7 @@ mixed-radix digit string exactly once, changing one digit by `+1` or `-1` per
 step, and names the digit to change in constant time through an array of focus
 pointers rather than by scanning. Implemented at one radix, a field's
 characteristic, in
-[`reflected_gray_walk.h`](exhaustive_search/reflected_gray_walk.h).
+[`reflected_gray_walk.h`](descent_search/reflected_gray_walk.h).
 
 **The order is why the general leaf costs one row addition an element.** Every
 element of a `dim`-dimensional subspace over `GF(p)` is a digit string read as
@@ -603,7 +603,7 @@ forces the combination to be rebuilt from the basis, whereas this order moves
 one, so the update is a row added or subtracted with no field multiplication in
 it. **Table 1 of §7.2.1.1** is the reflected code itself and the ± property is
 its defining one; the loop-free part is Algorithm H's, and
-[`tests/test_reflected_gray_walk.cpp`](exhaustive_search/tests/test_reflected_gray_walk.cpp)
+[`tests/test_reflected_gray_walk.cpp`](descent_search/tests/test_reflected_gray_walk.cpp)
 asserts both against the implementation.
 
 ## Deciding rank with a solver

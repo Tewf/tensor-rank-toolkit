@@ -11,6 +11,7 @@
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
+#include "card_failure_note.h"
 #include "dense_matrix_file.h"
 #include "device.h"
 #include "exhaustive_search.h"
@@ -369,14 +370,7 @@ int run(int argc, char** argv) {
     const double seconds = cli::elapsed_seconds(started);
 
     cli::result() << "  " << budget.nodes_visited << " nodes in " << seconds << " s\n";
-    // A card that stopped being used is a run that got quietly slower, which is
-    // the sort of thing blamed on the search a week later. The host answered
-    // every leaf after this and the answer is the same one; what changed is the
-    // clock, so it is said once rather than per leaf.
-    if (!bilinear_rank::card_failure().empty()) {
-        cli::note() << "the card failed and the host answered instead: "
-                    << bilinear_rank::card_failure();
-    }
+    bilinear_rank::note_if_the_card_failed();
 
     if (found) {
         cli::result() << "  FOUND: "
