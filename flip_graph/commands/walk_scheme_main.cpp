@@ -220,8 +220,8 @@ int main(int argc, char** argv) {
     } catch (const std::exception& failure) {
         // Was 1, which reads as a refusal about the map. An unreadable file is
         // a tool that could not run, and the walk refutes nothing in any case.
-        // Named, because a bare message told a reader which of eleven commands
-        // nothing at all.
+        // Named, because a bare message told a reader which of the commands
+        // it came from nothing at all.
         cli::note() << "walk-scheme: " << failure.what();
         return cli::exit_status(cli::ExitCode::Error);
     }

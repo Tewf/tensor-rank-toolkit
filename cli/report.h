@@ -26,8 +26,8 @@
 /// the two streams (`2>&1`, which is what a CI log does) then produced a file no
 /// reader can parse, because it stops at the first line that does not look like
 /// data, and a bare progress line looks exactly like data. So the convention is
-/// not new here, it is the file writers' practice now kept by all twelve
-/// commands: every `std::cerr` in a `*/commands/*_main.cpp` comes through
+/// not new here, it is the file writers' practice now kept by every command
+/// here: every `std::cerr` in a `*/commands/*_main.cpp` comes through
 /// `note()`, usage blocks included, and every result through `result()`.
 /// `cli/tests/check_argument_grammar.sh` asks the built commands rather than
 /// this header, because a check on the header passed throughout the period when

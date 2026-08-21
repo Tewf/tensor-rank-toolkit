@@ -79,6 +79,14 @@ regression and a noisy afternoon into the same red tick. Timings are measured by
 hand, on the reference machine, under this protocol, and are quoted as evidence
 of an order of magnitude rather than of a digit.
 
+**That line is structural and not a convention to remember.** The two binaries
+whose whole output is timings — `measure-leaf`, which moves
+`device_launch_floor`, and `price-canonical-route`, which moves `CanonicalPrices`
+and with it whether `--route canonical` pays — are built outside their strand's
+`commands/`. Neither is a tool, in [`OPTIONS.md`](OPTIONS.md), or offered by the
+console; each ships beside the constant it decides, because a constant nobody can
+re-measure is a constant nobody can move.
+
 ## A number taken on the card
 
 None of the protocol above transfers to a CUDA kernel unexamined: the baseline
@@ -88,17 +96,6 @@ has to be quoted at one core and at twelve, the first launch is discarded, the
 against the CPU's before a single second is reported. Five rules, one per way
 this goes wrong, in
 [`gpu_leaf/measuring-on-the-card.md`](gpu_leaf/measuring-on-the-card.md).
-
-## The instruments, which are not tools
-
-Two binaries print seconds rather than a fact about a map: `measure-leaf`, which
-moves `device_launch_floor`, and `price-canonical-route`, which moves
-`CanonicalPrices` and with it whether `--route canonical` pays. **Both are built
-outside their strand's `commands/`**, so the line this file draws between a count
-and a timing is structural rather than a sentence to remember. Neither is in
-[`OPTIONS.md`](OPTIONS.md) or offered by the console;
-[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md)
-argues the split.
 
 ## One run at a time
 

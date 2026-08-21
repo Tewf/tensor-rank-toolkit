@@ -2,7 +2,8 @@
 
 `curve-bounds` answers a different question from every search here, and
 `--solvers` reports the backend chain it may hand that question to.
-Precedence and `BILINEAR_TUNABLES`: [`../OPTIONS.md`](../OPTIONS.md).
+Precedence and `BILINEAR_TUNABLES`:
+[`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 ## `curve-bounds`
 
