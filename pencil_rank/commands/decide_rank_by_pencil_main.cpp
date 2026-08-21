@@ -12,6 +12,7 @@
 #include "arguments.h"
 #include "exit_code.h"
 #include "kronecker_structure.h"
+#include "memory_budget.h"
 #include "report.h"
 #include "tensor_file.h"
 #include "timing.h"
@@ -19,11 +20,16 @@
 namespace {
 
 void usage() {
-    cli::note() << "usage: decide-rank-by-pencil <tensor-file>\n"
+    cli::note() << "usage: decide-rank-by-pencil <tensor-file> [--max-memory N]\n"
                    "       decide-rank-by-pencil --help\n"
                    "  The Kronecker canonical form of a tensor with at most two slices, and\n"
                    "  the rank bound it gives. Polynomial time, and no candidate pool.\n"
-                   "  There is nothing to tune, so --help is the only flag there is.";
+                   "  --max-memory N  bytes one bulk allocation may take, 2G by default. There\n"
+                   "                  is nothing to tune here and this is not a tuning: the\n"
+                   "                  Sumi bound builds x^p - x, which is linear in the\n"
+                   "                  characteristic the *file* names, so this is the one\n"
+                   "                  number a caller may have to move to run at all\n"
+                   "  --help          print this and stop, as exit 2";
 }
 
 void write_indices(const char* label, const std::vector<std::size_t>& indices) {
@@ -74,6 +80,10 @@ int main(int argc, char** argv) {
             if (arguments.is("--help", "-h")) {
                 usage();
                 return cli::exit_status(cli::ExitCode::Usage);
+            }
+            if (arguments.is("--max-memory")) {
+                bilinear_rank::set_memory_budget(arguments.memory_size());
+                continue;
             }
             arguments.refuse();
         }

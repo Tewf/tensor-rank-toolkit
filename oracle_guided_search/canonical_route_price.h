@@ -12,7 +12,12 @@
 /// generator count.
 ///
 /// The derivation, its primary sources and the measured table it was corrected
-/// against are [`when-canonical-pays/`](when-canonical-pays/README.md). The short form:
+/// against are [`when-canonical-pays/`](when-canonical-pays/README.md).
+///
+/// **There are two regimes and they are not the same question**, which is the
+/// correction of 2026-08-21. `L = target - n*k` is the levels of augmentation.
+///
+/// At `L >= 2` the comparison is between two **trees**, and the short form is
 ///
 ///     saving ratio  rho = plain nodes / canonical nodes
 ///     price ratio   pi  = one canonical node / one plain node
@@ -20,7 +25,25 @@
 ///
 ///     it pays  <=>  rho > pi  and  the plain search costs more than F
 ///
-/// **The two sides are not equally sound, and the file says which is which.**
+/// At `L == 1` there is no tree. Both routes emit one node per `G`-orbit of the
+/// pool and `rho` is exactly 1, measured at all five shapes, so a per-node ratio
+/// prices nothing: what is being compared is **two roots and their leaves**, and
+/// each side is written out rather than averaged.
+///
+///     plain root       R * sum |O_i|^2      naming one index per orbit, per element
+///     canonical root   S + A|P| + Stab + (r+1) I    one pool pass, one orbit pass
+///     leaves           r * (canonical scans the pool, plain walks p^target)
+///
+///     it pays  <=>  R * sum |O_i|^2  >  the whole right-hand side
+///
+/// The two sides differ in **order** and not in a constant: `least_in_orbit`
+/// costs `O(sum |O_i|^2)` where `orbit_representatives` costs `O(|P|)` for the
+/// same answer, so the clause is a statement about the baseline's orbit test as
+/// much as about canonical augmentation. Measured at the `<3,3,3>` root: 5.06 s
+/// against 0.0497 s for the identical 13 children.
+///
+/// **The two sides of the tree regime are not equally sound, and the file says
+/// which is which.**
 ///
 /// The saving side has a theorem under it. `[mckay1998, Thm 3]` bounds the number
 /// of times the parent test is *made* by `c` times the number of times it is
@@ -94,9 +117,60 @@ struct CanonicalPrices {
     /// hyperplanes where `parents` below counts them all, and the parent test stops
     /// at the first candidate that beats the parent rather than naming every one.
     std::size_t branching = 2;
+
+    // The four below price a **root**, and nothing above them does. A root is the
+    // one node of a search that scans the whole pool, and the one-level clause is
+    // the only place in this model where a node is priced as a root rather than
+    // as an average over a tree.
+
+    /// One step of `least_in_orbit`, per **squared** orbit size. It reaches an
+    /// orbit breadth first and asks `std::find` over a `seen` list that grows to
+    /// the whole orbit, so naming one representative costs `O(|O|^2)` and the
+    /// root's whole sweep costs `O(sum |O_i|^2)`.
+    /// ([`../orbit_reduction/isomorph_rejection.cpp`](../orbit_reduction/isomorph_rejection.cpp).)
+    /// Measured 2.26, 1.50, 0.71, 0.49 and 0.51 ns over the five shapes: the
+    /// small ones sit in cache and the large ones settle, so 0.5 is the value at
+    /// the sizes where this term decides anything.
+    std::size_t orbit_test_picoseconds = 500;
+    /// One step of `orbit_representatives`, per pool element. It marks every
+    /// element once, so it answers the same question in `O(|P|)` where the test
+    /// above takes `O(sum |O_i|^2)`. Measured 108 to 190 ns an element.
+    std::size_t orbit_pass_nanoseconds_per_element = 150;
+    /// Forming the materialised pool, per element, which **both** routes pay
+    /// before a node opens. In the model so the two sides are compared on whole
+    /// runs rather than on searches: at `<2,2,2>` it is most of either run.
+    /// Measured 368 to 566 ns an element.
+    std::size_t pool_build_nanoseconds_per_element = 470;
+    /// One leaf of the canonical route, in membership-test units, so `1000` would
+    /// be one pool scan. It answers a leaf by `independent_rank_one_maps_in` over
+    /// the whole pool where the plain route walks `p^target` elements through the
+    /// packed GF(2) leaf, and at these shapes `p^target` is 1 024 against a pool
+    /// of 261 121. Measured 1.27 to 2.0 pool scans, falling with the pool.
+    std::size_t solution_leaf_picoseconds = 840;
 };
 
-/// A shape and the level being decided, which is all the predicate is given.
+/// What the group does to the pool, which no closed form here gives.
+///
+/// **This is the one input to the predicate that is not free**, and it is stated
+/// as its own type so that a caller cannot supply it by accident. One pass of
+/// `orbit_representatives` produces both, `O(|P| * generators)`: 24 us at
+/// `<2,2,2>` and 50 ms at `<3,3,3>`, the latter against a 4.9 s decision it
+/// prices, so it is 1% of what it decides and not free.
+///
+/// Zero means "not measured", and the one-level clause then refuses rather than
+/// guessing. The bound it would otherwise use is orbit counting's `|O| <= |G|`,
+/// and that is **125x** the measured value at `<3,3,3>` — the same mistake, in
+/// the same direction, that `rho <= |G|` made before it was corrected.
+struct PoolOrbits {
+    /// Orbits of the pool under the stabiliser, which is exactly the number of
+    /// children a root of either route emits.
+    std::size_t count = 0;
+    /// `sum |O_i|^2` over those orbits. A double because it is 9.9e9 at
+    /// `<3,3,3>` and grows with the square of the pool.
+    double summed_squares = 0;
+};
+
+/// A shape and the level being decided.
 struct RouteShape {
     std::size_t characteristic = 2;
     std::size_t rows = 2;     ///< `n` of `<n,m,k>`
@@ -107,9 +181,10 @@ struct RouteShape {
     /// dimension of a concise product tensor.
     std::size_t target = 6;
     /// Generators the group is handed as: two per general linear factor, so six for
-    /// a product shape. It is also about what the baseline achieves on its own,
-    /// since `--route exhaustive` strikes out a child that a **single** generator
-    /// sends earlier.
+    /// a product shape. Both routes are handed the same six, and both take the
+    /// **exact** quotient from them — `least_in_orbit` on one side and
+    /// `orbit_representatives` on the other — so this counts what each pays per
+    /// element and never a difference in what they reject.
     std::size_t generators = 6;
 };
 
@@ -127,6 +202,11 @@ struct RouteVerdict {
     double presentation_seconds = 0;
     double price_ratio = 0;   ///< `pi`
     double saving_ratio = 0;  ///< `rho`
+    /// The two whole runs the one-level clause compares, setup included. Zero at
+    /// two levels and above, where the comparison is per node and these do not
+    /// apply.
+    double plain_run_seconds = 0;
+    double canonical_run_seconds = 0;
     /// `pi / rho`: predicted canonical seconds over plain seconds. Below one is a
     /// win, and the number says by how much either way, which a boolean does not.
     double predicted_cost = 0;
@@ -146,6 +226,11 @@ double product_group_order(const RouteShape& shape);
 
 /// Whether `--route canonical` is worth taking on this shape, and the arithmetic
 /// behind the answer.
-RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrices& prices);
+///
+/// `orbits` is read only at one level of augmentation, where the comparison is
+/// between two roots rather than between two trees; left at its default the
+/// one-level clause refuses and says so.
+RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrices& prices,
+                                   const PoolOrbits& orbits = PoolOrbits());
 
 }  // namespace bilinear_rank

@@ -33,6 +33,14 @@ void set_worker_count(std::size_t workers);
 ///
 /// Dynamically scheduled, because subtrees differ by orders of magnitude in
 /// size and a static split would leave eleven cores waiting for the twelfth.
+///
+/// **What `body` throws is rethrown here, once, on the calling thread.** The
+/// first exception wins; the workers still running give up their remaining
+/// indices rather than finish work whose result nobody will read. Without this a
+/// `require_room` refusal — the mechanism that exists so a machine smaller than
+/// the one a run was written on says so instead of being killed — left a
+/// `std::thread` and so called `std::terminate`, which turned the one graceful
+/// failure here into the one abrupt one, and only above `--threads 1`.
 void parallel_for(std::size_t count, const std::function<void(std::size_t)>& body);
 
 }  // namespace bilinear_rank

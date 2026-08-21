@@ -11,7 +11,7 @@ map is how many multiplications it needs. Strassen's seven-instead-of-eight for
 2×2 matrices is where fast matrix multiplication comes from, and finding such
 decompositions in general is open.
 
-It attacks that from nine directions, from a cheap descent to a solver to a
+It attacks that from ten directions, from a cheap descent to a solver to a
 canonical form that needs no search at all. **Nothing here is ever a float**, so
 a reported rank is a fact about the map rather than an artefact of rounding, and
 every count below is asserted by the test suite. Timings are not and are not
@@ -59,15 +59,36 @@ minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
 sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 ```
 
+## Bringing somebody else's algorithm in
+
+A ⟨L, R, P⟩ triple in SMS is what the field publishes and the only thing it
+publishes — [PLinOpt](https://github.com/jgdumas/plinopt)'s `data/`,
+[Sedoglavic's catalogue](https://fmm.univ-lille.fr/) — so that is the way in as
+well as the way out. His Strassen operators rebuild the fixture this repository
+writes from the definition of the map, entry for entry, which is a test and not
+a claim.
+
+```sh
+operators-to-tensor L.sms R.sms P.sms -q 2 > map.tensor     # his algorithm, our input
+PMchecker out_L.sms out_R.sms out_P.sms -q 2                # our algorithm, his checker
+```
+
+What to install, both directions and the differences that bite, on one page:
+[`formats/plinopt_interoperability/exchanging-files.md`](formats/plinopt_interoperability/exchanging-files.md).
+
 ## What is where
 
-Thirteen modules and **twelve tools**, in [`what-is-where.md`](what-is-where.md),
+Thirteen modules — the directories that own a question, which is every
+`add_subdirectory` except the eight that carry no question of their own (`cli`,
+`testing`, `run_limits`, `linear_algebra`, `formats`, `map_construction`,
+`search_plan`, `gpu_leaf`) — and **thirteen tools**, in
+[`what-is-where.md`](what-is-where.md),
 with which tool answers which question. The one question each answers that no
-other does, and why twelve rather than eight:
+other does, and why thirteen rather than eight:
 [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
 Every flag, its default, the measurement that chose it and the recipes people
-actually type: [`OPTIONS.md`](OPTIONS.md). All twelve can be driven from a
-browser instead, on Python 3's standard library and nothing else:
+actually type: [`OPTIONS.md`](OPTIONS.md). Twelve of the thirteen can be driven
+from a browser instead, on Python 3's standard library and nothing else:
 [`web_interface/`](web_interface/). Every paper any of it implements is named
 once, in [`references.md`](references.md), by the key the code cites.
 

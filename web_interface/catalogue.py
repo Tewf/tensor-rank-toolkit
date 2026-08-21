@@ -138,7 +138,10 @@ TOOLS = [
         "asks": "Is there an algorithm with k products, and is that proved?",
         "answers": "An exhaustive search. Exit 0 is a verified decomposition, "
                    "exit 1 is a proof that none exists, exit 3 is a budget "
-                   "that ran out and proves nothing.",
+                   "that ran out and proves nothing. Hand it two slices and it "
+                   "does not search at all: a pencil has a complete invariant, "
+                   "so the Kronecker form settles those in polynomial time and "
+                   "this takes that answer wherever the form is exact.",
         "verdicts": {"0": {"badge": "yes",
                      "means": "an algorithm with that many products exists, and "
                               "it was verified"},
@@ -260,9 +263,18 @@ TOOLS = [
         "binary": "pencil_rank/decide-rank-by-pencil",
         "input": "tensor",
         "asks": "Two slices: what does the Kronecker canonical form say?",
-        "answers": "Polynomial time and no candidate pool. It reports a proved "
-                   "lower bound, a sharper count marked provisional, and exact "
-                   "only where the pencil is diagonalisable over the field.",
+        # The one shape limit any tool here has, declared rather than left to
+        # the binary to refuse after Run. A pencil is `A + xB`, and the whole
+        # method is that two slices have a complete invariant where three do
+        # not, which is where Hastad's NP-completeness starts.
+        "most_slices": 2,
+        "answers": "Two slices only, and for those it is polynomial time with "
+                   "no candidate pool at all: Kronecker's minimal indices and "
+                   "elementary divisors settle the pencil, so there is nothing "
+                   "to search. It reports a proved lower bound, a sharper count "
+                   "marked provisional, and the exact rank where the field is "
+                   "large enough for the pencil or the pencil is diagonalisable "
+                   "over it.",
         "verdicts": {"0": {"badge": "read off",
                      "means": "the canonical form was computed. Read which of "
                               "the three claims it makes: lower bound, "

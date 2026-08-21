@@ -42,11 +42,51 @@ and this one is of the **axis** presentation on 30. The fee is under 5 ms even a
 `<3,3,3>`, so the gate it guards — that a plain sweep must cost more than the
 presentation it would replace — only ever bites at `<2,2,2>`.
 
+## The three a root pays, added 2026-08-21
+
+The four above price a node in a tree. A **root** is the one node that scans the
+whole pool, and at one level of augmentation the whole comparison is two of them,
+so three more constants were measured for it. Same command, same protocol.
+
+| shape | `\|P\|` | `sum \|O_i\|^2` | `least_in_orbit` | `orbit_representatives` | pool built |
+|---|---|---|---|---|---|
+| `<2,2,2>` | 225 | 1.08e4 | 29.2 us | 27.3 us | 0.110 ms |
+| `<2,2,3>` | 945 | 2.42e5 | 286 us | 123 us | 0.348 ms |
+| `<2,2,4>` | 3 825 | 5.32e6 | 4.19 ms | 502 us | 1.80 ms |
+| `<2,3,3>` | 32 193 | 1.73e8 | 88.9 ms | 4.27 ms | 13.8 ms |
+| `<3,3,3>` | 261 121 | 9.94e9 | 5.05 s | 51.2 ms | 148 ms |
+
+**The orbit test is quadratic and the orbit pass is linear, and the numbers say
+so rather than the code alone.** Dividing `least_in_orbit` by `sum |O_i|^2`:
+2.7, 1.2, 0.79, 0.52 and 0.51 ns — settling to a constant at the two shapes where
+this term decides anything, which is what a `Theta(sum |O_i|^2)` cost looks like
+from outside. Dividing `orbit_representatives` by `|P|`: 121, 130, 131, 133 and
+196 ns, flat. The small shapes sit in cache and read low on the first ratio, so
+**0.5 ns is the value taken and 2.7 is not**; the effect of choosing wrongly here
+is to refuse at small shapes, which is the direction that costs nothing.
+
+**Building the pool is in the model because both routes pay it.** 368 to 566 ns
+an element, flat, and at `<2,2,2>` it is most of either route's clock — so a
+comparison that left it out would report a ratio no user ever experiences.
+
+The fourth, the canonical route's **leaf**, is quoted in membership tests rather
+than measured separately: `independent_rank_one_maps_in` scans the whole pool
+where the plain route walks `p^target` elements through the packed GF(2) leaf.
+Backed out of the five one-level rows it is 6.5, 2.0, 2.0, 1.44 and 1.27 pool
+scans, falling with the pool, and 1.4 is the value taken.
+
 ## Where the constants live, and why not in `tunables.conf`
 
 In `CanonicalPrices`, in code, for the reason
 [`../../run_limits/device.cpp`](../../run_limits/device.cpp) keeps its crossover
 table in code and puts only `device_launch_floor` in the file: **a measured table is
 not a knob.** What a reader may want to move is the decision; what they must not
-silently move is the measurement. When the predicate is wired to a route, the
-threshold it fires on is what belongs in `tunables.conf`, not these.
+silently move is the measurement.
+
+This page used to end "when the predicate is wired to a route, the threshold it
+fires on is what belongs in `tunables.conf`". **There is no such threshold**, and
+that sentence assumed one. `device_launch_floor` is a scalar because the device
+rule is "over this many elements"; this rule is a comparison of two modelled
+costs, and the only scalars in it are the eight prices above. A knob that moved
+the decision here would have to be a fudge factor on one of them, which is a
+measurement moved silently under a different name.

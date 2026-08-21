@@ -9,6 +9,7 @@
 #include "arguments.h"
 #include "exit_code.h"
 #include "map_construction.h"
+#include "memory_budget.h"
 #include "report.h"
 #include "tensor_file.h"
 
@@ -20,11 +21,16 @@ void usage() {
                    "       make-tensor --cyclic <p> <length>\n"
                    "       make-tensor --field <p> <modulus coefficients, highest degree first>\n"
                    "       make-tensor --help\n"
+                   "  Any of the four may be followed by --max-memory N\n"
                    "\n"
                    "  --polynomial 2 5 5     multiplying two 5-term polynomials over GF(2)\n"
                    "  --matmul 2 2 2 2       <2,2,2>: 2x2 by 2x2 matrices, where Strassen starts\n"
                    "  --cyclic 2 5           multiplying modulo x^5 - 1 over GF(2)\n"
                    "  --field 2 1 1 1        multiplying in GF(2^2), modulus x^2 + x + 1\n"
+                   "  --max-memory N         bytes one bulk allocation may take, 2G by\n"
+                   "                         default. Every mode above is cubic in the\n"
+                   "                         numbers it takes, so this is what refuses a\n"
+                   "                         shape the machine cannot hold\n"
                    "  --help                 print this and stop, as exit 2\n"
                    "\n"
                    "Writes a tensor file on standard output.";
@@ -41,7 +47,38 @@ void usage() {
 /// the mode in front of it rather than reported as `stoll` from inside the
 /// standard library. `std::stoll(argv[2])` was the worst of those, because it sat
 /// outside the try below and left `--matmul abc 2 2 2` as a terminate.
-int run(int argc, char** argv) {
+/// `--max-memory N` lifted out of the line before the modes are read, and the
+/// rest handed on as if it had never been there.
+///
+/// **The one setting this command has, and it is here because the refusal
+/// already named it.** Every constructor below is cubic in numbers this takes
+/// without a ceiling — `--matmul 2 100 100 100` is 7.2 TiB — and `require_room`
+/// now prices them, ending its sentence "Raise it with --max-memory if the
+/// machine has the room". A command that printed that and then refused the flag
+/// would be worse than one that never mentioned it.
+///
+/// Lifted rather than walked, because the modes really are modes: every branch
+/// below matches `argc` exactly and reads its own positional numbers, which is
+/// why `cli::Arguments` is the wrong shape here and stays the wrong shape.
+std::vector<char*> without_the_budget(int argc, char** argv) {
+    std::vector<char*> rest;
+    for (int argument = 0; argument < argc; ++argument) {
+        if (std::string(argv[argument]) != "--max-memory") {
+            rest.push_back(argv[argument]);
+            continue;
+        }
+        if (argument + 1 == argc) throw cli::ArgumentError("--max-memory needs a value");
+        bilinear_rank::set_memory_budget(cli::parse_memory_size("--max-memory", argv[argument + 1]));
+        ++argument;
+    }
+    return rest;
+}
+
+int run(int whole_argc, char** whole_argv) {
+    const std::vector<char*> line = without_the_budget(whole_argc, whole_argv);
+    const int argc = static_cast<int>(line.size());
+    char** const argv = const_cast<char**>(line.data());
+
     if (argc < 3) {
         usage();
         return cli::exit_status(cli::ExitCode::Usage);

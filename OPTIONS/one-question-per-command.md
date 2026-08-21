@@ -10,7 +10,7 @@ The count was fourteen and not thirteen: `list-solvers` is the one command whose
 source is not named `*_main.cpp`, so every list assembled by looking for that
 pattern has missed it.
 
-## The twelve, and what each is asked
+## The thirteen, and what each is asked
 
 | Command | The question no other command answers |
 |---|---|
@@ -26,6 +26,7 @@ pattern has missed it.
 | `sparsify-operator` | How few nonzero entries can one operator be written with? |
 | `curve-bounds` | What does interpolation on an algebraic curve bound, and which backend is available to say so? |
 | `make-tensor` | Build a map to run any of the others on |
+| `operators-to-tensor` | What map does somebody else's published ⟨L,R,P⟩ compute, so it can be run on too? |
 
 ## Three kinds of answer, which is what the grouping is for
 
@@ -62,6 +63,15 @@ two mutually exclusive flag sets is worse than two commands.**
 - **`deflate-strictly` + `enumerate-subspaces`.** Refused. They share a directory
   and nothing else: one decides a candidate and exits 0, 1 or 3; the other
   counts and always exits 0.
+- **`operators-to-tensor` into `make-tensor`.** Tempting, because both write a
+  tensor and `--field` would be shared: `make-tensor --operators L R P -q 2`
+  reads well. Refused on the dependency rather than on the flags. Building a map
+  from its definition is `map_construction/`, which sits *below* `descent_search/`
+  in the build; rebuilding one from a decomposition is `algorithm_recovery.h`'s
+  `map_computed_by`, which sits above it and cannot move down, because the
+  `Algorithm` it is written in terms of is the search's own type. The merge would
+  either invert that or copy the arithmetic, and a second definition of what
+  ⟨L,R,P⟩ means is exactly what the interoperability tests exist to prevent.
 
 ## Two that are not tools, and leave the surface
 
@@ -77,4 +87,7 @@ instrument for this repository, not a question a reader brings about their map.
   its answer is for and the `--table` that already prints and stops in that
   file. The old spelling refuses with exit 2 and names the new one.
 
-**Twelve tools, and two instruments beside `measure-leaf`.**
+**Thirteen tools, and two instruments beside `measure-leaf`.** Twelve of the
+thirteen are on the browser console: `operators-to-tensor` takes three files at
+once and [`../web_interface/`](../web_interface/README.md) offers one, which is
+a limit of the console rather than a judgement about the tool.

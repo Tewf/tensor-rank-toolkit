@@ -19,6 +19,7 @@
 #include "binary_encoding.h"
 #include "exit_code.h"
 #include "orbit_cubes.h"
+#include "parallel.h"
 #include "rank_lower_bound.h"
 #include "rank_question.h"
 #include "report.h"
@@ -66,7 +67,18 @@ void usage() {
                    "  --timeout N         seconds per question, from sat_timeout_seconds\n"
                    "                      in tunables.conf when this is not given\n"
                    "  --max-memory 2G     cap on the solver, from sat_memory_megabytes in\n"
-                   "                      tunables.conf when this is not given\n"
+                   "                      tunables.conf when this is not given. This is the\n"
+                   "                      child solver's address space, not this process's\n"
+                   "                      allocation budget, which is what the same flag\n"
+                   "                      means on decide-rank and minimise-rank\n"
+                   "  --threads N         N workers, 0 for every core, 1 by default.\n"
+                   "                      -s matmul splits the question into one instance per\n"
+                   "                      orbit of the first term, and those are independent\n"
+                   "                      solver processes. Each worker's --max-memory is the\n"
+                   "                      cap divided by the workers, so the aggregate\n"
+                   "                      ceiling is the one number the flag names. A\n"
+                   "                      refutation is the same refutation at any count; a\n"
+                   "                      yes may come back from a different cube\n"
                    "\n"
                    "  --help              print this and stop, as exit 2\n"
                    "\n"
@@ -227,6 +239,15 @@ int run(int argc, char** argv) {
             approach.probe_seconds = arguments.count();
         } else if (arguments.is("--proof")) {
             approach.proof_path = arguments.text();
+        } else if (arguments.is("--threads")) {
+            // The cubes are independent instances of one formula and
+            // `satisfiability/rank_question.cpp` has run them through
+            // `parallel_for` since they existed — with the 3.42x it measured
+            // written in the comment beside it. Nothing on this command line
+            // could reach that call, so `worker_count()` was 1 for every run of
+            // this tool and the whole split ran one cube at a time. This is the
+            // flag it was waiting for.
+            bilinear_rank::set_worker_count(arguments.count());
         } else if (arguments.is("--timeout")) {
             approach.timeout_seconds = arguments.count();
         } else if (arguments.is("--max-memory")) {
