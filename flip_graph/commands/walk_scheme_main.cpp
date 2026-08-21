@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "card_failure_note.h"
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
@@ -202,6 +203,7 @@ int run(int argc, char** argv) {
     // the write-ups quote for a walk is this one.
     cli::note() << cli::elapsed_seconds(started) << " s, " << bilinear_rank::worker_count()
                 << " worker(s)";
+    bilinear_rank::note_if_the_card_failed();
     return cli::exit_status(cli::ExitCode::Yes);
 }
 

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "card_failure_note.h"
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
@@ -211,6 +212,8 @@ int run(int argc, char** argv) {
         report("step 3", linear_algebra::multiplication_count(field, current), current.size(),
                cli::elapsed_seconds(started), as_json);
     }
+
+    bilinear_rank::note_if_the_card_failed();
 
     // The multiplication count is not the deliverable: the algorithm is.
     // Recovering it also emits the operators the sparsification then works on,

@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "card_failure_note.h"
 #include "algorithm_recovery.h"
 #include "arguments.h"
 #include "candidate_pool.h"
@@ -201,6 +202,8 @@ int run(int argc, char** argv) {
         // for something nobody asked about.
         if (report.reached_below) break;
     }
+
+    bilinear_rank::note_if_the_card_failed();
 
     bilinear_rank::Algorithm algorithm;
     if (!verified(field, tensor.slices, answer, algorithm)) {
