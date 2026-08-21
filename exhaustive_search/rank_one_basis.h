@@ -85,6 +85,18 @@ enum class LeafRoute { Auto, Scan, Walk };
 void set_leaf_route(LeafRoute route);
 LeafRoute leaf_route();
 
+/// How many elements a subspace of this dimension over this characteristic has,
+/// or **zero** once that passes `ceiling` and the count stops being worth
+/// having.
+///
+/// Exported because the rule above is one comparison against this number and
+/// [the plan](../search_plan/search_plan.h) reports which side of it a run falls
+/// on. A second copy of the counting is how the report and the run would come to
+/// disagree about which route a leaf takes, which is the one disagreement
+/// nothing downstream would catch.
+std::size_t subspace_elements(std::size_t characteristic, std::size_t dimension,
+                              std::size_t ceiling);
+
 template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
                                       const Candidates& pool, std::size_t needed,

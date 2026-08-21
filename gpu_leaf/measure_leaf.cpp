@@ -326,6 +326,126 @@ void measure_the_widest_walk() {
            fastest_gpu_walk(question.packed(), kWholeSubspace));
 }
 
+// --- the launch floor -------------------------------------------------------
+
+/// Where one launch starts beating the host, which is the number
+/// [`../run_limits/device.h`](../run_limits/device.h) keeps a bulk question off
+/// the card below.
+///
+/// **The card's column is `wall_seconds`, never `kernel_seconds`.** A floor
+/// exists because a launch costs more than small work, so the launch and the
+/// copy back are precisely the two things that may not be left out of it.
+///
+/// **A walk row is a whole subspace, not a prefix of a wider one.** The kernel
+/// rebuilds an element from every basis row, so its per-element cost is the
+/// dimension; a leaf walks all `2^dim` elements of the span it was handed and
+/// never a prefix, so dimension and element count move together here exactly as
+/// they do in a search.
+///
+/// **A scan row is whole rows of the outer-product grid**, because that is the
+/// smallest thing either side does: `by_carrying_a_residual` Gray-walks a whole
+/// row before it consults the budget, and the kernel launches whole rows too.
+void floor_header(const char* title) {
+    std::printf("\n%s\n\n", title);
+    std::printf("| %-24s | %12s | %11s | %11s | %8s | %s |\n", "what", "elements", "host s",
+                "card wall s", "speed-up", "wins");
+    std::printf("|%s|%s|%s|%s|%s|%s|\n", std::string(26, '-').c_str(),
+                std::string(14, '-').c_str(), std::string(13, '-').c_str(),
+                std::string(13, '-').c_str(), std::string(10, '-').c_str(),
+                std::string(6, '-').c_str());
+}
+
+void floor_row(const std::string& what, double elements, double host, double card) {
+    std::printf("| %-24s | %12.0f | %11.6f | %11.6f | %8.2f | %-4s |\n", what.c_str(), elements,
+                host, card, host / card, host > card ? "card" : "host");
+    std::fflush(stdout);
+}
+
+/// The shipped leaf walking a whole subspace, bounded so an abandoned leaf and a
+/// finished one cost the same. `needed` is past the dimension, so the greedy
+/// never stops the walk early and every row prices the same number of elements.
+double shipped_whole_walk(const Question& question, std::uint64_t elements) {
+    return fastest_of_three([&] {
+        SearchBudget budget(1'000'000'000, elements);
+        survivors_found =
+            question.leaf().by_walking_the_subspace(question.span(), 47, elements, &budget).size();
+    });
+}
+
+/// The shipped leaf scanning a prefix of the pool, stopped by the leaf budget at
+/// the same element the launch stops at.
+double shipped_bounded_scan(const Question& question, std::size_t elements) {
+    return fastest_of_three([&] {
+        SearchBudget budget(1'000'000'000, elements);
+        survivors_found = question.leaf().by_scanning_the_pool(question.span(), 47, &budget).size();
+    });
+}
+
+/// The smallest whole subspace the card wins, or zero if it wins none of them.
+std::uint64_t walk_crossover(std::size_t rows, std::size_t columns, std::size_t widest,
+                             const char* title) {
+    floor_header(title);
+    std::uint64_t crossed = 0;
+    for (std::size_t dimension = 8; dimension <= widest; ++dimension) {
+        const Question question(rows, columns, dimension, false);
+        const std::uint64_t elements = std::uint64_t(1) << dimension;
+        const double host = shipped_whole_walk(question, elements);
+        const double card = fastest_gpu_walk(question.packed(), elements);
+        floor_row("dimension " + std::to_string(dimension), static_cast<double>(elements), host,
+                  card);
+        if (crossed == 0 && card < host) crossed = elements;
+    }
+    return crossed;
+}
+
+/// The same, over whole rows of the outer-product grid. `ceiling` stops the
+/// sweep once a host row costs more than the crossover is worth: the ratio only
+/// grows with the element count, so nothing past the first win is evidence.
+std::uint64_t scan_crossover(std::size_t rows, std::size_t columns, std::size_t dimension,
+                             std::size_t ceiling, const char* title) {
+    const Question question(rows, columns, dimension, false);
+    const gpu_leaf::LeafQuestion& packed = question.packed();
+    floor_header(title);
+    std::uint64_t crossed = 0;
+    for (std::size_t grid_rows = 1; grid_rows <= packed.left_count; grid_rows *= 2) {
+        const std::size_t elements = grid_rows * packed.right_count;
+        if (elements > ceiling) break;
+        const double host = shipped_bounded_scan(question, elements);
+        const double card = fastest_gpu_scan(packed, grid_rows);
+        floor_row(std::to_string(grid_rows) + (grid_rows == 1 ? " row" : " rows"),
+                  static_cast<double>(elements), host, card);
+        if (crossed == 0 && card < host) crossed = elements;
+    }
+    return crossed;
+}
+
+/// Both routes on each of the four shapes a kernel is compiled for, because a
+/// floor that holds on the widest one and not on the narrowest is not a floor.
+/// The narrow shapes are the hard case: their host element is a single word, so
+/// the host is cheapest exactly where a launch is not.
+void measure_the_floor() {
+    const std::uint64_t walk_16 = walk_crossover(16, 16, 22, "Subspace walk, 16x16");
+    const std::uint64_t walk_9 = walk_crossover(9, 9, 18, "Subspace walk, 9x9");
+    const std::uint64_t walk_5 = walk_crossover(5, 5, 20, "Subspace walk, 5x5");
+    const std::uint64_t walk_4 = walk_crossover(4, 4, 16, "Subspace walk, 4x4");
+    const std::uint64_t scan_16 =
+        scan_crossover(16, 16, 47, 1u << 23, "Pool scan, 16x16, dimension 47");
+    const std::uint64_t scan_9 = scan_crossover(9, 9, 23, 1u << 23, "Pool scan, 9x9, dimension 23");
+    const std::uint64_t scan_5 = scan_crossover(5, 5, 10, 1u << 23, "Pool scan, 5x5, dimension 10");
+    const std::uint64_t scan_4 = scan_crossover(4, 4, 8, 1u << 23, "Pool scan, 4x4, dimension 8");
+
+    const auto shown = [](std::uint64_t count) { return static_cast<unsigned long long>(count); };
+    std::printf("\nFirst element count the card wins; 0 means it never did\n\n");
+    std::printf("  walk 16x16 %12llu    scan 16x16 %12llu\n", shown(walk_16), shown(scan_16));
+    std::printf("  walk  9x9  %12llu    scan  9x9  %12llu\n", shown(walk_9), shown(scan_9));
+    std::printf("  walk  5x5  %12llu    scan  5x5  %12llu\n", shown(walk_5), shown(scan_5));
+    std::printf("  walk  4x4  %12llu    scan  4x4  %12llu\n", shown(walk_4), shown(scan_4));
+    const std::uint64_t largest =
+        std::max(std::max(std::max(walk_16, walk_9), std::max(walk_5, walk_4)),
+                 std::max(std::max(scan_16, scan_9), std::max(scan_5, scan_4)));
+    std::printf("\n  largest crossover %llu, so no route loses at or above it\n", shown(largest));
+}
+
 }  // namespace
 
 int main(int argc, char** argv) try {
@@ -340,6 +460,7 @@ int main(int argc, char** argv) try {
         measure_the_walk();
         measure_the_widest_walk();
     }
+    if (what == "floor") measure_the_floor();
     if (failures != 0) std::printf("\n%d case(s) disagreed\n", failures);
     return failures == 0 ? 0 : 1;
 } catch (const std::exception& failure) {

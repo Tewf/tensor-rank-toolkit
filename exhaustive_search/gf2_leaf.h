@@ -6,6 +6,7 @@
 
 #include "bilinear_rank_aliases.h"
 #include "exhaustive_search.h"
+#include "gf2_leaf_on_card.h"
 #include "gf2_span_basis.h"
 
 /// The leaf test of the exact search, over GF(2), with a bit per entry.
@@ -192,6 +193,44 @@ class Gf2Leaf {
                                                    SearchBudget* budget = nullptr) const;
 
    private:
+    /// The span packed into words, in the order the span hands its rows over,
+    /// with the leading set bit of each.
+    ///
+    /// **That order is the walk's index and may not be changed.** Bit `d` of an
+    /// element's index selects row `d`, so a card handed the rows in another
+    /// order enumerates the same subspace under a different numbering and its
+    /// survivor indices name different maps. The pivots are the leading set
+    /// bits, which are the pivots because a `ReducedBasis` arrives in reduced
+    /// row echelon form.
+    void packed_span(const ReducedBasis& span, std::vector<std::uint64_t>& span_rows,
+                     std::vector<std::uint32_t>& pivots) const;
+
+    /// The leaf as a backend reads it, over arrays the caller holds.
+    PackedLeaf as_a_packed_leaf(const std::vector<std::uint64_t>& span_rows,
+                                const std::vector<std::uint32_t>& pivots) const;
+
+    /// A leaf answered on a card, or false with nothing written and nothing
+    /// spent.
+    ///
+    /// **Three gates before a launch, and the budget after it.** A backend has
+    /// to be registered and to carry this shape; `run_limits::chosen_device` has
+    /// to send work of this size to a card, which is the launch floor and the
+    /// ranking together; and the range is cut to what
+    /// `SearchBudget::leaf_element_limit` allows before anything is launched. A
+    /// card that answered less than the whole leaf leaves the leaf **abandoned**,
+    /// exactly as the host's loop would, so the only thing it can do to a run is
+    /// turn a NO into a GAVE UP.
+    ///
+    /// **The greedy runs here and not there.** The card reports survivors by
+    /// index, ascending; `try_add` over them in that order visits what the
+    /// sequential loop visited, in the order it visited it, and so keeps the
+    /// same maps. That is the whole of why the answer is bit-identical:
+    /// [`../gpu_leaf/why-the-answer-is-the-same.md`](../gpu_leaf/why-the-answer-is-the-same.md).
+    bool scanned_on_the_card(const ReducedBasis& span, std::size_t needed, SearchBudget* budget,
+                             std::vector<Matrix>& found) const;
+    bool walked_on_the_card(const ReducedBasis& span, std::size_t needed, std::size_t elements,
+                            SearchBudget* budget, std::vector<Matrix>& found) const;
+
     /// The scan that never forms an element and never asks the span anything.
     ///
     /// Reduction modulo a subspace is linear, and the pool is a grid, so for one

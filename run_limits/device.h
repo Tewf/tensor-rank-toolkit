@@ -13,19 +13,38 @@
 /// same leaf on one core. (It was 1.12 hours until `d85fd32` gave the host leaf
 /// the kernel's own arithmetic, which is 7.3x of the gap and no card at all.)
 ///
-/// **This is a seam, not a switch, and no GPU backend is compiled in yet.** It
-/// exists so that one can be added without restructuring anything, in the shape
+/// **It is a seam, and a build with `nvcc` now has something behind it.**
+/// [`../gpu_leaf/register_the_card.cpp`](../gpu_leaf/register_the_card.cpp)
+/// registers the kernels and the probe; a build without the toolkit registers
+/// nothing and every question here answers `cpu`, which is the shape
 /// [`../integer_programme/solver_chain.h`](../integer_programme/solver_chain.h)
 /// already uses for solvers: the ranking is fixed, the availability is not, a
-/// machine with nothing installed still answers, and an absent backend is a state
-/// reported here rather than an error discovered downstream.
+/// machine with nothing installed still answers, and an absent backend is a
+/// state reported here rather than an error discovered downstream.
 ///
-/// **Nothing routes through it that was measured to need it.** Building the pool
-/// costs 0.040 ms addressed and 96.8 ms materialised at `<3,3,3>`, and the whole
-/// orbit machinery there costs 1.2 ms, which is 0.04% of a 3.12 s run: an Amdahl
-/// ceiling of 1.0004x, so a kernel for either would be unmeasurable. What is
-/// worth a card is the **leaf**, at 90% or more of a run, and the per-element
-/// call inside it. Those are the routes this seam is for.
+/// **The leaf is the only thing routed through it, because it is the only thing
+/// measured to want it.** Building the pool costs 0.040 ms addressed and 96.8 ms
+/// materialised at `<3,3,3>`, and the whole orbit machinery there costs 1.2 ms,
+/// which is 0.04% of a 3.12 s run: an Amdahl ceiling of 1.0004x, so a kernel for
+/// either would be unmeasurable. The leaf is 90% or more of a run, and
+/// [`../exhaustive_search/gf2_leaf.h`](../exhaustive_search/gf2_leaf.h) is where
+/// it asks `chosen_device` with its own element count.
+///
+/// **Which leaf goes where is decided per leaf and not per run.** A search poses
+/// leaves of many sizes, most of them small, so a run that puts the card on the
+/// table still answers its shallow leaves here: that is what `launch_floor` is,
+/// and forcing a card past it is measurably worse. `decide-rank --device gpu` on
+/// `matmul_2x2x2 --target 6` sends 25 399 nodes of 64-element leaves to the card
+/// and takes **2.10 s against 0.028 s**, for the same 25 399 nodes and the same
+/// verdict. The floor exists for exactly that run.
+///
+/// **A run also pays the CUDA context once, at its first launch.** Measured at
+/// **0.070 s** here, and it is nothing to do with a launch, so the floor does
+/// not price it and should not: it is why a run whose deepest leaf is under the
+/// floor is faster for never having created one, and why there is a second
+/// crossover, in *nodes* rather than elements, at about 143 on the question
+/// `device.cpp` records. `../gpu_leaf/measuring-on-the-card.md` is why a kernel
+/// measurement discards that first launch, and a search is why one cannot.
 namespace run_limits {
 
 /// Best first. The card leads where one is present, since every question asked

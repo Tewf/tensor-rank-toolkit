@@ -155,6 +155,14 @@ void launch(const LeafQuestion& question, dim3 grid, unsigned int threads,
 
 }  // namespace
 
+bool card_present() {
+    int count = 0;
+    // Nothing here throws. It is asked on every question through
+    // `run_limits::available`, and a driver that has gone away is an answer of
+    // no rather than a run that stops.
+    return cudaGetDeviceCount(&count) == cudaSuccess && count > 0;
+}
+
 std::string device_description() {
     cudaDeviceProp properties{};
     GPU_LEAF_CHECK(cudaGetDeviceProperties(&properties, 0));
