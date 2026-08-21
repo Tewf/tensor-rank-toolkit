@@ -7,6 +7,7 @@
 #include "automorphism.h"
 #include "bilinear_rank_aliases.h"
 #include "canonical_parent.h"
+#include "pool_cosets.h"
 #include "pool_set_canon.h"
 #include "span_basis.h"
 #include "subspace_canon.h"
@@ -33,25 +34,23 @@ void below(const bilinear_rank::Field& field, const std::vector<bilinear_rank::M
            std::size_t target, const Visit& visit) {
     if (dimension >= target) return;
 
-    const bilinear_rank::ReducedBasis span = linear_algebra::span_of(field, current);
     const bilinear_rank::SubspaceCode current_code = bilinear_rank::subspace_code(field, current);
 
-    std::vector<bilinear_rank::Element> scratch;
-    std::vector<std::uint32_t> outside;
-    for (std::uint32_t index = 0; index < pool.size(); ++index) {
-        if (!span.contains(pool[index], scratch)) outside.push_back(index);
-    }
+    // One `PoolCosets` a node, as the search itself builds: it answers what is
+    // inside this subspace, what is outside it, and what is inside each child.
+    const bilinear_rank::PoolCosets cosets(field, pool, current);
     // One candidate per orbit of the current subspace's stabiliser, which is what
     // makes this the search's tree and not a wider one.
     const std::vector<std::vector<std::uint32_t>> action =
-        canon.stabiliser_generators(bilinear_rank::pool_inside(field, pool, current));
+        canon.stabiliser_generators(cosets.inside());
 
-    for (const std::uint32_t index : bilinear_rank::orbit_representatives(action, outside)) {
+    for (const std::uint32_t index :
+         bilinear_rank::orbit_representatives(action, cosets.outside())) {
         std::vector<bilinear_rank::Matrix> child = current;
         child.push_back(pool[index]);
         visit(child);
         const bilinear_rank::ParentTest test = bilinear_rank::is_canonical_augmentation(
-            field, base, child, current_code, pool[index], pool, canon);
+            field, base, child, current_code, index, cosets.extended_by(index), pool, canon);
         if (!test.accepted) continue;
         below(field, base, pool, canon, child, dimension + 1, target, visit);
     }

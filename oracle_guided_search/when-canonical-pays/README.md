@@ -33,14 +33,12 @@ reading can be argued with rather than merely obeyed.
 - [Against the sweeps](against-the-sweeps.md): both routes at five shapes, and the
   three things the derived predicate got wrong.
 - [Where the time goes](where-the-time-goes.md): the finding that came out of
-  correcting it, which is that neither group operation is the cost.
+  correcting it, which is that neither group operation is the cost — and what
+  acting on it was worth.
 
 ## The state of it, in one line
 
-The predicate refuses at every shape swept but one, which is what the sweeps do
-too, and it misses that one — `<3,3,3>` at 10, where canonical augmentation wins
-**with a node saving of exactly zero**. **Nothing consults it yet**:
-`Route::Automatic` chooses between the pool and the solver, and adding a route the
-measurement refuses at every reachable shape would be wiring a verdict nobody can
-act on. What would change that is
-[where-the-time-goes.md](where-the-time-goes.md)'s first item.
+The predicate refuses at every shape swept, and it is wrong about one of them:
+`<3,3,3>` at 10, where the canonical route is **2.17x faster with a node saving of
+exactly zero**. **Nothing consults it yet**, and until it stops refusing the one
+shape where the route wins, nothing should.

@@ -93,12 +93,16 @@ RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrice
     const double parents = normalised_count(shape.characteristic, verdict.levels) + 1;
     const double branching = static_cast<double>(prices.branching);
 
-    // What `descend` spends at one canonical node: its own two pool scans, one
-    // setwise stabiliser, and then per candidate child a pool scan inside
-    // `is_canonical_augmentation` and one canonical image per candidate parent.
-    verdict.canonical_node_seconds = 2 * verdict.pool_scan_seconds + verdict.stabiliser_seconds +
-                                     branching * (verdict.pool_scan_seconds +
-                                                  parents * verdict.image_seconds);
+    // What `descend` spends at one canonical node: **one** pass over the pool, one
+    // setwise stabiliser, and one canonical image per candidate parent per
+    // candidate child.
+    //
+    // It was `c + 2` passes until `pool_cosets.h` replaced them. The pass is a
+    // `PoolCosets` at an internal node and the leaf scan in
+    // `independent_rank_one_maps_in` at a leaf, and every node is one or the other,
+    // so one is the right count either way.
+    verdict.canonical_node_seconds = verdict.pool_scan_seconds + verdict.stabiliser_seconds +
+                                     branching * parents * verdict.image_seconds;
 
     // What the baseline would spend: the sweep's levels, each about `C(|P|, j)`
     // subsets thinned by the generator-orbit rejection it already applies.
