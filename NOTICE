@@ -7,7 +7,8 @@ descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
 integer_programme/, matrix_sparsification/, satisfiability/, curve_bounds/,
 rank_metric_bound/, oracle_guided_search/, pencil_rank/ and
 canonical_factorisation/, the CUDA in gpu_leaf/, the Python in web_interface/
-and reproduce/, together with the fixtures and the site.
+and reproduce/, together with the fixtures and the site. One directory of
+fixtures is the exception and is not mine: fixtures/plinopt/, below.
 
 The list is every directory CMakeLists.txt adds, and it is written out rather
 than summarised because a folder missing from it is a folder whose licence this
@@ -73,6 +74,20 @@ Gen Intel Core i5-12450H at 2.2 GHz. The protocol, the flags a published number
 depends on, and the roughly thirteen per cent this chassis varies from thermal
 throttling alone, are in **MEASURING.md**. Counts are asserted by the test suite
 and reproduce anywhere; timings are not, and are not claimed to.
+
+PLinOpt's operators
+-------------------
+fixtures/plinopt/ is eight `.sms` matrices copied unmodified from the `data/`
+directory of **PLinOpt**, by Jean-Guillaume Dumas, Bruno Grenet, Clément Pernet
+and Alexandre Sedoglavic, https://github.com/jgdumas/plinopt. **CeCILL-B**, whose
+Article 5.3.1 asks that a copy of the agreement and the warranty and liability
+disclaimers of Articles 8 and 9 travel with the files; the licence text is in
+that directory, as PermLib's is in its own.
+
+They are the interoperability, not decoration: the exchange with the reference
+toolchain is exercised by the test suite against his bytes rather than against
+something written here to resemble them. What each file carries is
+fixtures/plinopt/README.md.
 
 PermLib
 -------
