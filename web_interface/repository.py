@@ -53,9 +53,10 @@ def command_as_typed(argv):
 def fixtures():
     """The maps and operators shipped here, so nobody has to type one to start.
 
-    Grouped by what reads them: a tensor file is a bilinear map and ten of the
-    twelve tools take one, a matrix or SMS file is a single operator and
-    `sparsify-operator` takes that.
+    Grouped by what reads them: a tensor file is a bilinear map and most of the
+    tools take one, a matrix or SMS file is a single operator and
+    `sparsify-operator` takes that. Which is which is `catalogue.py`'s `input`
+    field, so a tool that cannot read the box is greyed rather than hidden.
     """
     tensors = sorted(path.name for path in (ROOT / "fixtures").glob("*.tensor"))
     operators = sorted(path.name for path in (ROOT / "fixtures").glob("*.matrix"))
