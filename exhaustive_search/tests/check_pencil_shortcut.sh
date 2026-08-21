@@ -28,8 +28,18 @@ report() {
 said=$("$command" "$fixtures/pencil_split_f3_3.tensor" 2>&1)
 echo "$said" | grep -q 'pencil: two slices'; report "an exact pencil takes the polynomial route" $?
 echo "$said" | grep -q 'rank: 3 (exact'; report "and reports the rank the pencil module reports" $?
-echo "$said" | grep -qv 'pool:' 2>/dev/null
-echo "$said" | grep -q 'pool:' && report "and builds no pool" 1 || report "and builds no pool" 0
+# Still a decomposition, because that is what `decide-rank` without `--target`
+# has always returned and the pencil has none to give: it reads a rank off a
+# canonical form and never builds one. The rank becomes the target instead, so
+# the sweep asks one question at the value already proved rather than climbing
+# to it. `reproduce/measure.py` caught the version that returned the number.
+echo "$said" | grep -q 'FOUND: 3 products'; report "and still returns the decomposition" $?
+echo "$said" | grep -q 'verified'; report "which is verified against the map" $?
+
+# A target under the rank needs no pool at all: the form has already refuted it.
+said=$("$command" "$fixtures/pencil_split_f3_3.tensor" --target 2 2>&1)
+echo "$said" | grep -q 'NO: there is no algorithm with 2'; report "a target under the rank is refused" $?
+echo "$said" | grep -q 'pool:' && report "without building a pool" 1 || report "without building a pool" 0
 
 # Inexact: the module proves a bound and not the rank, so the search must run.
 said=$("$command" "$fixtures/pencil_irreducible_f2_4.tensor" 2>&1)
