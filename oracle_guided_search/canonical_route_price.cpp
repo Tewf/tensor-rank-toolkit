@@ -1,3 +1,9 @@
+/// What the two routes cost on one question, and which of them is cheaper.
+///
+/// Past the 80-logical-line trigger of
+/// [`ErgonomicsConventions/3-file-length`], and kept whole deliberately: the two
+/// regimes below are two arms of one predicate, not two roles, and splitting them
+/// would put half a break-even in each of two files.
 #include "canonical_route_price.h"
 
 #include <algorithm>
@@ -50,7 +56,8 @@ double product_group_order(const RouteShape& shape) {
 /// [`when-canonical-pays/`](when-canonical-pays/README.md), in the order that file
 /// argues them: what one membership test costs, what a plain node costs, what a
 /// canonical node costs, what the presentation costs, and only then the two ratios.
-RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrices& prices) {
+RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrices& prices,
+                                   const PoolOrbits& orbits) {
     RouteVerdict verdict;
     const double lefts = normalised_count(shape.characteristic, shape.rows * shape.inner);
     const double rights = normalised_count(shape.characteristic, shape.inner * shape.columns);
@@ -132,27 +139,55 @@ RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrice
 
     if (verdict.levels == 1) {
         // **One level is not a tree and the per-node ratio does not apply to it.**
-        // The sweep is a root and its children, the baseline's single-generator
-        // rejection already emits one child per pool orbit, and `rho` is therefore
-        // exactly 1 with nothing left to remove. What is left is the root's own
-        // work, against a plain root that scans the pool once and hands the same
-        // children on: both routes then pay the same for the leaves.
-        verdict.predicted_cost =
-            (verdict.canonical_node_seconds + branching * verdict.pool_scan_seconds) /
-            ((1 + branching) * verdict.pool_scan_seconds);
-    } else {
-        verdict.predicted_cost = verdict.price_ratio / verdict.saving_ratio;
+        // Both routes emit one node per `G`-orbit of the pool — the baseline by
+        // `least_in_orbit`, this one by `orbit_representatives` — so `rho` is
+        // exactly 1 and the node counts are equal, measured at all five shapes.
+        // What is left is two roots and their leaves, and they are written out
+        // here rather than divided, because the two roots differ in **order**:
+        // `O(sum |O_i|^2)` against `O(|P|)` for the same answer.
+        if (orbits.count == 0 || orbits.summed_squares <= 0) {
+            verdict.refusal = "one level of augmentation: the two routes visit the same tree, so "
+                              "what decides it is the orbits of the pool, and those were not "
+                              "measured";
+            return verdict;
+        }
+        const double children = static_cast<double>(orbits.count);
+        const double setup =
+            static_cast<double>(prices.pool_build_nanoseconds_per_element) * lefts * rights *
+            nanosecond;
+        // The plain root: one `least_in_orbit` per pool element, whose whole sweep
+        // is the sum of the squared orbit sizes. Its leaves walk `p^target`
+        // elements through the packed GF(2) leaf, which is 1 024 against a pool of
+        // 261 121 at `<3,3,3>` and is left out of the model for that reason.
+        verdict.plain_run_seconds =
+            setup + static_cast<double>(prices.orbit_test_picoseconds) * orbits.summed_squares *
+                        picosecond;
+        // The canonical root: one `PoolCosets` pass, one `orbit_representatives`,
+        // one setwise stabiliser, its own name and one parent test per child. Then
+        // one leaf per child, each scanning the whole pool.
+        verdict.canonical_run_seconds =
+            setup + verdict.presentation_seconds + verdict.pool_scan_seconds +
+            static_cast<double>(prices.orbit_pass_nanoseconds_per_element) * lefts * rights *
+                nanosecond +
+            verdict.stabiliser_seconds + (children + 1) * verdict.image_seconds +
+            children * static_cast<double>(prices.solution_leaf_picoseconds) * work * lefts *
+                rights * picosecond;
+        verdict.predicted_cost = verdict.canonical_run_seconds / verdict.plain_run_seconds;
+        if (verdict.predicted_cost >= 1) {
+            verdict.refusal = "one level of augmentation: the orbits of this pool are small "
+                              "enough that naming them one element at a time still costs less "
+                              "than a pool pass a leaf";
+            return verdict;
+        }
+        verdict.pays = true;
+        return verdict;
     }
+    verdict.predicted_cost = verdict.price_ratio / verdict.saving_ratio;
     verdict.predicted_cost += verdict.presentation_seconds / plain_sweep;
 
     if (plain_sweep <= verdict.presentation_seconds) {
         verdict.refusal = "presenting the group costs more than the whole plain sweep, so no node "
                           "saving can pay for it";
-        return verdict;
-    }
-    if (verdict.levels == 1 && verdict.predicted_cost >= 1) {
-        verdict.refusal = "one level of augmentation: the baseline already emits one child per "
-                          "pool orbit, so there is no duplication left for a parent test to remove";
         return verdict;
     }
     if (verdict.predicted_cost >= 1) {
