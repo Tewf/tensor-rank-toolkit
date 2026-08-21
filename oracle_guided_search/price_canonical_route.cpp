@@ -1,9 +1,17 @@
 /// `price-canonical-route`: what the canonical route's operations cost here.
 ///
-/// [`canonical_route_price.h`](../canonical_route_price.h) decides whether
-/// `--route canonical` is worth taking from four nanosecond prices. This is the
-/// command that measures them, so the numbers and the thing that produced them
-/// ship together, as `measure-leaf floor` does for `device_launch_floor`.
+/// [`canonical_route_price.h`](canonical_route_price.h) decides whether
+/// `--route canonical` is worth taking from four nanosecond prices. This
+/// measures them, so the numbers and the thing that produced them ship together,
+/// as `measure-leaf floor` does for `device_launch_floor`.
+///
+/// **An instrument and not a tool, which is why it is here and not in
+/// `commands/`.** What it prints is nanoseconds, and
+/// [`../MEASURING.md`](../MEASURING.md)'s line is that counts reproduce anywhere
+/// and timings do not: a reader arriving with a bilinear map has no question
+/// this answers. `measure-leaf` sits exactly here relative to `gpu_leaf/`, and
+/// [`../OPTIONS/one-question-per-command.md`](../OPTIONS/one-question-per-command.md)
+/// is where the twelve that *are* tools are each given their one question.
 ///
 /// It prices one pool scan, one canonical image, one setwise stabiliser and one
 /// presentation, prints them in the units `tunables.conf` spells, and then prints
