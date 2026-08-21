@@ -88,7 +88,9 @@ one per level. Measured shape of the failures:
 | `gf64_multiplication` | 11 | 19 | 524 288 |
 
 `f2_4x7 --from basis` and `gf64` are where that bites: the second reaches 20 in
-three nodes and then spends minutes on each of the next three. **The generated
+three nodes and then stops moving. A `--nodes 12` run on it was stopped at
+**22 minutes without returning**, and `f2_4x7 --from basis --width 4` at 15 with
+a budget of 120. **The generated
 move set is what makes the rest affordable at all** — 20 678 moves offered over
 22 nodes on `cyclic_f2_7`, against the 16 129 a *single* node would offer from
 the pool — but it does not touch the `p^dim` factor, and that is the honest
