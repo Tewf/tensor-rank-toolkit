@@ -64,6 +64,9 @@ against the built command rather than against the parser.
 
 ## Before the tables
 
+- [**One question per command**](OPTIONS/one-question-per-command.md): the one
+  thing each tool answers that no other does, why there are twelve rather than
+  eight, and which two binaries are instruments rather than tools.
 - [**Common recipes**](OPTIONS/common-recipes.md): the lines people actually
   type, one per question, each running against a shipped fixture.
 - [**One idea, several spellings**](OPTIONS/one-idea-several-spellings.md):
