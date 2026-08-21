@@ -32,3 +32,6 @@ build-cuda/
 # Generated, machine-specific, and a symlink into a build directory that is
 # already ignored.
 compile_commands.json
+
+# clangd's index, written beside the compile database it reads.
+.cache/
