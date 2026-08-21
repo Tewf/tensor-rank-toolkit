@@ -73,8 +73,10 @@ Chaque option, sa valeur par défaut et la mesure qui l'a choisie :
 dans [`references.md`](references.md), et le code en cite la clé.
 ## Compilation
 
-Il faut un compilateur C++20, CMake >= 3.22 et **Givaro** (`sudo apt install
-libgivaro-dev`), seule dependance de compilation ; tous les solveurs sont
+Il faut un compilateur C++20, CMake >= 3.22, **Givaro** et les en-tetes de
+**Boost** (`sudo apt install libgivaro-dev libboost-dev`), les deux seules
+dependances de compilation ; Boost ne sert qu'a `vendor/permlib/`. Tous les
+solveurs sont
 optionnels et cherches sur le `PATH` a l'execution.
 
 ```sh

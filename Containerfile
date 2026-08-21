@@ -41,12 +41,13 @@ FROM ubuntu:24.04
 ARG KISSAT_COMMIT=8af8e56f174b778aef3aa45af9f739b2a5f492c2
 ARG DRAT_TRIM_COMMIT=2e3b2dc0ecf938addbd779d42877b6ed69d9a985
 
-# Givaro is the only build dependency. The three solvers are installed for the
-# same reason CI installs them: without one on PATH the steps that use it take
-# their own "skipping" branch, which is a green tick over an untested strand.
+# Givaro and Boost's headers are the build dependencies; Boost is needed by
+# `vendor/permlib/` alone. The three solvers are installed for the same reason CI
+# installs them: without one on PATH the steps that use it take their own
+# "skipping" branch, which is a green tick over an untested strand.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      build-essential cmake ninja-build pkg-config libgivaro-dev \
+      build-essential cmake ninja-build pkg-config libgivaro-dev libboost-dev \
       cryptominisat coinor-cbc glpk-utils git python3 \
       ca-certificates libgmp-dev \
  && rm -rf /var/lib/apt/lists/*

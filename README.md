@@ -94,9 +94,11 @@ once, in [`references.md`](references.md), by the key the code cites.
 
 ## Building
 
-Needs a C++20 compiler, CMake ≥ 3.22 and **Givaro** (`sudo apt install
-libgivaro-dev`). Givaro is the only build dependency; every solver is optional
-and located on `PATH` at run time. `ccache` is used when installed and ignored
+Needs a C++20 compiler, CMake ≥ 3.22, **Givaro** and **Boost's headers**
+(`sudo apt install libgivaro-dev libboost-dev`). Those two are the only build
+dependencies — Boost is needed by [`vendor/permlib/`](vendor/permlib/) alone, for
+`boost::next` and `boost::shared_ptr`, and no header outside that vendored
+library includes it. Every solver is optional and located on `PATH` at run time. `ccache` is used when installed and ignored
 when not, and [`Containerfile`](Containerfile) pins an environment for
 reproducing a published number.
 
