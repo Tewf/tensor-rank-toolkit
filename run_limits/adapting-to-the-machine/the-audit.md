@@ -17,12 +17,12 @@ Taken 2026-08-21, before any of it was changed.
 | **incumbent** `incumbent_search/` | branch-and-bound over `V + <g>`; per node one `p^dim` sweep then one `minimum_weight_basis_with` per surviving move `cost_first_search.cpp:121` | **NO** — the incumbent `ceiling` decides what the next node prunes; items are six orders of magnitude apart in cost; hundreds of nodes, not millions | ✖ **no `--threads` at all**, and the per-move loop is the twin of the one `descent` already threads | ✖ **no `--max-memory`** — and `require_room`'s refusal names a flag this command did not have. Plus `p^r` unguarded at `level_lowering_moves.cpp:25` | ~ reaches the span seam through `descent`; no flag |
 | **flip graph** `flip_graph/` (walk) | a Markov chain: rebuild all `3n²` moves, pick one, apply, re-merge `flip_graph.cpp:190` | **NO** — step *k+1* is built from step *k*'s scheme; serial RNG *is* the walk's identity; `n` is 8 to 24 | ✔ `--threads` — and it is the **only** correctly threaded loop here: per seed, bit-identical at any count | ✖ **no `--max-memory`** | ✖ |
 | **plateau crossing** `flip_graph/plateau_search.cpp` | per state, one `p^dim` sweep then one `minimum_weight_basis_with` per candidate `:95` | **NO** — same shape as the incumbent: `visited` and `best_cost` carried forward, depth-first recursion on the first improvement | ✖ **worse than absent**: `minimise-rank --threads 8 --plateau` *accepts* the flag and then runs the whole crossing on one core | ✔ via `minimise-rank`; `visited` bounded by `plateau_state_budget`, `level` not bounded by anything | ~ via the span seam |
-| **orbit reduction** `orbit_reduction/` | the isomorph-rejected tree walk `orbit_search.cpp:64` | **NO** — the span grows and the residual group narrows down each branch; subtree cost "wildly uneven" by `parallel.cpp`'s own admission | ✔ `parallel_for` `:220`, reached by 3 commands' `--threads` | ~ `require_room` ×4, but `pool_orbits.cpp:54,120` builds the *same shape of table* the guarded site prices, unguarded | ✖ |
+| **orbit reduction** `orbit_reduction/` | the isomorph-rejected tree walk `orbit_search.cpp:64` | **NO** — the span grows and the residual group narrows down each branch; subtree cost "wildly uneven" by `parallel.cpp`'s own admission | ✔ `parallel_for` `:220`, reached by 3 commands' `--threads` | ~ `require_room` ×4, but `pool_orbits.cpp:54,120` builds the *same shape of table* the guarded site prices, unguarded. **It has to stay that way** — see "the knob that means two things" below | ✖ |
 | **isomorph-free** `orbit_reduction/isomorph_rejection.cpp` | `least_in_orbit`: BFS closure of one point under the residual generators, linear `std::find` over `seen` `:31` | **NO** — a BFS frontier is loop-carried by definition, and it runs *inside* the tree walk, one call per node | ✔ inherits the walk's workers | ✔ bounded by the orbit | ✖ |
 | **SAT** `satisfiability/` | `answer_from` forks kissat/cadical and blocks on `waitpid` `solver_process.cpp:99` | **NO** — the work is in another process. GPU CDCL is a published negative result; 13 cubes is not a swarm; 0.52 s to 143 s per cube is not uniform | ✖ **`parallel_for` at `rank_question.cpp:222` that no flag can reach.** The comment beside it measures 3.42× — dead from this command line | ~ `--max-memory` exists but means the **child's `RLIMIT_AS`**, not `set_memory_budget`. No `require_room` anywhere; the encoders are capped by a private variable budget | ✖ |
 | **pencils** `pencil_rank/` | `diagonal_form`: a Smith-form sweep over `GF(p)[x]`, pivot search reading what the previous elimination wrote `pencil_divisors.cpp:57` | **NO** — loop-carried in the strongest sense; and `column_minimal_indices` is a few big eliminations, not a swarm. **Whole strand: 105 canonical forms in 0.94 ms** | ✖ (correct: nothing to spread on the live path) | ✖ **`split_completely` allocates `p+1` `int64_t` straight from the file's characteristic** — `field 2147483647` asks for 17 GB with nothing in front of it | ✖ |
 | **sparsification** `matrix_sparsification/` | `find_validator`: one Gaussian elimination over **exact `Q` rationals** per column subset `oracle_sparsifier.cpp:30` | **NO** — every `axpyin` is a heap-allocating GMP rational with a gcd; greedy state rewritten each round; 35 subsets on the operators shipped | ✖ (35 items, sub-millisecond — correct to leave) | ✖ **`combinations()` materialises every subset with no `reserve` and no guard**: `C(47,23)` ≈ 1.6e13 on a `⟨4,4,4⟩` operator, which the README invites via `--emit-operators` | ✖ |
-| **rank sums** `linear_algebra/tensor_rank_sum.h` | `contraction_ranks`: for each of up to 2²⁰ index vectors, decode its digits and rank the contraction `:149` | **YES in form** — the closest match in the repo to `device.h`'s own words, *"formed from its own index and reduced against a basis held in common"*. See the verdict below | ✖ **no `parallel_for`, and three commands' `--threads` stop at its door** | ✖ two exponential tables (`:146` 8 MB, `:194` **160 MB**) capped by `constexpr` only; `--max-memory` cannot reach either | ✖ |
+| **rank sums** `linear_algebra/tensor_rank_sum.h` | `contraction_ranks`: for each of up to 2²⁰ index vectors, decode its digits and rank the contraction `:149` | **YES in form** — the closest match in the repo to `device.h`'s own words, *"formed from its own index and reduced against a basis held in common"*. See the verdict below | ✖ **no `parallel_for`, and three commands' `--threads` stop at its door** | ~ both tables are capped by `constexpr` rather than by the budget, and `--max-memory` moves neither. **Checked and it is not a defect**: `kRankTableBudget` holds the rank table to 8 MB, and `kRankSumWorkBudget` holds the digit table far below its worst case, since the work bound is quadratic in the same count | ✖ |
 | **curve bounds** `curve_bounds/` + `integer_programme/` | a knapsack DP where `by_points[p+1][·]` is written from `by_points[p][·]` `interpolation_programme.cpp:76`; or an exact-rational simplex; or a forked MILP solver | **NO** — three ways at once: a serial DP, a branch-and-bound incumbent, GMP rationals, and an external process | ✖ | ✖ **`O(--degree²)` of `size_t` and of `Step` with no guard**: `--degree 100000` asks for ~240 GB and is simply killed | ✖ |
 | **canonical factorisation** `canonical_factorisation/` | none of its own — a sweep that hands each `k` to another strand `factorisation.cpp:299` | **NO** — external solver, or a tree, or a few small solves | ✔ `--threads` (honest about which routes read it) | ✔ `--max-memory` | ✖ |
 | **map construction** `map_construction/` | builds `rows*columns` slices and writes them out `:98` | **NO** — one item, fixed work, output is a file | n/a by design: `make-tensor`'s flags are modes, not settings | ✖ `--matmul 2 100 100 100` asks for ~10¹² `int64_t` unguarded | ✖ |
@@ -58,6 +58,37 @@ Three reasons it does not get a kernel:
 
 So: **the two existing seams cover everything worth putting on a card, and no
 third seam was built.** That is the answer, not a deferral.
+
+## The knob that means two things, which is why three guards were reverted
+
+**`--max-memory` is a ceiling *and* a representation-selection knob, and the
+second meaning wins wherever a cheaper representation exists.** Three of this
+repository's fallbacks are chosen by making the budget too small to hold the
+expensive form:
+
+- `search_plan/tests/check_the_plan_reaches_a_run.sh` uses `--max-memory 1K` to
+  assert `pool: addressed`;
+- `exhaustive_search/tests/test_packed_generation.cpp` and two beside it use
+  `set_memory_budget(1)` to force `Gf2Leaf` to answer with no mask table;
+- `satisfiability/tests/check_exit_codes.sh` uses `--max-memory 1` to assert that
+  `--symmetry matmul` takes the *addressed* pool and still returns a genuine NO.
+
+So `require_room` was added in front of the addressed pool's two vector lists
+(`descent_search/candidate_pool.cpp`) and the factored orbit action
+(`orbit_reduction/pool_orbits.cpp`), and **all three of those test files failed
+within the minute**. The guards were correct about the arithmetic — at the 25x25
+slices of `⟨5,5,5⟩` those lists really are 7.5 GB a side — and wrong about the
+mechanism: pricing the cheap form against the knob that selects it makes the
+fallback unreachable, so a shape too large to hold would be refused twice instead
+of searched once. Both were reverted.
+
+**That leaves one memory gap open on purpose.** `decide-rank` on a shape at
+`⟨5,5,5⟩` or beyond is still killed rather than refused, by an allocation that is
+the irreducible cost of the route it fell back to. Closing it needs a second
+concept — what the *machine* has, as against what one allocation may take — and
+this audit would rather name the gap than invent a knob to cover it. Every other
+`require_room` added here is in front of an allocation with no cheaper form, and
+those refuse cleanly.
 
 ## Where `launch_floor` is the wrong knob, and is not bent to fit
 
