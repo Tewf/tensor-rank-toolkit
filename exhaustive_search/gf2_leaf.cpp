@@ -4,6 +4,7 @@
 #include <bit>
 
 #include "candidate_pool.h"
+#include "device.h"
 #include "gf2_bits.h"
 #include "memory_budget.h"
 #include "span_basis.h"
@@ -191,9 +192,134 @@ Matrix Gf2Leaf<Candidates>::unpacked(const std::uint64_t* words) const {
 }
 
 template <typename Candidates>
+void Gf2Leaf<Candidates>::packed_span(const ReducedBasis& span,
+                                      std::vector<std::uint64_t>& span_rows,
+                                      std::vector<std::uint32_t>& pivots) const {
+    const std::vector<std::vector<Element>>& basis = span.rows();
+    span_rows.assign(basis.size() * words_per_map_, 0);
+    pivots.clear();
+    pivots.reserve(basis.size());
+    for (std::size_t index = 0; index < basis.size(); ++index) {
+        std::uint64_t* target = &span_rows[index * words_per_map_];
+        linear_algebra::gf2_pack(basis[index].data(), width_, target);
+        pivots.push_back(
+            static_cast<std::uint32_t>(linear_algebra::gf2_lowest_set_bit(target, width_)));
+    }
+}
+
+template <typename Candidates>
+PackedLeaf Gf2Leaf<Candidates>::as_a_packed_leaf(const std::vector<std::uint64_t>& span_rows,
+                                                 const std::vector<std::uint32_t>& pivots) const {
+    PackedLeaf leaf;
+    leaf.rows = rows_;
+    leaf.columns = columns_;
+    leaf.words = words_per_map_;
+    leaf.left_count = left_masks_.size();
+    leaf.right_count = right_count_;
+    leaf.dimension = pivots.size();
+    leaf.left_masks = left_masks_.empty() ? nullptr : left_masks_.data();
+    leaf.right_masks = right_masks_.empty() ? nullptr : right_masks_.data();
+    leaf.span_rows = span_rows.empty() ? nullptr : span_rows.data();
+    leaf.pivots = pivots.empty() ? nullptr : pivots.data();
+    return leaf;
+}
+
+template <typename Candidates>
+bool Gf2Leaf<Candidates>::scanned_on_the_card(const ReducedBasis& span, std::size_t needed,
+                                              SearchBudget* budget,
+                                              std::vector<Matrix>& found) const {
+    const LeafOnCard* card = leaf_on_card();
+    // `carries_a_residual` is the grid and its inverse, and a survivor arrives
+    // from a card as an index and nothing else, so without the grid there is
+    // nothing to turn one back into a map with.
+    if (card == nullptr || !carries_a_residual()) return false;
+    if (!card->handles(rows_, columns_)) return false;
+    if (run_limits::chosen_device(pool_.size()) != run_limits::Device::Gpu) return false;
+
+    // Whole rows of the grid, because that is what a launch covers and what
+    // `by_carrying_a_residual` Gray-walks before it consults the budget. Under
+    // one row there is nothing for a card to be given.
+    const std::size_t allowed =
+        budget == nullptr ? pool_.size() : std::min(budget->leaf_element_limit, pool_.size());
+    const std::size_t left_rows = allowed / right_count_;
+    if (left_rows == 0) return false;
+
+    std::vector<std::uint64_t> span_rows;
+    std::vector<std::uint32_t> pivots;
+    packed_span(span, span_rows, pivots);
+
+    std::vector<std::uint64_t> survivors;
+    if (!card->scan(as_a_packed_leaf(span_rows, pivots), left_rows, survivors)) return false;
+
+    // The early exit of the sequential loop, at the survivors rather than at
+    // every index. It can only fire once what is left of the pool is shorter
+    // than what is still needed, and nothing between two survivors moves either
+    // side of it, so this stops on the survivor that loop stops before.
+    linear_algebra::Gf2SpanBasis independent(width_);
+    std::vector<std::uint64_t> scratch(words_per_map_), buffer(words_per_map_);
+    for (const std::uint64_t index : survivors) {
+        const auto at = static_cast<std::size_t>(index);
+        if (found.size() + (pool_.size() - at) < needed) return true;
+        if (!independent.try_add(bits_of(at, buffer), scratch)) continue;
+        found.push_back(pool_[at]);
+        if (found.size() == needed) return true;
+    }
+
+    // Short of the pool means the budget cut it short, and a leaf that stopped
+    // early has to say so or its short answer reads as a refutation. Asking with
+    // the limit itself is the index the host's loop refuses at, so this is the
+    // same `may_examine` call reaching the same conclusion.
+    if (budget != nullptr && left_rows * right_count_ < pool_.size()) {
+        budget->may_examine(budget->leaf_element_limit);
+    }
+    return true;
+}
+
+template <typename Candidates>
+bool Gf2Leaf<Candidates>::walked_on_the_card(const ReducedBasis& span, std::size_t needed,
+                                             std::size_t elements, SearchBudget* budget,
+                                             std::vector<Matrix>& found) const {
+    const LeafOnCard* card = leaf_on_card();
+    if (card == nullptr || !card->handles(rows_, columns_)) return false;
+    if (run_limits::chosen_device(elements) != run_limits::Device::Gpu) return false;
+
+    const std::size_t allowed =
+        budget == nullptr ? elements : std::min(budget->leaf_element_limit, elements);
+    // Index zero is the zero map, which the host's walk does not examine either,
+    // so a range of one is a range of nothing.
+    if (allowed < 2) return false;
+
+    std::vector<std::uint64_t> span_rows;
+    std::vector<std::uint32_t> pivots;
+    packed_span(span, span_rows, pivots);
+
+    std::vector<std::uint64_t> survivors;
+    if (!card->walk(as_a_packed_leaf(span_rows, pivots), allowed, survivors)) return false;
+
+    linear_algebra::Gf2SpanBasis independent(width_);
+    std::vector<std::uint64_t> element(words_per_map_), scratch(words_per_map_);
+    for (const std::uint64_t index : survivors) {
+        for (std::uint64_t& word : element) word = 0;
+        for (std::size_t digit = 0; digit < pivots.size(); ++digit) {
+            if (((index >> digit) & 1) == 0) continue;
+            linear_algebra::gf2_xor(element.data(), &span_rows[digit * words_per_map_],
+                                    words_per_map_);
+        }
+        if (!independent.try_add(element.data(), scratch)) continue;
+        found.push_back(unpacked(element.data()));
+        if (found.size() == needed) return true;
+    }
+
+    if (budget != nullptr && allowed < elements) budget->may_examine(budget->leaf_element_limit);
+    return true;
+}
+
+template <typename Candidates>
 std::vector<Matrix> Gf2Leaf<Candidates>::by_scanning_the_pool(const ReducedBasis& span,
                                                               std::size_t needed,
                                                               SearchBudget* budget) const {
+    std::vector<Matrix> answered;
+    if (scanned_on_the_card(span, needed, budget, answered)) return answered;
     if (!carries_a_residual()) return by_scanning_the_pool_directly(span, needed, budget);
     return by_carrying_a_residual(span, needed, budget);
 }
@@ -420,11 +546,16 @@ std::vector<Matrix> Gf2Leaf<Candidates>::by_walking_the_subspace(const ReducedBa
                                                                  std::size_t needed,
                                                                  std::size_t elements,
                                                                  SearchBudget* budget) const {
+    std::vector<Matrix> answered;
+    if (walked_on_the_card(span, needed, elements, budget, answered)) return answered;
+
+    // The same packing the card is handed, so the two enumerate the subspace
+    // under one numbering. A walk reads no pivots; they cost a bit scan per row
+    // once per leaf, against a leaf of millions of elements.
     const std::vector<std::vector<Element>>& basis = span.rows();
-    std::vector<std::uint64_t> rows(basis.size() * words_per_map_);
-    for (std::size_t index = 0; index < basis.size(); ++index) {
-        linear_algebra::gf2_pack(basis[index].data(), width_, &rows[index * words_per_map_]);
-    }
+    std::vector<std::uint64_t> rows;
+    std::vector<std::uint32_t> pivots;
+    packed_span(span, rows, pivots);
 
     linear_algebra::Gf2SpanBasis independent(width_);
     std::vector<std::uint64_t> combination(words_per_map_), scratch(words_per_map_);

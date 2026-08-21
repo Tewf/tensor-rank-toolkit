@@ -23,9 +23,11 @@
 #include "minimise_rank.h"
 #include "orbit_search.h"
 #include "parallel.h"
+#include "plan_file.h"
 #include "rank_one_basis.h"
 #include "report.h"
 #include "requested_group.h"
+#include "search_plan.h"
 #include "size_argument.h"
 #include "symmetry_argument.h"
 #include "tensor_file.h"
@@ -40,8 +42,22 @@ void usage() {
                    "                   [--max-memory 2G] [--general-leaf]\n"
                    "                   [--leaf-route auto|scan|walk] [--help]\n"
                    "                   [--orbit-test full|generators]\n"
+                   "                   [--device cpu|gpu|auto]\n"
+                   "                   [--plan-out FILE] [--plan-in FILE]\n"
                    "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                    "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
+                   "\n"
+                   "  --device D          which processor answers a leaf. auto, the default, takes\n"
+                   "                      the card where one is compiled in, present, has a kernel\n"
+                   "                      for the shape, and the leaf is over device_launch_floor\n"
+                   "                      elements. gpu asks for it and lifts that floor; cpu takes\n"
+                   "                      it off the table. gpu is a request and not an instruction:\n"
+                   "                      where the card cannot answer, the host does and says why\n"
+                   "  --plan-out FILE     write the seven choices this run made, and carry on\n"
+                   "  --plan-in FILE      make those choices instead of deciding them here, so a\n"
+                   "                      run elsewhere reproduces this one. A flag given beside it\n"
+                   "                      still wins: flag, then file, then rule. The numbers a run\n"
+                   "                      is bounded by travel in tunables.conf, not in a plan\n"
                    "\n"
                    "  --anchor map        search from the map itself (default): the answer is\n"
                    "                      the true minimum, and the search is exponential\n"
@@ -75,14 +91,11 @@ void usage() {
 /// The tool proper. main only turns a thrown refusal into a line.
 int run(int argc, char** argv) {
     long long target = -1;
-    bool anchor_on_heuristic = false;
     // The file first, so that `--node-limit` below can overwrite it: a flag that
     // was given always wins over tunables.conf, and one that was not leaves the
     // file's number standing.
-    // Which processor a bulk question would go to. Applied before anything is
-    // measured, and reported below, because a timing whose device is not on the
-    // line beside it is a timing of an unknown thing. Nothing is compiled in
-    // behind `gpu` yet, so this resolves to the host and says so.
+    // The device ranking and the launch floor are in force before the plan is
+    // chosen, because the plan asks `run_limits::chosen_device` what they say.
     {
         std::string unrecognised;
         if (!run_limits::set_device_order(cli::tunables().device_order, unrecognised)) {
@@ -94,7 +107,13 @@ int run(int argc, char** argv) {
 
     std::size_t node_limit = cli::tunables().search_node_limit;
     std::size_t leaf_limit = cli::tunables().search_leaf_limit;
-    cli::Symmetry symmetry;
+    // Collected rather than applied as they are read: four of these are what the
+    // plan is made of, and a setting applied during the walk would be a decision
+    // made before the tensor that decides it has been opened.
+    bilinear_rank::PlanRequest request;
+    bilinear_rank::PlanFlagsGiven given;
+    std::string plan_out;
+    std::string plan_in;
 
     // Walked by `cli/arguments.h` rather than by hand, so `--target abc` names the
     // flag and the word instead of leaving as 5 saying `stoll`, and `--target`
@@ -107,11 +126,19 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--target")) {
             target = arguments.whole_number();
         } else if (arguments.is("--anchor")) {
-            anchor_on_heuristic = (arguments.text() == "heuristic");
+            const std::string from = arguments.text();
+            if (from != "map" && from != "heuristic") {
+                throw cli::ArgumentError("--anchor expects map or heuristic, not '" + from + "'");
+            }
+            request.anchor = from == "heuristic" ? bilinear_rank::Anchor::Heuristic
+                                                 : bilinear_rank::Anchor::Map;
+            given.anchor = true;
         } else if (arguments.is("--symmetry", "-s")) {
-            symmetry = arguments.parsed_by(cli::parse_symmetry);
+            request.quotient = arguments.parsed_by(cli::parse_symmetry);
+            given.quotient = true;
         } else if (arguments.is("--threads")) {
-            bilinear_rank::set_worker_count(arguments.count());
+            request.threads = arguments.count();
+            given.threads = true;
         } else if (arguments.is("--max-memory")) {
             bilinear_rank::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--node-limit")) {
@@ -119,17 +146,40 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--leaf-limit")) {
             leaf_limit = arguments.count();
         } else if (arguments.is("--general-leaf")) {
+            // Applied here and not through the plan: it chooses which
+            // implementation of the leaf test answers, where the plan chooses
+            // which route and which processor. `gf2_leaf_applies` is asked
+            // below and has to see it.
             bilinear_rank::set_gf2_leaf_offered(false);
+        } else if (arguments.is("--device")) {
+            const std::string wanted = arguments.text();
+            if (wanted == "cpu") request.device = bilinear_rank::DeviceRequest::Cpu;
+            else if (wanted == "gpu") request.device = bilinear_rank::DeviceRequest::Gpu;
+            else if (wanted != "auto") {
+                throw cli::ArgumentError("--device expects cpu, gpu or auto, not '" + wanted + "'");
+            }
+            given.device = wanted != "auto";
+        } else if (arguments.is("--plan-out")) {
+            plan_out = arguments.text();
+        } else if (arguments.is("--plan-in")) {
+            plan_in = arguments.text();
         } else if (arguments.is("--leaf-route")) {
             const std::string route = arguments.text();
-            if (route == "scan") bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Scan);
-            else if (route == "walk") bilinear_rank::set_leaf_route(bilinear_rank::LeafRoute::Walk);
-            else if (route != "auto") arguments.refuse();
+            if (route == "scan") request.leaf_route = bilinear_rank::LeafRoute::Scan;
+            else if (route == "walk") request.leaf_route = bilinear_rank::LeafRoute::Walk;
+            else if (route != "auto") {
+                throw cli::ArgumentError("--leaf-route expects auto, scan or walk, not '" + route +
+                                         "'");
+            }
+            given.leaf_route = route != "auto";
         } else if (arguments.is("--orbit-test")) {
             const std::string rule = arguments.text();
             if (rule == "generators") {
-                bilinear_rank::set_orbit_test(bilinear_rank::OrbitTest::Generators);
-            } else if (rule != "full") {
+                request.orbit_test = bilinear_rank::OrbitTest::Generators;
+                given.orbit_test = true;
+            } else if (rule == "full") {
+                given.orbit_test = true;
+            } else {
                 // Named and quoted rather than `arguments.refuse()`, which is
                 // what the branch above does and which reports a bad *value* as
                 // an unrecognised *flag*: `--leaf-route bogus` leaves as
@@ -165,7 +215,84 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::No);
     }
 
+    // The pool is addressed rather than materialised where it would not fit. The
+    // recursion carries an index down and resumes from it, so an addressed pool
+    // rebuilds a map once per node that reaches it rather than once per run. That
+    // is a real cost and it is why the materialised pool stays the default. It is
+    // also plainly the right trade when the alternative is refusing to start: at
+    // `⟨4,4,4⟩` the pool is 4.3e9 maps and 8.2 TiB, and a slower search beats no
+    // search. This is the odometer of `[yang2025]`, whose whole difference from
+    // `[bdez2012]` Algorithm 1 is that it never holds the pool. The rule itself
+    // is in `search_plan/`, with the other six.
+    const bilinear_rank::RankOnePool addressed(field, tensor.rows(), tensor.columns());
+    cli::result() << "  pool: " << addressed.size() << " rank-one maps of shape "
+                  << tensor.rows() << "x" << tensor.columns() << "\n";
+
+    // Which leaf test answered, printed for the same reason the pool line is:
+    // a timing whose route is not on the line beside it is a timing of an
+    // unknown thing, and `--general-leaf` is here precisely to move this.
+    const bool binary_leaf = bilinear_rank::gf2_leaf_applies(field, tensor.columns());
+    cli::result() << "  leaf: "
+                  << (binary_leaf ? "GF(2), one bit per entry" : "general field path") << "\n";
+
+    // Everything the seven rules read, in one struct, so that what a run decided
+    // can be printed, written down and replayed rather than reconstructed by
+    // whoever reads the source next.
+    bilinear_rank::Machine machine;
+    machine.characteristic = static_cast<std::size_t>(tensor.characteristic);
+    machine.rows = tensor.rows();
+    machine.columns = tensor.columns();
+    machine.pool_size = addressed.size();
+    machine.target = target >= 0 ? static_cast<std::size_t>(target) : 0;
+    machine.memory_budget = bilinear_rank::memory_budget();
+    machine.binary_leaf = binary_leaf;
+
+    // `--threads 0` means every core, and the plan reports the count that was
+    // resolved rather than the nought that asked for it.
+    bilinear_rank::set_worker_count(request.threads);
+    request.threads = bilinear_rank::worker_count();
+
+    bilinear_rank::SearchPlan plan =
+        plan_in.empty()
+            ? bilinear_rank::chosen_plan(machine, request)
+            : bilinear_rank::plan_with_flags(bilinear_rank::read_plan_file(plan_in), request,
+                                             given);
+    // A plan naming the card is a fact about the machine it was taken on, so a
+    // replayed one is asked again here. A card that is missing or has no kernel
+    // for this shape must never produce a wrong answer, and declining is how.
+    if (plan.device == run_limits::Device::Gpu) {
+        if (const char* refused = bilinear_rank::card_refusal(machine)) {
+            plan.device = run_limits::Device::Cpu;
+            plan.device_reason = std::string(refused) + ", so the plan's gpu was declined";
+        }
+    }
+
+    cli::result() << "  plan:\n";
+    for (const std::string& line : bilinear_rank::plan_lines(plan)) {
+        cli::result() << "    " << line << "\n";
+    }
+    if (!plan_out.empty()) bilinear_rank::write_plan_file(plan_out, plan);
+
+    // Applied here, all seven at once, which is the point of the struct: a
+    // setting written where its flag is read is a decision nothing can report.
+    bilinear_rank::set_worker_count(plan.threads);
+    bilinear_rank::set_leaf_route(plan.leaf_route);
+    bilinear_rank::set_orbit_test(plan.orbit_test);
+    {
+        // The ranking is how the device decision reaches a leaf: `Gf2Leaf` asks
+        // `chosen_device` with its own element count, so the floor still keeps a
+        // small leaf here even where the card is on the table. `--device gpu`
+        // lifts the floor, which is the only thing left for it to override.
+        std::string unrecognised;
+        run_limits::set_device_order(plan.device == run_limits::Device::Gpu
+                                         ? std::vector<std::string>{"gpu", "cpu"}
+                                         : std::vector<std::string>{"cpu"},
+                                     unrecognised);
+        if (request.device == bilinear_rank::DeviceRequest::Gpu) run_limits::set_launch_floor(0);
+    }
+
     std::vector<bilinear_rank::Matrix> anchor = tensor.slices;
+    const bool anchor_on_heuristic = plan.anchor == bilinear_rank::Anchor::Heuristic;
     if (anchor_on_heuristic) {
         anchor = bilinear_rank::descend_from_own_basis(field, tensor.slices);
         cli::result() << "anchored on the heuristic: " << anchor.size() << " slices, "
@@ -173,41 +300,8 @@ int run(int argc, char** argv) {
                       << " multiplications\n";
     }
 
-    // Materialise the pool where it fits and address it where it does not.
-    //
-    // The recursion carries an index down and resumes from it, so an addressed
-    // pool rebuilds a map once per node that reaches it rather than once per run.
-    // That is a real cost and it is why the materialised pool stays the default.
-    // It is also plainly the right trade when the alternative is refusing to
-    // start: at `⟨4,4,4⟩` the pool is 4.3e9 maps and 8.2 TiB, and a slower search
-    // beats no search. This is the odometer of `[yang2025]`, whose whole
-    // difference from `[bdez2012]` Algorithm 1 is that it never holds the pool.
-    const bilinear_rank::RankOnePool addressed(field, tensor.rows(), tensor.columns());
-    const bool fits = bilinear_rank::bytes_per_matrix(tensor.rows() * tensor.columns()) <=
-                      bilinear_rank::memory_budget() / addressed.size();
-    cli::result() << "  pool: " << addressed.size() << " rank-one maps of shape "
-                  << tensor.rows() << "x" << tensor.columns()
-                  << (fits ? ", materialised" : ", addressed by index") << "\n";
-
-    // Which leaf test answered, printed for the same reason the pool line is:
-    // a timing whose route is not on the line beside it is a timing of an
-    // unknown thing, and `--general-leaf` is here precisely to move this.
-    cli::result() << "  leaf: "
-                  << (bilinear_rank::gf2_leaf_applies(field, tensor.columns())
-                          ? "GF(2), one bit per entry"
-                          : "general field path")
-                  << "\n";
-
-    // The ranking against what this build can reach, rather than a per-leaf
-    // choice: a leaf picks its own route by size and there are many of them, so
-    // what a reader needs is which devices were on the table at all.
-    cli::result() << "  device: " << run_limits::name_of(run_limits::chosen_device(
-                                        std::numeric_limits<std::size_t>::max()))
-                  << (run_limits::available(run_limits::Device::Gpu)
-                          ? ""
-                          : " (no gpu backend compiled in)")
-                  << "\n";
-
+    const bool fits = plan.pool == bilinear_rank::Pool::Materialised;
+    const cli::Symmetry symmetry = plan.quotient;
     std::vector<bilinear_rank::Matrix> pool;
     if (fits) pool = bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
@@ -275,6 +369,14 @@ int run(int argc, char** argv) {
     const double seconds = cli::elapsed_seconds(started);
 
     cli::result() << "  " << budget.nodes_visited << " nodes in " << seconds << " s\n";
+    // A card that stopped being used is a run that got quietly slower, which is
+    // the sort of thing blamed on the search a week later. The host answered
+    // every leaf after this and the answer is the same one; what changed is the
+    // clock, so it is said once rather than per leaf.
+    if (!bilinear_rank::card_failure().empty()) {
+        cli::note() << "the card failed and the host answered instead: "
+                    << bilinear_rank::card_failure();
+    }
 
     if (found) {
         cli::result() << "  FOUND: "

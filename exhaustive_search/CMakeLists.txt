@@ -2,7 +2,8 @@
 # implementation of a published algorithm, exponential, so it settles small maps
 # outright and bounds large ones from below.
 add_library(exhaustive_search STATIC exhaustive_search.cpp fewest_products.cpp
-                                    rank_one_basis.cpp subspace_walk.cpp gf2_leaf.cpp)
+                                    rank_one_basis.cpp subspace_walk.cpp gf2_leaf.cpp
+                                    gf2_leaf_on_card.cpp)
 target_include_directories(exhaustive_search PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # `descent_search` for `candidate_pool.h`, which owns `RankOnePool` and the two
 # accessor shims both searches walk their candidates through.
