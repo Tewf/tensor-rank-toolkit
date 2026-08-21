@@ -18,6 +18,7 @@
 #include "cost_first_search.h"
 #include "exit_code.h"
 #include "measures.h"
+#include "memory_budget.h"
 #include "minimise_rank.h"
 #include "minimum_weight_basis.h"
 #include "fewest_products.h"
@@ -66,6 +67,10 @@ void usage() {
                    "                        available for most fixtures here\n"
                 << cli::symmetry_usage()
                 << "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
+                   "  --max-memory N        bytes one bulk allocation may take, 2G by\n"
+                   "                        default. --summand-rank r asks for p^r vectors,\n"
+                   "                        and this is what refuses an r the machine cannot\n"
+                   "                        hold\n"
                    "  --help                print this and stop, as exit 2";
 }
 
@@ -120,6 +125,12 @@ int run(int argc, char** argv) {
             symmetry = arguments.parsed_by(cli::parse_symmetry);
         } else if (arguments.is("--rounds")) {
             rounds = arguments.count();
+        } else if (arguments.is("--max-memory")) {
+            // Every `require_room` this command reaches was pinned at the
+            // compiled 2 GiB, while the refusal it prints ends "Raise it with
+            // --max-memory if the machine has the room" — naming a flag this
+            // command did not have. It has it now.
+            bilinear_rank::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--emit-operators")) {
             operator_stem = arguments.text();
         } else {
