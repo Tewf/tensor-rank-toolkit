@@ -85,6 +85,13 @@ second.
 a card: [`../gpu_leaf/README.md`](../gpu_leaf/README.md). It changes nothing on
 this page, which is about the tree above the leaf and stands.
 
+**The sweep this page never did**, over every other strand and over cores and
+memory as well as the card, is
+[`../run_limits/adapting-to-the-machine/`](../run_limits/adapting-to-the-machine/README.md).
+Its finding is that the card was the least of the three: two seams cover every
+GPU-shaped loop there is, and what was actually missing was `--threads` and
+`require_room` on strands nobody had asked the question of.
+
 **The recommendation survives, on less evidence than it claimed.** An order of
 magnitude on the CPU for no new hardware, measured now rather than forecast.
 
