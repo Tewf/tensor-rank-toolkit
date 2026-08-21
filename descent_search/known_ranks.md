@@ -48,12 +48,13 @@ being used the expensive way round.
 **`f2_3x8`: the heuristic is optimal too**, if their `k` = 14 row means what the
 convention says. No 14 exists, step 3 reaches 15, so the rank is 15.
 
-**`f2_5x5`: the heuristic is one off, and only the ceiling is loose now.** The
-rank is 13, and `13 ≤ rank ≤ 14` has an exact floor: `--target 12` was run to
-exhaustion on 2026-08-19, 146 402 553 nodes, and refused. That reproduces their
-exclusion rather than settling anything open, which is what it was worth doing
-for, and it means the floor here is this repository's own rather than borrowed.
-Finding a 13 is the part the heuristic misses and the part still not done.
+**`f2_5x5`: settled here, and it took both directions.** `--target 12` was run
+to exhaustion on 2026-08-19, 146 402 553 nodes, and refused, which reproduces
+their exclusion and puts the floor at 13. The heuristic reaches only 14, so the
+ceiling was theirs until [`lower-the-bound`](../incumbent_search/README.md)
+exhibited 13 in 80 nodes on 2026-08-21. **Finding a 13 was the part the heuristic
+missed**, and it is a construction rather than a refutation, which is why a
+different search had to make it.
 
 **`f2_4x7` is the one still open**: `15 ≤ rank ≤ 16`, their lower bound against
 our upper one. Closing it means deciding 15, which neither side has done.

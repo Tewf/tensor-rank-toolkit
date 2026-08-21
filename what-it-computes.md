@@ -1,6 +1,6 @@
 # What it computes
 
-Nine strands, each with its own folder, its own tests and its own README. This
+Ten strands, each with its own folder, its own tests and its own README. This
 page is the long form; [`README.md`](README.md) carries the headline numbers in a
 table and links here rather than restating them, which is the repository's
 zero-redundancy rule applied to itself.
@@ -29,8 +29,22 @@ stabiliser. Which of those a test would catch is recorded in
 proves things. It settles small maps outright, reproducing Karatsuba's 3, the
 classical 3 and 6 for GF(4) and GF(8), and **rank ⟨2,2,2⟩ = 7** decided from the
 tensor in half a second. On F2 5×5 it rules out 9, 10 and 11 from the bounds
-and 12 by exhaustion, so with the descent's 14 this proves **13 ≤ rank ≤ 14**
-here; `[bdez2012]` report 13. On F3 3×6 both sides are proved in about 25 seconds.
+and 12 by exhaustion, and with the 13 the strand below exhibits that is
+**rank(F2 5×5) = 13** proved here on both sides; `[bdez2012]` report the same 13.
+On F3 3×6 both sides are proved in about 25 seconds.
+
+**[The same tree, cut by an incumbent](incumbent_search/)**, which is the
+upper-bound direction of the one above. A node is a subspace containing
+`span(T)` and a child adjoins a rank-one map, exactly as `[bdez2012]` Algorithm 2
+does; what changes is that the branch stops at `dim V + 1 >= best` rather than at
+a target fixed in advance, so a spent budget hands back an algorithm instead of
+nothing. The bound is admissible because `cost(V) >= dim V`, and the direction can
+only find and never refute. It moves the two fixtures the descent cannot: **cyclic
+convolution of length 7 over F2 from 15 to 13 in 22 nodes**, which is its
+published rank, where not one of the 16 129 rank-one maps strictly improves it;
+and GF(32) multiplication from 16 to 14. Every count is verified by rebuilding
+the algorithm and multiplying it out
+([`incumbent_search/what-it-reaches.md`](incumbent_search/what-it-reaches.md)).
 
 **[Lower bounds without a search](linear_algebra/tensor_rank_sum.h).** Two
 rank-sum bounds return a floor from the tensor alone in milliseconds, and they
