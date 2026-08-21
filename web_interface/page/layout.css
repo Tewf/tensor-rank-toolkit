@@ -1,10 +1,11 @@
-/* The shell: four panes side by side, and nothing that scrolls but a pane.
+/* The shell: four columns of panes, and nothing that scrolls but a pane.
 
-   A console is not an article. The map, what was read, the job and the answer
-   are one working state and a reader compares them, so they are beside each
-   other and all four are on the screen at once. The page itself never scrolls:
-   `body` is the viewport, the header takes what it needs and the panes take the
-   rest, and each pane scrolls its own body when its own content overflows.
+   A console is not an article. The map, what was read, the question, how it is
+   asked and the answer are one working state and a reader compares them, so
+   they are beside each other and all of them are on the screen at once. The
+   page itself never scrolls: `body` is the viewport, the header takes what it
+   needs and the panes take the rest, and each pane scrolls its own body when
+   its own content overflows.
 
    Kept apart from `console.css`, which styles the controls and the result cards.
    This file decides where things sit; that one decides what they look like. */
@@ -31,13 +32,36 @@ body {
 
 /* Four columns, and the widths are what each pane's content needs rather than
    equal shares: a map is a fixed number of characters wide, and the answers are
-   whatever the tool printed, so the last one takes what is left. */
+   whatever the tool printed, so the last one takes what is left.
+
+   The last column is two panes and not one, because how a question is asked and
+   what the run answered are read one after the other and never at the same
+   time: the flags are set, then the command under them is the same line the
+   answer below it will carry. Stacking them puts that sequence in one column
+   instead of splitting the reader's eye across the page. */
 .console {
   flex: 1; min-height: 0;
   display: grid; gap: .8rem; padding: .8rem;
   grid-template-columns:
-    minmax(0, 20rem) minmax(0, 19rem) minmax(0, 22rem) minmax(0, 1fr);
+    minmax(0, 20rem) minmax(0, 17rem) minmax(0, 19rem) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
 }
+
+/* Two panes sharing one column. The options take the height their own controls
+   need and the answer takes the rest.
+
+   The cap is what makes that true. Left to shrink in proportion, a tool with ten
+   flags claims four fifths of the column and leaves the answer a strip: measured
+   at 661 pixels against 160 for `decide-rank`, and the options were scrolling at
+   that height anyway. So a pane of flags is worth at most this much of the
+   column and scrolls past it, because flags are set once and an answer is read
+   for as long as the run took to produce it. */
+.stack {
+  display: flex; flex-direction: column; gap: .8rem;
+  min-height: 0; min-width: 0;
+}
+.stack > #options-pane { flex: 0 1 auto; max-height: 45%; }
+.stack > #run-pane { flex: 1 1 auto; min-height: 0; }
 
 .pane {
   display: flex; flex-direction: column; min-height: 0; min-width: 0;
@@ -67,7 +91,16 @@ body {
    that stack and a document that scrolls, which is the honest failure. */
 @media (max-width: 1180px) {
   body { height: auto; overflow: auto; }
-  .console { grid-template-columns: repeat(2, minmax(0, 1fr)); height: auto; }
+  .console {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto; height: auto;
+  }
+  /* The stack stops being a box and hands its two panes back to the grid, so
+     they flow into the two columns with everything else. The answer is the one
+     that takes both, because a command line is the widest thing on the page and
+     wrapping it is how a reader retypes it wrong. */
+  .stack { display: contents; }
+  .stack > #run-pane { grid-column: 1 / -1; }
   .pane { max-height: 46rem; }
 }
 

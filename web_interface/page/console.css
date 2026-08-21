@@ -2,8 +2,8 @@
 
    site/style.css is served from where it already lives, so the colours, the two
    type families and the dark mode are the published page's rather than a second
-   copy of them. `layout.css` beside this one decides where the four panes sit
-   and what scrolls; everything here is what they are filled with.
+   copy of them. `layout.css` beside this one decides where the panes sit and
+   what scrolls; everything here is what they are filled with.
 
    One colour is added. The stylesheet has a teal and a gold and no alarm, and
    this interface has two endings that must not be read as either: a component
@@ -13,11 +13,6 @@
 @media (prefers-color-scheme: dark) { :root { --alarm: #F08A7E; } }
 
 .pane p { font-size: .86rem; color: var(--muted); margin: .5rem 0; max-width: none; }
-.pane-heading {
-  font-size: .74rem; font-family: var(--mono); letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted); font-weight: 500;
-  margin: 1.1rem 0 .5rem; padding-top: .8rem; border-top: 1px solid var(--line);
-}
 
 textarea, input, select, button {
   font-family: var(--mono); font-size: .82rem; color: var(--ink);
