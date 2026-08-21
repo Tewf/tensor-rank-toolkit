@@ -6,6 +6,7 @@
 /// spent budget is a weaker answer rather than no answer. It refutes nothing, and
 /// every count it prints comes from a decomposition that was rebuilt and compared
 /// against the map first.
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -44,6 +45,11 @@ void usage() {
                    "                        moves at (p^r - 1)p^(r-1)/(p-1) per element\n"
                    "  --whole-pool          offer every rank-one map of the shape instead,\n"
                    "                        which is |pool| minimum-weight bases a node\n"
+                   "  --rounds N            restart from the answer up to N times, 8 by\n"
+                   "                        default, stopping as soon as a round does not\n"
+                   "                        improve. A round that exhausted its tree can\n"
+                   "                        still improve from the subspace it ended on,\n"
+                   "                        which is a different root\n"
                    "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
                    "  --help                print this and stop, as exit 2";
 }
@@ -65,6 +71,7 @@ bool verified(const bilinear_rank::Field& field, const std::vector<bilinear_rank
 int run(int argc, char** argv) {
     bilinear_rank::IncumbentLimits limits;
     bool from_descent = true;
+    std::size_t rounds = 8;
     std::string operator_stem;
 
     cli::Arguments arguments(argc, argv);
@@ -89,6 +96,8 @@ int run(int argc, char** argv) {
             limits.summand_rank = arguments.count();
         } else if (arguments.is("--whole-pool")) {
             limits.whole_pool = true;
+        } else if (arguments.is("--rounds")) {
+            rounds = arguments.count();
         } else if (arguments.is("--emit-operators")) {
             operator_stem = arguments.text();
         } else {
@@ -119,9 +128,29 @@ int run(int argc, char** argv) {
         cli::note() << "pool: " << pool.size() << " rank-one maps";
     }
 
+    // Restarting from the answer is not the same search again. A round that
+    // exhausted its tree exhausted the tree *above its own root*, and the answer
+    // is a different subspace: the next round starts higher up and under a
+    // tighter incumbent, so it cuts sooner and reaches further.
     bilinear_rank::IncumbentReport report;
-    const std::vector<bilinear_rank::Matrix> answer =
-        bilinear_rank::search_from_above(field, start, pool, limits, &report);
+    bilinear_rank::IncumbentReport round_report;
+    std::vector<bilinear_rank::Matrix> answer = start;
+    std::size_t reached = linear_algebra::multiplication_count(field, start);
+    for (std::size_t round = 0; round < rounds; ++round) {
+        std::vector<bilinear_rank::Matrix> next =
+            bilinear_rank::search_from_above(field, answer, pool, limits, &round_report);
+        report.nodes += round_report.nodes;
+        report.children += round_report.children;
+        report.moves_offered += round_report.moves_offered;
+        report.improvements += round_report.improvements;
+        report.bounded += round_report.bounded;
+        report.deepest = std::max(report.deepest, round_report.deepest);
+        report.exhausted = round_report.exhausted;
+        report.best = round_report.best;
+        if (round_report.best >= reached) break;
+        reached = round_report.best;
+        answer = std::move(next);
+    }
 
     bilinear_rank::Algorithm algorithm;
     if (!verified(field, tensor.slices, answer, algorithm)) {

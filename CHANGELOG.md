@@ -8,6 +8,43 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **`incumbent_search/` and the `lower-the-bound` command: the exact search's
+  tree, cut by what has been built rather than by a target.** `[bdez2012]`
+  Algorithm 2 walks subspaces containing `span(T)` and stops a branch at
+  `dim V > k` for a `k` fixed in advance, so a spent budget yields nothing. The
+  same tree stopped at `dim V + 1 >= best`, with `best` the cheapest `cost(V)`
+  reached, yields an algorithm whenever it is stopped. The bound is admissible
+  because `cost(V) >= dim V`, and the direction can only find, never refute,
+  because `cost(V) <= b` exhibits a `b`-product algorithm and `cost(V) > b`
+  exhibits nothing ([`descent_search/sorted_span.h`](descent_search/sorted_span.h)
+  has the counterexample).
+
+  Moves are generated from `V` rather than scanned out of the pool. Abel
+  summation on the cost identity gives
+  `cost(V + <g>) − cost(V) = maxrank − Σ_r e_r`, which is `1` generically, so
+  every adjunction that does not simply cost one more lowers some element's
+  level: `g` with `rank(v − g) = rank(v) − 1`. Those have the closed form
+  `(C a)(bᵀ R)` with `bᵀa = 1`, so an element of rank 3 over GF(2) offers **28**
+  candidates where the 7x7 pool offers 16 129.
+
+  **`cyclic_f2_7` goes from 15 to 13 in 22 nodes**, which is its published rank,
+  where the descent's step-3 shortlist is **0 of 16 129** and it cannot take a
+  first step. `gf32_multiplication` goes 16 to 14 in 139 nodes.
+  `matmul_2x2x2` reaches 7 with the tree exhausted, in 184 nodes.
+  [`incumbent_search/what-it-reaches.md`](incumbent_search/what-it-reaches.md)
+  has every count, and the wall it does not clear: `p^dim` rank computations per
+  child, where `dim` is the quantity the search raises.
+
+### Changed
+
+- **`f2_5x5` is settled at 13 inside this repository**, and was
+  `13 ≤ rank ≤ 14` before. The exhaustive search refutes 12 in 146 402 553 nodes
+  and `lower-the-bound` exhibits 13 in 80, so `[bdez2012]`'s 9.65·10⁹ tests
+  agree with the answer rather than being what it rests on.
+  [`state-of-the-art/where-we-stand.md`](state-of-the-art/where-we-stand.md) and
+  [`descent_search/known_ranks.md`](descent_search/known_ranks.md) both said the
+  older bracket.
+
 - **`--orbit-test full|generators` is documented**, which it was not anywhere
   outside the binary that parses it. It is in
   [`OPTIONS/searching-for-rank.md`](OPTIONS/searching-for-rank.md) with the

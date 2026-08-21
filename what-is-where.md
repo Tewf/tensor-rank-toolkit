@@ -25,6 +25,9 @@ gpu_leaf/                what one consumer GPU is worth on the leaf test,
                          measured; built only where nvcc is present, and called
                          by nothing else here
 flip_graph/              moving a decomposition sideways instead of building one
+incumbent_search/        the exact search's tree cut by what has been built
+                         rather than by a target: upper bounds, and an answer
+                         whenever it is stopped
 oracle_guided_search/    fixed-k search, tree refutation, canonical augmentation
 canonical_factorisation/ the rank as A B, with the receipt that checks it
 pencil_rank/             two slices, where the answer is read off a canonical
@@ -56,9 +59,10 @@ tools/                   scripts that are not part of the build: one asks every
                          backend the same question and tabulates the cost
 ```
 
-**Twelve command-line tools.** Three ask how few multiplications a map needs and
+**Thirteen command-line tools.** Four ask how few multiplications a map needs and
 disagree about what they can prove: `minimise-rank` (descent), `decide-rank`
-(complete), `walk-scheme` (a walk that moves sideways). `decide-rank-by-sat` puts
+(complete), `walk-scheme` (a walk that moves sideways) and `lower-the-bound` (the
+complete one's tree, cut by an incumbent, so it finds and never refutes). `decide-rank-by-sat` puts
 that question to somebody else's solver and `list-solvers` says which backends
 this machine has. `deflate-strictly` refutes a committed candidate from the tree
 rather than from a solver, and `enumerate-subspaces` counts solution subspaces
@@ -69,7 +73,7 @@ out. `curve-bounds` bounds the rank from a curve's points rather than searching.
 Then `sparsify-operator` for the other strand, and `make-tensor` to build a map
 to run any of them on.
 
-A thirteenth, `find-at-rank`, is on the `rejected-experiments` branch. It asked
+A fourteenth, `find-at-rank`, is on the `rejected-experiments` branch. It asked
 only questions it expected to be satisfiable, on an assumed asymmetry between
 acceptance and refutation that measured as about one, and it is dominated by the
 descent on every fixture.
