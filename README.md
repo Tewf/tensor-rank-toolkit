@@ -85,6 +85,11 @@ ctest --test-dir build            # everything, about two minutes
 ctest --test-dir build -LE slow   # skip the expensive searches
 ```
 
+Add `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` and symlink the result to the top of
+the tree (`ln -sf build/compile_commands.json .`) to give clangd — and any
+editor or agent that speaks to it — the real flags. Without it, every module's
+headers look missing, because each one owns its own include directory.
+
 ## Citing
 
 [`CITATION.cff`](CITATION.cff). Licence: MIT; [`LICENSE`](LICENSE) and
