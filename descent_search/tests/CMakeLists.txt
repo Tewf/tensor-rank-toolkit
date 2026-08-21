@@ -41,3 +41,20 @@ add_test(NAME descent_guarantees COMMAND test_descent_guarantees ${PROJECT_SOURC
 add_executable(test_sorted_span test_sorted_span.cpp)
 target_link_libraries(test_sorted_span PRIVATE descent_search formats testing project_warnings)
 add_test(NAME sorted_span COMMAND test_sorted_span ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The order both spans here are walked in, asserted on its own. Neither property
+# it rests on — every string once, one digit by one — shows up in a verdict, so a
+# broken successor would come back as a wrong rank rather than as a failure
+# anywhere else.
+add_executable(test_reflected_gray_walk test_reflected_gray_walk.cpp)
+target_link_libraries(test_reflected_gray_walk PRIVATE descent_search testing project_warnings)
+add_test(NAME reflected_gray_walk COMMAND test_reflected_gray_walk)
+
+# The Gray order the span is walked in against the index order it used to be
+# walked in, entry for entry. Neither the carried index nor the incremental
+# combination shows up in a verdict, so a drift in either returns a
+# minimum-weight basis that is merely plausible.
+add_executable(test_span_element_ranks test_span_element_ranks.cpp)
+target_link_libraries(test_span_element_ranks PRIVATE descent_search formats testing
+                                                      project_warnings)
+add_test(NAME span_element_ranks COMMAND test_span_element_ranks ${PROJECT_SOURCE_DIR}/fixtures)
