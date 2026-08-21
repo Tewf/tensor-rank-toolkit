@@ -76,6 +76,15 @@ struct Factorisation {
     /// not depend on the machine, and the one the routes are compared by.
     std::size_t nodes_visited = 0;
 
+    /// Canonical images asked for over the sweep, zero on every route but
+    /// canonical augmentation. Machine-independent like the node count, and the
+    /// one that says what the parent test *cost* rather than what it saved: a node
+    /// makes one of these per candidate parent plus one for the distinguished cell,
+    /// so `canonisations / nodes_visited` is the branching factor `[mckay1998,
+    /// Thm 3]` calls `c` multiplied by the candidate parents per test.
+    /// `oracle_guided_search/when-canonical-pays.md` is what reads it.
+    std::size_t canonisations = 0;
+
     /// The materialised pool this would have needed, whether or not it formed
     /// one. Reported so the SAT route's advantage is a number and not a claim.
     std::size_t pool_size = 0;

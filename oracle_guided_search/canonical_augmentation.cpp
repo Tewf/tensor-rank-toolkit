@@ -2,6 +2,7 @@
 
 #include <optional>
 
+#include "pool_cosets.h"
 #include "pool_orbits.h"
 #include "pool_set_canon.h"
 
@@ -75,37 +76,84 @@ void emit_if_solution(Walk& walk, const std::vector<Matrix>& child) {
 /// Without the group, the ordering constraint is all there is, which is the existing
 /// behaviour. With it, one candidate per orbit of the current subspace's stabiliser,
 /// recomputed here because the object has moved and a quotient taken earlier is stale.
-std::vector<std::size_t> augmentations(const Walk& walk, const std::vector<Matrix>& current,
-                                       const ReducedBasis& span, std::size_t from) {
-    const Field& field = *walk.field;
-    const std::vector<Matrix>& pool = *walk.pool;
+std::vector<std::size_t> plain_augmentations(const std::vector<Matrix>& pool,
+                                            const ReducedBasis& span, std::size_t from) {
     std::vector<Element> scratch;
-
-    if (!walk.canonical || walk.group->empty()) {
-        std::vector<std::size_t> plain;
-        for (std::size_t index = from; index < pool.size(); ++index) {
-            if (!span.contains(pool[index], scratch)) plain.push_back(index);
-        }
-        return plain;
+    std::vector<std::size_t> plain;
+    for (std::size_t index = from; index < pool.size(); ++index) {
+        if (!span.contains(pool[index], scratch)) plain.push_back(index);
     }
+    return plain;
+}
 
-    std::vector<std::uint32_t> outside;
-    for (std::uint32_t index = 0; index < pool.size(); ++index) {
-        if (!span.contains(pool[index], scratch)) outside.push_back(index);
-    }
+/// The same, quotiented, from a node's cosets rather than from its own scans.
+///
+/// `cosets` has already separated the pool into what lies inside this subspace and
+/// what lies outside it, which is the scan this function used to make for itself.
+std::vector<std::size_t> augmentations(const Walk& walk, const PoolCosets& cosets) {
     // The subgroup fixing this subspace, by backtrack from generators rather than
     // by filtering a group held as a list. That list was the last `|G|` dependency
     // here, and it is why the canonical route refused `<3,3,3>` outright: the
     // group is 4 741 632 elements and 6.2 GiB. `pool_set_canon.h` argues why the
     // setwise stabiliser of the pool content is the stabiliser of the subspace.
     const std::vector<std::vector<std::uint32_t>> action =
-        walk.canon->stabiliser_generators(pool_inside(field, pool, current));
+        walk.canon->stabiliser_generators(cosets.inside());
 
     std::vector<std::size_t> representatives;
-    for (const std::uint32_t index : orbit_representatives(action, outside)) {
+    for (const std::uint32_t index : orbit_representatives(action, cosets.outside())) {
         representatives.push_back(index);
     }
     return representatives;
+}
+
+
+/// Every child this node offers, with the parent test already applied, handed to a
+/// visitor that says whether to stop.
+///
+/// `descend` and `expand_one` differ only in what they do with an accepted child —
+/// one recurses, the other hands back a branch — so the deciding lives here once.
+/// It used to be written out in both, with a comment requiring them to stay equal
+/// line for line; a shared body is the version of that requirement a compiler can
+/// keep.
+///
+/// **One `PoolCosets` a node, not one pool scan a candidate child.** It answers
+/// what is inside this subspace, what is outside it, and what is inside each child,
+/// from a single reduction of every pool element. `pool_cosets.h` has the argument
+/// and the measurement that asked for it.
+template <class Accept>
+void offer_children(Walk& walk, const std::vector<Matrix>& current, std::size_t from,
+                    const Accept& accept) {
+    const Field& field = *walk.field;
+    const std::vector<Matrix>& pool = *walk.pool;
+
+    if (!walk.canonical || walk.group->empty()) {
+        const ReducedBasis span = linear_algebra::span_of(field, current);
+        for (const std::size_t index : plain_augmentations(pool, span, from)) {
+            std::vector<Matrix> child = current;
+            child.push_back(pool[index]);
+            if (accept(index, child)) return;
+        }
+        return;
+    }
+
+    const SubspaceCode current_code = subspace_code(field, current);
+    const PoolCosets cosets(field, pool, current);
+    // This node's own canonical name, which every one of its children's parent
+    // tests would otherwise compute again: they all have the same parent, and it
+    // is this node. Charged as the canonisation it is.
+    const std::vector<std::size_t> current_name = walk.canon->canonical(cosets.inside());
+    ++walk.report.canonisations;
+    for (const std::size_t index : augmentations(walk, cosets)) {
+        std::vector<Matrix> child = current;
+        child.push_back(pool[index]);
+        const ParentTest test = is_canonical_augmentation(
+            field, walk.tensor->slices, child, current_code, current_name, index,
+            cosets.extended_by(index), pool, *walk.canon);
+        walk.report.group_visits += test.group_visits;
+        walk.report.canonisations += test.canonisations;
+        if (!test.accepted) continue;
+        if (accept(index, child)) return;
+    }
 }
 
 void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimension,
@@ -117,25 +165,10 @@ void descend(Walk& walk, const std::vector<Matrix>& current, std::size_t dimensi
         return;
     }
 
-    const Field& field = *walk.field;
-    const std::vector<Matrix>& pool = *walk.pool;
-    const ReducedBasis span = linear_algebra::span_of(field, current);
-    const SubspaceCode current_code = subspace_code(field, current);
-
-    for (const std::size_t index : augmentations(walk, current, span, from)) {
-        std::vector<Matrix> child = current;
-        child.push_back(pool[index]);
-        if (walk.canonical && !walk.group->empty()) {
-            const ParentTest test = is_canonical_augmentation(
-                field, walk.tensor->slices, child, current_code, pool[index], pool,
-                *walk.canon);
-            walk.report.group_visits += test.group_visits;
-            walk.report.canonisations += test.canonisations;
-            if (!test.accepted) continue;
-        }
+    offer_children(walk, current, from, [&](std::size_t index, const std::vector<Matrix>& child) {
         descend(walk, child, dimension + 1, index + 1);
-        if (walk.stop_at_first && !walk.report.decompositions.empty()) return;
-    }
+        return walk.stop_at_first && !walk.report.decompositions.empty();
+    });
 }
 
 /// Fold one branch's walk into the total.
@@ -174,17 +207,15 @@ struct Branch {
 /// Do one node's own work and hand back its accepted children, instead of
 /// recursing into them.
 ///
-/// This is `descend` with the recursive call removed, and it has to stay that way
-/// line for line: the node is counted here, a leaf is emitted here, and the parent
-/// test's group visits are charged here, so that a walk split across cores counts
-/// exactly what the sequential one counts.
+/// This is `descend` with the recursion replaced by a push. The node is counted
+/// here, a leaf is emitted here, and the parent test's group visits are charged in
+/// `offer_children`, which both walks share — so a walk split across cores counts
+/// exactly what the sequential one counts, by construction rather than by a comment
+/// asking two copies to stay equal.
 void expand_one(Walk& walk, const std::vector<Matrix>& root, const Branch& node,
                 std::vector<Branch>& children) {
-    const Field& field = *walk.field;
-    const std::vector<Matrix>& pool = *walk.pool;
-
     std::vector<Matrix> current = root;
-    for (const std::size_t index : node.added) current.push_back(pool[index]);
+    for (const std::size_t index : node.added) current.push_back((*walk.pool)[index]);
 
     ++walk.report.nodes;
     const std::size_t dimension = walk.base + node.added.size();
@@ -193,25 +224,14 @@ void expand_one(Walk& walk, const std::vector<Matrix>& root, const Branch& node,
         return;
     }
 
-    const ReducedBasis span = linear_algebra::span_of(field, current);
-    const SubspaceCode current_code = subspace_code(field, current);
-    for (const std::size_t index : augmentations(walk, current, span, node.from)) {
-        std::vector<Matrix> child = current;
-        child.push_back(pool[index]);
-        if (walk.canonical && !walk.group->empty()) {
-            const ParentTest test = is_canonical_augmentation(
-                field, walk.tensor->slices, child, current_code, pool[index], pool,
-                *walk.canon);
-            walk.report.group_visits += test.group_visits;
-            walk.report.canonisations += test.canonisations;
-            if (!test.accepted) continue;
-        }
+    offer_children(walk, current, node.from, [&](std::size_t index, const std::vector<Matrix>&) {
         Branch next;
         next.added = node.added;
         next.added.push_back(index);
         next.from = index + 1;
         children.push_back(std::move(next));
-    }
+        return false;
+    });
 }
 
 /// The same walk, its subtrees spread over cores.
