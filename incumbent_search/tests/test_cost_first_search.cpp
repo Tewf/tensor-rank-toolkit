@@ -91,7 +91,6 @@ void the_generated_moves_are_the_useful_ones(const std::string& name, std::size_
     // The generated set, held as flattened entries so membership is a lookup.
     const std::vector<Matrix> generated =
         bilinear_rank::level_lowering_moves(field, basis, known, cutoff);
-    linear_algebra::SpanBasis<Field> width_probe(field, 1);
     std::vector<std::vector<bilinear_rank::Element>> offered;
     for (const Matrix& move : generated) {
         offered.emplace_back(move.data(), move.data() + move.entry_count());
