@@ -54,6 +54,10 @@ add_subdirectory(rank_metric_bound)
 add_subdirectory(oracle_guided_search)
 add_subdirectory(pencil_rank)
 add_subdirectory(canonical_factorisation)
+# After both of the modules whose enums a plan names, and after run_limits,
+# whose device ranking it routes: search_plan owns no rule and links every
+# module that owns one.
+add_subdirectory(search_plan)
 
 # Read unconditionally, and guarded inside instead. gpu_leaf/README.md is a
 # measurement that stands on its own and the directory builds nothing the rest of

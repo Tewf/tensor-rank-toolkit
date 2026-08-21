@@ -24,6 +24,13 @@ inline void check(cudaError_t status, const char* call) {
 #define GPU_LEAF_CHECK(call) ::gpu_leaf::check((call), #call)
 
 /// Device memory that frees itself.
+///
+/// **Allocating per launch was tried and reverted**, because reusing the buffers
+/// across leaves moved `matmul_3x3x3 --target 17 --node-limit 60 --leaf-route
+/// walk` from 0.132 s to 0.132 s. What that run was paying was not `cudaMalloc`:
+/// it was the context, once, and `run_limits/device.cpp` records where that
+/// lands. A cache here would have been a complication bought with a number
+/// nobody could measure.
 struct DeviceBuffer {
     void* pointer = nullptr;
     explicit DeviceBuffer(std::size_t bytes) { GPU_LEAF_CHECK(cudaMalloc(&pointer, bytes)); }

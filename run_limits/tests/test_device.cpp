@@ -1,8 +1,10 @@
-/// The device ranking, which is a seam with nothing behind its first entry yet.
+/// The device ranking, asked with no backend registered.
 ///
 /// Four things are asserted, and three of them are about what happens when the
-/// card is absent, because that is every machine this builds on today and a seam
-/// that misbehaves when empty is worse than no seam.
+/// card is absent, because that is every machine without `nvcc` and a seam that
+/// misbehaves when empty is worse than no seam. `gpu_leaf/` registers a real one
+/// where the toolkit is found, and this test links `run_limits` alone, which is
+/// what keeps it asking the empty question rather than a machine-dependent one.
 ///
 /// **The host always answers.** An order naming only devices this build cannot
 /// reach would leave a question unanswerable, so the host is appended rather than

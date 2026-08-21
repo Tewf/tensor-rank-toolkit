@@ -27,18 +27,47 @@ enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 
-add_executable(measure-leaf pool_scan.cu subspace_walk.cu measure_leaf.cpp)
-target_include_directories(measure-leaf PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# The two kernels and the backend that offers them to the search, compiled once
+# and linked by both the harness and the command. 8.9 is the RTX 4060 this was
+# measured on. The ptxas report is how the register and local-memory counts in
+# README.md were read off; a kernel that spills is measuring the memory system
+# rather than the arithmetic, so the report is on by default.
+#
 # `project_warnings` carries -Wall -Wextra -Wpedantic behind a COMPILE_LANGUAGE
 # guard, so linking it here warns the C++ and leaves nvcc's device compilation
 # alone. The guard lives with the options because CMake refuses a
 # COMPILE_LANGUAGE genex inside `target_link_libraries`.
-target_link_libraries(measure-leaf PRIVATE exhaustive_search descent_search linear_algebra
-                                           run_limits project_warnings)
+add_library(gpu_leaf_kernels STATIC pool_scan.cu subspace_walk.cu leaf_backend.cpp)
+target_include_directories(gpu_leaf_kernels PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# `CUDA::cudart` is PUBLIC because both things that link this are ordinary C++
+# executables now: CMake adds the runtime for a target that has `.cu` sources of
+# its own and for no other, which is why it used to arrive by itself and does
+# not any more.
+target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive_search CUDA::cudart
+                                       PRIVATE project_warnings)
+set_target_properties(gpu_leaf_kernels PROPERTIES CUDA_ARCHITECTURES "89")
+target_compile_options(gpu_leaf_kernels PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--ptxas-options=-v>)
 
-# 8.9 is the RTX 4060 this was measured on. `-lineinfo` and the ptxas report are
-# how the register and local-memory counts in README.md were read off; a kernel
-# that spills is measuring the memory system rather than the arithmetic, so the
-# report is on by default and the number is quoted there.
-set_target_properties(measure-leaf PROPERTIES CUDA_ARCHITECTURES "89")
-target_compile_options(measure-leaf PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--ptxas-options=-v>)
+add_executable(measure-leaf measure_leaf.cpp)
+target_link_libraries(measure-leaf PRIVATE gpu_leaf_kernels exhaustive_search descent_search
+                                           linear_algebra run_limits project_warnings)
+
+# The registration, and only the registration.
+#
+# An object library rather than a static one because a static library
+# contributes only the objects something already references, and nothing
+# references this by design: linking it *is* the registration. It is separate
+# from the kernels above because `measure-leaf` must not have it — a harness
+# whose shipped-leaf column had quietly started answering on the card would be
+# comparing the card with itself.
+add_library(gpu_leaf_registration OBJECT register_the_card.cpp)
+target_include_directories(gpu_leaf_registration PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(gpu_leaf_registration PRIVATE gpu_leaf_kernels run_limits project_warnings)
+
+# Reaching into `exhaustive_search/commands/` from here rather than guarding
+# there: whether a card is compiled in is this directory's fact, and the command
+# should not have to ask. Where there is no toolkit this file has already
+# returned and `decide-rank` is byte for byte what it was.
+target_link_libraries(decide-rank PRIVATE gpu_leaf_registration gpu_leaf_kernels)
+
+add_subdirectory(tests)
