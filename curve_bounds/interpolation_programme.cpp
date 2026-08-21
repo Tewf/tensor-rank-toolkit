@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <limits>
 #include <map>
+#include <string>
 
+#include "memory_budget.h"
 #include "symmetric_bound_table.h"
 
 namespace curve_bounds {
@@ -56,6 +58,22 @@ SupplyPlan plan_for(const PointSupply& supply, std::size_t degree_budget) {
     // by `available` instead cost about 480 MB of empty vector headers for
     // `available = 100 000` and a budget of 200, for a frontier of 201 by 201.
     const std::size_t usable = std::min(supply.available, degree_budget / supply.degree);
+
+    // **And `degree_budget` is `--degree`, which takes any whole number.** The
+    // clamp above bounds one side of the frontier and nothing bounded the other,
+    // so `--degree 100000` on a supply of degree 1 asked for a 100 001 by 100 001
+    // frontier in two tables, about 240 GB, and the process was simply killed.
+    // Priced against the one budget that decides these, so it is refused with the
+    // number instead — `--max-memory` moves it where the machine has the room.
+    // Asked a row at a time and then a frontier of rows, rather than as one
+    // product: `(usable + 1) * (degree_budget + 1)` is exactly the multiplication
+    // that overflows on the input this is here to refuse. One row inside the
+    // budget makes the second call's `bytes_each` safe by construction.
+    const std::string frontier = "the interpolation frontier at degree " +
+                                 std::to_string(degree_budget);
+    const std::size_t cell = sizeof(std::size_t) + sizeof(Step);
+    bilinear_rank::require_room(frontier, degree_budget + 1, cell);
+    bilinear_rank::require_room(frontier, usable + 1, (degree_budget + 1) * cell);
 
     // by_points[p][g]: cost of using exactly p points consuming exactly g.
     std::vector<std::vector<std::size_t>> by_points(usable + 1,

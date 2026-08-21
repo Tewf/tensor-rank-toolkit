@@ -16,7 +16,8 @@ cli/                     what every command shares: clock, exit codes, argument
 tunables.conf            the numbers a run is bounded by, in a file not in code
 testing/                 the assertion helper every module's tests use
 run_limits/              how much memory, how many cores, and which processor
-                         one run may take
+                         one run may take; adapting-to-the-machine/ audits
+                         every strand against all three
 descent_search/          rank from above, by descent
 exhaustive_search/       rank decided outright, and what that costs
 map_construction/        building the maps every method runs on

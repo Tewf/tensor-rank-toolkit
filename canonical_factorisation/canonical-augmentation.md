@@ -85,12 +85,21 @@ routes at `⟨2,2,2⟩`, `⟨2,2,3⟩`, `⟨2,2,4⟩`, `⟨2,3,3⟩` and `⟨3,3
 [`../oracle_guided_search/when-canonical-pays/`](../oracle_guided_search/when-canonical-pays/README.md).
 
 Three results from it bear on this page. The node saving is **nothing at all** at
-one level of augmentation, because the baseline's generator rejection has already
-taken that quotient. It is 11x to 212x at two, which is 0.017% to 5% of `|G|` and
-nowhere near the orbit-counting bound. And at `⟨3,3,3⟩` the canonical route is
-**2.07x faster** with both routes visiting the same 14 nodes, so its first win here
-is not a node saving at all but one orbit computation replacing 261 121
-per-element generator tests.
+one level of augmentation, because the baseline's `least_in_orbit` is the exact
+rule and has already taken that quotient — both routes emit one child per pool
+orbit, and `orbits + 1` is the node count of either. It is 11x to 226x at two
+levels, which is 0.017% to 5% of `|G|` and nowhere near the orbit-counting bound.
+And at `⟨3,3,3⟩` the canonical route is **2.15x faster** with both routes visiting
+the same 14 nodes, so its first win here is not a node saving at all but one
+orbit computation replacing 261 121 per-element orbit walks.
+
+**That last one has since been taken apart, and it is not this route's win.**
+`least_in_orbit` costs `Θ(Σ|Oᵢ|²)` and `orbit_representatives` costs `Θ(|P|)` for
+the identical children: 5.05 s against 51.2 ms at the `⟨3,3,3⟩` root, which is
+the whole of the plain route's 4.87 s run. The margin is a quadratic in the
+baseline, on the one level a real sweep never reaches, and the predicate that
+finds it is deliberately wired to nothing:
+[`../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md`](../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md).
 
 What decided the rest was a pool scan and not the group: seven to fourteen of them
 per canonical node, 98% of the cost at `⟨2,3,3⟩`, where the setwise stabiliser was

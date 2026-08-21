@@ -17,6 +17,7 @@
 #include "exit_code.h"
 #include "fewest_products.h"
 #include "flip_graph.h"
+#include "memory_budget.h"
 #include "minimise_rank.h"
 #include "parallel.h"
 #include "report.h"
@@ -27,7 +28,7 @@ namespace {
 
 void usage() {
     cli::note() << "usage: walk-scheme <tensor-file> [--flips N] [--seeds N] [--from k]\n"
-                   "                   [--threads N] [--help]\n"
+                   "                   [--threads N] [--max-memory N] [--help]\n"
                    "\n"
                    "  --flips N   flips per seed, 20000 by default. --steps is the older\n"
                    "              spelling and still works; it means pipeline stages in\n"
@@ -41,6 +42,10 @@ void usage() {
                    "              from the naive algorithm. The heuristic has to reach k\n"
                    "              or fewer or the run refuses, because a starting point\n"
                    "              nobody holds is not a starting point\n"
+                   "  --max-memory N\n"
+                   "              bytes one bulk allocation may take, 2G by default. --from\n"
+                   "              runs the heuristic first, whose span table is p^dim, so\n"
+                   "              this is what refuses a shape the machine cannot hold\n"
                    "  --help      print this and stop, as exit 2";
 }
 
@@ -95,6 +100,8 @@ int run(int argc, char** argv) {
             seeds = arguments.count();
         } else if (arguments.is("--threads")) {
             bilinear_rank::set_worker_count(arguments.count());
+        } else if (arguments.is("--max-memory")) {
+            bilinear_rank::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--from")) {
             from = arguments.whole_number();
         } else {
