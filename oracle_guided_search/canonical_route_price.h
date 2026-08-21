@@ -181,9 +181,10 @@ struct RouteShape {
     /// dimension of a concise product tensor.
     std::size_t target = 6;
     /// Generators the group is handed as: two per general linear factor, so six for
-    /// a product shape. It is also about what the baseline achieves on its own,
-    /// since `--route exhaustive` strikes out a child that a **single** generator
-    /// sends earlier.
+    /// a product shape. Both routes are handed the same six, and both take the
+    /// **exact** quotient from them — `least_in_orbit` on one side and
+    /// `orbit_representatives` on the other — so this counts what each pays per
+    /// element and never a difference in what they reject.
     std::size_t generators = 6;
 };
 
