@@ -76,8 +76,11 @@ async function ask(method, path, body) {
 
 async function begin() {
   state.setup = await ask("GET", "/api/setup");
-  $("facts").textContent =
-    "build " + state.setup.build + " | runs from " + state.setup.root;
+  const machine = "build " + state.setup.build + " | runs from " + state.setup.root;
+  $("facts").textContent = machine;
+  // The header is one line that never wraps, so the two paths are elided when
+  // they do not fit and the whole of both is on the hover.
+  $("facts").title = machine;
   $("wall-clock").value = state.setup.wall_clock_seconds;
 
   const menu = $("fixture");
@@ -117,11 +120,21 @@ async function begin() {
     $("builder").hidden = !$("builder").hidden;
   };
   $("run").onclick = run;
+  drawer("starters");
 
   renderTools();
   renderExamples();
   buildPanel();
   drawEarlierRuns();
+}
+
+/* A panel that is opened, read and closed, over the four panes rather than
+   inside one of them. `dialog` because the backdrop, the Escape key and giving
+   the focus back afterwards are the browser's job and it already does all
+   three; the two buttons are the only wiring left. */
+function drawer(name) {
+  $("open-" + name).onclick = () => $(name).showModal();
+  $("close-" + name).onclick = () => $(name).close();
 }
 
 /* Which fixtures the chosen tool can read, greyed rather than hidden so that a

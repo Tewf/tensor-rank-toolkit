@@ -17,6 +17,7 @@ import argparse
 import json
 import os
 import pathlib
+import re
 import sys
 import threading
 import time
@@ -51,6 +52,16 @@ def ask(port, method, path, body=None):
             return answer.status, json.loads(answer.read())
     except urllib.error.HTTPError as refused:
         return refused.code, json.loads(refused.read())
+
+
+def served(port, path):
+    """One file exactly as the browser receives it, status and text."""
+    request = urllib.request.Request("http://127.0.0.1:" + str(port) + path)
+    try:
+        with urllib.request.urlopen(request) as answer:
+            return answer.status, answer.read().decode("utf-8")
+    except urllib.error.HTTPError as refused:
+        return refused.code, refused.read().decode("utf-8")
 
 
 def until_finished(port, identifier, most_seconds=120):
@@ -104,6 +115,8 @@ def checks(port):
     check("and every starter names a tool that is there",
           all(example["tool"] in {tool["name"] for tool in setup["tools"]}
               for example in setup["examples"]))
+
+    page_is_whole(port)
 
     print("\nthe command shown is the command run")
     body = {"tool": "decide-rank", "options": {"--target": "7"},
@@ -249,6 +262,35 @@ def checks(port):
         check("a request from another origin is refused", False)
     except urllib.error.HTTPError as refused:
         check("a request from another origin is refused", refused.code == 403)
+
+
+def page_is_whole(port):
+    """The page the browser is actually given, against the scripts it loads.
+
+    The interface is five plain scripts reaching into the markup by identifier,
+    which is the arrangement that costs nothing until a pane is renamed and one
+    `$("...")` in one file goes on returning null. So the served HTML and the
+    served scripts are read back from the running console and compared: every
+    identifier a script reaches for has to be in the page it was sent with.
+    """
+    print("\nthe page the browser is given")
+    status, html = served(port, "/")
+    check("the console page is served", status == 200 and "<main" in html)
+
+    asked_for = re.findall(r'(?:src|href)="(/page/[^"]+)"', html)
+    missing = [path for path in asked_for if served(port, path)[0] != 200]
+    check("every stylesheet and script it links is served too",
+          len(asked_for) >= 2 and not missing)
+
+    in_page = set(re.findall(r'\bid="([^"]+)"', html))
+    reached_for = set()
+    for path in asked_for:
+        if path.endswith(".js"):
+            reached_for |= set(re.findall(r'\$\("([^"]+)"\)', served(port, path)[1]))
+    astray = sorted(reached_for - in_page)
+    check("and every element the scripts reach for is in it" +
+          (" (" + ", ".join(astray) + ")" if astray else ""),
+          len(reached_for) > 10 and not astray)
 
 
 def group_is_gone(process_group):

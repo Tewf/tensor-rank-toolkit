@@ -1,0 +1,90 @@
+/* The shell: four panes side by side, and nothing that scrolls but a pane.
+
+   A console is not an article. The map, what was read, the job and the answer
+   are one working state and a reader compares them, so they are beside each
+   other and all four are on the screen at once. The page itself never scrolls:
+   `body` is the viewport, the header takes what it needs and the panes take the
+   rest, and each pane scrolls its own body when its own content overflows.
+
+   Kept apart from `console.css`, which styles the controls and the result cards.
+   This file decides where things sit; that one decides what they look like. */
+
+html { height: 100%; }
+body {
+  height: 100%; overflow: hidden;
+  display: flex; flex-direction: column;
+  font-size: 15px;
+}
+
+.head {
+  flex: 0 0 auto;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  display: flex; align-items: baseline; gap: 1rem;
+  padding: .45rem 1rem;
+}
+.head .brand { font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+.head .facts {
+  font-family: var(--mono); font-size: .72rem; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.head .spacer { flex: 1; }
+
+/* Four columns, and the widths are what each pane's content needs rather than
+   equal shares: a map is a fixed number of characters wide, and the answers are
+   whatever the tool printed, so the last one takes what is left. */
+.console {
+  flex: 1; min-height: 0;
+  display: grid; gap: .8rem; padding: .8rem;
+  grid-template-columns:
+    minmax(0, 20rem) minmax(0, 19rem) minmax(0, 22rem) minmax(0, 1fr);
+}
+
+.pane {
+  display: flex; flex-direction: column; min-height: 0; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+.pane > h2 {
+  flex: 0 0 auto; margin: 0; padding: .5rem .85rem .45rem;
+  border-bottom: 1px solid var(--line);
+  font-size: .74rem; font-family: var(--mono); letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); font-weight: 500;
+}
+/* The one thing in this file that scrolls. `min-height: 0` is what lets it:
+   without it a flex item refuses to be shorter than its content and the
+   overflow reaches the page instead. */
+.pane-body {
+  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding: .6rem .85rem .8rem;
+}
+.pane-body.filling { display: flex; flex-direction: column; }
+.pane-fixed {
+  flex: 0 0 auto; padding: .6rem .85rem;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Below the width four columns need, the page becomes a page again: two columns
+   that stack and a document that scrolls, which is the honest failure. */
+@media (max-width: 1180px) {
+  body { height: auto; overflow: auto; }
+  .console { grid-template-columns: repeat(2, minmax(0, 1fr)); height: auto; }
+  .pane { max-height: 46rem; }
+}
+
+/* A panel that is read and then closed: the starters, and the help. It is a
+   `dialog`, so the backdrop, the Escape key and the focus trap are the
+   browser's and not three more things to write. */
+dialog.drawer {
+  width: min(46rem, 92vw); max-height: 84vh;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--r);
+  padding: 0; overflow: hidden;
+}
+dialog.drawer::backdrop { background: rgba(15, 27, 42, .45); }
+.drawer-head {
+  display: flex; align-items: baseline; gap: 1rem;
+  padding: .7rem 1rem; border-bottom: 1px solid var(--line);
+}
+.drawer-head h2 { margin: 0; font-size: 1rem; }
+.drawer-head .spacer { flex: 1; }
+.drawer-body { padding: .8rem 1rem 1rem; overflow-y: auto; max-height: 70vh; }
