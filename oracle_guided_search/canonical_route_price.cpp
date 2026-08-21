@@ -1,5 +1,6 @@
 #include "canonical_route_price.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace bilinear_rank {
@@ -109,18 +110,45 @@ RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrice
     const double plain_sweep = plain_nodes * verdict.plain_node_seconds;
 
     verdict.price_ratio = verdict.canonical_node_seconds / verdict.plain_node_seconds;
+
     // Orbit counting caps the saving: the `G`-orbits on the `j`-subsets of the pool
     // number at least `C(|P|,j)/|G|`, so the plain tree is at most `|G|` times the
-    // canonical one. Taking the cap as the estimate is deliberately generous to the
-    // route being priced, so that a refusal here is a refusal on the route's own
-    // best case.
-    verdict.saving_ratio = verdict.group_order;
-    verdict.predicted_cost =
-        verdict.price_ratio / verdict.saving_ratio + verdict.presentation_seconds / plain_sweep;
+    // canonical one.
+    //
+    // **The cap is nowhere near attained, and taking it as the estimate was wrong
+    // by 205x at `<2,2,3>`.** The measured `rho` reaches 5%, 0.5%, 0.017% and 0.13%
+    // of `|G|` at the four shapes swept. What it tracks instead is the scans-to-node
+    // ratio, once per level after the first: measured 6.8, 28.4, 115 and 966 scans a
+    // node, `rho` came out 11.2, 32.3, 121 and 212.
+    // [`when-canonical-pays/against-the-sweeps.md`](when-canonical-pays/against-the-sweeps.md)
+    // has the table.
+    const double scans_a_node = verdict.pool_scan_seconds / verdict.plain_node_seconds;
+    verdict.saving_ratio = std::min(
+        verdict.group_order, std::pow(scans_a_node, static_cast<double>(verdict.levels) - 1));
+
+    if (verdict.levels == 1) {
+        // **One level is not a tree and the per-node ratio does not apply to it.**
+        // The sweep is a root and its children, the baseline's single-generator
+        // rejection already emits one child per pool orbit, and `rho` is therefore
+        // exactly 1 with nothing left to remove. What is left is the root's own
+        // work, against a plain root that scans the pool once and hands the same
+        // children on: both routes then pay the same for the leaves.
+        verdict.predicted_cost =
+            (verdict.canonical_node_seconds + branching * verdict.pool_scan_seconds) /
+            ((1 + branching) * verdict.pool_scan_seconds);
+    } else {
+        verdict.predicted_cost = verdict.price_ratio / verdict.saving_ratio;
+    }
+    verdict.predicted_cost += verdict.presentation_seconds / plain_sweep;
 
     if (plain_sweep <= verdict.presentation_seconds) {
         verdict.refusal = "presenting the group costs more than the whole plain sweep, so no node "
                           "saving can pay for it";
+        return verdict;
+    }
+    if (verdict.levels == 1 && verdict.predicted_cost >= 1) {
+        verdict.refusal = "one level of augmentation: the baseline already emits one child per "
+                          "pool orbit, so there is no duplication left for a parent test to remove";
         return verdict;
     }
     if (verdict.predicted_cost >= 1) {

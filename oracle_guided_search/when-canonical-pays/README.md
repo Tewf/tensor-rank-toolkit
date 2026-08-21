@@ -30,10 +30,17 @@ reading can be argued with rather than merely obeyed.
   two has a theorem under it and which does not, and the formula that results.
 - [What it costs here](what-it-costs-here.md): the four operations priced on this
   machine by `price-canonical-route`, and how each one scales with the shape.
+- [Against the sweeps](against-the-sweeps.md): both routes at five shapes, and the
+  three things the derived predicate got wrong.
+- [Where the time goes](where-the-time-goes.md): the finding that came out of
+  correcting it, which is that neither group operation is the cost.
 
 ## The state of it, in one line
 
-The predicate refuses at `<2,2,2>` and fires from `<2,2,3>` upward. **Nothing
-consults it yet**: `Route::Automatic` chooses between the pool and the solver, and
-a predicate that has not been held against a measured sweep is not a rule, it is a
-hypothesis with a return type.
+The predicate refuses at every shape swept but one, which is what the sweeps do
+too, and it misses that one — `<3,3,3>` at 10, where canonical augmentation wins
+**with a node saving of exactly zero**. **Nothing consults it yet**:
+`Route::Automatic` chooses between the pool and the solver, and adding a route the
+measurement refuses at every reachable shape would be wiring a verdict nobody can
+act on. What would change that is
+[where-the-time-goes.md](where-the-time-goes.md)'s first item.

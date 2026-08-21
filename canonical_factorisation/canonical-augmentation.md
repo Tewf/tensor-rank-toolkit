@@ -52,6 +52,12 @@ machine, which can only make it slower. Subtracting it leaves about **13.8 ms** 
 node at target 7 against **0.79 ms** at target 6 — a factor of seventeen between
 two levels of the same sweep.
 
+**That 0.013 s was the grid presentation and it is 98 us now.** The number stood
+here after the presentation moved onto the two axes, which took `⟨2,2,2⟩`'s domain
+from 225 points to 30; re-measured by `price-canonical-route` it is **133x less**,
+and the entry fee stopped being a term in any account of this route. What the two
+levels cost apart is unchanged and is the real content of the paragraph above.
+
 So the honest account has no single per-node number in it. **What survives is the
 ratio this page already measured: 0.263 s against 0.0102 s, 25.8x**, and the node
 saving of 53x that fails to pay for it. The "299x a node" that used to appear
@@ -63,15 +69,27 @@ the file used to record and lost anyway, because the packed GF(2) leaf made a
 plain node 18x cheaper meanwhile. **An optimisation to the common path raises the
 bar for every quotient competing with it**, which is the reusable lesson.
 
-## Where it could still win
+## Where it could still win, now measured rather than posed
 
-The node saving grows with the group and the group grows fast with the shape, so
-299x is not out of reach the way it was behind a `|G|` walk. What stopped bigger
-shapes being tried was this file's own choice to enumerate, since
-`matrix_multiplication_symmetries` refuses above a list it can hold. From
-generators there is no refusal, and `<3,3,3>`'s 4.7 million elements have nine.
-Whether the crossing arrives before its pool of 261 121 becomes the binding cost
-is unmeasured, and is the open question this route now poses.
+That open question — whether the crossing arrives before the pool becomes the
+binding cost — has been swept at five shapes, and the answer is that **the pool
+became the binding cost first, and it is not the pool's size that does it**. Both
+routes at `⟨2,2,2⟩`, `⟨2,2,3⟩`, `⟨2,2,4⟩`, `⟨2,3,3⟩` and `⟨3,3,3⟩`, level by level:
+[`../oracle_guided_search/when-canonical-pays/`](../oracle_guided_search/when-canonical-pays/README.md).
+
+Three results from it bear on this page. The node saving is **nothing at all** at
+one level of augmentation, because the baseline's generator rejection has already
+taken that quotient. It is 11x to 212x at two, which is 0.017% to 5% of `|G|` and
+nowhere near the orbit-counting bound. And at `⟨3,3,3⟩` the canonical route is
+**1.33x faster** with both routes visiting the same 14 nodes, so its first win here
+is not a node saving at all but one orbit computation replacing 261 121
+per-element generator tests.
+
+What decides the rest is a pool scan and not the group: seven to fourteen of them
+per canonical node, 98% of the cost at `⟨2,3,3⟩`, where the setwise stabiliser is
+1.0% and the canonical image 1.1%. The 18x this page credits the packed GF(2) leaf
+with is still sitting on the table for the parent test, which walks the pool
+through the general path.
 
 So it ships behind a flag, never by default, with a slow test asserting it still
 reaches 7, still engages rather than falling back, and still visits strictly
