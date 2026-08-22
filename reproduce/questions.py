@@ -82,6 +82,37 @@ SAT_QUESTIONS = [
     {"name": "f2_5x5"},
 ]
 
+# The plateau crossing's published questions. A row is a claim that
+# `flip_graph/results.json` publishes a crossing at exactly these flags, and the
+# flags are the whole point of the row: `three-by-three.md` said the walk crossed
+# to 7 in 0.11 s without recording the state budget it was measured under, and at
+# the default budget of 200 000 the same crossing takes 20 s. A figure whose flags
+# were never written down cannot be reproduced by anybody, which is the failure
+# these rows exist to stop.
+#
+# The pair is deliberate. 380 crosses and 370 does not, so the second row is a
+# negative control on the first: a change that makes the crossing cheaper moves
+# the boundary and drifts the 370 row, which a single positive row would hide.
+PLATEAU_QUESTIONS = [
+    {"name": "<2,2,2> at a 380-state budget", "tensor": "matmul_2x2x2",
+     "depth": 2, "state_budget": 380},
+    {"name": "<2,2,2> at a 370-state budget", "tensor": "matmul_2x2x2",
+     "depth": 2, "state_budget": 370},
+]
+
+# The flip walk's, from `oracle_guided_search/measurements/three-by-three.md`.
+# The eight seeds are independent and each is reproducible from its own number,
+# so the scheme found is a fact about the code and re-derives anywhere; only the
+# wall clock is this machine's, and `counts_only` drops that before comparing.
+WALK_QUESTIONS = [
+    {"name": "<2,2,2> from naive, 20 000 flips over 8 seeds", "tensor": "matmul_2x2x2",
+     "flips": 20000, "seeds": 8},
+    {"name": "GF(16) from naive, 20 000 flips over 8 seeds", "tensor": "gf16_multiplication",
+     "flips": 20000, "seeds": 8},
+    {"name": "<3,3,3> from naive, 20 000 flips over 8 seeds", "tensor": "matmul_3x3x3",
+     "flips": 20000, "seeds": 8},
+]
+
 # The flags every published satisfiability number was taken under. They are here
 # once, and `results.json` names them in its `source`, because a figure taken
 # under other flags is a figure of something else.
@@ -106,6 +137,8 @@ SECTIONS = (
     (("exact_search", "decided"), "map"),
     (("exact_search", "bounded"), "map"),
     (("famous_tensors", "runs"), "tensor"),
+    (("plateau",), "name"),
+    (("walk",), "name"),
 )
 
 # The famous tensors, as the fixture each row's prose label names. The label is
@@ -451,3 +484,68 @@ def satisfiability_of(build, question, committed, repeats=REPEATS, slow=False):
     return row
 
 
+
+
+def plateau_of(build, question, repeats=REPEATS):
+    """One plateau crossing, as the row `flip_graph/results.json` publishes.
+
+    Every figure here is the crossing's own report rather than this process's
+    reading of the descent around it, for the reason `tree_search` gives about
+    node counts: the wall clock includes building a 225-map pool, and what the
+    row claims is what the walk did inside it.
+
+    `reached` is the cheapest map the crossing ever saw, which is what
+    `cross_plateaus` returns, so a row saying 8 is a row saying the walk never
+    left the naive scheme and not that it lost a better one on the way back.
+    """
+    command = [str(build / "descent_search" / "minimise-rank"),
+               str(ROOT / "fixtures" / f"{question['tensor']}.tensor"), "--steps", "3",
+               "--plateau", str(question["depth"]),
+               "--plateau-states", str(question["state_budget"])]
+    text, seconds = fastest(command, repeats)
+
+    crossing = re.search(r"plateau: (\d+) improvements, (\d+) sideways, "
+                         r"(\d+) states, best (\d+)", text)
+    if not crossing:
+        raise RuntimeError(f"{question['name']}: no plateau line in\n{text}")
+    counts = {}
+    for key, pattern in (("pool", r"# step 3 pool: (\d+)"),
+                         ("shortlist", r"# step 3 shortlist: (\d+)"),
+                         ("naive", r"naive: (\d+) multiplications")):
+        found = re.search(pattern, text)
+        if not found:
+            raise RuntimeError(f"{question['name']}: no {key} line in\n{text}")
+        counts[key] = int(found.group(1))
+    return {"name": question["name"], "tensor": question["tensor"],
+            "depth": question["depth"], "state_budget": question["state_budget"],
+            **counts,
+            "improvements": int(crossing.group(1)), "sideways": int(crossing.group(2)),
+            "states_visited": int(crossing.group(3)), "reached": int(crossing.group(4)),
+            "seconds": seconds, "command": shown(command)}
+
+
+def walk_of(build, question, repeats=REPEATS):
+    """One flip walk, as the row `flip_graph/results.json` publishes.
+
+    The seeds are independent walks reproducible from their own numbers, so the
+    scheme, the seed that found it and its flip and reduction counts come out the
+    same on any machine and only the elapsed figure is this one's.
+    """
+    command = [str(build / "flip_graph" / "walk-scheme"),
+               str(ROOT / "fixtures" / f"{question['tensor']}.tensor"),
+               "--flips", str(question["flips"]), "--seeds", str(question["seeds"])]
+    text, seconds = fastest(command, repeats)
+
+    best = re.search(r"best over (\d+) seeds: (\d+) products, rank bound (\d+), gap (\d+)", text)
+    if not best:
+        raise RuntimeError(f"{question['name']}: no 'best over' line in\n{text}")
+    winner = re.search(r"seed (\d+): (\d+) products after (\d+) flips and (\d+) reductions", text)
+    naive = re.search(r"naive scheme: (\d+) products", text)
+    return {"name": question["name"], "tensor": question["tensor"],
+            "flips": question["flips"], "seeds": question["seeds"],
+            "naive": int(naive.group(1)) if naive else None,
+            "reached": int(best.group(2)), "rank_bound": int(best.group(3)),
+            "gap": int(best.group(4)),
+            "best_seed": int(winner.group(1)) if winner else None,
+            "reductions": int(winner.group(4)) if winner else None,
+            "seconds": seconds, "command": shown(command)}

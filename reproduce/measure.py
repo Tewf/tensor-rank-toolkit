@@ -62,9 +62,10 @@ import sys
 # import is flat because the two files sit in one directory and Python puts a
 # script's own directory first on the path, so `reproduce/measure.py` runs from
 # anywhere without a package, an installer or a `sys.path` line.
-from questions import (CARRIED, FIXTURES, OPERATORS, REPEATS, ROOT, SAT_QUESTIONS,
-                       SECTIONS, descent_of, exact_search_of, famous_tensors_of,
-                       satisfiability_of, shown, skipped_fields, sparsification_of)
+from questions import (CARRIED, FIXTURES, OPERATORS, PLATEAU_QUESTIONS, REPEATS, ROOT,
+                       SAT_QUESTIONS, SECTIONS, WALK_QUESTIONS, descent_of, exact_search_of,
+                       famous_tensors_of, plateau_of, satisfiability_of, shown, skipped_fields,
+                       sparsification_of, walk_of)
 
 
 def version_in(text):
@@ -253,8 +254,9 @@ def main():
     descent = ROOT / "descent_search" / "results.json"
     sparsification = ROOT / "matrix_sparsification" / "results.json"
     satisfiability = ROOT / "satisfiability" / "results.json"
+    flip = ROOT / "flip_graph" / "results.json"
     committed = {path: json.loads(path.read_text()) if path.exists() else {}
-                 for path in (descent, sparsification, satisfiability)}
+                 for path in (descent, sparsification, satisfiability, flip)}
     sat_rows = {row["name"]: row for row in committed[satisfiability].get("fixtures", [])}
 
     # Said before anything is measured, so that a reader of the output knows what
@@ -281,6 +283,9 @@ def main():
                                             sat_rows.get(question["name"], {}), repeats,
                                             arguments.slow)
                           for question in SAT_QUESTIONS]},
+        flip: {"plateau": [plateau_of(build, question, repeats)
+                           for question in PLATEAU_QUESTIONS],
+               "walk": [walk_of(build, question, repeats) for question in WALK_QUESTIONS]},
     }
 
     drifted = False
