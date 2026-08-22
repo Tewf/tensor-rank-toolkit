@@ -17,4 +17,4 @@ schedule pricing. That is a trade, not a gap.
 MaxSAT Evaluation record beside it, and the review is finished because that
 baseline can now be named. On the other side of the module, a refutation is
 measured against `[wang2026]`:
-[`../../state-of-the-art/refutation-baseline.md`](../../state-of-the-art/refutation-baseline.md).
+[`../../the-research-front/refutation-baseline.md`](../../the-research-front/refutation-baseline.md).

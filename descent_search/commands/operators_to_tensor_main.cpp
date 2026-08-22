@@ -7,7 +7,7 @@
 /// fmm.univ-lille.fr publishes the same triple as Maple matrices. Nobody ships
 /// a matrix-multiplication tensor, because ⟨m,n,k⟩ already determines it. So the
 /// `.tensor` format is this repository's own, and the thing that arrives from
-/// outside is a triple. `formats/plinopt_interoperability/reading-his-files.md`
+/// outside is a triple. `formats/interchange/reading-his-files.md`
 /// is the page for whoever has one.
 #include <string>
 #include <vector>

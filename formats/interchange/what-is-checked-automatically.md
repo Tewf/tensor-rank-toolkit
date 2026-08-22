@@ -12,6 +12,6 @@ reaches outside the repository for its inputs.
 
 The runs above are not in the suite: they need his binaries, which are not a
 dependency of this build. Neither is the sweep over all 153 of his matrices in
-[`what-both-sides-do.md`](what-both-sides-do.md), which needs his `data/` as
+[`where-the-conventions-differ.md`](where-the-conventions-differ.md), which needs his `data/` as
 well; the vendored twelve are the subset that carries each thing the readers
 disagreed about.
