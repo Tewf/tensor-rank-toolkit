@@ -20,7 +20,14 @@ any of the hardness results:
 
 As in the other strand, the filenames carry what each method guarantees, and
 [`method/README.md`](method/README.md) says what each is and where it fails.
-**Two methods run here**: [`method/exact-over-q.md`](method/exact-over-q.md),
+**A third route does not search at all.** `--simplex` answers by linear
+programming, which is the minimum where the operator's matroid is regular and an
+upper bound elsewhere. It is the only route that finishes `4x4x4_49_156_L`, and
+on the `Grey-221` operators it reaches the proved minimum about fourteen times
+faster than the search does:
+[`method/when-the-matroid-is-regular.md`](method/when-the-matroid-is-regular.md).
+
+**Two methods search**: [`method/exact-over-q.md`](method/exact-over-q.md),
 which returns the minimum over every invertible `V` rather than a good answer,
 and the greedy by rescaling, which minimises `nnz + nns` instead and is the only
 one that does. Three others reached the same counts 88x to 343x more slowly and

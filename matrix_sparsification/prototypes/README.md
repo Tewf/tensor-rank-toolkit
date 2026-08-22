@@ -6,9 +6,13 @@ They are kept because a finding whose evidence is deleted is indistinguishable
 from a claim, which is the rule the rank strand already follows in
 [`../../oracle_guided_search/measurements/`](../../oracle_guided_search/measurements/).
 
-Nothing here is built, tested or wired into a command. They are how the numbers
-on that page were obtained, and they are the specification for the C++ that
-should replace them.
+**The C++ they specified now exists**:
+[`../lightest_vector_by_simplex.h`](../lightest_vector_by_simplex.h), reached by
+`sparsify-operator --simplex`, and it reproduces their numbers exactly. These
+stay as the record of how the finding was reached, and as the independent
+implementation any future change to that method can be checked against — they use
+SciPy and HiGHS where the C++ uses an exact rational simplex, so an agreement
+between them is worth something.
 
 | script | what it answers |
 |---|---|

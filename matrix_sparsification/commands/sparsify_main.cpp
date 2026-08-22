@@ -14,6 +14,7 @@
 #include "greedy_sparsifier.h"
 #include "linear_algebra.h"
 #include "memory_budget.h"
+#include "lightest_vector_by_simplex.h"
 #include "rational_sparsifier.h"
 #include "report.h"
 #include "sms_file.h"
@@ -26,7 +27,8 @@ using matrix_sparsification::Matrix;
 
 void usage() {
     cli::note() << "usage: sparsify-operator <matrix-file|.sms> [--field p] [--show]\n"
-                   "                          [--exact] [--emit out.sms] [--max-memory N]\n"
+                   "                          [--operations] [--simplex] [--emit out.sms]\n"
+                   "                          [--max-memory N]\n"
                    "       sparsify-operator --help\n"
                    "\n"
                    "  Reports the minimum number of nonzeros, and how it was reached.\n"
@@ -38,6 +40,11 @@ void usage() {
                    "                  different and harder question: an operator the rank\n"
                    "                  search emitted is over a finite field and this is the\n"
                    "                  question it is asking. .sms only\n"
+                   "  --simplex       answer by linear programming instead of by searching\n"
+                   "                  column supports. The minimum only where the operator's\n"
+                   "                  matroid is regular, an upper bound otherwise, and the\n"
+                   "                  only route that finishes an operator the search cannot.\n"
+                   "                  See method/when-the-matroid-is-regular.md\n"
                    "  --operations    also run the greedy by rescaling, which minimises\n"
                    "                  nnz + nns rather than nnz: an entry that is neither 0\n"
                    "                  nor +-1 costs a multiplication as well as an addition.\n"
@@ -86,6 +93,7 @@ int run(int argc, char** argv) {
     cli::Arguments arguments(argc, argv);
     bool show_matrix = false;
     bool with_operations = false;
+    bool by_simplex = false;
     std::string emit_to;
     // Zero means "over Q", which is what every method below assumes and what
     // every fixture here is. A prime asks the other question.
@@ -98,6 +106,8 @@ int run(int argc, char** argv) {
             show_matrix = true;
         } else if (arguments.is("--operations")) {
             with_operations = true;
+        } else if (arguments.is("--simplex")) {
+            by_simplex = true;
         } else if (arguments.is("--emit")) {
             emit_to = arguments.text();
         } else if (arguments.is("--field")) {
@@ -209,6 +219,27 @@ int run(int argc, char** argv) {
                        "below are for "
                     << working.rows() << "x" << working.columns()
                     << ", and a nonzero count is the same either way up";
+    }
+
+    // **The route that does not search.** Where the operator's matroid is
+    // regular this is the minimum and arrives without walking a single column
+    // subset; elsewhere it is an upper bound, and it says which it holds.
+    if (by_simplex) {
+        const auto started_lp = cli::Clock::now();
+        const matrix_sparsification::LightestVectors found =
+            matrix_sparsification::lightest_vectors_by_simplex(field, transposed);
+        if (!found.spans) {
+            cli::note() << "the programmes did not produce a spanning set, so there is no "
+                           "answer to report";
+            return cli::exit_status(cli::ExitCode::Error);
+        }
+        report(field, "by linear programming", working,
+               linear_algebra::transpose<Field>(found.basis),
+               cli::elapsed_seconds(started_lp), show_matrix);
+        cli::note() << "least weight " << found.least
+                    << ", which is the minimum where the matroid is regular and an upper "
+                       "bound otherwise";
+        return cli::exit_status(cli::ExitCode::Yes);
     }
 
     // **The method that is proved to return the minimum.** `[beniamini2020]`'s

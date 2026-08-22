@@ -40,3 +40,12 @@ add_test(NAME rational_sparsifier COMMAND test_rational_sparsifier)
 add_test(NAME sparsify_emit
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_emitted_operator_is_a_drop_in.sh
                  $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The simplex route against the exhaustive scan, where the scan can answer. The
+# first continuous-only programme in this repository: every case in
+# integer_programme's own battery sets `integral = true`, so nothing exercised
+# the LP path until now.
+add_executable(test_lightest_vector_by_simplex test_lightest_vector_by_simplex.cpp)
+target_link_libraries(test_lightest_vector_by_simplex
+                      PRIVATE sparsify_by_simplex project_warnings testing)
+add_test(NAME lightest_vector_by_simplex COMMAND test_lightest_vector_by_simplex)

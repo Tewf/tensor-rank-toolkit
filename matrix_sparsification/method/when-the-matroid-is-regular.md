@@ -65,6 +65,32 @@ The scan established that nine vectors of weight 4 exist and that nothing weighs
 5; the LP returns nine 4s. Its minimum, 4, is the exact minimum weight by the
 theorem above.
 
+## It is now a method here, and it does better than the theorem promises
+
+`sparsify-operator --simplex`, in C++ against
+[`../../integer_programme/simplex.h`](../../integer_programme/simplex.h), exact
+rationals throughout, no new dependency. Measured on this machine:
+
+| operator | matroid regular? | search | simplex |
+|---|---|---|---|
+| `Grey-221_L` 23×9 | **no**, a basis has determinant 2 | 43 in 0.34 s | **43 in 0.025 s** |
+| `Grey-221_R` 23×9 | **no** | 42 in 0.33 s | **42 in 0.022 s** |
+| `Grey-221_P` 9×23 | **no** | 43 in 0.44 s | **43 in 0.032 s** |
+| `4x4x4_49_156_L` 16×49 | evidence yes | **cannot finish** | **100 in 0.34 s** |
+
+Two things in that table are worth saying out loud.
+
+**It reproduces the Python prototype exactly** — 100 nonzeros, least weight 4 —
+which is what a reimplementation has to do before it is worth anything.
+
+**And on the three `Grey-221` operators it reaches the proved minimum, 43 / 42 /
+43, although their matroids are demonstrably not regular.** The theorem promises
+nothing there and it arrives anyway, about fourteen times faster than the search
+that proves it. **That is an observation on three operators and not a guarantee**,
+and the flag's own note says which of the two it is holding each time. Why the
+`ℓ1` relaxation should be tight on an operator that is not unimodular is not
+explained by anything cited here, and it is the obvious next question.
+
 ## Read this narrowly
 
 - **Regularity is sampled, not proved.** 200 000 bases and 20 000 rank triples
