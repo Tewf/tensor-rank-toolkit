@@ -8,7 +8,7 @@ so nothing here is chosen on the caller's behalf. Precedence and
 | Flag | Default | What chose the default |
 |---|---|---|
 | `--show` | off | Nothing to measure: prints the sparsified matrix as well as its count. |
-| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. Every method enumerates column subsets, C(b, a-1): 35 for the 7x4 operators shipped, about 1.6e13 for a <4,4,4> one. |
+| `--max-memory N` | derived | Argument: an eighth of what the machine reports, which is `2G` on the 16 GB laptop every table here was measured on and moves on its own elsewhere. Every method enumerates column subsets, C(b, a-1): 35 for the 7x4 operators shipped, about 1.6e13 for a <4,4,4> one. |
 
 ## The methods, and which measurement separates them
 

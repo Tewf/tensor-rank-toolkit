@@ -18,6 +18,14 @@ flag that was given always overwrites what the file said, and a flag that was
 not leaves the file's number standing. Deleting the file changes nothing,
 because every value it ships is the number compiled in.
 
+**`auto` is a fourth thing the file may say**, and it resolves to the same
+compiled default rather than to something else: where a default is a reading of
+the machine, `auto` is how the file asks for that reading instead of pinning a
+number over it. It is refused on a tunable that has no machine reading behind it,
+by name, rather than accepted and ignored. Which tunables have one is
+`machine_read_tunables()` in `cli/tunables.h`, and `show-limits` prints what each
+resolved to here.
+
 The rule the code keeps to make that work: **a library never opens the file.**
 `cli::tunables()` is called in `*/commands/*_main.cpp` only, and the value is
 passed down as the settings or budget argument the library already takes. The
