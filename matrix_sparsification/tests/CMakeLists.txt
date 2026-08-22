@@ -18,3 +18,10 @@ add_test(NAME algorithm_cost COMMAND test_algorithm_cost ${PROJECT_SOURCE_DIR}/f
 add_test(NAME sparsify_orientation
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_orientation_does_not_decide.sh
                  $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The exact method over a finite field, against brute force over every basis.
+# The exactness is a theorem about the algorithm; this is about the code.
+add_executable(test_finite_field_sparsifier test_finite_field_sparsifier.cpp)
+target_link_libraries(test_finite_field_sparsifier
+                      PRIVATE matrix_sparsification project_warnings testing)
+add_test(NAME finite_field_sparsifier COMMAND test_finite_field_sparsifier)
