@@ -10,6 +10,19 @@ namespace matrix_sparsification {
 
 namespace {
 
+/// Step `chosen` to the next subset in lexicographic order, false when it was
+/// the last. The one piece of arithmetic both walks below are made of.
+bool advance(std::vector<std::size_t>& chosen, std::size_t total, std::size_t size) {
+    std::size_t position = size;
+    while (position > 0 && chosen[position - 1] == total - size + position - 1) --position;
+    if (position == 0) return false;
+    ++chosen[position - 1];
+    for (std::size_t later = position; later < size; ++later) {
+        chosen[later] = chosen[later - 1] + 1;
+    }
+    return true;
+}
+
 /// `C(total, size)`, saturating rather than wrapping.
 ///
 /// Multiply-then-divide in this order keeps every partial product an exact
@@ -49,16 +62,10 @@ std::vector<std::vector<std::size_t>> combinations(std::size_t total, std::size_
 
     std::vector<std::size_t> chosen(size);
     std::iota(chosen.begin(), chosen.end(), std::size_t(0));
-    for (;;) {
+    do {
         result.push_back(chosen);
-        std::size_t position = size;
-        while (position > 0 && chosen[position - 1] == total - size + position - 1) --position;
-        if (position == 0) return result;
-        ++chosen[position - 1];
-        for (std::size_t later = position; later < size; ++later) {
-            chosen[later] = chosen[later - 1] + 1;
-        }
-    }
+    } while (advance(chosen, total, size));
+    return result;
 }
 
 void walk_combinations(std::size_t total, std::size_t size,
@@ -66,16 +73,9 @@ void walk_combinations(std::size_t total, std::size_t size,
     if (size > total) return;
     std::vector<std::size_t> chosen(size);
     std::iota(chosen.begin(), chosen.end(), std::size_t(0));
-    for (;;) {
+    do {
         if (!visit(chosen)) return;
-        std::size_t position = size;
-        while (position > 0 && chosen[position - 1] == total - size + position - 1) --position;
-        if (position == 0) return;
-        ++chosen[position - 1];
-        for (std::size_t later = position; later < size; ++later) {
-            chosen[later] = chosen[later - 1] + 1;
-        }
-    }
+    } while (advance(chosen, total, size));
 }
 
 }  // namespace matrix_sparsification
