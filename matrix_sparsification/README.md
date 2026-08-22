@@ -12,6 +12,11 @@ sparsify-operator fixtures/strassen_u.matrix --show
 sparsify-operator operator.sms              # SMS is read directly, by extension
 ```
 
+**What the problem is and what is proved hard about it**, including the four
+names one question goes under and why the exact method here does not contradict
+any of the hardness results:
+[`what-is-hard-about-it.md`](what-is-hard-about-it.md).
+
 As in the other strand, the filenames carry what each method guarantees, and
 [`method/README.md`](method/README.md) says what each is and where it fails. Two
 of the four are `[beniamini2020]`'s, one is `[dumas2024cex]`'s unpublished

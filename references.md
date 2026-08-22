@@ -1135,6 +1135,106 @@ unpublished; supplied directly. The determinant-polynomial
 feasibility test in `matrix_sparsification/pattern_feasibility.h`, and the
 counterexample fixture `fixtures/dumas_counterexample_l.matrix`.
 
+### How hard the sparsity problem is, and under which name
+
+Surveyed 2026-08-22 for
+[`matrix_sparsification/what-is-hard-about-it.md`](matrix_sparsification/what-is-hard-about-it.md),
+which is where the four names for one problem are set out. **Provenance is marked
+on every entry**, because most of this was reached through the citing literature
+rather than through the paper, and a bibliography that hides that is worse than a
+short one.
+
+**`mccormick1983`**: S. T. McCormick. *A Combinatorial Approach to Some Sparse
+Matrix Problems.* Technical report / PhD thesis, Stanford, 1983. The original
+NP-hardness of the sparsest-basis problem. **Cited from the citing literature**;
+`[gottlieb2010]`, `[tillmann2014]` and `[qu2020]` all name it for this.
+
+**`tillmann2014`**: A. M. Tillmann, M. E. Pfetsch. *The Computational Complexity
+of the Restricted Isometry Property, the Nullspace Property, and Related Concepts
+in Compressed Sensing.* IEEE Trans. Inform. Theory **60**(2):1248-1259, 2014.
+Deciding whether a rational matrix has a circuit of size at most `k` is **strongly**
+NP-complete, by a reduction from `k`-CLIQUE adapting `[mccormick1983]`. The
+sharpest published statement of spark hardness over `Q`. **Abstract only.**
+
+**`vardy1997`**: A. Vardy. *The intractability of computing the minimum distance
+of a code.* IEEE Trans. Inform. Theory **43**(6):1757-1766, 1997; STOC 1997.
+NP-completeness of the minimum distance problem over `GF(2)`, by a deterministic
+reduction. **Not read: IEEE elides the abstract on every route tried**, so the
+problem it reduces from is unknown here and no claim above rests on it.
+
+**`berlekamp1978`**: E. R. Berlekamp, R. J. McEliece, H. C. A. van Tilborg. *On
+the inherent intractability of certain coding problems.* IEEE Trans. Inform.
+Theory **24**(3):384-386, 1978. Proves **coset weight** and **subspace weight**
+NP-complete, the latter being weight *exactly* `w`. Its own abstract says the
+result "strongly suggests, but does not rigorously imply" the general case, so
+**it is the wrong citation for minimum distance** and is frequently given as one.
+**Abstract verbatim; body through a restatement.**
+
+**`downey1999`**: R. G. Downey, M. R. Fellows, A. Vardy, G. Whittle. *The
+parametrized complexity of some fundamental problems in coding theory.* SIAM J.
+Comput. **29**(2):545-570, 1999. W[1]-hardness of **maximum-likelihood decoding**
+and **weight distribution**, and **not** of minimum distance, which it leaves
+open. **Paywalled; abstract from two independent renderings.**
+
+**`dumer2003`**: I. Dumer, D. Micciancio, M. Sudan. *Hardness of approximating the
+minimum distance of a linear code.* IEEE Trans. Inform. Theory **49**(1):22-37,
+2003; FOCS 1999. **Theorem 22 read in full** from the authors' copy: over every
+finite field, approximating within any constant is NP-hard under randomised
+reductions, and within `2^(log^(1−ε) n)` under quasi-polynomial ones.
+
+**`cheng2012`**: Q. Cheng, D. Wan. *A Deterministic Reduction for the Gap Minimum
+Distance Problem.* IEEE Trans. Inform. Theory **58**(11):6935-6941, 2012; STOC
+2009. **Theorem 1.4 read**: the same inapproximability without randomness, over
+any `F_q`, by Weil character sums.
+
+**`austrin2014`**: P. Austrin, S. Khot. *A Simple Deterministic Reduction for the
+Gap Minimum Distance of Code Problem.* IEEE Trans. Inform. Theory
+**60**(10):6636-6645, 2014; ICALP 2011. Hardness within `1+γ` **even on
+asymptotically good codes**, which `[cheng2012]` left open. **Abstract only.**
+
+**`bhattiprolu2025`**: V. Bhattiprolu, V. Guruswami, X. Ren. *Deterministic
+hardness of the minimum distance and nearest codeword problems.*
+[arXiv:2503.11131](https://arxiv.org/abs/2503.11131), 2025. Deterministic
+hardness over any `F_q` reducing from homogeneous quadratic equations with no PCP
+theorem. The cleanest proof to cite. **Abstract only.**
+
+**`bhattacharyya2021`**: A. Bhattacharyya, É. Bonnet, L. Egri, S. Ghoshal,
+Karthik C. S., B. Lin, P. Manurangsi, D. Marx. *Parameterized Intractability of
+Even Set and Shortest Vector Problem.* J. ACM **68**(3):16, 2021. **Theorem 6.1
+read**: `GapMDP_γ` is W[1]-hard under randomised reductions, over `GF(2)` only,
+the field restriction explained in their §8. **Its dual formulation, read and
+quoted in our page, is the identification of minimum distance with the shortest
+circuit of a represented binary matroid.**
+
+**`bennett2023`**: H. Bennett, M. Cheraghchi, V. Guruswami, J. Ribeiro.
+*Parameterized Inapproximability of the Minimum Distance Problem over all Fields
+and the Shortest Vector Problem in all `ℓ_p` Norms.* STOC 2023,
+[arXiv:2211.07900](https://arxiv.org/abs/2211.07900). The same W[1]-hardness over
+**any fixed finite field**, which is the citation for `GF(p)`, `p > 2`.
+**Abstract read.**
+
+**`stephensdavidowitz2019`**: N. Stephens-Davidowitz, V. Vaikuntanathan.
+*SETH-hardness of Coding Problems.* FOCS 2019, pp. 287-301. **Abstract read
+verbatim**: under SETH there is no `q^((1−ε)n)` algorithm for the minimum distance
+problem over any finite field, for a code with `q^n` codewords. `n` is the
+dimension, so **this is the lower bound matching the `q^k` walk in
+[`matrix_sparsification/finite_field_sparsifier.h`](matrix_sparsification/finite_field_sparsifier.h)**.
+
+**`qu2020`**: Q. Qu, Z. Zhu, X. Li, M. C. Tsakiris, J. Wright, R. Vidal. *Finding
+the Sparsest Vectors in a Subspace: Theory, Algorithms, and Applications.*
+[arXiv:2001.06970](https://arxiv.org/abs/2001.06970), 2020. The survey of the
+real-field side. **Read in full, and what it does not contain is the point**: no
+occurrence of "Vardy", "coding theory", "minimum distance", "Berlekamp", "finite
+field" or "GF(2)". For hardness it cites `[mccormick1983]` and
+`[colemanpothen1986]` and stops.
+
+**`holtz2025`**: O. Holtz, J. Hsu, S. Moran, O. Schwartz, N. Wiernik.
+*Alternative Bases for New Fast Matrix Multiplication Algorithms.* ACDA 2025.
+Sparsifies the AlphaTensor and flip-graph algorithms, proves its method optimal
+for the alternative-basis model, and gives a general lower bound of 5 on the
+leading coefficient. Reproduces `[beniamini2020]`'s Table 2 on almost every row.
+**Tables read; the bound's statement read.**
+
 ## Finite field extensions and curves
 
 **`rambaud2014`**: M. Rambaud. *Finding Optimal Chudnovsky-Chudnovsky
