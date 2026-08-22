@@ -21,11 +21,76 @@
 ///
 /// **Why here and not somewhere cheaper.** `lower-the-bound` on the 15x12x20
 /// flattening of `<3,4,5>` over GF(2) costs one `span_element_ranks` and one
-/// `minimum_weight_basis_with` per child; 26 040 children were costed at a
-/// single node at `--summand-rank 4`, and each call walks a span of 2^15
-/// elements taking the rank of a 12x20 matrix at every one. That is of the
-/// order of 850 million ranks for one node, so what a matrix is made of is what
-/// the search costs.
+/// `minimum_weight_basis_with` per child, and **one node of it costs 26 040
+/// children** at `--summand-rank 4`. The root basis there has dimension 15, so
+/// each of those calls walks the 2^16 elements of the span with the candidate
+/// adjoined and takes the rank of a 12x20 matrix on the 2^15 of them the
+/// handed-over ranks do not cover. That is of the order of 850 million ranks
+/// for a single node, so what a matrix is made of is what the search costs.
+/// Measured in the last row of the table below: that one node was 233.93 s and
+/// is 24.31 s.
+///
+/// ## What it is worth, measured
+///
+/// Every pair below is **one question asked twice**, `--general-span` selecting
+/// the path this file replaces, so the two columns are one tree:
+///
+///     build/incumbent_search/lower-the-bound FIXTURE --width W [--nodes 5]
+///     build/incumbent_search/lower-the-bound FIXTURE --width W [--nodes 5] --general-span
+///
+/// | question | slice | nodes | children | general | GF(2) | factor |
+/// |---|---|---|---|---|---|---|
+/// | `matmul_2x2x2 --width 4` | 4x4 | 21 | 2 251 | 0.05 s | 0.02 s | 2.5x |
+/// | `matmul_2x2x2 --width 8` | 4x4 | 40 | 4 359 | 0.09 s | 0.03 s | 3.0x |
+/// | `gf64_multiplication --width 4 --nodes 5` | 6x6 | 10 | 19 780 | 122.06 s | 14.99 s | **8.1x** |
+/// | `gf64_multiplication --width 8 --nodes 5` | 6x6 | 10 | 19 780 | 121.39 s | 13.69 s | **8.9x** |
+/// | `cyclic_f2_7 --width 4` | 7x7 | 22 | 17 371 | 13.04 s | 0.68 s | **19.2x** |
+/// | `cyclic_f2_7 --width 8` | 7x7 | 74 | 57 958 | 42.69 s | 2.25 s | **19.0x** |
+/// | `<3,4,5> --width 4 --nodes 1 --summand-rank 4` | 12x20 | 1 | 26 040 | 233.93 s | 24.31 s | **9.6x** |
+///
+/// The last row is the question that asked for this file and ships no fixture:
+/// `make-tensor --matmul 2 3 4 5` writes it. One node of it, twice, is what a
+/// comparison can afford, and `--nodes 5` on `gf64` is the same kind of price:
+/// the whole run there is unaffordable on the general path at any width, which
+/// is the point rather than a limit on the finding.
+///
+/// **Every count is the same count on both paths**: nodes, children, moves
+/// offered, improvements, branches bounded, depth, and the algorithm at the end
+/// of it. That is what says these are two clocks on one tree rather than two
+/// searches. The two `gf64` rows are the same ten nodes because `--nodes 5`
+/// binds before the width does; only `branches bounded` separates them, 12
+/// against 24.
+///
+/// **2.5x to 19.2x, and the spread is the point rather than the top of it.**
+/// The factor is what the span walk was as a share of the run, times what the
+/// arithmetic gained, and neither end of the table is the arithmetic:
+///
+///  - **`matmul_2x2x2` is small, and not because of start-up.** `--nodes 0` on
+///    it is under the 10 ms clock on both paths, so the fixed cost is not what
+///    dilutes the row: at dimension 4 to 7 the span walk is simply not most of
+///    what that search does, and generating and filtering moves is.
+///  - **The widest matrix does not win, which a storage argument gets
+///    backwards.** `<3,4,5>` packs a 12x20 slice into four words, the largest
+///    saving per matrix in the table, and gains 9.6x where 7x7 gains 19.2x;
+///    `gf64`'s 6x6 gains 8.1x with a tree that goes deeper than
+///    `cyclic_f2_7`'s. What the two low rows share is the dimension: a call
+///    walks 2^16 and 2^17 slots there against 2^14 on `cyclic_f2_7`. The rank
+///    and the walk step are what got cheap; the index arithmetic, the floor's
+///    lookup, the candidate list and its sort are what did not, and those grow
+///    as `p^dim` while the ranks shrink under them. **That is a reading of the
+///    rows and not a profile**: `perf_event_paranoid` is 4 on this machine, so
+///    nothing here has been profiled and the reading is owed a check.
+///
+/// **Taken 2026-08-22 at load 2.5 to 5.0, which is not
+/// [`../MEASURING.md`](../MEASURING.md)'s protocol.** That file asks for a quiet
+/// machine and abandons above load 1.0; another session held two cores of the
+/// twelve throughout, and waiting it out was not available. So the three
+/// attempts of the two paths were **interleaved** rather than run in two blocks,
+/// which shares the neighbour between the columns instead of landing it on one,
+/// and the spread between attempts is under 7% on every row. Every second above
+/// is an upper bound on a quiet machine's, and what the table is evidence of is
+/// the ratio and the order of magnitude rather than the digits. It wants
+/// re-taking under the protocol before it is quoted as one.
 ///
 /// **It is a case chosen at run time, not a build.** The characteristic comes
 /// off the tensor file, so `gf2_span_walk_applies` is asked once per call and

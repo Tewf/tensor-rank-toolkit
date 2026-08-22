@@ -124,6 +124,18 @@ move set is what makes the rest affordable at all** — 20 678 moves offered ove
 the pool — but it does not touch the `p^dim` factor, and that is the honest
 scaling limit of this file.
 
+**What one of those ranks costs moved on 2026-08-22, and the `p^dim` factor did
+not.** Over GF(2) the walk now holds a matrix as bits in machine words rather
+than as one `int64_t` an entry:
+[`../descent_search/gf2_span_walk.h`](../descent_search/gf2_span_walk.h). On the
+`cyclic_f2_7` row of the table above that is **19.2x at the same 22 nodes and
+the same 17 371 children**, and on `gf64_multiplication` five nodes of the
+width-4 search cost 122.06 s on the path these runs were taken on against
+14.99 s packed. On `<3,4,5>`, the shape this table does not reach at all, one
+node at `--summand-rank 4` is 26 040 children and went from 233.93 s to
+24.31 s. The exponent is untouched, so the wall in this section is where
+it was and is reached later rather than removed.
+
 The design that would: carry the cost as an integer instead of recomputing it,
 `+1` for an adjunction and `1-r` for exchanging a rank-`r` generator. It gives up
 the exactness of `cost(V)`, since an integer carried along only ever knows the

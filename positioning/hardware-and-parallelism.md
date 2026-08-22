@@ -73,6 +73,46 @@ mentioned, walking the subspace, where the gain is not the width but
 two cleanly, 6.0x scanning against 16.2x walking at one shape. The 64x row for
 `<4,4,4>` stays untested: no fixture here reaches it.
 
+### The same lever, one search further in: 2.5x to 19.2x
+
+The leaf is where the *exact* search lives. The **span walk of step 1** is where
+the incumbent search lives, and it is the same shape of loop over the same
+field: `lower-the-bound` costs one `minimum_weight_basis_with` per child, and
+each of those walks a span taking the rank of a matrix at every element. So the
+same representation went there on 2026-08-22,
+[`../descent_search/gf2_span_walk.h`](../descent_search/gf2_span_walk.h), and
+was measured the same way, each question asked twice with and without
+`lower-the-bound --general-span`:
+
+| question | slice | nodes | children | general | GF(2) | factor |
+|---|---|---|---|---|---|---|
+| `matmul_2x2x2 --width 4` | 4x4 | 21 | 2 251 | 0.05 s | 0.02 s | 2.5x |
+| `gf64_multiplication --width 4 --nodes 5` | 6x6 | 10 | 19 780 | 122.06 s | 14.99 s | **8.1x** |
+| `cyclic_f2_7 --width 4` | 7x7 | 22 | 17 371 | 13.04 s | 0.68 s | **19.2x** |
+| `cyclic_f2_7 --width 8` | 7x7 | 74 | 57 958 | 42.69 s | 2.25 s | **19.0x** |
+| `<3,4,5> --width 4 --nodes 1 --summand-rank 4` | 12x20 | 1 | 26 040 | 233.93 s | 24.31 s | **9.6x** |
+
+**Every node count, child count and answer is identical in both columns**, which
+is the same discipline `--general-leaf` buys above: one tree, two clocks.
+
+**This page's prediction is wrong here in the other direction, and that is the
+finding.** A storage-width argument says the gain rises with the matrix. The
+widest matrix in the table loses: the 12x20 slice of `<3,4,5>`, four words a
+map, gains **9.6x** against 7x7's 19.2x, and `gf64`'s 6x6 gains 8.1x with a
+deeper tree than either. What the two low rows share is the dimension, so a
+call walks 2^16 and 2^17 slots where `cyclic_f2_7` walks 2^14: the rank and the
+walk step got cheap, and the index arithmetic, the floor's lookup, the candidate
+list and its sort did not, and those grow as `p^dim`. So the lever is not the
+width alone in either loop, and the leaf's own table said as much from the other
+side. Unprofiled, because `perf_event_paranoid` is 4 here.
+
+The full table, the small-fixture row that is dominated by move generation
+rather than by the walk, and the protocol caveat, are in the header linked
+above. **Those runs were taken at load 2.5 to 5.0 and are not protocol
+numbers**: this machine had another session on it and
+[`../MEASURING.md`](../MEASURING.md) abandons above load 1.0, so the ratios
+stand and the seconds are upper bounds.
+
 **This page covers the tree and the solver only.** The other two parts people
 ask about, generating the pool and the `C A` recovery, are in
 [`what-a-gpu-would-take.md`](what-a-gpu-would-take.md), along with the one part
