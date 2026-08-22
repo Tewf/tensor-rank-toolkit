@@ -1276,6 +1276,22 @@ every remaining codeword weighs at least `t+1`. Measured against a cheap upper
 bound, that rule fires on six of nine greedy steps for `Grey-221_L` and on none
 at all for `4x4x4_49_156_L`, which is the operator it would need to rescue.
 
+**`tillmann2019`**: A. M. Tillmann. *Computing the spark: mixed-integer
+programming for the (vector) matroid girth problem.* Comput. Optim. Appl. **74**
+(2019), 387-441,
+[doi:10.1007/s10589-019-00114-9](https://doi.org/10.1007/s10589-019-00114-9).
+Spark is NP-hard even for integer matrices, and its **Theorem 5** is the one that
+matters here: for a **unimodular** matrix the spark is computable in *polynomial*
+time, `ℓ0` collapsing to `ℓ1` on basic solutions, and the vector matroids of
+totally unimodular matrices are the regular ones. Since regular matroids are
+closed under duality and the quantity this module minimises is a **co**girth, the
+theorem reaches it through the dual. Measured consequence:
+[`matrix_sparsification/method/when-the-matroid-is-regular.md`](matrix_sparsification/method/when-the-matroid-is-regular.md),
+where `4x4x4_49_156_L` looks regular and answers in 0.08 s while the exact scan
+cannot finish it. **Cited from the citing literature**, not read: the statement
+and its matroid corollary are quoted at second hand and the theorem's proof was
+not opened.
+
 **`chenklove2001`, `chenklove2004`**: W. Chen, T. Kløve. *The weight hierarchies
 of q-ary codes of dimension 4*, and *On the second greedy weight for linear codes
 of dimension at least 4*, IEEE Trans. Inform. Theory **50**(2):354-356, 2004,

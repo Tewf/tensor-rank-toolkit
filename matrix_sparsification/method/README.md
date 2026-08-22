@@ -24,4 +24,5 @@ trivial to improve by returning a different matrix.
 | [`oracle-top-down.md`](oracle-top-down.md) | the same subsets walked downwards, taking the first hit |
 | [`exact-over-q.md`](exact-over-q.md) | **the one proved minimal**: the matroid greedy, scanning supports upwards |
 | [`where-the-scan-stops.md`](where-the-scan-stops.md) | the operator it cannot finish, and the published algorithm that could |
+| [`when-the-matroid-is-regular.md`](when-the-matroid-is-regular.md) | **a way past it that is not a search**: an LP, on exactly the operator that needed one |
 | [`the-caveat.md`](the-caveat.md) | why these operation counts are not wall clock, and what is not proved |
