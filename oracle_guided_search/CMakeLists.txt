@@ -1,7 +1,10 @@
 # The oracle answers one question; this decides which questions are worth asking.
 # One file per job: answering one `k` with a proof instead of a budget, buying that
-# proof from the tree rather than from a solver, naming a subspace, and generating
-# each subspace once per orbit rather than once per orbit element.
+# proof from the tree rather than from a solver, and generating each subspace once
+# per orbit rather than once per orbit element. Naming a subspace left for
+# `orbit_reduction` on 2026-08-23, where a second consumer that cannot link this
+# module can reach it; `subspace_canon.h` still resolves, through that module's
+# PUBLIC include directory.
 #
 # Two files left for the `rejected-experiments` branch: the fixed-`k` finder,
 # whose assumed asymmetry between acceptance and refutation measured as about one,
@@ -10,7 +13,7 @@
 # meant to close. `measurements/` keeps both sets of numbers.
 add_library(oracle_guided_search STATIC strict_deflation.cpp tree_refutation.cpp
                                        factored_lex_min.cpp pool_set_canon.cpp
-                                        subspace_canon.cpp canonical_parent.cpp
+                                        canonical_parent.cpp
                                         canonical_augmentation.cpp canonical_route_price.cpp
                                         pool_cosets.cpp)
 target_include_directories(oracle_guided_search PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

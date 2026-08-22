@@ -8,7 +8,7 @@ Thomas Rehn's PermLib, the `include/` tree only, at upstream commit
 **Why it is here.** `permlib_api.h`'s `smallestSetImage` is Linton's *Finding the
 smallest image of a set* (ISSAC 2004), credited in
 `include/permlib/search/orbit_lex_min_search.h:49`. That is the primitive
-[`../../oracle_guided_search/subspace_canon.h`](../../oracle_guided_search/subspace_canon.h)
+[`../../orbit_reduction/subspace_canon.h`](../../orbit_reduction/subspace_canon.h)
 needs, and writing one instead would be re-deriving a 2004 paper. The review
 that reached that conclusion, and the reason nauty is the wrong instrument here
 rather than merely a slower one, is summarised in that header.
