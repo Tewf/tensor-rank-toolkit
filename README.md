@@ -59,22 +59,29 @@ minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
 sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 ```
 
-## Bringing somebody else's algorithm in
+## Reading and writing what the field publishes
 
-A ⟨L, R, P⟩ triple in SMS is what the field publishes and the only thing it
-publishes — [PLinOpt](https://github.com/jgdumas/plinopt)'s `data/`,
-[Sedoglavic's catalogue](https://fmm.univ-lille.fr/) — so that is the way in as
-well as the way out. His Strassen operators rebuild the fixture this repository
-writes from the definition of the map, entry for entry, which is a test and not
-a claim.
+A ⟨L, R, P⟩ triple in SMS is what the field publishes a bilinear algorithm as,
+and very nearly the only thing it publishes, so that is the way in as well as the
+way out. Two sources hand them out in quantity: the
+[FMM catalogue](https://fmm.univ-lille.fr/), thousands of decompositions listed
+by rank, and [PLinOpt](https://github.com/jgdumas/plinopt), a C++ library for
+linear and bilinear straight-line programs whose `data/` ships Strassen,
+Winograd, Karatsuba, Toom-3 and matrix multiplication up to 32x32x32.
+
+Reading one is a test and not a claim: a Strassen triple published elsewhere
+rebuilds the fixture this repository writes from the definition of the map, entry
+for entry, and a disagreement would be ours to explain. **None of it is a
+dependency**: nothing here links against any of those tools and the whole suite
+passes on a machine where none is installed.
 
 ```sh
-operators-to-tensor L.sms R.sms P.sms -q 2 > map.tensor     # his algorithm, our input
-PMchecker out_L.sms out_R.sms out_P.sms -q 2                # our algorithm, his checker
+operators-to-tensor L.sms R.sms P.sms -q 2 > map.tensor     # a published algorithm, read in
+PMchecker out_L.sms out_R.sms out_P.sms -q 2                # ours, checked elsewhere
 ```
 
 What to install, both directions and the differences that bite, on one page:
-[`formats/plinopt_interoperability/exchanging-files.md`](formats/plinopt_interoperability/exchanging-files.md).
+[`formats/interchange/exchanging-files.md`](formats/interchange/exchanging-files.md).
 
 ## What is where
 

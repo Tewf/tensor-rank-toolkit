@@ -321,7 +321,7 @@ forecast of what it would cost on [`fixtures/`](fixtures/README.md). **Neither
 was read past its abstract**, and no Hilbert series has been computed here for
 any shape in this repository. Where all three of these entries land, and what
 the leaf test is called once it is named properly:
-[`state-of-the-art/rank-one-elements-of-a-subspace.md`](state-of-the-art/rank-one-elements-of-a-subspace.md).
+[`the-research-front/rank-one-elements-of-a-subspace.md`](the-research-front/rank-one-elements-of-a-subspace.md).
 
 ## The exact search
 
@@ -915,7 +915,7 @@ The Brent equations solved by constraint programming. The 2x2 and 3x3 cases are
 MIPLIB 2017 benchmarks, so the formulation is standard and nothing here is new.
 This repository stated the same equations for a MILP solver, measured them
 against the SAT strand and the tree search, and retired the encoding:
-[`state-of-the-art/rank-as-a-milp.md`](state-of-the-art/rank-as-a-milp.md).
+[`the-research-front/rank-as-a-milp.md`](the-research-front/rank-as-a-milp.md).
 
 **That was the whole of this entry until 2026-08-20, and it named the wrong half
 of the paper.** §4.1 and Table 2 are the published baseline for
@@ -1034,7 +1034,7 @@ resulting `k`-planes fail to span enough of the Grassmannian. Its cost there is
 with `ranksum` when reporting its Strassen refutation, so whether it refuses rank
 6 alone is not settled by reading that README. Where it would land, and why that
 place matters, is in
-[`state-of-the-art/lower-bounds.md`](state-of-the-art/lower-bounds.md).
+[`the-research-front/lower-bounds.md`](the-research-front/lower-bounds.md).
 
 **`yang2024sat`**: J. Yang. *Ruling Out Low-rank Matrix Multiplication Tensor
 Decompositions with Symmetries via SAT.*
@@ -1422,7 +1422,7 @@ oracles; so the two are worth comparing rather than one replacing the other.
 Not a dependency here: it needs LinBox, which this repository does not.
 Twelve of its `data/` operators are vendored under
 [`fixtures/plinopt/`](fixtures/plinopt/README.md) with its licence; what was read
-each way is [`formats/plinopt_interoperability/`](formats/plinopt_interoperability/README.md).
+each way is [`formats/interchange/`](formats/interchange/README.md).
 
 **`fmm-catalogue`**: A. Sedoglavic. *Yet another catalogue of fast matrix
 multiplication algorithms*, [fmm.univ-lille.fr](https://fmm.univ-lille.fr/).
