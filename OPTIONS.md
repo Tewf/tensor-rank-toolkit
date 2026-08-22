@@ -10,7 +10,7 @@ Timings quoted here were taken under [`MEASURING.md`](MEASURING.md), whose
 **13% noise floor** applies to all of them. Two timings inside that band are not
 distinguishable and are not reported here as a ratio.
 
-**`--help` is the one flag every command shares**, the two instruments included.
+**`--help` is the one flag every command shares**, the three instruments included.
 It prints the usage and leaves as **exit 2**: a line asking for help asked no
 question, and `cli/exit_code.h` has one code for a line that did not parse. It is
 not repeated in the tables below, and it is asserted against every built binary
@@ -21,7 +21,7 @@ rather than described, in
 
 - [**One question per command**](OPTIONS/one-question-per-command.md): the one
   thing each tool answers that no other does, why there are thirteen rather than
-  eight, and which two binaries are instruments rather than tools.
+  eight, and which three binaries are instruments rather than tools.
 - [**Precedence, and the file the numbers come from**](OPTIONS/precedence-and-tunables.md):
   flag, then `tunables.conf`, then the compiled default; where the file is looked
   for; and which tunable reaches which command.

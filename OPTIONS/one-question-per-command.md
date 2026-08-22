@@ -87,7 +87,14 @@ instrument for this repository, not a question a reader brings about their map.
   its answer is for and the `--table` that already prints and stops in that
   file. The old spelling refuses with exit 2 and names the new one.
 
-**Thirteen tools, and two instruments beside `measure-leaf`.** Twelve of the
-thirteen are on the browser console: `operators-to-tensor` takes three files at
-once and [`../web_interface/`](../web_interface/README.md) offers one, which is
-a limit of the console rather than a judgement about the tool.
+**Thirteen tools, and three instruments: `measure-leaf`,
+`price-canonical-route` and `show-limits`.** An instrument asks nothing about a
+map. The first two print nanoseconds; the third prints what this machine and this
+working directory bound a run to, which is the one question here whose answer is
+the same whatever tensor is in front of you.
+
+Twelve of the thirteen tools are on the browser console: `operators-to-tensor`
+takes three files at once and [`../web_interface/`](../web_interface/README.md)
+offers one, which is a limit of the console rather than a judgement about the
+tool. `show-limits` is on it too, as the run pane's own line rather than as a
+tool to choose.
