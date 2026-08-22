@@ -60,45 +60,5 @@ of 15.
 
 Counts and timings: [`../README.md`](../README.md).
 
-## Where it stops, and it is the combinatorics
-
-The scan has an upper bound and **no lower bound**, so it stops only on
-collecting `r` vectors. Measured: `4x4x4_49_156_L`, a 16-dimensional space in
-`Q^49`, holds 9 of its 16 vectors at weight 4 within 5 s and finds nothing new at
-weight 5. The remaining 7 need weight 6 or more, where the scan is `C(49,6)`, 14
-million subsets, reaching 451 million at weight 8. Neither the C++ nor an
-independent reference finished it in 30 minutes. **That is a fact about the
-combinatorics, not about the code, so running it longer buys nothing.**
-
-The problem this reduces to is the one coding theory has computed for forty
-years, minimum-weight codewords of a linear code, and its standard algorithm
-**Brouwer-Zimmermann** `[zimmermann1996]` carries a lower bound from several
-disjoint information sets and prunes on it. That is the first thing to try here,
-because it prunes this same enumeration rather than replacing it. What that
-bound is worth is measured rather than hoped: `[hernando2019]` reports 198
-million codewords generated against Magma's 6 001 million on one code, so the
-saving is the pruning and not a faster inner loop.
-
-**The obvious generalisation was read and it does not transfer.**
-`[sanjose2025]` extends Brouwer-Zimmermann from the minimum distance to the whole
-weight hierarchy, which looks like the same step from "the first weight" to "a
-sequence of weights" that this file takes. It is not. Its bound is sound only
-because every message-space subspace of support `≤ w` was exhausted first, and
-that enumeration is over `{v ∈ F_q^r : 1 ≤ wt(v) ≤ z}`, infinite over `Q`. The
-bound is field-agnostic and the walk it is attached to is not, and they do not
-come apart. **So the direction this page named as "the first thing to try" is not
-available here in the form that would help**, and that is recorded rather than
-quietly dropped.
-
-What does survive is the degenerate case, one information set, which this scan
-already licenses for nothing: having solved every support of size `≤ t`, whatever
-is left weighs at least `t+1`. Paired with a cheap upper bound that is a
-stopping rule. Measured: it would fire on six of nine greedy steps for
-`Grey-221_L` and on **none** for `4x4x4_49_156_L`, so it does not rescue the
-operator it would have to.
-
-The minimum-weight basis is also **not unique**, and which one comes back is
-decided by the order the subsets are walked in. That does not change the count,
-which is what this method promises. It does change what a downstream common
-subexpression pass makes of the result, measured in
-[`../in-front-of-plinopt.md`](../in-front-of-plinopt.md).
+**Where this scan stops, why, and who already has the algorithm that gets past
+it**: [`where-the-scan-stops.md`](where-the-scan-stops.md).

@@ -23,4 +23,5 @@ trivial to improve by returning a different matrix.
 | [`oracle-bottom-up.md`](oracle-bottom-up.md) | column subsets one smaller than the row count, keeping the emptiest vector |
 | [`oracle-top-down.md`](oracle-top-down.md) | the same subsets walked downwards, taking the first hit |
 | [`exact-over-q.md`](exact-over-q.md) | **the one proved minimal**: the matroid greedy, scanning supports upwards |
+| [`where-the-scan-stops.md`](where-the-scan-stops.md) | the operator it cannot finish, and the published algorithm that could |
 | [`the-caveat.md`](the-caveat.md) | why these operation counts are not wall clock, and what is not proved |

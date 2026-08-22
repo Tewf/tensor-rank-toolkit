@@ -95,13 +95,23 @@ are working on one problem and not citing each other, and the finite-field *basi
 problem — ours, the one every operator the rank strand emits poses — falls between
 them.
 
-**The same gap costs us on the algorithms side, not only on the hardness side.**
-Coding theory has been *computing* minimum weights for forty years and its
-standard method, Brouwer-Zimmermann `[zimmermann1996]`, is what Magma and
-GAP/GUAVA ship. It enumerates over several information sets so that it holds a
-**lower** bound as well as an upper one and can stop early.
-[`method/exact-over-q.md`](method/exact-over-q.md) holds only the upper bound, so
-it stops when it has collected a basis and never because nothing lighter exists,
-and that is precisely where it fails to finish on a `⟨4,4,4⟩` operator. The
-sparsification literature this module was built from cites none of it, and
-neither did this file until 2026-08-22.
+**The same gap costs us on the algorithms side, and there it is sharper.** Coding
+theory has been *computing* minimum weights for forty years, and its standard
+method Brouwer-Zimmermann `[lisonek2016]` holds a **lower** bound from several
+information sets as well as an upper one, so it stops early.
+[`method/exact-over-q.md`](method/exact-over-q.md) holds only the upper bound.
+
+**And the exact oracle this module needs is already published, pruned, under
+another name.** `[sanjose2025]`'s relative generalized Hamming weight at `r = 1`
+is `min{ wt(c) : c ∈ C₁ \ C₂ }`, which is `[beniamini2020]`'s Problem 2.15 with
+`C₂` the span of the rows already settled. One community states the problem and
+searches column subsets for it; the other has had a Brouwer-Zimmermann-pruned
+algorithm for it in ACM TOMS since 2025, shipping in Sage. Neither cites the
+other, in either direction. **This file recorded that non-citation on the
+hardness side before it noticed the same thing on the algorithms side**, which is
+the more expensive half.
+
+One more entry for the hardness table above, over the field this module actually
+works in: `[sparsevectorfocs2025]` makes finding the sparsest vector in a **real**
+subspace NP-hard to approximate within any constant factor. So the exact method
+here is not one theorem away from being polynomial.

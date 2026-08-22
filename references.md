@@ -1202,18 +1202,36 @@ implementation of Brouwer-Zimmermann was found. **Abstract read.**
 **`sanjose2025`**: R. San-José. *An algorithm for computing generalized Hamming
 weights and the Sage package GHWs.* ACM Trans. Math. Softw. **51**(4), 2025;
 [arXiv:2503.17764](https://arxiv.org/abs/2503.17764). Generalises
-Brouwer-Zimmermann from the minimum distance to the whole weight hierarchy, and
-ships it as Sage at `github.com/RodrigoSanJose/GHWs`, GPL-3.0-or-later, so the
-algorithm may be read and the code may not be lifted. **Full text read 2026-08-22,
-and it is further from this module than its title suggests.** Three reasons, all
-worth writing down because the title invites the mistake:
+Brouwer-Zimmermann from the minimum distance to the whole weight hierarchy **and
+to the relative case**, and ships it as Sage at `github.com/RodrigoSanJose/GHWs`,
+GPL-3.0-or-later, so the algorithm may be read and the code may not be lifted.
+Full text read 2026-08-22.
 
-- **A different invariant.** `d_r` is the smallest *union of supports* over an
-  `r`-dimensional subcode; a greedy weight `g_r` is the weight of the `r`-th
-  vector the matroid greedy takes. The paper never mentions greedy weights,
-  matroids, Rado or Edmonds: zero occurrences of all four. The relation is
-  **`g_r ≤ d_r`**, one line from `dim(D ∩ V_{r-1}) ≤ r-1`, and it runs the
-  opposite way to the guess this entry was first written on.
+**Its relative weight at `r = 1` is `[beniamini2020]`'s Sparsest Independent
+Vector oracle, and neither paper knows about the other.** Definition 2.7, read
+verbatim:
+
+> `M_r(C₁, C₂) = min{ |supp(D)| : D a subcode of C₁ with dim D = r, D ∩ C₂ = {0} }`
+
+At `r = 1` a subcode `D` is `⟨c⟩`, so `|supp(D)|` is `wt(c)` and `D ∩ C₂ = {0}`
+says `c ∉ C₂`. So `M₁(C₁, C₂) = min{ wt(c) : c ∈ C₁ \ C₂ }`, which is Problem
+2.15 word for word with `C₂` the span of the rows already settled. **The coding
+side has had a Brouwer-Zimmermann-pruned algorithm for the sparsification side's
+oracle since 2025, in ACM TOMS, shipping.** That is the same non-citation
+[`matrix_sparsification/what-is-hard-about-it.md`](matrix_sparsification/what-is-hard-about-it.md)
+records on the hardness side, showing up again on the algorithms side.
+
+**`RGHW(C, C2, 1)` from that package is the baseline this module has to name**,
+and the review is not finished until it has. What nobody has done is put the
+Rado-Edmonds driver on top of that oracle and sum the successive `M₁`, which is
+the minimum-weight basis, and nobody has done any of it outside a finite field.
+
+Three things still separate it from what this module needs:
+
+- **A different invariant at `r > 1`.** `d_r` is the smallest *union of supports*
+  over an `r`-dimensional subcode, not a sum of weights. Only `r = 1` is ours.
+  The paper never mentions matroids, Rado or Edmonds: zero occurrences of all
+  three.
 - **The bound does not detach from the enumeration.** Everything structural is
   field-agnostic: Lemma 3.1, the information sets, and the bound itself,
   `Σ_j max{0, (w+1) − R_j}` with `R_j` the redundancy of the `j`-th information
@@ -1229,6 +1247,33 @@ here already licenses for nothing: having solved every support of size `≤ t`,
 every remaining codeword weighs at least `t+1`. Measured against a cheap upper
 bound, that rule fires on six of nine greedy steps for `Grey-221_L` and on none
 at all for `4x4x4_49_156_L`, which is the operator it would need to rescue.
+
+**`chenklove2001`, `chenklove2004`**: W. Chen, T. Kløve. *The weight hierarchies
+of q-ary codes of dimension 4*, and *On the second greedy weight for linear codes
+of dimension at least 4*, IEEE Trans. Inform. Theory **50**(2):354-356, 2004,
+with companions in Discrete Math. 241 (2001) and AAECC 1999. **The name "greedy
+weight" is theirs and it does not mean what this module means by it.** Chen and
+Kløve's `g_r` is the *support* weight of a greedy `r`-dimensional subcode, a
+union of supports like `d_r`; what the matroid greedy takes here is the weight of
+one vector, and the module's objective is a *sum* of those. Named so the
+collision is on the record rather than waiting to be discovered in a referee
+report. The papers are structural, bounding `max(g₂ − d₂)` for small dimensions;
+there is no algorithm and no code. **Cited from the citing literature.**
+
+**`johnsenverdure2020`**: T. Johnsen, H. Verdure. *Greedy weights for matroids.*
+[arXiv:2002.08824](https://arxiv.org/abs/2002.08824), 2020. Lifts Chen and
+Kløve's greedy weights to matroids and proves a Wei duality for them. The one
+place matroids and this weight literature meet, and it is a duality result rather
+than an algorithm. **Abstract only.**
+
+**`sparsevectorfocs2025`**: *Inapproximability of Finding Sparse Vectors in
+Codes, Subspaces, and Lattices.* FOCS 2025,
+[arXiv:2410.02636](https://arxiv.org/abs/2410.02636). NP-hard to approximate the
+sparsest vector in a **real** subspace within any constant factor. Belongs beside
+`[tillmann2014]` in
+[`matrix_sparsification/what-is-hard-about-it.md`](matrix_sparsification/what-is-hard-about-it.md):
+it is the sharpest statement over `R`, and the one that says the exact method
+here is not one theorem away from being polynomial. **Abstract only.**
 
 **`narisada2021`**: S. Narisada, K. Fukushima, S. Kiyomoto. *Fast GPU
 Implementation of Dumer's Algorithm Solving the Syndrome Decoding Problem.*
