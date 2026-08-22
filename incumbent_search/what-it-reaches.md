@@ -128,10 +128,10 @@ scaling limit of this file.
 not.** Over GF(2) the walk now holds a matrix as bits in machine words rather
 than as one `int64_t` an entry:
 [`../descent_search/gf2_span_walk.h`](../descent_search/gf2_span_walk.h). On the
-`cyclic_f2_7` row of the table above that is **19.2x at the same 22 nodes and
+`cyclic_f2_7` row of the table above that is **19.0x at the same 22 nodes and
 the same 17 371 children**, and on `gf64_multiplication` five nodes of the
-width-4 search cost 122.06 s on the path these runs were taken on against
-14.99 s packed. On `<3,4,5>`, the shape this table does not reach at all, one
+width-4 search cost 112.95 s on the path these runs were taken on against
+12.74 s packed. On `<3,4,5>`, the shape this table does not reach at all, one
 node at `--summand-rank 4` is 26 040 children and went from 233.93 s to
 24.31 s. The exponent is untouched, so the wall in this section is where
 it was and is reached later rather than removed.

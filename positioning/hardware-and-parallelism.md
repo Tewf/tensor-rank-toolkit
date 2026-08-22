@@ -87,9 +87,9 @@ was measured the same way, each question asked twice with and without
 | question | slice | nodes | children | general | GF(2) | factor |
 |---|---|---|---|---|---|---|
 | `matmul_2x2x2 --width 4` | 4x4 | 21 | 2 251 | 0.05 s | 0.02 s | 2.5x |
-| `gf64_multiplication --width 4 --nodes 5` | 6x6 | 10 | 19 780 | 122.06 s | 14.99 s | **8.1x** |
-| `cyclic_f2_7 --width 4` | 7x7 | 22 | 17 371 | 13.04 s | 0.68 s | **19.2x** |
-| `cyclic_f2_7 --width 8` | 7x7 | 74 | 57 958 | 42.69 s | 2.25 s | **19.0x** |
+| `gf64_multiplication --width 4 --nodes 5` * | 6x6 | 10 | 19 780 | 112.95 s | 12.74 s | **8.9x** |
+| `cyclic_f2_7 --width 4` * | 7x7 | 22 | 17 371 | 12.15 s | 0.64 s | **19.0x** |
+| `cyclic_f2_7 --width 8` * | 7x7 | 74 | 57 958 | 39.74 s | 2.09 s | **19.0x** |
 | `<3,4,5> --width 4 --nodes 1 --summand-rank 4` | 12x20 | 1 | 26 040 | 233.93 s | 24.31 s | **9.6x** |
 
 **Every node count, child count and answer is identical in both columns**, which
@@ -108,10 +108,17 @@ side. Unprofiled, because `perf_event_paranoid` is 4 here.
 
 The full table, the small-fixture row that is dominated by move generation
 rather than by the walk, and the protocol caveat, are in the header linked
-above. **Those runs were taken at load 2.5 to 5.0 and are not protocol
-numbers**: this machine had another session on it and
-[`../MEASURING.md`](../MEASURING.md) abandons above load 1.0, so the ratios
-stand and the seconds are upper bounds.
+above. **Three of its seven rows are protocol numbers and four are not.** The
+three were re-taken on 2026-08-23 at load 0.98 and 43 C, fastest of three under
+the measurement lock. The other four were taken the day before at load 2.5 to
+5.0, which [`../MEASURING.md`](../MEASURING.md) abandons, so their seconds are
+upper bounds.
+
+**The re-take is the useful part, because it says which half was fragile.** Every
+second fell by 7 to 9% once the machine was quiet and **every ratio held or
+improved**, `gf64`'s 8.1x becoming 8.9x. Load was slowing both columns by about
+the same amount, which is what interleaving the attempts was meant to achieve and
+is now measured rather than hoped.
 
 **This page covers the tree and the solver only.** The other two parts people
 ask about, generating the pool and the `C A` recovery, are in

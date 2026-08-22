@@ -84,7 +84,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   its life inside. `lower-the-bound` costs one `minimum_weight_basis_with` per
   child, and each of those walks a span taking the rank of a matrix at nearly
   every element, so what a matrix is made of is what that search costs.
-  **2.5x to 19.2x**, measured one question at a time with and without the new
+  **2.5x to 19.0x**, measured one question at a time with and without the new
   `--general-span`, in
   [`descent_search/gf2_span_walk.h`](descent_search/gf2_span_walk.h) with the
   spread explained and the protocol caveat attached: the machine was not quiet,

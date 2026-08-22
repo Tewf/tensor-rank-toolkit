@@ -42,10 +42,10 @@
 /// |---|---|---|---|---|---|---|
 /// | `matmul_2x2x2 --width 4` | 4x4 | 21 | 2 251 | 0.05 s | 0.02 s | 2.5x |
 /// | `matmul_2x2x2 --width 8` | 4x4 | 40 | 4 359 | 0.09 s | 0.03 s | 3.0x |
-/// | `gf64_multiplication --width 4 --nodes 5` | 6x6 | 10 | 19 780 | 122.06 s | 14.99 s | **8.1x** |
+/// | `gf64_multiplication --width 4 --nodes 5` * | 6x6 | 10 | 19 780 | 112.95 s | 12.74 s | **8.9x** |
 /// | `gf64_multiplication --width 8 --nodes 5` | 6x6 | 10 | 19 780 | 121.39 s | 13.69 s | **8.9x** |
-/// | `cyclic_f2_7 --width 4` | 7x7 | 22 | 17 371 | 13.04 s | 0.68 s | **19.2x** |
-/// | `cyclic_f2_7 --width 8` | 7x7 | 74 | 57 958 | 42.69 s | 2.25 s | **19.0x** |
+/// | `cyclic_f2_7 --width 4` * | 7x7 | 22 | 17 371 | 12.15 s | 0.64 s | **19.0x** |
+/// | `cyclic_f2_7 --width 8` * | 7x7 | 74 | 57 958 | 39.74 s | 2.09 s | **19.0x** |
 /// | `<3,4,5> --width 4 --nodes 1 --summand-rank 4` | 12x20 | 1 | 26 040 | 233.93 s | 24.31 s | **9.6x** |
 ///
 /// The last row is the question that asked for this file and ships no fixture:
@@ -61,7 +61,7 @@
 /// binds before the width does; only `branches bounded` separates them, 12
 /// against 24.
 ///
-/// **2.5x to 19.2x, and the spread is the point rather than the top of it.**
+/// **2.5x to 19.0x, and the spread is the point rather than the top of it.**
 /// The factor is what the span walk was as a share of the run, times what the
 /// arithmetic gained, and neither end of the table is the arithmetic:
 ///
@@ -81,15 +81,23 @@
 ///    rows and not a profile**: `perf_event_paranoid` is 4 on this machine, so
 ///    nothing here has been profiled and the reading is owed a check.
 ///
-/// **Taken 2026-08-22 at load 2.5 to 5.0, which is not
-/// [`../MEASURING.md`](../MEASURING.md)'s protocol.** That file asks for a quiet
-/// machine and abandons above load 1.0; another session held two cores of the
-/// twelve throughout, and waiting it out was not available. So the three
-/// attempts of the two paths were **interleaved** rather than run in two blocks,
-/// which shares the neighbour between the columns instead of landing it on one,
-/// and the spread between attempts is under 7% on every row. Every second above
-/// is an upper bound on a quiet machine's, and what the table is evidence of is
-/// the ratio and the order of magnitude rather than the digits. It wants
+/// **The three starred rows were re-taken on 2026-08-23 to protocol**, at load
+/// 0.98 and a package temperature of 43 C, fastest of three, each attempt under
+/// `flock /tmp/bilinear-measure.lock`. Those seconds are measurements.
+///
+/// **The unstarred rows are not.** They were taken on 2026-08-22 at load 2.5 to
+/// 5.0, which [`../MEASURING.md`](../MEASURING.md) abandons above 1.0: another
+/// session held two of the twelve cores throughout and waiting it out was not
+/// available then. The three attempts of the two paths were **interleaved**
+/// rather than run in two blocks, so the neighbour is shared between the columns
+/// instead of landing on one, and the spread between attempts is under 7% on
+/// every row. Those seconds are upper bounds on a quiet machine's.
+///
+/// **What the re-take settles is that the ratios were never the doubtful part.**
+/// The seconds fell by 7 to 9% once the machine was quiet and every ratio held or
+/// improved: 19.2x became 19.0x, 19.0x stayed, and `gf64`'s 8.1x became 8.9x,
+/// which is its own width-8 figure. A loaded machine was slowing both columns by
+/// about the same amount, which is what interleaving the attempts was for.
 /// re-taking under the protocol before it is quoted as one.
 ///
 /// **It is a case chosen at run time, not a build.** The characteristic comes
