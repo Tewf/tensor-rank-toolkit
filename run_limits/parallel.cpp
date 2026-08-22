@@ -6,6 +6,8 @@
 #include <thread>
 #include <vector>
 
+#include "machine.h"
+
 namespace bilinear_rank {
 
 namespace {
@@ -21,8 +23,7 @@ void set_worker_count(std::size_t requested) {
         workers = requested;
         return;
     }
-    const unsigned int detected = std::thread::hardware_concurrency();
-    workers = detected == 0 ? 1 : detected;
+    workers = core_count();
 }
 
 void parallel_for(std::size_t count, const std::function<void(std::size_t)>& body) {

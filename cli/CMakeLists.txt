@@ -4,5 +4,6 @@
 # scratch file when a signal cuts a run short. Anything that answers a question
 # belongs to the strand that owns the question, not here.
 add_library(cli INTERFACE)
+target_link_libraries(cli INTERFACE run_limits)
 target_include_directories(cli INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(tests)
