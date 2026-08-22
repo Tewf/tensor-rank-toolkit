@@ -73,7 +73,7 @@ mentioned, walking the subspace, where the gain is not the width but
 two cleanly, 6.0x scanning against 16.2x walking at one shape. The 64x row for
 `<4,4,4>` stays untested: no fixture here reaches it.
 
-### The same lever, one search further in: 2.5x to 19.2x
+### The same lever, one search further in: 2.5x to 19.0x
 
 The leaf is where the *exact* search lives. The **span walk of step 1** is where
 the incumbent search lives, and it is the same shape of loop over the same
