@@ -83,6 +83,14 @@ async function begin() {
   $("facts").title = machine;
   $("wall-clock").value = state.setup.wall_clock_seconds;
 
+  // What the run is bounded by, from `show-limits` and not from anything this
+  // page worked out: the flags on the left move a run, and these are what they
+  // move from. Shown here rather than in the header because this is where it is
+  // read, a moment before Run.
+  const bounds = state.setup.limits || {command: "", text: ""};
+  $("limits-command").textContent = bounds.command;
+  $("limits-text").textContent = bounds.text;
+
   const menu = $("fixture");
   for (const [kind, names] of Object.entries(state.setup.fixtures)) {
     // The kind is on the group so that choosing a tool can grey out the

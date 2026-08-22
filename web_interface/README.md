@@ -40,6 +40,15 @@ found, proved impossible, and a budget that ran out.
    file, or build one with `make-tensor`. The format is the one that already
    exists, `formats/tensor_file.h`, and nothing new was invented. The fixtures
    the chosen tool cannot read are greyed rather than hidden.
+**What bounds a run is on the same screen**, shut by default, in the run pane
+above the button: the machine as the kernel reports it, the ceilings derived from
+it, and every tunable with the value in force and where it came from. It is
+`show-limits`' own output with the line that produced it, parsed by nothing here.
+Editing those values is deliberately not offered: `tunables.conf` belongs to the
+checkout and a browser that wrote to it would change what every other run on this
+machine is bounded by. Per-run limits are flags and are already in the options
+panel.
+
 2. **The question.** Every tool but two, each stating what it asks.
    `make-tensor` fills the pane above instead, and `operators-to-tensor` is not
    here at all because it reads three files at once and this console offers one.

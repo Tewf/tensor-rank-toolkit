@@ -157,3 +157,19 @@ button.copy {
 }
 .files a { font-family: var(--mono); font-size: .78rem; margin-right: .8rem; }
 .empty { color: var(--muted); font-size: .88rem; }
+
+/* What bounds a run, shut by default: it is the same on every run of the day,
+   so it is worth one glance and not one line of permanent furniture. */
+.limits {
+  margin: 0.6rem 0 0.8rem;
+  font-size: 0.86em;
+}
+.limits summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.limits pre {
+  margin: 0.4rem 0 0;
+  overflow-x: auto;
+  white-space: pre;
+}

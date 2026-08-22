@@ -16,6 +16,7 @@ import pathlib
 
 import catalogue
 import command_line
+import limits
 import repository
 import registry
 import runner
@@ -91,6 +92,10 @@ class Service:
             "build": str(self.build),
             "wall_clock_seconds": self.wall_clock_seconds,
             "longest_wall_clock_seconds": LONGEST_WALL_CLOCK_SECONDS,
+            # What this run will be bounded by, before it is started rather than
+            # inferred afterwards from how it went. Verbatim from `show-limits`:
+            # `limits.py` parses none of it and decides none of it.
+            "limits": limits.resolved(self.build),
         }
 
     def preview(self, request):

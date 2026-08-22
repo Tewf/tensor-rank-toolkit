@@ -18,6 +18,5 @@ target_link_libraries(run_limits PRIVATE project_warnings)
 # printed after a search had already started.
 add_executable(show-limits show_limits.cpp)
 target_link_libraries(show-limits PRIVATE run_limits cli project_warnings)
-set_target_properties(show-limits PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 add_subdirectory(tests)
