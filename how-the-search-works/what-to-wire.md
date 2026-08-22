@@ -25,13 +25,17 @@ Nothing here is retracted; it is suspended until the comparison is re-taken with
 The seam is [`../run_limits/device.h`](../run_limits/device.h) and it is already
 the right shape: a fixed ranking, a probe for availability, a host that always
 answers. What decides whether a leaf reaches the card is `launch_floor()`, and
-that number is **`PROVISIONAL` at 100 000 and was never measured on this
-machine** — it is a conventional launch cost times a rate taken from a kernel
-that is not wired in.
+that number was **measured at 8 192 on 2026-08-21** by `measure-leaf floor`: the
+smallest count at which every route on every compiled shape beat one core, timed
+against the card's wall clock and not its kernel clock. It was `PROVISIONAL` at
+100 000 when this page was written, a conventional launch cost times a rate taken
+from a kernel that was not wired in. The per-route table is in
+[`../run_limits/device.cpp`](../run_limits/device.cpp) and the walks cross at
+4 096 except 5x5's at 8 192.
 
 That floor decides every shape here at once. A leaf's work is `min(p^dim, |P|)`:
 
-| shape | `\|P\|` | leaf work, published targets | against a floor of 100 000 |
+| shape | `\|P\|` | leaf work, published targets | against the measured floor |
 |---|---|---|---|
 | 4x4 | 225 | 64 to 225 | host |
 | 5x5 | 961 | 961 | host |
