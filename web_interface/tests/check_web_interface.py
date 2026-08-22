@@ -116,6 +116,16 @@ def checks(port, build):
               for example in setup["examples"]))
     catalogue_matches_the_build(setup, build)
 
+    # The run pane says what the run is bounded by, and it says it because
+    # `show-limits` was actually run. A pane that quietly showed an error string
+    # would look like a pane, so what is asserted is a line only the instrument
+    # produces.
+    bounds = setup.get("limits", {})
+    check("the run pane carries what bounds a run",
+          "allocation ceiling" in bounds.get("text", ""))
+    check("and the line that produced it, to retype",
+          bounds.get("command", "").endswith("show-limits"))
+
     page_is_whole(port)
 
     print("\nthe command shown is the command run")
@@ -307,6 +317,11 @@ NOT_TOOLS = {
     # worse than not offering it. A limit of the console, named here so that it
     # is a decision rather than a drift.
     "descent_search/operators-to-tensor",
+    # An instrument that takes no map: it prints what this machine and this
+    # working directory bound a run to. The console shows its output in the run
+    # pane instead of offering it as a tool, because there is no question to ask
+    # it and nothing to choose.
+    "run_limits/show-limits",
 }
 
 
