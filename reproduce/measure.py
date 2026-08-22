@@ -62,10 +62,10 @@ import sys
 # import is flat because the two files sit in one directory and Python puts a
 # script's own directory first on the path, so `reproduce/measure.py` runs from
 # anywhere without a package, an installer or a `sys.path` line.
-from questions import (CARRIED, FIXTURES, OPERATORS, PLATEAU_QUESTIONS, REPEATS, ROOT,
-                       SAT_QUESTIONS, SECTIONS, WALK_QUESTIONS, descent_of, exact_search_of,
-                       famous_tensors_of, plateau_of, satisfiability_of, shown, skipped_fields,
-                       sparsification_of, walk_of)
+from questions import (CARRIED, FIXTURES, OPERATORS, PLATEAU_QUESTIONS, QUOTIENT_QUESTIONS,
+                       REPEATS, ROOT, SAT_QUESTIONS, SECTIONS, WALK_QUESTIONS, descent_of,
+                       exact_search_of, famous_tensors_of, plateau_of, quotient_of,
+                       satisfiability_of, shown, skipped_fields, sparsification_of, walk_of)
 
 
 def version_in(text):
@@ -275,7 +275,9 @@ def main():
                   "exact_search": exact_search_of(
                       build, committed[descent].get("exact_search", {}), repeats),
                   "famous_tensors": famous_tensors_of(
-                      build, committed[descent].get("famous_tensors", {}), repeats)},
+                      build, committed[descent].get("famous_tensors", {}), repeats),
+                  "quotient": [quotient_of(build, question, repeats)
+                               for question in QUOTIENT_QUESTIONS]},
         sparsification:
             {"fixtures": [sparsification_of(build, name, repeats) for name in OPERATORS]},
         satisfiability:

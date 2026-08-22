@@ -82,6 +82,22 @@ SAT_QUESTIONS = [
     {"name": "f2_5x5"},
 ]
 
+# What the orbit quotient is worth, as the pair of runs that shows it.
+#
+# A row asks one question twice, once plainly and once under `-s matmul n m k`,
+# and publishes both counts side by side. Publishing only the quotiented number
+# would be a figure with nothing to compare it against, and publishing the two in
+# different files would let one be refreshed without the other.
+#
+# The refutation is the one that matters: it is the half of the answer that is a
+# proof rather than a witness, and it is the number the search film closes on.
+QUOTIENT_QUESTIONS = [
+    {"name": "<2,2,2> refuting 6 products", "tensor": "matmul_2x2x2",
+     "target": 6, "symmetry": (2, 2, 2), "expect": 1, "verdict": "NO:"},
+    {"name": "<2,2,2> finding 7 products", "tensor": "matmul_2x2x2",
+     "target": 7, "symmetry": (2, 2, 2), "expect": 0, "verdict": "FOUND:"},
+]
+
 # The plateau crossing's published questions. A row is a claim that
 # `flip_graph/results.json` publishes a crossing at exactly these flags, and the
 # flags are the whole point of the row: `three-by-three.md` said the walk crossed
@@ -139,6 +155,7 @@ SECTIONS = (
     (("famous_tensors", "runs"), "tensor"),
     (("plateau",), "name"),
     (("walk",), "name"),
+    (("quotient",), "name"),
 )
 
 # The famous tensors, as the fixture each row's prose label names. The label is
@@ -248,7 +265,7 @@ def sparsification_of(build, name, repeats=REPEATS):
             **counts}
 
 
-def tree_search(build, fixture, target=None, expect=(0,), repeats=REPEATS):
+def tree_search(build, fixture, target=None, expect=(0,), repeats=REPEATS, symmetry=None):
     """One `decide-rank` question, as the pair a results file publishes.
 
     Zero nodes with no seconds is a real answer and now the commonest one here:
@@ -263,6 +280,11 @@ def tree_search(build, fixture, target=None, expect=(0,), repeats=REPEATS):
                str(ROOT / "fixtures" / f"{fixture}.tensor")]
     if target is not None:
         command += ["--target", str(target)]
+    # `-s matmul n m k` quotients the tree by the map's own automorphisms. It is
+    # the same question and the same verdict; what changes is how many times the
+    # search asks it. Default None, so every row that had no flag still has none.
+    if symmetry is not None:
+        command += ["-s", "matmul", *(str(side) for side in symmetry)]
     text, _ = fastest(command, repeats, expect=expect)
     # The search's own line, not this process's wall clock, which is what
     # `gf2_leaf.h` measures the leaf against and the only figure the two strands
@@ -549,3 +571,37 @@ def walk_of(build, question, repeats=REPEATS):
             "best_seed": int(winner.group(1)) if winner else None,
             "reductions": int(winner.group(4)) if winner else None,
             "seconds": seconds, "command": shown(command)}
+
+
+def quotient_of(build, question, repeats=REPEATS):
+    """One question asked twice, plainly and under the map's own symmetry.
+
+    Both counts come from one function so they can never be taken under
+    different flags or refreshed apart, and the verdict is checked rather than
+    recorded on both sides: a quotient that changed the answer would not be a
+    speed-up to report, it would be a bug, and the whole claim is that it does
+    not change the answer.
+    """
+    expect = (question["expect"],)
+    plain = tree_search(build, question["tensor"], question["target"],
+                        expect=expect, repeats=repeats)
+    quotiented = tree_search(build, question["tensor"], question["target"],
+                             expect=expect, repeats=repeats, symmetry=question["symmetry"])
+    for answer, how in ((plain, "without the quotient"), (quotiented, "under the quotient")):
+        if question["verdict"] not in answer["text"]:
+            raise RuntimeError(f"{question['name']}: {how}, the verdict is no longer "
+                               f"{question['verdict']!r}\n{answer['text']}")
+    if plain["products"] != quotiented["products"]:
+        raise RuntimeError(f"{question['name']}: the quotient changed the answer, "
+                           f"{plain['products']} against {quotiented['products']}")
+    return {"name": question["name"], "tensor": question["tensor"],
+            "target": question["target"],
+            "symmetry": "matmul " + " ".join(str(side) for side in question["symmetry"]),
+            "products": plain["products"],
+            "nodes": plain["nodes"], "quotiented_nodes": quotiented["nodes"],
+            # Rounded from the two counts beside it in the same row, by the same
+            # run, so the three cannot drift apart the way a ratio typed into
+            # prose once did. `quoted_numbers.py` exists because one had.
+            "fewer_nodes_by": round(plain["nodes"] / max(quotiented["nodes"], 1), 1),
+            "seconds": plain["seconds"], "quotiented_seconds": quotiented["seconds"],
+            "command": plain["command"], "quotiented_command": quotiented["command"]}
