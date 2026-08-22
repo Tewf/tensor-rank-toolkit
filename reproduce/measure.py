@@ -54,6 +54,7 @@ with, which is the failure these two files exist to stop.
 """
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -95,9 +96,14 @@ def version_in(text):
 
 
 # What is recorded for an installed tool that prints no version anywhere. It
-# names the binary that answered, because that is the fact still worth having:
-# a reader who needs to know which drat-trim this was can look at that path.
-NO_VERSION = "reports no version; binary at"
+# names *where* the binary was found rather than its full path: which drat-trim
+# answered is the fact worth keeping, and one machine's home directory is not.
+#
+# It used to write the absolute path, so every published results.json carried
+# an absolute home path into a public repository. That is the same defect the
+# restructure of 2026-08-18 fixed in three files and this line put back, which is
+# why the home directory is now stripped at the source rather than in the files.
+NO_VERSION = "reports no version; found on"
 
 
 def version_of(binary, *flags):
@@ -114,7 +120,11 @@ def version_of(binary, *flags):
         found = version_in(done.stdout + done.stderr)
         if found:
             return found
-    return f"{NO_VERSION} {path}"
+    home = os.path.expanduser("~")
+    where = os.path.dirname(path)
+    if where.startswith(home):
+        where = "~" + where[len(home):]
+    return f"{NO_VERSION} {where}"
 
 
 def provenance(build, counts=False):
