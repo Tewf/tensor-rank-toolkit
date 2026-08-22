@@ -7,6 +7,7 @@
 /// every count it prints comes from a decomposition that was rebuilt and compared
 /// against the map first.
 #include <algorithm>
+#include <cmath>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -34,7 +35,7 @@ namespace {
 void usage() {
     cli::note() << "usage: lower-the-bound <tensor-file> [--from basis|descent] [--nodes N]\n"
                    "                       [--width N] [--summand-rank r] [--whole-pool]\n"
-                   "                       [--below k] [--orbit-moves]\n"
+                   "                       [--below k] [--orbit-moves] [--span-census]\n"
                    "                       [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                    "                       [--general-span] [--emit-operators <stem>] [--help]\n"
                    "\n"
@@ -71,6 +72,13 @@ void usage() {
                    "                        improve. A round that exhausted its tree can\n"
                    "                        still improve from the subspace it ended on,\n"
                    "                        which is a different root\n"
+                   "  --span-census         count how many of the nodes and children this run\n"
+                   "                        visits are the same subspace reached twice, by a\n"
+                   "                        different order of adjunctions. Off by default and\n"
+                   "                        it changes nothing: a run with it on enters the same\n"
+                   "                        tree and prints the same counts. What the number is\n"
+                   "                        evidence about is whether isomorph rejection could\n"
+                   "                        pay here at all\n"
                    "  --orbit-moves         offer one move per orbit at each node instead of\n"
                    "                        every move, under the group --symmetry names.\n"
                    "                        Off by default: every count published for this\n"
@@ -94,6 +102,18 @@ void usage() {
                    "  --help                print this and stop, as exit 2";
 }
 
+/// The share of a population that was a subspace already reached, as a
+/// percentage to one decimal.
+///
+/// `(recorded - distinct) / recorded` and not `distinct / recorded`: the
+/// question is what a parent test would remove, which is every arrival after the
+/// first and not every subspace with a duplicate.
+double repeated_share(const bilinear_rank::SpanTally& tally) {
+    if (tally.recorded() == 0) return 0.0;
+    const double repeats = static_cast<double>(tally.recorded() - tally.distinct());
+    return std::round(1000.0 * repeats / static_cast<double>(tally.recorded())) / 10.0;
+}
+
 /// Does this spanning set still compute the map, and at the count claimed?
 ///
 /// Asked in the tool and not only in the tests, under the rule
@@ -112,6 +132,7 @@ int run(int argc, char** argv) {
     bilinear_rank::IncumbentLimits limits;
     bool from_descent = true;
     std::size_t rounds = 8;
+    bool counting_spans = false;
     // `--width auto`: widen once, and only on the evidence that widening is the
     // thing that was missing. Measured 2026-08-22, see `what-width-buys.md`.
     bool widen = false;
@@ -151,6 +172,8 @@ int run(int argc, char** argv) {
             limits.below = arguments.count();
         } else if (arguments.is("--orbit-moves")) {
             limits.quotient_moves = true;
+        } else if (arguments.is("--span-census")) {
+            counting_spans = true;
         } else if (arguments.is("--symmetry", "-s")) {
             symmetry = arguments.parsed_by(cli::parse_symmetry);
         } else if (arguments.is("--rounds")) {
@@ -222,12 +245,17 @@ int run(int argc, char** argv) {
     // tighter incumbent, so it cuts sooner and reaches further.
     bilinear_rank::IncumbentReport report;
     bilinear_rank::IncumbentReport round_report;
+    // One census for the whole run and not one a round, because a subspace two
+    // rounds both reach is reached twice: `--rounds` restarts from the answer,
+    // which is a node the round before it walked through.
+    bilinear_rank::SpanCensus census;
     std::vector<bilinear_rank::Matrix> answer = start;
     std::size_t reached = linear_algebra::multiplication_count(field, start);
     const auto run_rounds = [&] {
         for (std::size_t round = 0; round < rounds; ++round) {
             std::vector<bilinear_rank::Matrix> next =
-                bilinear_rank::search_from_above(field, answer, pool, limits, &round_report, ambient);
+                bilinear_rank::search_from_above(field, answer, pool, limits, &round_report,
+                                                 ambient, counting_spans ? &census : nullptr);
             report.nodes += round_report.nodes;
             report.children += round_report.children;
             report.moves_offered += round_report.moves_offered;
@@ -314,6 +342,25 @@ int run(int argc, char** argv) {
                 << " improvements, " << report.bounded << " branches bounded, depth "
                 << report.deepest << ", largest single-move drop " << report.largest_drop
                 << (report.exhausted ? ", tree exhausted" : ", budget spent");
+
+    // What the tree repeated, which is the whole evidence about whether an
+    // isomorph rejection scheme could pay on this search. Printed as a rate as
+    // well as a pair, because "3 of 22" and "3%" carry the decision and the
+    // ratio alone does not say how big the population was.
+    if (counting_spans) {
+        cli::note() << "span census: " << census.entered.recorded() << " nodes entered, "
+                    << census.entered.distinct() << " distinct spans, "
+                    << repeated_share(census.entered) << "% repeats, most-entered span reached "
+                    << census.entered.most_repeated() << " times";
+        cli::note() << "span census: " << census.expanded.recorded() << " nodes expanded, "
+                    << census.expanded.distinct() << " distinct spans, "
+                    << repeated_share(census.expanded) << "% repeats, most-expanded span reached "
+                    << census.expanded.most_repeated() << " times";
+        cli::note() << "span census: " << census.children.recorded() << " children costed, "
+                    << census.children.distinct() << " distinct spans, "
+                    << repeated_share(census.children) << "% repeats, most-costed span reached "
+                    << census.children.most_repeated() << " times";
+    }
 
     // Said in words rather than left to be inferred from the count, and said
     // both ways round: a run that did not reach `k` has proved nothing about
