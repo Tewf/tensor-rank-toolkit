@@ -114,4 +114,48 @@ inline bool gf2_is_rank_one(const std::uint64_t* words, std::size_t rows, std::s
     return leading != 0;
 }
 
+/// The rank of a packed matrix, in machine words.
+///
+/// The same elimination [`rank`](measures.h) runs, over the same field, with a
+/// row held as the low `columns` bits of one word instead of as `columns`
+/// `int64_t`s. Clearing a row against a pivot is then one exclusive or where
+/// the general path spends one Givaro `axpyin` per column, and the
+/// normalisation that path does by inverting the pivot is a no-op, since over
+/// GF(2) the only nonzero scalar is 1. So the two pick the same pivots and
+/// count the same rank.
+///
+/// `reduced[column]` holds the row whose lowest set bit is `column`, which is
+/// that row's pivot. A row is cleared against the row holding its own lowest
+/// bit, and that exclusive or can only move the lowest bit upwards, so the loop
+/// ends: at worst on a column nothing holds yet, where the row becomes a pivot,
+/// and at best on zero, where the row was already spanned. That is `O(rank)`
+/// word operations a row, against the `O(rank * columns)` field operations the
+/// general path spends.
+///
+/// `columns` must be at most 64, which is [`gf2_row`](gf2_bits.h)'s limit and
+/// what every caller checks before it packs anything. Only the first `columns`
+/// entries of `reduced` are ever addressed, because `gf2_row` masks the rest
+/// away, so only those are cleared.
+inline std::size_t gf2_rank(const std::uint64_t* words, std::size_t rows, std::size_t columns) {
+    if (rows == 0 || columns == 0) return 0;
+
+    std::uint64_t reduced[64];
+    for (std::size_t column = 0; column < columns; ++column) reduced[column] = 0;
+
+    std::size_t rank = 0;
+    for (std::size_t row = 0; row < rows; ++row) {
+        std::uint64_t value = gf2_row(words, columns, row);
+        while (value != 0) {
+            const auto pivot = static_cast<std::size_t>(std::countr_zero(value));
+            if (reduced[pivot] == 0) {
+                reduced[pivot] = value;
+                ++rank;
+                break;
+            }
+            value ^= reduced[pivot];
+        }
+    }
+    return rank;
+}
+
 }  // namespace linear_algebra
