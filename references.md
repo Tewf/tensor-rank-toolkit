@@ -1162,6 +1162,43 @@ entries below. Named here because our exact oracle solves *exactly* the
 minimum-weight-codeword problem, under a different name, and this is that
 problem's mature algorithm.
 
+**`hernando2019`**: F. Hernando, F. D. Igual, G. Quintana-Ortí. *Algorithm 994:
+Fast Implementations of the Brouwer-Zimmermann Algorithm for the Computation of
+the Minimum Distance of a Random Linear Code.* ACM Trans. Math. Softw.
+**45**(2), 2019, [doi:10.1145/3302389](https://doi.org/10.1145/3302389). The
+practical reference implementation, sequential, vectorised and shared-memory.
+Reported against Magma on a `[115, 60, 13]` code: 198 461 377 codewords
+generated against Magma's 6 001 753 644, which is the lower bound doing the work
+rather than a faster inner loop. **Abstract and summary only.**
+
+**`quintanaorti2019`**: G. Quintana-Ortí, F. Hernando, F. D. Igual. *Parallel
+Implementations for Computing the Minimum Distance of a Random Linear Code on
+Multicomputers.* [arXiv:1911.08963](https://arxiv.org/abs/1911.08963), 2019.
+The same algorithm on distributed memory, hundreds to thousands of cores, "up to
+several orders of magnitude" faster than what is widely used. **This is where the
+parallel work on this problem went, and it is not a card**: no GPU
+implementation of Brouwer-Zimmermann was found. **Abstract read.**
+
+**`sanjose2025`**: R. San-José. *An algorithm for computing generalized Hamming
+weights and the Sage package GHWs.* ACM Trans. Math. Softw. **51**(4), 2025;
+[arXiv:2503.17764](https://arxiv.org/abs/2503.17764). **Generalises
+Brouwer-Zimmermann from the minimum distance to the whole weight hierarchy**, and
+ships it as Sage at `github.com/RodrigoSanJose/GHWs`. Named because it is the
+closest existing machinery to what
+[`matrix_sparsification/method/exact-over-q.md`](matrix_sparsification/method/exact-over-q.md)
+does: that scan wants a *sequence* of weights rather than the first one, which is
+the same generalisation. The quantities are not identical — a generalized Hamming
+weight is the smallest support of an `r`-dimensional subcode, and a greedy weight
+is what the matroid greedy takes at step `i` — so this is a starting point and
+not a drop-in. **Abstract read; the package not run.**
+
+**`narisada2021`**: S. Narisada, K. Fukushima, S. Kiyomoto. *Fast GPU
+Implementation of Dumer's Algorithm Solving the Syndrome Decoding Problem.*
+IEEE, 2021. The one place low-weight-codeword search really is on a GPU, and it
+is information-set decoding for code-based cryptanalysis rather than an exact
+minimum. Named so that "put it on the card" has a citation attached to it and a
+statement of what that citation actually did. **Abstract and summary only.**
+
 **`bouyuklieva2021`**: S. Bouyuklieva, I. Bouyukliev. *An Extension of the
 Brouwer-Zimmermann Algorithm for Calculating the Minimum Weight of a Linear
 Code.* Mathematics **9**(19):2354, 2021,

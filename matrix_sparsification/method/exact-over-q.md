@@ -74,7 +74,18 @@ The problem this reduces to is the one coding theory has computed for forty
 years, minimum-weight codewords of a linear code, and its standard algorithm
 **Brouwer-Zimmermann** `[zimmermann1996]` carries a lower bound from several
 disjoint information sets and prunes on it. That is the first thing to try here,
-because it prunes this same enumeration rather than replacing it.
+because it prunes this same enumeration rather than replacing it. What that
+bound is worth is measured rather than hoped: `[hernando2019]` reports 198
+million codewords generated against Magma's 6 001 million on one code, so the
+saving is the pruning and not a faster inner loop.
+
+**And the generalisation this scan needs already exists.** `[sanjose2025]`
+extends Brouwer-Zimmermann from the minimum distance to the whole weight
+hierarchy and ships it as a Sage package, which is the same step from "the first
+weight" to "a sequence of weights" that this file takes. The quantities are not
+identical, so it is a starting point rather than a drop-in, but building the
+bound from scratch here without reading it first would repeat a mistake this
+repository has already made twice.
 
 The minimum-weight basis is also **not unique**, and which one comes back is
 decided by the order the subsets are walked in. That does not change the count,
