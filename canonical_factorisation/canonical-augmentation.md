@@ -8,7 +8,7 @@ of narrowing this search, the one that works and the two that cannot, is
 subspace a group-invariant canonical parent and accept an augmentation only from
 that parent's class, so each class is reached exactly once with **no memory** of
 what was generated. It is the standard fix for the duplication the plain tree
-leaves, and `oracle_guided_search/` measures it at **22 779x fewer nodes** when
+leaves, and `oracle_guided_search/` measures it at **22 778x fewer nodes** when
 *counting* solution subspaces.
 
 Deciding is not counting, and the first wiring of it lost by 129x. Two fixes
