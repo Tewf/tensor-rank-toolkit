@@ -1068,6 +1068,23 @@ in [`matrix_sparsification/oracle_sparsifier.h`](matrix_sparsification/oracle_sp
 Algorithm 2 is the driver they feed, from `gottlieb2010`; Algorithm 6 is the
 greedy in `greedy_sparsifier.h`.
 
+**Problem 2.15 and Algorithm 2 together are the composition
+[`matrix_sparsification/method/exact-over-q.md`](matrix_sparsification/method/exact-over-q.md)
+implements, and the paper states it is exact.** Problem 2.15 asks for a vector in
+the row space, *not in the span of the rows already settled*, with a minimal
+number of nonzeros; Algorithm 2 builds the settled set from empty by calling it.
+The paper's own words: given such a subroutine, "Algorithm 2 returns an exact
+solution for MS". So the matroid greedy is not a new arrangement of their pieces,
+it is their arrangement, and what was missing here was an oracle that answered
+Problem 2.15 rather than a restricted version of it. **Read in the paper.**
+
+**They solve Algorithm 6 with a solver, and it is Z3.** §5 encodes the objective
+as a **MaxSAT** instance with two kinds of soft constraint, one penalising
+nonzero entries and one penalising non-singleton entries, so the optimum
+minimises `nnz + nns` directly. Reported costs on their corpus: Algorithms 3 and
+4 within 40 minutes, Algorithm 6 under one minute. **Read in the paper**; not
+reproduced here, and not comparable to anything measured on this machine.
+
 **This entry claimed Claim 2.11 and the paper has no such claim.** Its numbered
 claims run 2.12, 3.10, 3.11 and 3.18, and 2.12 is the complexity of a recursively
 applied linear map, not an additive complexity. The additive complexity
@@ -1129,6 +1146,40 @@ own in another.
 **`gottlieb2010`**: L.-A. Gottlieb, T. Neylon. *Matrix Sparsification and the
 Sparse Null Space Problem.* APPROX/RANDOM 2010. The greedy driver that the
 sparsest-independent-vector oracles are oracles for.
+
+**`zimmermann1996`**: K.-H. Zimmermann. *Integral Hecke Modules, Integral
+Generalized Reed-Muller Codes, and Linear Codes.* Technical Report 3-96,
+Technische Universität Hamburg-Harburg, 1996. With A. Brouwer's earlier work this
+is the **Brouwer-Zimmermann algorithm**, the standard method for the minimum
+weight of a linear code and what Magma and GAP/GUAVA ship. It enumerates over
+several information sets, which buys a **lower** bound alongside the upper bound
+and lets it stop before the enumeration is exhausted; the scan in
+[`matrix_sparsification/method/exact-over-q.md`](matrix_sparsification/method/exact-over-q.md)
+has the upper bound and no lower bound, which is where it stops being able to
+finish. **Cited from the citing literature**, not read: the primary is an
+unindexed 1996 technical report. What was read is the description in the two
+entries below. Named here because our exact oracle solves *exactly* the
+minimum-weight-codeword problem, under a different name, and this is that
+problem's mature algorithm.
+
+**`bouyuklieva2021`**: S. Bouyuklieva, I. Bouyukliev. *An Extension of the
+Brouwer-Zimmermann Algorithm for Calculating the Minimum Weight of a Linear
+Code.* Mathematics **9**(19):2354, 2021,
+[doi:10.3390/math9192354](https://doi.org/10.3390/math9192354). Reduces the
+number of codewords considered, most where the length is not divisible by the
+dimension. **Abstract and summary only.** Together with P. Lisoněk, L. Trummer,
+*Algorithms for the minimum weight of linear codes*, Adv. Math. Commun.
+**10**(1):195-207, 2016, and *Algorithm 994* (ACM TOMS **45**(2), 2019) for fast
+implementations, these are the entry points to that literature.
+
+**`qldpcsat2026`**: *SAT, MaxSAT, and SMT for QLDPC Distance Computation: A
+Large-Scale Empirical Study.* [arXiv:2606.12445](https://arxiv.org/abs/2606.12445),
+2026. The solver route to the same subproblem, benchmarked across Minisat,
+**Glucose**, CaDiCaL, Lingeling and MapleSat. Named because this repository
+already forks `kissat` and `cadical` for the rank strand, so the route is open
+here at no new dependency. **Abstract and summary only.** Not attempted: at
+`⟨3,3,3⟩` rank 23 the exact scan finishes in a third of a second and there is
+nothing for a solver to improve.
 
 **`dumas2024cex`**: J-G. Dumas. *Cex_Poldet*, Maple worksheet, 27 May 2024,
 unpublished; supplied directly. The determinant-polynomial

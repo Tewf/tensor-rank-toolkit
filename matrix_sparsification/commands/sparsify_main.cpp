@@ -15,6 +15,7 @@
 #include "linear_algebra.h"
 #include "memory_budget.h"
 #include "oracle_sparsifier.h"
+#include "rational_sparsifier.h"
 #include "report.h"
 #include "sms_file.h"
 #include "timing.h"
@@ -183,7 +184,20 @@ int run(int argc, char** argv) {
                     << ", and a nonzero count is the same either way up";
     }
 
+    // **The one method here that is proved to return the minimum**, so it comes
+    // first: the others cannot beat it and the run is over in a fraction of a
+    // second. They each answer a narrower question exactly and then assemble
+    // greedily; this one is `[beniamini2020]`'s own Algorithm 2 with an exact
+    // oracle under it, so Rado-Edmonds makes the assembled answer the true
+    // minimum over every invertible `V`.
+    // [`../rational_sparsifier.h`](../rational_sparsifier.h).
     auto started = cli::Clock::now();
+    const Matrix minimal =
+        matrix_sparsification::sparsest_basis_over_the_rationals(field, transposed);
+    report(field, "exact, matroid greedy over Q", working,
+           linear_algebra::transpose<Field>(minimal), cli::elapsed_seconds(started), show_matrix);
+
+    started = cli::Clock::now();
     const Matrix sparsifier = matrix_sparsification::row_basis_sparsifier(field, working);
     report(field, "row-basis heuristic",
            working, linear_algebra::multiply(field, working, sparsifier),

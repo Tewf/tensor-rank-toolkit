@@ -18,3 +18,10 @@ sparsify_by_best_corank_one(rows):
 |---|---|
 | Time | Θ( a · C(b, a−1) · (a⁴ + a·b) ) |
 | Space | Θ( C(b, a−1)·a ) |
+
+**Not the minimum, and the reason is the `rank = a−1` filter.** A column subset
+whose vanishing space has dimension two or more is dropped, so a codeword whose
+zero set admits no corank-one subset is invisible here. `[beniamini2020]`'s
+Algorithm 2 wants a *maximal* Ω-valid set and this fixes the size at `a−1`.
+[`exact-over-q.md`](exact-over-q.md) is that algorithm without the restriction;
+no operator has yet separated the two, but only one of them can say so.

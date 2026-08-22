@@ -25,3 +25,12 @@ add_executable(test_finite_field_sparsifier test_finite_field_sparsifier.cpp)
 target_link_libraries(test_finite_field_sparsifier
                       PRIVATE matrix_sparsification project_warnings testing)
 add_test(NAME finite_field_sparsifier COMMAND test_finite_field_sparsifier)
+
+# The exact method over Q, squeezed from both sides: a walk over every column
+# subset with no ceiling, and every basis drawn from a small coefficient box.
+# The exactness is a theorem about the algorithm; this is about the code.
+add_executable(test_rational_sparsifier test_rational_sparsifier.cpp)
+target_link_libraries(test_rational_sparsifier
+                      PRIVATE matrix_sparsification project_warnings testing)
+add_test(NAME rational_sparsifier COMMAND test_rational_sparsifier)
+

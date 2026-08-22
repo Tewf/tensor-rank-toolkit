@@ -19,8 +19,10 @@ any of the hardness results:
 
 As in the other strand, the filenames carry what each method guarantees, and
 [`method/README.md`](method/README.md) says what each is and where it fails. Two
-of the four are `[beniamini2020]`'s, one is `[dumas2024cex]`'s unpublished
-feasibility test, and one is new here. Keys are
+of the five are `[beniamini2020]`'s oracles, one is `[dumas2024cex]`'s unpublished
+feasibility test, one is a heuristic, and one
+([`method/exact-over-q.md`](method/exact-over-q.md)) **returns the minimum over
+every invertible `V`** rather than a good answer. Keys are
 [`../references.md`](../references.md).
 
 The operators do not have to be typed in. [The rank
@@ -76,9 +78,12 @@ record of the correction reads exactly like one that was always right.
 
 ## Where this stops
 
-Both oracles are exact for the sparsest-independent-vector subproblem, but they
-assemble the answer greedily, one row at a time, and that assembly is not proved
-optimal.
+The exact method walks column subsets with an upper bound and no lower bound, so
+it stops on collecting a basis rather than on a proof that nothing lighter
+exists. **Brouwer-Zimmermann** `[zimmermann1996]`, coding theory's standard
+algorithm for the same subproblem, prunes with a lower bound from several
+disjoint information sets, and is the first thing to try on an operator this
+cannot finish.
 
 The decomposition of `[beniamini2019]`, which factors an operator into a sparser
 one times a basis change and recurses, is still not implemented. What is

@@ -22,4 +22,5 @@ trivial to improve by returning a different matrix.
 | [`the-validator.md`](the-validator.md) | the sparse vector both oracles look for, and when one exists |
 | [`oracle-bottom-up.md`](oracle-bottom-up.md) | column subsets one smaller than the row count, keeping the emptiest vector |
 | [`oracle-top-down.md`](oracle-top-down.md) | the same subsets walked downwards, taking the first hit |
+| [`exact-over-q.md`](exact-over-q.md) | **the one proved minimal**: the matroid greedy, scanning supports upwards |
 | [`the-caveat.md`](the-caveat.md) | why these operation counts are not wall clock, and what is not proved |

@@ -134,6 +134,14 @@ public:
     /// `p^dimension` is smaller than whatever it would otherwise scan.
     const std::vector<std::vector<Element>>& rows() const { return rows_; }
 
+    /// The column each held row leads on, in the same order as `rows()`.
+    ///
+    /// Exposed for the same reason as `rows()`: a caller reading the basis as a
+    /// reduced echelon form needs to know which coordinate each row owns, and
+    /// re-deriving it by scanning for the first nonzero is the same fact stored
+    /// twice.
+    const std::vector<std::size_t>& pivot_columns() const { return pivot_columns_; }
+
     static std::vector<Element> flatten(const MatrixOver<Field>& matrix) {
         return std::vector<Element>(matrix.data(), matrix.data() + matrix.entry_count());
     }

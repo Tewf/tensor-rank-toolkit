@@ -94,3 +94,14 @@ citing literature was available, the sentence says what the citing literature sa
 are working on one problem and not citing each other, and the finite-field *basis*
 problem — ours, the one every operator the rank strand emits poses — falls between
 them.
+
+**The same gap costs us on the algorithms side, not only on the hardness side.**
+Coding theory has been *computing* minimum weights for forty years and its
+standard method, Brouwer-Zimmermann `[zimmermann1996]`, is what Magma and
+GAP/GUAVA ship. It enumerates over several information sets so that it holds a
+**lower** bound as well as an upper one and can stop early.
+[`method/exact-over-q.md`](method/exact-over-q.md) holds only the upper bound, so
+it stops when it has collected a basis and never because nothing lighter exists,
+and that is precisely where it fails to finish on a `⟨4,4,4⟩` operator. The
+sparsification literature this module was built from cites none of it, and
+neither did this file until 2026-08-22.
