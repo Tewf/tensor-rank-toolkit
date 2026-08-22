@@ -27,7 +27,7 @@ exponential. `step 3` is the descent's full pool scan, from
 | `cyclic_f2_5` | 9 | 12 | 10 | **10** | 2 | 1 530 | |
 | `cyclic_f2_7` | 12 | 15 | 15 | **13** * | 22 | 17 371 | 13 |
 | `gf32_multiplication` | 12 | 17 | 16 | **13** * | 1 873 | 1 258 756 | `mu_2(5) = 13`, met |
-| `gf64_multiplication` | 14 | 23 | 20 | **20** | 3 | 2 016 | `mu_2(6) = 15` |
+| `gf64_multiplication` | 14 | 23 | 20 | **19** * | 10 | 19 607 | `mu_2(6) = 15` |
 
 **The two rows that matter are `cyclic_f2_7` and `gf32_multiplication`, and they
 are the two the descent could not move.** `cyclic_f2_7`'s step 3 shortlist is
@@ -41,6 +41,13 @@ citation, so closing it here means a refutation at 12 that nobody has run.
 
 `gf32_multiplication` goes 16 to **13** in 1 873 nodes, meeting `mu_2(5) = 13`,
 and is the other row where the descent's step 3 had stopped.
+
+**`gf64_multiplication` is 19 and was published as 20 until 2026-08-22**, and
+what reaches it is `--width 1`: 19 products in 10 nodes, tree exhausted, 106 s on
+one core. The 20 in this table's `here` column was the descent's own answer
+unimproved. A *narrower* beam reaching further is what a beam is rather than a
+paradox, and the whole sweep behind that sentence is
+[`what-width-buys.md`](what-width-buys.md).
 
 **It took a wider beam, and that is the finding rather than the 13.** At the
 default `--width 4` this row stopped at 14 in 139 nodes with the tree exhausted —
