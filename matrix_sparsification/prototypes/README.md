@@ -1,6 +1,6 @@
 # Prototypes: the measurement, before there is an implementation
 
-Four Python scripts that established
+Five Python scripts that established
 [`../method/answering-without-searching.md`](../method/answering-without-searching.md).
 They are kept because a finding whose evidence is deleted is indistinguishable
 from a claim, which is the rule the rank strand already follows in

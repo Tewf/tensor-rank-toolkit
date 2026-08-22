@@ -25,8 +25,8 @@ programming. That is the minimum where the operator's matroid is regular and an
 upper bound elsewhere, and **no operator here is regular**, so read it as the
 second: it reaches the proved minimum on the `Grey-221` operators anyway, for
 reasons nothing cited explains. It is the only route that finishes `4x4x4_49_156_L`, and
-on the `Grey-221` operators it reaches the proved minimum about fourteen times
-faster than the search does:
+on the `Grey-221` operators it reaches the proved minimum, and on every operator
+large enough to time it is between four and fifteen times faster than the search:
 [`method/answering-without-searching.md`](method/answering-without-searching.md).
 
 **Two methods search**: [`method/exact-over-q.md`](method/exact-over-q.md),
@@ -48,26 +48,29 @@ sparsify-operator out_L.sms           # 31 nonzeros become 27
 
 ## Results
 
-The source article reports no measured result for this operator: it says only
-that the program took too long for a simple problem. It has one now, with the
-full numbers in [`results.json`](results.json). Below, nonzeros and beside them
-`nnz + nns`, the cost the articles minimise, which counts an entry that is not
-`0` or `±1` twice because it needs a multiplication as well as an addition.
+The three routes on the shipped fixtures. Every one reaches 10 nonzeros, and the
+first of them **proves** that 10 is the minimum over every invertible `V`, which
+none of them could say before 2026-08-22. Beside each, `nnz + nns`, the cost the
+articles minimise, which counts an entry that is neither `0` nor `±1` twice
+because it needs a multiplication as well as an addition.
 
-| Operator | As given | Row basis | Oracle | Greedy |
+| Operator | As given | Minimum, over `Q` | By rescaling | By linear programming |
 |---|---|---|---|---|
-| Strassen `U` (7×4) | 12 · 12 | **10** | **10** · 10 | **10** · 10 |
-| Strassen `V` (7×4) | 12 · 12 | **10** | **10** · 10 | **10** · 10 |
-| Alternative basis (7×4) | 21 · 42 | **10** | **10** · 20 | **10** · **10** |
+| Strassen `U` (7×4) | 12 · 12 | **10** · 10 | **10** · 10 | **10** |
+| Strassen `V` (7×4) | 12 · 12 | **10** · 10 | **10** · 10 | **10** |
+| Alternative basis (7×4) | 21 · 42 | **10** · **10** | **10** · **10** | **10** |
 
-All four reach 10 nonzeros in milliseconds. Ten is what the construction
-predicts rather than a surprise: inverting a square block of rows makes four rows
-singletons and the remaining three carry two each. It is not proved minimal.
+Full numbers, and the same three routes on operators large enough to time, in
+[`results.json`](results.json).
 
-**The nonzero count was hiding the result.** On the alternative-basis operator
-every method reaches ten nonzeros, and they are not the same ten: the oracles
-leave all ten as ninths, twenty operations, and the greedy leaves ten signs, ten
-operations. Half the cost, invisible to the column the strand used to report.
+**The nonzero count used to hide the result on the third row.** Every method
+reaches ten nonzeros there and they were not the same ten: the methods that have
+since moved to a branch left all ten as ninths, twenty operations, where the
+greedy by rescaling left ten signs, ten. The exact method now reaches ten
+operations as well, which is a measurement of one tie-break rather than a
+guarantee, because it minimises zeros and breaks ties by the order it walks
+supports in.
+
 ## What that is worth
 
 Fewer additions lowers the leading coefficient of the arithmetic complexity, not
@@ -77,9 +80,11 @@ live record sits for `⟨3,3,3⟩`: [`what-it-is-worth.md`](what-it-is-worth.md)
 
 ## The methods
 
-Four of them, one page each, with what each is for and where it fails:
+Three of them, one page each, with what each is for and where it fails:
 [`method/README.md`](method/README.md). The greedy by rescaling is the only one
-that wins on `nnz + nns`, and until recently no tool ran it.
+that wins on `nnz + nns`; the linear programme is the only one that answers an
+operator too large to search. Three more moved to a branch:
+[`dominated.md`](dominated.md).
 
 ## What was corrected
 
@@ -103,6 +108,7 @@ worth, which is the half that was missing when the complexity of a sparser
 operator could not be stated at all.
 
 `[plinopt]`, the reference implementation, reaches sparsity by a different route
-entirely: sparse QLUP elimination and bounded coefficient search rather than the
-Ω-valid oracles. Nothing here is compared against it yet, and that comparison is
-the obvious next measurement.
+entirely: sparse QLUP elimination and a bounded coefficient search. It is
+measured against in [`against-plinopt.md`](against-plinopt.md), and what the two
+reach *together* is [`in-front-of-plinopt.md`](in-front-of-plinopt.md), where
+minimising nonzeros turns out to be able to cost additions.

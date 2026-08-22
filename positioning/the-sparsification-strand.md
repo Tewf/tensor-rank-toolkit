@@ -53,8 +53,10 @@ field, and that is exactly where the reference implementation currently fails.
 
 **The exact method is not new and this file will not pretend otherwise.** It is
 `[beniamini2020]`'s Algorithm 2 with an oracle for its own Problem 2.15, and the
-bottom-up oracle already here is its Algorithm 3, proved optimal by its Theorem
-3.22. What was added is speed and a written proof, not a result.
+bottom-up oracle **this repository implements** is its Algorithm 3, proved
+optimal by its Theorem 3.22. That one lives on the `dominated-methods` branch
+since 2026-08-22, so read the claim above as "in this repository" rather than "in
+this working tree". What was added is speed and a written proof, not a result.
 
 What is *not* found in the literature, in descending order of confidence:
 

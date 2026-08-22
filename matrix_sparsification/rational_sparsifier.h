@@ -39,9 +39,9 @@
 /// as "column subsets of size `r - 1`" invites the worry that once some vectors
 /// are settled, the lightest vector outside their span has fewer than `r - 1`
 /// zeros and is invisible. The bound above says it cannot: every vector the
-/// greedy takes has at least `r - 1` zeros, so the floor
-/// [`oracle_sparsifier.h`](oracle_sparsifier.h)'s top-down walk stops at is
-/// exactly the right one, and searching below it would only cost time.
+/// greedy takes has at least `r - 1` zeros, so the floor the article's own
+/// top-down walk stops at is exactly the right one, and searching below it would
+/// only cost time.
 namespace matrix_sparsification {
 
 /// A minimum-weight basis of the row space of `rows`, as a matrix of the same

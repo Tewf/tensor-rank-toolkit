@@ -14,8 +14,8 @@ is cost and never correctness.
 
 **This file said for a long while that nothing here was proved optimal.** That
 was wrong twice over: the article proves its own algorithm optimal, and the
-evidence was already in the measurements, where the oracles never once came back
-heavier.
+evidence was already in the measurements, where the two oracles never once came
+back heavier before they left for the `dominated-methods` branch.
 
 The greedy by rescaling still guarantees nothing, and still wins where it
 matters, because `nnz + nns` is not `nnz`.

@@ -21,7 +21,9 @@ Several things here minimise something subject to constraints and used to do it
 by enumeration. The curve strand's interpolation bound is now handed here
 instead, through [`../curve_bounds/interpolation_by_solver.h`](../curve_bounds/interpolation_by_solver.h),
 and it keeps its own enumeration as the fallback and the cross-check. The
-sparsification oracles still walk column subsets and could be next.
+sparsification strand now calls it: `matrix_sparsification/lightest_vector_by_simplex.cpp`
+asks one continuous programme per coordinate and was the first caller to want a
+relaxation rather than an integer answer.
 
 **The rank question is not one of them, and was.** Brent's equations were written
 here as a MILP so a third instrument could answer beside the SAT solvers and the

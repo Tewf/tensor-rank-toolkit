@@ -11,33 +11,25 @@ can beat it. The comparison is still what the default output is for. Precedence 
 | `--operations` | off | Argument: the greedy by rescaling minimises `nnz + nns` rather than `nnz`, which is a different question, and it costs about 600x what the answer costs. Asked for, never assumed. |
 | `--emit PATH` | off | Nothing to measure: writes that minimum as SMS, the way up the file came in, so another tool can read it. |
 | `--show` | off | Nothing to measure: prints the sparsified matrix as well as its count. |
-| `--max-memory N` | derived | Argument: an eighth of what the machine reports, which is `2G` on the 16 GB laptop every table here was measured on and moves on its own elsewhere. Every method enumerates column subsets, C(b, a-1): 35 for the 7x4 operators shipped, about 1.6e13 for a <4,4,4> one. |
+| `--simplex` | off | Argument: it is an upper bound where the default is a proof, so the proof is the default. It is also the only route that answers an operator the search refuses, which is why it is one flag away. |
+| `--max-memory N` | derived | Argument: an eighth of what the machine reports, `2G` on the 16 GB laptop every table here was measured on. The scan is priced by what it may *walk*, `C(b, (b−r+1)/2 + 1)`, not by what it allocates: about ten megabytes on a 23×9 operator and 1.4 PiB on a 49×16 one, which is why the second is refused in milliseconds instead of running for half an hour. |
 
-## The methods, and which measurement separates them
+## The routes, and which measurement separates them
 
-| Method | What is measured |
+| Route | What is measured |
 |---|---|
-| `exact, matroid greedy over Q` | **The minimum**, by Rado-Edmonds. Reaches 10 on all three fixtures, and is about a hundred times quicker than any of the others on an operator large enough to time. |
-| `row-basis heuristic` | Reaches 10 nonzeros on all three fixtures, in milliseconds. Measured losing to the exact method on 37% of 400 random operators. |
-| `exact oracle, bottom-up` | Reaches 10. |
-| `exact oracle, top-down` | Reaches 10. |
-| `greedy, by rescaling` | Reaches 10 nonzeros **and 10 operations**, where both oracles reach 10 nonzeros and **20 operations**, on the alternative-basis operator. |
+| `exact, matroid greedy over Q` (default) | **The minimum** over every invertible `V`, by Rado-Edmonds. 10 on all three fixtures; 43 / 42 / 43 on the operators of a rank-23 `⟨3,3,3⟩` scheme, in about a third of a second each. |
+| `by linear programming` (`--simplex`) | The same counts, four to fifteen times faster on anything large enough to time, and the **only** route that answers `4x4x4_49_156_L`, which the search refuses. An upper bound rather than a proof: see [`../matrix_sparsification/method/answering-without-searching.md`](../matrix_sparsification/method/answering-without-searching.md). |
+| `greedy, by rescaling` (`--operations`) | Reaches 10 nonzeros **and 10 operations** on the alternative-basis operator, which is the cost the article minimises. The only route here answering that question, and the reason speed does not order it against the others. |
 
-**Bottom-up against top-down is decided now, by a measurement.** They reach the
-same count on every fixture, which is why it stayed open, but on an operator
-large enough to time they separate cleanly: on the three `3x3x3_23_Grey-221`
-operators bottom-up takes 139.3, 132.7 and 121.1 s against top-down's 35.6, 27.6
-and 35.1, so **3.5x to 4.8x**, one core, fastest of three. The complexity
-argument said the same and could not settle it: bottom-up is
-`Theta(a * C(b, a-1) * (a^4 + a*b))`; top-down is `O(a * 2^b * (a^4 + a*b))`
-worst case with an early exit that fires much sooner.
-
-Neither is the one to reach for. **Both are beaten on every axis by the matroid
-greedy**, which walks the same subsets in the other direction, does not
-materialise them, and carries the proof.
+**Three routes, not five.** The row-basis heuristic and `[beniamini2020]`'s two
+oracles reached the same counts 88x to 343x more slowly and moved to the
+`dominated-methods` branch on 2026-08-22:
+[`../matrix_sparsification/dominated.md`](../matrix_sparsification/dominated.md)
+has the measurement and says where to find them.
 
 **The rescaling greedy's win is real and the reported column hides it.** Every
-method reaches 10 nonzeros on the alternative-basis operator, so the nonzero count
+route reaches 10 nonzeros on the alternative-basis operator, so the nonzero count
 separates nothing; what separates them is `nnz + nns`, the cost the article
 minimises, where the oracles leave all ten entries as ninths (twenty operations)
 and the greedy leaves ten signs (ten). The counts are asserted in

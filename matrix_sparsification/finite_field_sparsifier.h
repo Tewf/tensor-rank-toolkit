@@ -35,7 +35,7 @@
 /// `descent_search/` into `linear_algebra/` and giving it the weight as an
 /// argument, which is its own change with its own measurement.
 ///
-/// **Why the four rational methods do not do this.** They work over `Q`, where
+/// **Why the rational routes do not do this.** They work over `Q`, where
 /// the column space is infinite and cannot be walked, which is what forces
 /// `[beniamini2020]`'s oracles to search column subsets and to assemble greedily
 /// one row at a time without an optimality guarantee. The finite field is what

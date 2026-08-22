@@ -1,5 +1,5 @@
-/// Sparsify the operator of a fast multiplication algorithm and report what
-/// each method achieved.
+/// Sparsify the operator of a fast multiplication algorithm and report the
+/// fewest nonzeros any change of basis can leave it with.
 ///
 /// Takes a file and optionally --show flag to control output, enabling scripted
 /// runs without interactive prompts.
@@ -36,7 +36,7 @@ void usage() {
                    "  dominated-methods branch; see ../dominated.md\n"
                    "  --field p       read the entries over GF(p) and answer the question\n"
                    "                  there, exactly, by the matroid greedy over the column\n"
-                   "                  space. The four methods below work over Q, which is a\n"
+                   "                  space. The routes below work over Q, which is a\n"
                    "                  different and harder question: an operator the rank\n"
                    "                  search emitted is over a finite field and this is the\n"
                    "                  question it is asking. .sms only\n"
@@ -59,10 +59,11 @@ void usage() {
                    "                  goes back the way up it was given, which is the program\n"
                    "                  that is actually run\n"
                    "  --show          print the sparsified matrix as well as its count\n"
-                   "  --max-memory N  bytes one bulk allocation may take, 2G by default. Every\n"
-                   "                  method here enumerates column subsets, which is C(b, a-1)\n"
-                   "                  and is 35 for the 7x4 operators shipped and 1.6e13 for a\n"
-                   "                  <4,4,4> one. This is what refuses the second\n"
+                   "  --max-memory N  bytes one bulk allocation may take, 2G by default. The scan\n"
+                   "                  is priced by the column supports it may walk rather than\n"
+                   "                  by what it allocates: about ten megabytes on a 23x9\n"
+                   "                  operator and 1.4 PiB on a 49x16 one, which is what\n"
+                   "                  refuses the second in milliseconds. --simplex answers it\n"
                    "  --help          print this and stop, as exit 2";
 }
 
@@ -131,9 +132,9 @@ int run(int argc, char** argv) {
     // **Over a finite field the question is a different one, and it is easy.**
     // `nnz(U V)` over invertible `V` is the total weight of a basis of `U`'s
     // column space, that space has `q^k` elements, and a minimum-weight basis of
-    // a matroid is what the greedy returns exactly. The four methods below work
-    // over `Q`, where the space is infinite and no such walk exists, which is
-    // what forces `[beniamini2020]`'s oracles to search column subsets instead.
+    // a matroid is what the greedy returns exactly. The routes below work over
+    // `Q`, where the space is infinite and no such walk exists, which is what
+    // forces a search over column subsets instead.
     // Every operator the rank strand emits is over a finite field, so this is
     // the question those operators actually pose.
     // [`../finite_field_sparsifier.h`](../finite_field_sparsifier.h).
@@ -205,7 +206,7 @@ int run(int argc, char** argv) {
     // other way up, so the two halves of this repository's own pipeline
     // disagreed about the orientation of the third operator and nothing said so.
     // Measured on a 19-product GF(64) scheme: `P` as emitted, 6x19, reported 54
-    // nonzeros from all four methods in microseconds; the same operator
+    // nonzeros from every method in microseconds; the same operator
     // transposed goes to **38**.
     const bool decoding = operator_matrix.rows() < operator_matrix.columns();
     const Matrix working =
@@ -273,12 +274,12 @@ int run(int argc, char** argv) {
     }
     if (!with_operations) return cli::exit_status(cli::ExitCode::Yes);
 
-    // `[beniamini2020, Alg. 6]`, which was implemented, tested and then never
-    // run from here. It is the one method that minimises `nnz + nns` rather than
-    // zeros, and that is where it wins: on the alternative-basis operator all
-    // four reach 10 nonzeros, but the oracles leave all ten as ninths, twenty
-    // operations, and this leaves ten signs, ten. The line below reports the
-    // nonzero count like its siblings, so that column does not separate them;
+    // `[beniamini2020, Alg. 6]`, the one route that minimises `nnz + nns`
+    // rather than zeros, and the only reason it survives a comparison it loses
+    // on every other axis. On the alternative-basis operator every route reaches
+    // 10 nonzeros and they are not the same ten; this one leaves ten signs, ten
+    // operations, and guarantees it. The line below reports the nonzero count
+    // like its siblings, so that column does not separate them;
     // `../README.md` carries the one that does.
     started = cli::Clock::now();
     const Matrix rescaled = matrix_sparsification::sparsify_by_rescaling(field, transposed);

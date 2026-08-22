@@ -16,29 +16,34 @@ the minimum because Rado-Edmonds says so, not because nothing better was found.
 
 | operator | shape | as given | `[plinopt]` | fastest older method here | **minimum** |
 |---|---|---|---|---|---|
-| `L` | 23×9 | 69 | 59 | 43 in 35.6 s | **43** in **0.32 s** |
-| `R` | 23×9 | 66 | 53 | 42 in 27.6 s | **42** in **0.30 s** |
-| `P` | 9×23 | 86 | 55 | 43 in 35.1 s | **43** in **0.41 s** |
+| `L` | 23×9 | 69 | 59 | 43 in 35.6 s | **43** in **0.338 s** |
+| `R` | 23×9 | 66 | 53 | 42 in 27.6 s | **42** in **0.327 s** |
+| `P` | 9×23 | 86 | 55 | 43 in 35.1 s | **43** in **0.434 s** |
 | total | | 221 | 167 | | **128** |
 
-**The counts did not move and that is the finding.** All four older methods were
-already reaching the minimum on these operators, and three of them were proved to
-by the article they come from, which this repository had not noticed. The cheapest
-of them takes **86 to 112 times** as long; running all four takes about 500 s per
-operator, against about a third of a second. Nothing has separated the two oracles from the exact method
-yet, on these three, on 400 random operators, or on 203 built the way a real one
-is, a sparse basis hidden behind a change of basis; only the row-basis heuristic
-was ever measured losing, on 37% and 21% of those two families.
+**The counts did not move and that is the finding.** Every method then shipped
+was already reaching the minimum on these operators, and the article proves one of
+them optimal, which this repository had not noticed. Per operator the quickest of
+them takes **86 to 112 times** as long as the method that stayed, and running all
+five took about 500 s against about a third of a second. Three have since moved
+to a branch: [`dominated.md`](dominated.md), which measures the gap the other way
+round, slowest operator against slowest, and so quotes 88x to 343x.
+
+No operator ever separated the two oracles from the exact method on *count* — not
+these three, not 400 random ones, not 203 built the way a real one is, a sparse
+basis hidden behind a change of basis. Only the row-basis heuristic was ever
+measured losing, on 37% and 21% of those two families. What separated them was
+cost.
 
 Timings are one core, fastest of three, per [`../MEASURING.md`](../MEASURING.md).
-The older column is the fastest *single* older method reaching that count.
 
 **Where it stops is combinatorial.** On `4x4x4_49_156_L`, a 16-dimensional space
 in `Q^49`, the greedy holds 9 of 16 vectors at weight 4 in 5 s and needs weight 6
 or more for the rest, where the scan is 14 million column subsets rising to 451
-million at weight 8. Thirty minutes was not enough, and a longer run would not
-help: [`method/exact-over-q.md`](method/exact-over-q.md) names the algorithm that
-would, and it is somebody else's.
+million at weight 8. Thirty minutes was not enough when it still tried; it prices
+the walk now and refuses in milliseconds. What answers that operator is
+[`method/answering-without-searching.md`](method/answering-without-searching.md),
+by not searching.
 
 
 ## Where each column came from

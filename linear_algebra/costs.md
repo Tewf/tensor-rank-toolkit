@@ -72,6 +72,7 @@ Gauss-Jordan pass.
 
 So the table above bounds the *number of operations*, which is the right
 quantity for comparing the algorithms, and it understates wall-clock on the
-rational side. It has not mattered yet: the operators being sparsified are 7×4
-with entries in ninths, and the whole sparsification strand runs in
-milliseconds. It would matter for anything larger.
+rational side. It stopped being hypothetical on 2026-08-22, when the strand
+acquired 23×9 and 49×16 operators: the exact search takes about a third of a
+second on the first and refuses the second outright, and the linear programme
+that answers it works in exact rationals throughout.

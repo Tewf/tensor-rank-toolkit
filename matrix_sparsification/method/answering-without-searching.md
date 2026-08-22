@@ -53,9 +53,9 @@ for any other `k`, so there is no `Δ = 2` consolation either.
 
 | operator | matroid regular? | search | simplex |
 |---|---|---|---|
-| `Grey-221_L` 23×9 | **no**, a basis has determinant 2 | 43 in 0.34 s | **43 in 0.025 s** |
-| `Grey-221_R` 23×9 | **no** | 42 in 0.33 s | **42 in 0.022 s** |
-| `Grey-221_P` 9×23 | **no** | 43 in 0.44 s | **43 in 0.032 s** |
+| `Grey-221_L` 23×9 | **no**, a basis has determinant 2 | 43 in 0.338 s | **43 in 0.022 s** |
+| `Grey-221_R` 23×9 | **no** | 42 in 0.327 s | **42 in 0.022 s** |
+| `Grey-221_P` 9×23 | **no** | 43 in 0.434 s | **43 in 0.031 s** |
 | `4x4x4_49_156_L` 16×49 | **no**, determinant −2 above | **cannot finish** | **100 in 0.34 s** |
 
 On the three `Grey-221` operators the linear programme reaches the **proved
@@ -83,4 +83,4 @@ do not cite each other at all.
 - **Orientation trap, if you re-run the unimodularity test.** Handed the stored
   49×16 file, `cmr-equimodular` answers *unimodular*, because at that shape the
   rank-16 condition collapses to a gcd over a 16-element matroid and is vacuous.
-  Feed it the 16×49 orientation, which is the one the oracles take.
+  Feed it the 16×49 orientation, which is the one every route here takes.

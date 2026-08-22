@@ -20,7 +20,7 @@ method below returns **the same counts** as the one that stayed, 43 / 42 / 43.
 | `exact oracle, top-down` | 35.6 s | **88x slower** | same answer |
 | `row-basis heuristic` | 92.3 s | **227x slower** | same answer here, and it loses on 37% of 400 random operators |
 | `exact oracle, bottom-up` | 139.3 s | **343x slower** | same answer |
-| **`exact, matroid greedy over Q`** | **0.4 s** | — | **stayed** |
+| **`exact, matroid greedy over Q`** | **0.434 s** | — | **stayed** |
 | `greedy, by rescaling` | 268.0 s | not comparable | **stayed**: it minimises `nnz + nns`, and is the only method here that does |
 
 The rescaling greedy is slow and is not dominated, because it is answering a

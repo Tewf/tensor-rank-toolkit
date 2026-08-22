@@ -1,4 +1,4 @@
-# The validator both oracles share
+# The validator, and the one route that still calls it
 
 A vector in the row space of `rows`, zero on every column of `S`, whose support
 avoids the rows already settled. It exists exactly when some unsettled row is,

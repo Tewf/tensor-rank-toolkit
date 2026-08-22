@@ -4,8 +4,8 @@
 #include <functional>
 #include <vector>
 
-/// Choosing `k` of `n`, which is what both oracles enumerate over and what
-/// their cost is written in.
+/// Choosing `k` of `n`, which is what the search enumerates over and what its
+/// cost is written in.
 namespace matrix_sparsification {
 
 /// `C(total, size)`, saturating at `SIZE_MAX` rather than wrapping.

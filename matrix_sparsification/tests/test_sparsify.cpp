@@ -19,7 +19,8 @@ struct Expectation {
     long long sparsified;
     /// `nnz + nns`, the cost the article minimises.
     ///
-    /// **This was 20 for the oracles and is 10 for the exact method**, on the
+    /// **This was 20 for the two oracles, now on the dominated-methods branch,
+    /// and is 10 for the exact method**, on the
     /// alternative-basis operator whose entries are ninths. The oracles left all
     /// ten entries as ninths, twenty operations; the exact method returns a
     /// basis of ten signs, ten. It does not *aim* at this — it minimises zeros
@@ -89,7 +90,7 @@ void check_inverse_round_trip(const matrix_sparsification::Field& field) {
     check::equal("random rational matrices inverted", inverted > 40 ? 1 : 0, 1);
 }
 
-/// Shapes the oracles are never handed by the tool, pinned because they
+/// Shapes the tool never hands any route, pinned because they
 /// terminate for a reason that is easy to break.
 ///
 /// Both walk column subsets downward from `columns - 1`. With no columns at all

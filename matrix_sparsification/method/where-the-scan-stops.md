@@ -11,8 +11,10 @@ collecting `r` vectors. Measured: `4x4x4_49_156_L`, a 16-dimensional space in
 `Q^49`, holds 9 of its 16 vectors at weight 4 within 5 s and finds nothing new at
 weight 5. The remaining 7 need weight 6 or more, where the scan is `C(49,6)`, 14
 million subsets, reaching 451 million at weight 8. Neither the C++ nor an
-independent reference finished it in 30 minutes. **That is a fact about the
-combinatorics, not about the code, so running it longer buys nothing.**
+independent reference finished it in 30 minutes, which is how this was found out.
+**That is a fact about the combinatorics, not about the code, so running it
+longer buys nothing** — and the command no longer tries: it prices the walk at
+1.4 PiB and refuses in milliseconds, naming the number.
 
 The problem this reduces to is the one coding theory has computed for forty
 years, minimum-weight codewords of a linear code, and its standard algorithm
@@ -61,3 +63,7 @@ decided by the order the subsets are walked in. That does not change the count,
 which is what this method promises. It does change what a downstream common
 subexpression pass makes of the result, measured in
 [`../in-front-of-plinopt.md`](../in-front-of-plinopt.md).
+
+**Two accelerations that would have made this walk cheaper were priced and
+rejected**, because the linear programme made both pointless:
+[`accelerations-not-built.md`](accelerations-not-built.md).

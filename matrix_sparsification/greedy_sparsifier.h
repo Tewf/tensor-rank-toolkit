@@ -22,7 +22,7 @@
 /// article's own validator can produce, take those with the most zeros, then
 /// take the best scalar multiple of them. That second step is a genuine
 /// optimum, because scaling is the only freedom left once the zero set is
-/// fixed, and it is what the oracles never do.
+/// fixed, and it is what minimising zeros alone never does.
 ///
 /// So this is a heuristic bounded by a heuristic, and it is labelled as such:
 /// it does not reproduce the article's numbers, it implements the article's
@@ -37,7 +37,7 @@ namespace matrix_sparsification {
 /// result independent of how the entries were ordered.
 std::vector<Element> best_scaling(const Field& field, const std::vector<Element>& vector);
 
-/// Algorithm 6, on the transposed operator the oracles also work on.
+/// Algorithm 6, on the transposed operator every route here works on.
 ///
 /// Takes and returns `rows`, so it is interchangeable with
 /// `sparsify_by_best_corank_one` and `sparsify_by_descending_support` at the call site.

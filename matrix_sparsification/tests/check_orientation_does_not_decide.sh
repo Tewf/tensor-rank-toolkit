@@ -4,10 +4,10 @@
 # They must, because `nnz` does not care which way up a matrix is written and the
 # admissible basis change for a decoding operator is the same question asked of
 # the transpose. Until 2026-08-22 they did not: a matrix wider than it is tall
-# went through all four methods unchanged, in microseconds, because the question
+# went through every method then shipped unchanged, in microseconds, because
 # "find invertible V minimising nnz(U V)" is **vacuous** on a wide full-rank
 # matrix — every one of them has the whole space as its column space, so the
-# constraint holds for anything and each method returns what it was given.
+# constraint holds for anything and every route returns what it was given.
 #
 # Nothing caught it because every operator fixture here is 7x4, while
 # `lower-the-bound --emit-operators` writes the decoding operator the other way

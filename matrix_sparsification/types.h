@@ -7,12 +7,17 @@
 ///
 /// Fewer nonzeros in the operator means fewer additions in the algorithm it
 /// encodes, which is the cost the multiplication count does not capture. The
-/// filenames say which methods are heuristic and which are exact:
+/// filenames say what each route guarantees:
 ///
-/// - [`heuristic_sparsifier.h`](heuristic_sparsifier.h): a row-basis
-///   construction with no optimality guarantee.
-/// - [`oracle_sparsifier.h`](oracle_sparsifier.h): the two exact methods from
-///   the article, which give optimal answers for their question.
+/// - [`rational_sparsifier.h`](rational_sparsifier.h): the **minimum** over
+///   every invertible `V`, by the matroid greedy.
+/// - [`lightest_vector_by_simplex.h`](lightest_vector_by_simplex.h): an upper
+///   bound, by linear programming, and the only route that answers an operator
+///   too large to search.
+/// - [`greedy_sparsifier.h`](greedy_sparsifier.h): no guarantee, and the only
+///   one minimising `nnz + nns` rather than `nnz`.
+/// - [`finite_field_sparsifier.h`](finite_field_sparsifier.h): the minimum
+///   again, over a finite field, where the space can simply be walked.
 namespace matrix_sparsification {
 
 /// Everything here works in exact rationals. The entries of a real operator are
