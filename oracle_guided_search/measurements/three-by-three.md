@@ -19,7 +19,8 @@ busy machine.
 | `find-at-rank --descend --ceiling 27 -s matmul 3 3 3` | 26, stalling at 25 | 313 s |
 
 Nobody reaches 23. `minimise-rank` cannot move off the naive 27, which is the shortlist
-problem again at a larger shape; the plateau walk reaches 24 in 38 s; the finder in its
+problem again at a larger shape; the flip walk reaches 24, now re-derived on every CI run
+in [`../../flip_graph/results.json`](../../flip_graph/results.json); the finder in its
 best mode reaches 26 in 313 s. The flattening floor here is 9 against a true rank of at
 least 19, so the free bound refuses no part of a descent.
 
@@ -33,6 +34,17 @@ Two premises this run corrected:
   products, checked by `recovers_map`, in 18.9 s. What no backend settles is the
   *decision*, proving 10 minimal. The upper bound was already had, by the tool the
   finder was meant to beat.
-- **`minimise_rank` cannot take a first step on `⟨2,2,2⟩`, but `plateau_search` can.**
-  The shortlist really is 0 of 225, so the greedy stops at the naive 8. The plateau
-  walk crosses to 7 in 0.11 s, which is the number to beat and not 8.
+- **`minimise_rank` cannot take a first step on `⟨2,2,2⟩`, and two different
+  things can.** The shortlist really is 0 of 225, so the greedy stops at the naive
+  8, and 7 is the number to beat. The 0.11 s printed here was `walk-scheme`'s and
+  not `plateau_search`'s, which is a timing from one tool sitting beside a claim
+  about the other. Both do cross, and what each costs is now published rather than
+  quoted: [`../../flip_graph/results.json`](../../flip_graph/results.json), which
+  `reproduce/measure.py --check` re-derives.
+
+  The part worth carrying away is what `plateau_search` needs to get there.
+  `--plateau 2 --plateau-states 380` reaches 7 having visited 386 subspaces; at
+  370 it stays at 8; and at the default budget of 200 000 it reaches the same 7
+  and takes 20 s, because it keeps walking long after it has seen the best map it
+  will find. The 0.11 s was a real measurement of a real crossing under a state
+  budget that was never written down beside it.
