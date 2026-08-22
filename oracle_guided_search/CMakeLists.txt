@@ -9,7 +9,8 @@
 # measured to lose on all seven fixtures once the rank sums closed the gap it was
 # meant to close. `measurements/` keeps both sets of numbers.
 add_library(oracle_guided_search STATIC strict_deflation.cpp tree_refutation.cpp
-                                       factored_lex_min.cpp pool_set_canon.cpp
+                                       factored_lex_min.cpp factored_set_stabiliser.cpp
+                                       pool_set_canon.cpp
                                         subspace_canon.cpp canonical_parent.cpp
                                         canonical_augmentation.cpp canonical_route_price.cpp
                                         pool_cosets.cpp)
