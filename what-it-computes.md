@@ -70,8 +70,11 @@ trusted.
 
 **[Quotienting by symmetry](orbit_reduction/).** A change of coordinates fixing
 the target subspace maps solutions to solutions, so one member of each orbit
-suffices: **28× on a refutation**, and the ⟨3,3,3⟩ candidate pool collapses from
-261 121 to **13 orbits**.
+suffices: **39.2× fewer nodes on a refutation**, and the ⟨3,3,3⟩ candidate pool
+collapses from 261 121 to **13 orbits**. It is worth 2.3× on *finding* a
+decomposition rather than refuting one, because a proof walks every branch and a
+search that stops at the first answer stops before most of the repetition. Both
+are re-derived by `reproduce/measure.py --check`.
 
 **[Isomorph-free enumeration](oracle_guided_search/).**
 `enumerate-subspaces --canonical` is `[mckay1998]`'s canonical augmentation,
