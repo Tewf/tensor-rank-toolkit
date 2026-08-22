@@ -23,3 +23,10 @@ add_test(NAME limits_reach_the_commands
 # 6.07 while three other things built. Labelled slow and given room, because a
 # test that flakes under load teaches people to rerun rather than to read.
 set_tests_properties(limits_reach_the_commands PROPERTIES TIMEOUT 1200 LABELS slow)
+
+# And the probe: that the memory ceiling is derived from the machine rather than
+# fitted to this one. The rule is checked as a pure function of a hypothetical
+# scale, since a test asserting 2 GiB would be a test of this laptop.
+add_executable(test_machine test_machine.cpp)
+target_link_libraries(test_machine PRIVATE run_limits testing project_warnings)
+add_test(NAME machine COMMAND test_machine)

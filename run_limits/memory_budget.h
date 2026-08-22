@@ -26,9 +26,13 @@
 /// out-of-memory kill is not.
 namespace bilinear_rank {
 
-/// The ceiling on a single bulk allocation. Two gibibytes by default, which
-/// leaves room on a 16 GB desktop for a browser and an editor to survive the
-/// run. `--max-memory` moves it per run.
+/// The ceiling on a single bulk allocation. **An eighth of what the machine
+/// has** by default ([`machine.h`](machine.h)), which is the two gibibytes this
+/// repository has always used on the 16 GB laptop it was written on, and moves
+/// on its own to 512 MiB on a 4 GB box and 64 GiB on a 512 GB server. That
+/// leaves room for a browser and an editor to survive the run in the same
+/// proportion whatever the machine is. `--max-memory` moves it per run and
+/// `memory_budget_bytes` in `tunables.conf` moves it per checkout.
 std::size_t memory_budget();
 void set_memory_budget(std::size_t bytes);
 

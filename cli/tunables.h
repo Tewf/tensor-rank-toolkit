@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "arguments.h"
+#include "machine.h"
 
 /// The numbers a run is bounded by, in a file instead of in the code.
 ///
@@ -74,18 +75,26 @@ struct Tunables {
     /// --node-limit`. It bounds the built-in only, whichever route asks.
     std::size_t ilp_node_limit = 200'000;
 
-    /// Distinct subspaces a plateau crossing may visit. PROVISIONAL: never
-    /// measured. Fills `cross_plateaus`'s `state_budget`
-    /// (`flip_graph/plateau_search.h`), from `minimise-rank --plateau-states`.
+    /// Distinct subspaces a plateau crossing may visit. Measured: <2,2,2>
+    /// crosses to 7 at 380 and stays at 8 at 370, published in
+    /// `flip_graph/results.json`. Why the default is not 380 is in
+    /// `tunables.conf` beside the value. Fills `cross_plateaus`'s
+    /// `state_budget` (`flip_graph/plateau_search.h`), from
+    /// `minimise-rank --plateau-states`.
     std::size_t plateau_state_budget = 200'000;
 
-    /// What a SAT solver may take before it is killed, per question. Fills
+    /// What a SAT solver may take before it is killed, per question. **Derived
+    /// from the machine**, an eighth of what it has, which is the 2048 this
+    /// repository has always used on a 16 GB laptop; `auto` in the file asks for
+    /// the same derivation and a number pins one.
+    /// `satisfiability/rank_question.cpp` then divides it by the worker count,
+    /// so the dividend is the machine's rather than this chassis's. Fills
     /// `SolveOptions::memory_megabytes` and `::timeout_seconds`
     /// (`satisfiability/rank_question.h`), which `run_solver`
     /// (`satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
     /// --max-memory` and `--timeout`, and from the same two flags on
     /// `deflate-strictly`.
-    std::size_t sat_memory_megabytes = 2048;
+    std::size_t sat_memory_megabytes = bilinear_rank::suggested_memory_budget() >> 20;
     std::size_t sat_timeout_seconds = 300;
 
     /// What an outside integer programme solver may take, per programme. Fills
@@ -143,6 +152,22 @@ inline const std::vector<std::pair<std::string, std::size_t Tunables::*>>& count
     return table;
 }
 
+/// The counts a file may spell `auto`, and what `auto` resolves to.
+///
+/// **`auto` is a machine reading, never a measurement.** A tunable belongs here
+/// only when its right value is a property of the hardware the binary is on, so
+/// that `fitted-or-genuine.md`'s fitted column can shrink without a person
+/// re-measuring anything. `device_launch_floor` is deliberately not here: its
+/// right value is a ratio of two timings and the only honest way to get one is
+/// `measure-leaf floor`, which takes a stopwatch to the machine and so cannot
+/// run inside every command's start-up.
+inline const std::vector<std::pair<std::string, std::size_t (*)()>>& machine_read_tunables() {
+    static const std::vector<std::pair<std::string, std::size_t (*)()>> table{
+        {"sat_memory_megabytes", [] { return bilinear_rank::suggested_memory_budget() >> 20; }},
+    };
+    return table;
+}
+
 /// The list-valued ones, whose value is names separated by spaces.
 inline const std::vector<std::pair<std::string, std::vector<std::string> Tunables::*>>&
 listed_tunables() {
@@ -176,10 +201,19 @@ inline std::vector<std::string> words_of(const std::string& text) {
 inline void set_tunable(Tunables& values, const std::string& name, const std::string& text,
                         const std::string& where) {
     for (const auto& [key, field] : counted_tunables()) {
-        if (key == name) {
+        if (key != name) continue;
+        if (text != "auto") {
             values.*field = parse_count(where + " " + name, text);
             return;
         }
+        for (const auto& [named, resolve] : machine_read_tunables()) {
+            if (named != name) continue;
+            values.*field = resolve();
+            return;
+        }
+        throw ArgumentError(where + " " + name +
+                            " has no machine reading behind it, so 'auto' means nothing here; "
+                            "give it a number");
     }
     for (const auto& [key, field] : listed_tunables()) {
         if (key != name) continue;
