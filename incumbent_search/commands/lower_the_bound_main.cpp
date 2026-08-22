@@ -43,9 +43,12 @@ void usage() {
                    "                        because a loose incumbent bounds nothing\n"
                    "  --nodes N             subspaces to expand, 20000 by default. Spending\n"
                    "                        it withdraws no answer: nothing here refutes\n"
-                   "  --width N             children entered per node, cheapest first, 4 by\n"
+                   "  --width N|auto        children entered per node, cheapest first, 4 by\n"
                    "                        default. 0 enters every child, which is the\n"
-                   "                        branch and bound rather than a beam\n"
+                   "                        branch and bound rather than a beam. auto runs\n"
+                   "                        at 4 and doubles once when the tree exhausted\n"
+                   "                        with the budget unspent and the answer above the\n"
+                   "                        floor: what-width-buys.md is why once\n"
                    "  --summand-rank r      the largest rank of a span element a move may\n"
                    "                        split, 3 by default. Raising it offers more\n"
                    "                        moves at (p^r - 1)p^(r-1)/(p-1) per element\n"
@@ -97,6 +100,9 @@ int run(int argc, char** argv) {
     bilinear_rank::IncumbentLimits limits;
     bool from_descent = true;
     std::size_t rounds = 8;
+    // `--width auto`: widen once, and only on the evidence that widening is the
+    // thing that was missing. Measured 2026-08-22, see `what-width-buys.md`.
+    bool widen = false;
     std::string operator_stem;
     cli::Symmetry symmetry;
 
@@ -117,7 +123,12 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--nodes")) {
             limits.node_limit = arguments.count();
         } else if (arguments.is("--width")) {
-            limits.width = arguments.count();
+            const std::string asked = arguments.text();
+            if (asked == "auto") {
+                widen = true;
+            } else {
+                limits.width = cli::parse_count("--width", asked);
+            }
         } else if (arguments.is("--summand-rank")) {
             limits.summand_rank = arguments.count();
         } else if (arguments.is("--whole-pool")) {
@@ -194,31 +205,60 @@ int run(int argc, char** argv) {
     bilinear_rank::IncumbentReport round_report;
     std::vector<bilinear_rank::Matrix> answer = start;
     std::size_t reached = linear_algebra::multiplication_count(field, start);
-    for (std::size_t round = 0; round < rounds; ++round) {
-        std::vector<bilinear_rank::Matrix> next =
-            bilinear_rank::search_from_above(field, answer, pool, limits, &round_report, ambient);
-        report.nodes += round_report.nodes;
-        report.children += round_report.children;
-        report.moves_offered += round_report.moves_offered;
-        report.moves_entered += round_report.moves_entered;
-        report.smallest_stabiliser =
-            report.largest_stabiliser == 0
-                ? round_report.smallest_stabiliser
-                : std::min(report.smallest_stabiliser, round_report.smallest_stabiliser);
-        report.largest_stabiliser =
-            std::max(report.largest_stabiliser, round_report.largest_stabiliser);
-        report.improvements += round_report.improvements;
-        report.bounded += round_report.bounded;
-        report.deepest = std::max(report.deepest, round_report.deepest);
-        report.exhausted = round_report.exhausted;
-        report.best = round_report.best;
-        report.reached_below = round_report.reached_below;
-        if (round_report.best >= reached) break;
-        reached = round_report.best;
-        answer = std::move(next);
-        // What `--below` asked for is held, so another round is another search
-        // for something nobody asked about.
-        if (report.reached_below) break;
+    const auto run_rounds = [&] {
+        for (std::size_t round = 0; round < rounds; ++round) {
+            std::vector<bilinear_rank::Matrix> next =
+                bilinear_rank::search_from_above(field, answer, pool, limits, &round_report, ambient);
+            report.nodes += round_report.nodes;
+            report.children += round_report.children;
+            report.moves_offered += round_report.moves_offered;
+            report.moves_entered += round_report.moves_entered;
+            report.smallest_stabiliser =
+                report.largest_stabiliser == 0
+                    ? round_report.smallest_stabiliser
+                    : std::min(report.smallest_stabiliser, round_report.smallest_stabiliser);
+            report.largest_stabiliser =
+                std::max(report.largest_stabiliser, round_report.largest_stabiliser);
+            report.improvements += round_report.improvements;
+            report.bounded += round_report.bounded;
+            report.deepest = std::max(report.deepest, round_report.deepest);
+            report.exhausted = round_report.exhausted;
+            report.best = round_report.best;
+            report.reached_below = round_report.reached_below;
+            if (round_report.best >= reached) break;
+            reached = round_report.best;
+            answer = std::move(next);
+            // What `--below` asked for is held, so another round is another search
+            // for something nobody asked about.
+            if (report.reached_below) break;
+        }
+    };
+
+    run_rounds();
+
+    // **Widening, once, and only on the evidence that width was what was
+    // missing.** Three things have to hold together, and each rules out a
+    // different reason a run stopped where it did: the tree was *exhausted*, so
+    // more budget cannot help and only a wider beam can; the budget is mostly
+    // unspent, so there is room to pay for one; and the answer is still above
+    // the floor, so there is something left to reach.
+    //
+    // Measured at widths 1, 2, 4, 8 and 16 over ten fixtures
+    // ([`../what-width-buys.md`](../what-width-buys.md)): width changes the
+    // answer on exactly two, and on both of those it is 8 that changes it. No
+    // fixture measured wants 16, which is why this doubles once and stops rather
+    // than climbing. It is not free — `gf32_multiplication` is 368 nodes and
+    // seconds at 4 against 1 873 nodes and 466 s at 8 — which is why it is a flag
+    // and not the default.
+    if (widen && report.exhausted && !report.reached_below &&
+        report.nodes * 2 < limits.node_limit &&
+        report.best > bilinear_rank::flattening_floor(field, tensor.slices)) {
+        limits.width *= 2;
+        cli::note() << "widening: the tree exhausted at " << report.nodes
+                    << " of " << limits.node_limit << " nodes with " << report.best
+                    << " above the floor, so entering " << limits.width
+                    << " children a node instead";
+        run_rounds();
     }
 
     bilinear_rank::note_if_the_card_failed();

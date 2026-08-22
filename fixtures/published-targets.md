@@ -30,7 +30,7 @@ both searches actually say. Counts are exact and reproduce anywhere.
 | Fixture | floor, proved | step 1 | step 2 | step 3 | shortlist | incumbent | gap to target |
 |---|---|---|---|---|---|---|---|
 | `gf32_multiplication` | **12** | 25 | 17 | 16 | 9 | **13** | floor 1 under, **ceiling met** |
-| `gf64_multiplication` | **14** | 36 | 23 | **20** | 15 | 20 | floor 1 under, ceiling 5 over |
+| `gf64_multiplication` | **14** | 36 | 23 | **20** | 15 | 19 | floor 1 under, ceiling 4 over |
 | `cyclic_f2_7` | **12** | 19 | 15 | 15 | 0 | **13** | floor 1 under, **ceiling met** |
 | `matmul_2x3x4` | **14** | 24 | 24 | not run | | not run | floor 5 under |
 | `matmul_3x3x4` | **18** | 36 | 36 | not run | | not run | floor 7 under |
