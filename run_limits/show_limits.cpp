@@ -67,7 +67,10 @@ int main(int argc, char** argv) {
                          "#   ceilings derived from it, and every tunable with the value in\n"
                          "#   force and where it came from. Reads tunables.conf the same way\n"
                          "#   every command does. Runs nothing and measures nothing.\n";
-            return 0;
+            // Exit 2, as every command here does for --help: a line asking for
+            // help asked no question. `cli/exit_code.h` has the convention and
+            // `cli/tests/check_argument_grammar.sh` asserts it on every binary.
+            return 2;
         }
         arguments.refuse();
     }
