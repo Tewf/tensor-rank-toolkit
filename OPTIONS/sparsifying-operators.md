@@ -23,9 +23,12 @@ can beat it. The comparison is still what the default output is for. Precedence 
 | `exact oracle, top-down` | Reaches 10. |
 | `greedy, by rescaling` | Reaches 10 nonzeros **and 10 operations**, where both oracles reach 10 nonzeros and **20 operations**, on the alternative-basis operator. |
 
-**Bottom-up against top-down is undecided on the shipped fixtures.** They reach
-the same count on every one, and the recorded `seconds` covers the whole command
-rather than one method. The only comparison is complexity-theoretic: bottom-up is
+**Bottom-up against top-down is decided now, by a measurement.** They reach the
+same count on every fixture, which is why it stayed open, but on an operator
+large enough to time they separate cleanly: on the three `3x3x3_23_Grey-221`
+operators bottom-up takes 139.3, 132.7 and 121.1 s against top-down's 35.6, 27.6
+and 35.1, so **3.5x to 4.8x**, one core, fastest of three. The complexity
+argument said the same and could not settle it: bottom-up is
 `Theta(a * C(b, a-1) * (a^4 + a*b))`; top-down is `O(a * 2^b * (a^4 + a*b))`
 worst case with an early exit that fires much sooner.
 

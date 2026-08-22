@@ -16,15 +16,16 @@ the minimum because Rado-Edmonds says so, not because nothing better was found.
 
 | operator | shape | as given | `[plinopt]` | fastest older method here | **minimum** |
 |---|---|---|---|---|---|
-| `L` | 23×9 | 69 | 59 | 43 in TOPDOWN_L | **43** in EXACT_L |
-| `R` | 23×9 | 66 | 53 | 42 in TOPDOWN_R | **42** in EXACT_R |
-| `P` | 9×23 | 86 | 55 | 43 in TOPDOWN_P | **43** in EXACT_P |
+| `L` | 23×9 | 69 | 59 | 43 in 35.6 s | **43** in **0.32 s** |
+| `R` | 23×9 | 66 | 53 | 42 in 27.6 s | **42** in **0.30 s** |
+| `P` | 9×23 | 86 | 55 | 43 in 35.1 s | **43** in **0.41 s** |
 | total | | 221 | 167 | | **128** |
 
 **The counts did not move and that is the finding.** All four older methods were
-already reaching the minimum on these operators; none of them could say so, and
-the cheapest took about a hundred times as long. Running all four takes about
-500 s per operator. Nothing has separated the two oracles from the exact method
+already reaching the minimum on these operators, and three of them were proved to
+by the article they come from, which this repository had not noticed. The cheapest
+of them takes **86 to 112 times** as long; running all four takes about 500 s per
+operator, against about a third of a second. Nothing has separated the two oracles from the exact method
 yet, on these three, on 400 random operators, or on 203 built the way a real one
 is, a sparse basis hidden behind a change of basis; only the row-basis heuristic
 was ever measured losing, on 37% and 21% of those two families.

@@ -25,3 +25,56 @@ of the arithmetic complexity, over a change of basis, with **the rank held
 fixed**. They do not optimise rank. Strassen stays at seven multiplications and
 goes from 15 additions to 12; nothing in that is a rank result, and nothing in
 this strand moves a bound the rest of this file is about.
+
+## What this does that `[plinopt]` does not, and the reverse
+
+Written 2026-08-22 after three literature reads, because "we beat the reference
+implementation" is the kind of sentence that needs its scope pinned down.
+
+**They are not doing the same job.** `[plinopt]` is downstream of a
+decomposition: you hand it operators and it produces a straight-line program,
+with in-place accumulation, Tellegen transposition and compaction around it. This
+repository searches for the decomposition, and sparsifies as a second strand.
+
+| | here | `[plinopt]` |
+|---|---|---|
+| sparsification | the **minimum** over every invertible `V`, proved | a search bounded to four rows of support with eleven coefficients |
+| `Grey-221`, three operators | **128** nonzeros | 167 |
+| over GF(2) and GF(3) | the matroid greedy over `q^k`, exact | `bin/sparsifier` returns the zero matrix and exits 0 |
+| common subexpressions | **nothing** | `bin/optimizer`, and it is the model the record chain uses |
+| in-place, Tellegen, compaction | nothing | all three |
+| the rank search itself | the other strand | not its job |
+
+The GF(2) row is the one that matters most for this repository, because every
+operator [the rank search](../descent_search/README.md) emits is over a finite
+field, and that is exactly where the reference implementation currently fails.
+
+## Is any of it new? Four candidates, and the algorithm is not one of them
+
+**The exact method is not new and this file will not pretend otherwise.** It is
+`[beniamini2020]`'s Algorithm 2 with an oracle for its own Problem 2.15, and the
+bottom-up oracle already here is its Algorithm 3, proved optimal by its Theorem
+3.22. What was added is speed and a written proof, not a result.
+
+What is *not* found in the literature, in descending order of confidence:
+
+1. **The bridge.** `[sanjose2025]`'s relative generalized Hamming weight at
+   `r = 1` is `[beniamini2020]`'s Sparsest Independent Vector, exactly. One
+   community states the problem and enumerates column subsets for it; the other
+   has had a Brouwer-Zimmermann-pruned algorithm for it in ACM TOMS since 2025.
+   **Neither cites the other, in either direction.**
+2. **The greedy on a pruned oracle.** Nobody has put the Rado-Edmonds driver on
+   top of that pruned oracle and summed the successive minima into a
+   minimum-weight basis. Both halves exist, in separate codebases, and never call
+   each other.
+3. **Any of it over `Q`.** The whole Brouwer-Zimmermann / GHW / RGHW corpus is
+   finite-field; the sparsification corpus over `Q` is floating-point and
+   heuristic. That the bound is characteristic-free is written down nowhere.
+4. **A measurement rather than a method**: that minimising nonzeros can *cost*
+   additions once common subexpressions are on the table, which
+   [`../matrix_sparsification/in-front-of-plinopt.md`](../matrix_sparsification/in-front-of-plinopt.md)
+   shows going the wrong way on one operator of three schemes.
+
+**Read all four narrowly.** They rest on searches that found nothing, which is
+weaker than proof of absence, and on three reads by delegated agents whose
+findings were checked but whose coverage was not exhaustive.
