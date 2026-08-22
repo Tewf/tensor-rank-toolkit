@@ -67,8 +67,10 @@ does: [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.m
 which is also where four tempting merges are refused with what each would cost.
 It is the list; this file is the folders under it, and neither restates the
 other. Three of the folders above hold a binary that is **not** on it:
-`measure-leaf` and `price-canonical-route` are instruments, built outside a
-`commands/` because what they print is nanoseconds ([`MEASURING.md`](MEASURING.md)),
+`measure-leaf`, `price-canonical-route` and `show-limits` are instruments, built
+outside a `commands/` because none of them answers a question about a map: the
+first two print nanoseconds ([`MEASURING.md`](MEASURING.md)) and the third prints
+what this machine and this working directory bound a run to,
 and `list-solvers` was a command until 2026-08-21 and now prints the line that
 replaced it, `curve-bounds --solvers`.
 

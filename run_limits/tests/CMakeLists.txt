@@ -30,3 +30,10 @@ set_tests_properties(limits_reach_the_commands PROPERTIES TIMEOUT 1200 LABELS sl
 add_executable(test_machine test_machine.cpp)
 target_link_libraries(test_machine PRIVATE run_limits testing project_warnings)
 add_test(NAME machine COMMAND test_machine)
+
+# And that the instrument names every tunable there is. The list is read out of
+# cli/tunables.h rather than typed here, so adding a tunable and forgetting to
+# show it fails this check instead of quietly shortening the table.
+add_test(NAME show_limits_names_every_tunable
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_show_limits_names_every_tunable.sh
+                 $<TARGET_FILE:show-limits> ${PROJECT_SOURCE_DIR}/cli/tunables.h)

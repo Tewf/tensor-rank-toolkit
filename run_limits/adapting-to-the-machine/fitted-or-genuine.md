@@ -15,14 +15,46 @@ hardware**, so the sort is worth doing outright.
 - **Fitted** — read off *this* chassis. It is right here and wrong elsewhere by
   however much the two machines differ.
 
-## Fitted, and there are four
+## Fitted, and there were four. Two are now derived
+
+Two remain in the table, and only the first is still fitted in the sense that
+matters: its right value is a **ratio of two timings**, not a count the kernel
+already knows, so nothing can read it off a machine without taking a stopwatch to
+one. That is why `auto` is refused for it and `measure-leaf floor` exists
+instead. The second was closed the same day it was found and stays here for what
+it cost, not because it is open.
 
 | number | where | what it is really a measurement of | what happens elsewhere |
 |---|---|---|---|
 | `device_launch_floor = 8192` | [`../device.cpp`](../device.cpp), `cli/tunables.h` | the card's 21–29 µs fixed launch cost divided by the host's 3.1–4.0 ns an element. **Both halves are hardware.** | A card with a cheaper launch, or a slower host, crosses over lower and this floor keeps work on the host that the card would have won. A faster host crosses over higher and this floor sends work to a card that loses it. Re-fit it with `measure-leaf floor` and set `device_launch_floor` in `tunables.conf`; the knob exists, only its default is fitted. |
-| `budget = 2 GiB` | [`../memory_budget.cpp`](../memory_budget.cpp) | the comment says it: *"leaves room on a 16 GB desktop for a browser and an editor"*. | On a 4 GB box 2 GiB is most of the machine and the refusal comes too late. On a 512 GB server it refuses runs that would have fitted forty times over. `--max-memory` moves it — **on the commands that have the flag**, which is now all of them. |
-| `sat_memory_megabytes = 2048` | `cli/tunables.h` | the same 16 GB. `satisfiability/rank_question.cpp` divides it by the worker count with the arithmetic written out: *"twelve workers at 2 GiB each would be a 24 GiB ceiling on a 16 GB machine"*. | The division is right; the dividend is this machine's. On a 128 GB server it starves each solver for no reason, and on an 8 GB one twelve workers still overcommit. |
 | `CUDA_ARCHITECTURES "89"` | `gpu_leaf/CMakeLists.txt` | 8.9 **is the RTX 4060**. Nothing else. | This was the worst of the four. A build on an A100 (8.0), a 3090 (8.6), an H100 (9.0) or anything newer produced no cubin the device could run, every launch failed with `cudaErrorNoKernelImageForDevice`, `answered_or_the_host` caught it and the host answered — so the run was **silently several hundred times slower** with one line on stderr to say so. Now `native` where CMake can detect the card, and the value stands where a packager pins one. |
+
+## Derived since 2026-08-22, and no longer fitted to anything
+
+Both memory numbers were the same measurement of the same laptop: *this machine
+has 16 GB*. They are now **an eighth of what the machine reports**, read by
+[`../machine.h`](../machine.h), which follows the model the bottom of this page
+names: `set_worker_count(0)` asks `hardware_concurrency()` and no number from any
+chassis appears in it.
+
+The physical figure is rounded **up** to a power of two before the eighth is
+taken, because firmware and the kernel keep some of what a machine is sold with
+and this one reports 15.3 GiB, so a fraction of the raw number is a fraction of
+an arbitrary one. An eighth of 16 GiB is exactly the 2 GiB and the 2048 that were
+written here before, so **every published refusal still names the same figure**
+and the change is invisible on this machine and visible on any other: 512 MiB on
+a 4 GB box, 64 GiB on a 512 GB server, clamped at both ends.
+
+`sat_memory_megabytes = auto` in `tunables.conf` is that reading; a number pins
+one instead. `--max-memory` still beats both. `show-limits` prints what a run
+resolved and which of the three it came from.
+
+What they were, for the record:
+
+| number | what it was really a measurement of |
+|---|---|
+| `budget = 2 GiB` | the comment said it: *"leaves room on a 16 GB desktop for a browser and an editor"* |
+| `sat_memory_megabytes = 2048` | the same 16 GB, divided by the worker count in `satisfiability/rank_question.cpp`. The division was always right; the dividend was this machine's |
 
 ## Neither, and the file says so
 
