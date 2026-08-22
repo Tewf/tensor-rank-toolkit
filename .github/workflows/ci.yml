@@ -94,6 +94,10 @@ jobs:
         if: always()
         run: python3 reproduce/front_page.py
 
+      - name: The prose agrees with the tests that assert the counts
+        if: always()
+        run: python3 reproduce/quoted_numbers.py
+
       # The GF(16) exhaustion, 105 600 301 nodes: 395 s on the reference core and
       # longer on a shared runner, which is more than every other question in the
       # driver put together. On every push that would be a fivefold slowdown to
