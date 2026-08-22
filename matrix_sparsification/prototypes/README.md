@@ -16,6 +16,7 @@ should replace them.
 | `regular_hard.py` | the same, harder, plus Tutte's `Q` / GF(2) / GF(3) rank agreement |
 | `spark_by_lp.py` | the minimum weight as `n` linear programmes, via the dual |
 | `basis_by_lp.py` | a whole basis from those candidates, and what it weighs |
+| `verify_lp_basis.py` | the same basis back in exact rationals, and the three ranks that say it is the same operator |
 
 They need SciPy, which this repository does not depend on and must not start
 depending on: run them with `~/miniforge3/envs/orco/bin/python`. An

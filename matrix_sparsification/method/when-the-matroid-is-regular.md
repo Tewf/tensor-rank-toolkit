@@ -54,6 +54,12 @@ That is the useful way round and it was not the expected one.
 | a cheap coefficient box, for comparison | 4×8, 8×7, 16 | 104 |
 | the exact scan | 4×9, then it stops | no answer |
 
+**Checked outside the solver, in exact rational arithmetic**, because an LP runs
+in floating point and a basis spanning a slightly different space is worthless
+however light it is. The 16 vectors come back to exact rationals, and: rank of
+the original row space 16, rank of the answer 16, rank of the two stacked 16, and
+every vector individually in the row space. It is the same operator.
+
 **The first nine weights are proved optimal and the LP finds exactly those nine.**
 The scan established that nine vectors of weight 4 exist and that nothing weighs
 5; the LP returns nine 4s. Its minimum, 4, is the exact minimum weight by the
