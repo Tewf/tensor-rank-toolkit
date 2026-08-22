@@ -79,13 +79,23 @@ bound is worth is measured rather than hoped: `[hernando2019]` reports 198
 million codewords generated against Magma's 6 001 million on one code, so the
 saving is the pruning and not a faster inner loop.
 
-**And the generalisation this scan needs already exists.** `[sanjose2025]`
-extends Brouwer-Zimmermann from the minimum distance to the whole weight
-hierarchy and ships it as a Sage package, which is the same step from "the first
-weight" to "a sequence of weights" that this file takes. The quantities are not
-identical, so it is a starting point rather than a drop-in, but building the
-bound from scratch here without reading it first would repeat a mistake this
-repository has already made twice.
+**The obvious generalisation was read and it does not transfer.**
+`[sanjose2025]` extends Brouwer-Zimmermann from the minimum distance to the whole
+weight hierarchy, which looks like the same step from "the first weight" to "a
+sequence of weights" that this file takes. It is not. Its bound is sound only
+because every message-space subspace of support `≤ w` was exhausted first, and
+that enumeration is over `{v ∈ F_q^r : 1 ≤ wt(v) ≤ z}`, infinite over `Q`. The
+bound is field-agnostic and the walk it is attached to is not, and they do not
+come apart. **So the direction this page named as "the first thing to try" is not
+available here in the form that would help**, and that is recorded rather than
+quietly dropped.
+
+What does survive is the degenerate case, one information set, which this scan
+already licenses for nothing: having solved every support of size `≤ t`, whatever
+is left weighs at least `t+1`. Paired with a cheap upper bound that is a
+stopping rule. Measured: it would fire on six of nine greedy steps for
+`Grey-221_L` and on **none** for `4x4x4_49_156_L`, so it does not rescue the
+operator it would have to.
 
 The minimum-weight basis is also **not unique**, and which one comes back is
 decided by the order the subsets are walked in. That does not change the count,

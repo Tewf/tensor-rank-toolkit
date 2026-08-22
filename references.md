@@ -1147,6 +1147,21 @@ own in another.
 Sparse Null Space Problem.* APPROX/RANDOM 2010. The greedy driver that the
 sparsest-independent-vector oracles are oracles for.
 
+**`lisonek2016`**: P. Lisoněk, L. Trummer. *Algorithms for the minimum weight of
+linear codes.* Adv. Math. Commun. **10**(1):195-207, 2016. **The authoritative
+statement of the bound, read in full.** Its equation (5), after the step that
+enumerates information weight `w` in the first `j` of `D` systematic matrices, is
+
+> `d ≥ Σ_{i≤j} max(0, w+1−k+r_i) + Σ_{i>j} max(0, w−k+r_i)`
+
+with `r_i = |T_i \ (T_1 ∪ … ∪ T_{i-1})|` the relative rank, `Σ r_i = n`. For
+disjoint information sets it collapses to `D·w + j`. Also Proposition 4, the
+caveat that matters before anyone invests in this: **if `n ≤ 1.5k` the later
+matrices never contribute and BZ degenerates to brute force.** And the
+information sets are chosen by matroid partitioning in `O(n³k³)`, which is where
+Edmonds enters this literature. Example 4.2: a `[1344,128]₂` code Magma estimated
+at 10⁶ years, answered in 94 s once ten disjoint information sets were found.
+
 **`zimmermann1996`**: K.-H. Zimmermann. *Integral Hecke Modules, Integral
 Generalized Reed-Muller Codes, and Linear Codes.* Technical Report 3-96,
 Technische Universität Hamburg-Harburg, 1996. With A. Brouwer's earlier work this
@@ -1165,11 +1180,16 @@ problem's mature algorithm.
 **`hernando2019`**: F. Hernando, F. D. Igual, G. Quintana-Ortí. *Algorithm 994:
 Fast Implementations of the Brouwer-Zimmermann Algorithm for the Computation of
 the Minimum Distance of a Random Linear Code.* ACM Trans. Math. Softw.
-**45**(2), 2019, [doi:10.1145/3302389](https://doi.org/10.1145/3302389). The
-practical reference implementation, sequential, vectorised and shared-memory.
-Reported against Magma on a `[115, 60, 13]` code: 198 461 377 codewords
-generated against Magma's 6 001 753 644, which is the lower bound doing the work
-rather than a faster inner loop. **Abstract and summary only.**
+**45**(2), 2019, [doi:10.1145/3302389](https://doi.org/10.1145/3302389).
+Sequential, vectorised and shared-memory implementations, over GF(2), reporting
+speed-ups in **time** against Magma and Guava. **Abstract only; the full text is
+paywalled and returned 403.**
+
+**The codeword counts this entry first carried are not from this paper.** They
+are Table 1 of `[bouyuklieva2021]`, comparing Magma V2.25-2 against the authors'
+own QextNewEdition, and the entry said "Algorithm 994" because that is where a
+search result put them. **The numbers are right and the paper was wrong**: see
+[`matrix_sparsification/what-was-corrected.md`](matrix_sparsification/what-was-corrected.md).
 
 **`quintanaorti2019`**: G. Quintana-Ortí, F. Hernando, F. D. Igual. *Parallel
 Implementations for Computing the Minimum Distance of a Random Linear Code on
@@ -1181,16 +1201,34 @@ implementation of Brouwer-Zimmermann was found. **Abstract read.**
 
 **`sanjose2025`**: R. San-José. *An algorithm for computing generalized Hamming
 weights and the Sage package GHWs.* ACM Trans. Math. Softw. **51**(4), 2025;
-[arXiv:2503.17764](https://arxiv.org/abs/2503.17764). **Generalises
-Brouwer-Zimmermann from the minimum distance to the whole weight hierarchy**, and
-ships it as Sage at `github.com/RodrigoSanJose/GHWs`. Named because it is the
-closest existing machinery to what
-[`matrix_sparsification/method/exact-over-q.md`](matrix_sparsification/method/exact-over-q.md)
-does: that scan wants a *sequence* of weights rather than the first one, which is
-the same generalisation. The quantities are not identical — a generalized Hamming
-weight is the smallest support of an `r`-dimensional subcode, and a greedy weight
-is what the matroid greedy takes at step `i` — so this is a starting point and
-not a drop-in. **Abstract read; the package not run.**
+[arXiv:2503.17764](https://arxiv.org/abs/2503.17764). Generalises
+Brouwer-Zimmermann from the minimum distance to the whole weight hierarchy, and
+ships it as Sage at `github.com/RodrigoSanJose/GHWs`, GPL-3.0-or-later, so the
+algorithm may be read and the code may not be lifted. **Full text read 2026-08-22,
+and it is further from this module than its title suggests.** Three reasons, all
+worth writing down because the title invites the mistake:
+
+- **A different invariant.** `d_r` is the smallest *union of supports* over an
+  `r`-dimensional subcode; a greedy weight `g_r` is the weight of the `r`-th
+  vector the matroid greedy takes. The paper never mentions greedy weights,
+  matroids, Rado or Edmonds: zero occurrences of all four. The relation is
+  **`g_r ≤ d_r`**, one line from `dim(D ∩ V_{r-1}) ≤ r-1`, and it runs the
+  opposite way to the guess this entry was first written on.
+- **The bound does not detach from the enumeration.** Everything structural is
+  field-agnostic: Lemma 3.1, the information sets, and the bound itself,
+  `Σ_j max{0, (w+1) − R_j}` with `R_j` the redundancy of the `j`-th information
+  set, which is `m(w+1)` for `m` disjoint ones. But that bound is sound **only
+  because** every message-space subspace of support `≤ w` was exhausted first,
+  and that enumeration is `{v ∈ F_q^r : 1 ≤ wt(v) ≤ z}`, which over `Q` is
+  infinite. There is no seam along which to keep the bound and drop the walk.
+- **The scale is not there.** Its only length-49 measurement is at dimension 6
+  and takes 517 s over GF(7). Ours is dimension 16.
+
+**What survives for this module is the degenerate case**, `m = 1`, which the scan
+here already licenses for nothing: having solved every support of size `≤ t`,
+every remaining codeword weighs at least `t+1`. Measured against a cheap upper
+bound, that rule fires on six of nine greedy steps for `Grey-221_L` and on none
+at all for `4x4x4_49_156_L`, which is the operator it would need to rescue.
 
 **`narisada2021`**: S. Narisada, K. Fukushima, S. Kiyomoto. *Fast GPU
 Implementation of Dumer's Algorithm Solving the Syndrome Decoding Problem.*
@@ -1202,9 +1240,14 @@ statement of what that citation actually did. **Abstract and summary only.**
 **`bouyuklieva2021`**: S. Bouyuklieva, I. Bouyukliev. *An Extension of the
 Brouwer-Zimmermann Algorithm for Calculating the Minimum Weight of a Linear
 Code.* Mathematics **9**(19):2354, 2021,
-[doi:10.3390/math9192354](https://doi.org/10.3390/math9192354). Reduces the
-number of codewords considered, most where the length is not divisible by the
-dimension. **Abstract and summary only.** Together with P. Lisoněk, L. Trummer,
+[doi:10.3390/math9192354](https://doi.org/10.3390/math9192354). Uses the *short*
+systematic matrix where classical BZ pads a partial information set back up to
+size `k` by re-borrowing covered coordinates. **Read in full** (MDPI's own PDF
+endpoint returns 403; reached through the Semantic Scholar mirror). **Its Table 1
+is the source of the `[115, 60, 13]` codeword counts**: 198 461 377 against
+Magma's 6 001 753 644, which is the lower bound doing the work rather than a
+faster inner loop, and 28.56 s against 1.52 s on machines the authors say are not
+comparable. Together with P. Lisoněk, L. Trummer,
 *Algorithms for the minimum weight of linear codes*, Adv. Math. Commun.
 **10**(1):195-207, 2016, and *Algorithm 994* (ACM TOMS **45**(2), 2019) for fast
 implementations, these are the entry points to that literature.
