@@ -1,6 +1,8 @@
 #include "cost_first_search.h"
 
 #include <algorithm>
+#include <cmath>
+#include <limits>
 #include <set>
 #include <utility>
 
@@ -32,6 +34,24 @@ std::vector<Element> residue_of(const Field& field, const ReducedBasis& span, co
         break;
     }
     return entries;
+}
+
+/// The least a strict descendant can cost, given the two inequalities.
+///
+/// `s == 0` disables the second one and returns `a + 1`, which is the bound this
+/// search has always used, so the general form has the old one as a special case
+/// and switching it off restores every published count exactly.
+std::size_t least_descendant_cost(std::size_t a, std::size_t c, std::size_t s) {
+    if (s == 0) return a + 1;
+    const double crossing = c > a ? static_cast<double>(c - a) / static_cast<double>(1 + s) : 0.0;
+    std::size_t least = std::numeric_limits<std::size_t>::max();
+    for (const double where : {std::floor(crossing), std::ceil(crossing)}) {
+        const std::size_t steps = where < 1.0 ? 1 : static_cast<std::size_t>(where);
+        const std::size_t rises = a + steps;
+        const std::size_t falls = c > s * steps ? c - s * steps : 0;
+        least = std::min(least, std::max(rises, falls));
+    }
+    return least;
 }
 
 struct Ascent {
@@ -79,7 +99,7 @@ struct Ascent {
         // The bound, and the whole of it. Every `W` strictly above this node has
         // `dim W >= basis.size() + 1` and `cost(W) >= dim W`, so nothing below
         // can come in under an incumbent that low.
-        if (basis.size() + 1 >= ceiling) {
+        if (least_descendant_cost(basis.size(), cost, limits.cost_drop_bound) >= ceiling) {
             ++report.bounded;
             return;
         }
@@ -159,6 +179,22 @@ struct Ascent {
             children[slot].cost = cost;
             children[slot].basis = std::move(attempt);
         });
+
+        // What one move is worth, over every child and not only the entered
+        // ones: the bound a future version wants needs the largest drop any
+        // single step can produce, and the beam would only ever see the cheapest
+        // few. Sequential, after the workers are done, because it writes to the
+        // report.
+        for (const Child& child : children) {
+            if (cost <= child.cost) continue;
+            const std::size_t drop = cost - child.cost;
+            report.largest_drop = std::max(report.largest_drop, drop);
+            // The bound's own assumption, checked on every child it was used to
+            // cut past. A violation means a branch was cut that could have held
+            // the answer, which the command turns into a refusal rather than a
+            // quieter number.
+            if (limits.cost_drop_bound != 0 && drop > limits.cost_drop_bound) ++report.drops_exceeded;
+        }
 
         // Cheapest first, ties in generation order, which is fixed. Stable so
         // that the run is reproducible rather than merely deterministic.
