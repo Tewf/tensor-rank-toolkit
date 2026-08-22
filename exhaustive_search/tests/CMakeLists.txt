@@ -12,6 +12,14 @@ add_test(NAME f2_5x5_has_no_11_products
          COMMAND test_exhaustive_search ${PROJECT_SOURCE_DIR}/fixtures 11)
 set_tests_properties(f2_5x5_has_no_11_products PROPERTIES LABELS slow TIMEOUT 900)
 
+# That a trace says what the search did and costs it nothing. Both searches are
+# asked, because they are different functions and a trace that worked for one
+# while silently writing nothing for the other is what happened while this was
+# being built.
+add_test(NAME trace_is_a_tree
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_trace_is_a_tree.sh
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+
 # Why the branch and bound has no per-node bound: it would be the free test.
 # The header says what degrades and why; this pins the arithmetic so the day a
 # bound stops reading the least rank in the space, the failure is the news.

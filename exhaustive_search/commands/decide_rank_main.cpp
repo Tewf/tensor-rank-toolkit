@@ -18,6 +18,9 @@
 #include "exhaustive_search.h"
 #include "exit_code.h"
 #include "fewest_products.h"
+#include "search_trace.h"
+
+#include <memory>
 #include "gf2_leaf.h"
 #include "group_construction.h"
 #include "isomorph_rejection.h"
@@ -46,6 +49,7 @@ void usage() {
                    "                   [--orbit-test full|generators]\n"
                    "                   [--device cpu|gpu|auto]\n"
                    "                   [--plan-out FILE] [--plan-in FILE]\n"
+                   "                   [--trace FILE]\n"
                    "                   [--threads N]   N workers, 0 for every core, 1 by default\n"
                    "                   [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
                    "\n"
@@ -55,6 +59,12 @@ void usage() {
                    "                      elements. gpu asks for it and lifts that floor; cpu takes\n"
                    "                      it off the table. gpu is a request and not an instruction:\n"
                    "                      where the card cannot answer, the host does and says why\n"
+                   "  --trace FILE        write what the search walked, as JSON Lines: one\n"
+                   "                      line per node opened, bounded, pruned or adopted.\n"
+                   "                      Costs a null pointer test per node when it is off,\n"
+                   "                      which is every run that does not ask for it. Needs\n"
+                   "                      --threads 1, the default: two workers interleave\n"
+                   "                      their nodes and what comes out is not a tree\n"
                    "  --plan-out FILE     write the seven choices this run made, and carry on\n"
                    "  --plan-in FILE      make those choices instead of deciding them here, so a\n"
                    "                      run elsewhere reproduces this one. A flag given beside it\n"
@@ -115,6 +125,7 @@ int run(int argc, char** argv) {
     bilinear_rank::PlanRequest request;
     bilinear_rank::PlanFlagsGiven given;
     std::string plan_out;
+    std::string trace_out;
     std::string plan_in;
 
     // Walked by `cli/arguments.h` rather than by hand, so `--target abc` names the
@@ -161,6 +172,8 @@ int run(int argc, char** argv) {
                 throw cli::ArgumentError("--device expects cpu, gpu or auto, not '" + wanted + "'");
             }
             given.device = wanted != "auto";
+        } else if (arguments.is("--trace")) {
+            trace_out = arguments.text();
         } else if (arguments.is("--plan-out")) {
             plan_out = arguments.text();
         } else if (arguments.is("--plan-in")) {
@@ -304,6 +317,7 @@ int run(int argc, char** argv) {
     machine.rows = tensor.rows();
     machine.columns = tensor.columns();
     machine.pool_size = addressed.size();
+
     machine.target = target >= 0 ? static_cast<std::size_t>(target) : 0;
     machine.memory_budget = bilinear_rank::memory_budget();
     machine.binary_leaf = binary_leaf;
@@ -363,6 +377,24 @@ int run(int argc, char** argv) {
 
     const bool fits = plan.pool == bilinear_rank::Pool::Materialised;
     const cli::Symmetry symmetry = plan.quotient;
+
+    // Built here and not earlier because it names the quotient, which the plan
+    // settles. Refused above one worker rather than ignored: a trace that is not
+    // a tree is worse than no trace, because it looks like one.
+    std::unique_ptr<bilinear_rank::SearchTrace> trace;
+    if (!trace_out.empty()) {
+        if (bilinear_rank::worker_count() > 1) {
+            throw cli::ArgumentError("--trace needs one worker; --threads " +
+                                     std::to_string(bilinear_rank::worker_count()) +
+                                     " interleaves the nodes of subtrees, and what comes out "
+                                     "is not a tree");
+        }
+        trace = std::make_unique<bilinear_rank::SearchTrace>(
+            path, target < 0 ? 0 : static_cast<std::size_t>(target),
+            symmetry.kind == cli::SymmetryKind::None ? std::string()
+                                                     : bilinear_rank::name_of(symmetry),
+            addressed.size());
+    }
     std::vector<bilinear_rank::Matrix> pool;
     if (fits) pool = bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
@@ -412,24 +444,31 @@ int run(int argc, char** argv) {
         // became an index and its orbits a question rather than a table.
         found = fits ? bilinear_rank::expand_subspace_up_to_symmetry(
                            field, anchor, pool, generators,
-                           static_cast<std::size_t>(target), budget, products)
+                           static_cast<std::size_t>(target), budget, products, true, trace.get())
                      : bilinear_rank::expand_subspace_up_to_symmetry(
                            field, anchor, addressed, generators,
-                           static_cast<std::size_t>(target), budget, products);
+                           static_cast<std::size_t>(target), budget, products, true, trace.get());
     } else if (target >= 0 && !fits) {
         // Only a sweep still needs the pool held: it indexes down a recursion in
         // parallel and is not converted, and it is refused above.
         found = bilinear_rank::expand_subspace(field, anchor, addressed, 0,
-                                              static_cast<std::size_t>(target), budget, products);
+                                              static_cast<std::size_t>(target), budget, products,
+                                              trace.get());
     } else if (target >= 0) {
         found = bilinear_rank::expand_subspace(field, anchor, pool, 0,
-                                               static_cast<std::size_t>(target), budget, products);
+                                               static_cast<std::size_t>(target), budget, products,
+                                               trace.get());
     } else {
         found = bilinear_rank::fewest_products_by_sweep(field, anchor, pool, budget, products);
     }
     const double seconds = cli::elapsed_seconds(started);
 
     cli::result() << "  " << budget.nodes_visited << " nodes in " << seconds << " s\n";
+    if (trace) {
+        trace->write(trace_out);
+        cli::note() << "trace: " << trace->nodes() << " nodes, " << trace->events()
+                    << " events to " << trace_out;
+    }
     bilinear_rank::note_if_the_card_failed();
 
     if (found) {

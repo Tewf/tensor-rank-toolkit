@@ -6,6 +6,7 @@
 
 #include "bilinear_rank_aliases.h"
 #include "candidate_pool.h"
+#include "search_trace.h"
 
 /// The exact search: not "can this be improved?" but "is there one of size k?".
 ///
@@ -133,7 +134,8 @@ std::vector<Matrix> independent_rank_one_maps_in(const Field& field, const Reduc
 /// On success `products` holds that basis, which is what the caller needs.
 bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
                      const std::vector<Matrix>& pool, std::size_t from, std::size_t target,
-                     SearchBudget& budget, std::vector<Matrix>& products);
+                     SearchBudget& budget, std::vector<Matrix>& products,
+                     SearchTrace* trace = nullptr);
 
 /// The same search over an **addressed** pool, which is never materialised.
 ///
@@ -152,6 +154,7 @@ bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
 /// refused, and says which it used.
 bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
                      const RankOnePool& pool, std::size_t from, std::size_t target,
-                     SearchBudget& budget, std::vector<Matrix>& products);
+                     SearchBudget& budget, std::vector<Matrix>& products,
+                     SearchTrace* trace = nullptr);
 
 }  // namespace bilinear_rank
