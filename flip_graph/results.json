@@ -92,9 +92,9 @@
     }
   ],
   "counts_provenance": {
-    "commit": "d3b5e439c470dacbbb71eb0844a4037c2aa2b5e5",
+    "commit": "8e53bd6059c988743fdab2af9dad02309db790b1",
     "tree_clean": false,
-    "covers": "The counts in this file and the invocations that produced them. This file is new, so it carries no `provenance` block: its `seconds` fields are a first reading taken on a machine that was running other work, and are not the quiet-machine protocol of MEASURING.md. They are here because a reader deserves an order of magnitude, and they are to be superseded by a protocol run rather than trusted as one. The counts are exact arithmetic and reproduce anywhere, which is why `--check` compares those and not these.",
+    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
     "solvers": {

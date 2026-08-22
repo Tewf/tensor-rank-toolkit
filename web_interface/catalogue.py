@@ -360,13 +360,20 @@ TOOLS = [
         "binary": "matrix_sparsification/sparsify-operator",
         "input": "operator",
         "asks": "How few nonzero entries can one operator be written with?",
-        "answers": "Every method run on the one operator, so the output is the "
-                   "comparison and nothing is chosen for you.",
-        "verdicts": {"0": {"badge": "compared",
-                     "means": "every method ran and reported what it reached. "
-                              "The output is the comparison; nothing is chosen "
-                              "for you."}},
+        "answers": "The fewest any change of basis can leave, which the matroid "
+                   "greedy over Q returns and nothing can beat.",
+        "verdicts": {"0": {"badge": "minimum",
+                     "means": "the least number of nonzeros over every "
+                              "invertible V, by Rado-Edmonds. --simplex answers "
+                              "the same question by linear programming and is an "
+                              "upper bound rather than a proof; --operations "
+                              "minimises nnz + nns instead, which is a different "
+                              "question."}},
         "options": [
+            {"flag": "--simplex", "kind": "switch",
+             "label": "answer by linear programming, the only route that finishes a large operator"},
+            {"flag": "--operations", "kind": "switch",
+             "label": "also minimise nnz + nns, where a 4/9 costs more than a 1"},
             {"flag": "--show", "kind": "switch", "label": "print the matrix as well"},
         ],
     },

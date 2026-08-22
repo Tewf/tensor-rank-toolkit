@@ -17,7 +17,10 @@
       "row_basis_heuristic": 10,
       "oracle_bottom_up": 10,
       "oracle_top_down": 10,
-      "exact_matroid_greedy": 10
+      "exact_matroid_greedy": 10,
+      "greedy_by_rescaling": 10,
+      "by_linear_programming": 10,
+      "simplex_seconds": 0.0022
     },
     {
       "name": "strassen_v",
@@ -28,7 +31,10 @@
       "row_basis_heuristic": 10,
       "oracle_bottom_up": 10,
       "oracle_top_down": 10,
-      "exact_matroid_greedy": 10
+      "exact_matroid_greedy": 10,
+      "greedy_by_rescaling": 10,
+      "by_linear_programming": 10,
+      "simplex_seconds": 0.0019
     },
     {
       "name": "alternative_basis_u",
@@ -39,12 +45,15 @@
       "row_basis_heuristic": 10,
       "oracle_bottom_up": 10,
       "oracle_top_down": 10,
-      "exact_matroid_greedy": 10
+      "exact_matroid_greedy": 10,
+      "greedy_by_rescaling": 10,
+      "by_linear_programming": 10,
+      "simplex_seconds": 0.0025
     }
   ],
   "readings": [
-    "The strand has a number now. Strassen's two encoding operators go from 12 nonzeros to 10; the alternative-basis operator goes from 21 to 10. All three methods reach the same 10, and every result is checked to have the same row space as the operator it came from.",
-    "Ten is what the row-basis construction predicts rather than a surprise: inverting a square block of rows makes four rows singletons, and the remaining three come out with two nonzeros each. It is not proved minimal, and none of these methods proves anything minimal.",
+    "The strand has a number now. Strassen's two encoding operators go from 12 nonzeros to 10; the alternative-basis operator goes from 21 to 10. Every route reaches the same 10, and every result is checked to have the same row space as the operator it came from.",
+    "Ten is what the row-basis construction predicts rather than a surprise: inverting a square block of rows makes four rows singletons, and the remaining three come out with two nonzeros each. Ten is what the construction predicts rather than a surprise, and the matroid greedy proves it minimal.",
     "The runs take milliseconds because field operations on small matrices (7\u00d74) are cheap compared to the minimisation over a discrete space.",
     "The operators no longer have to be typed in. The rank search recovers L and R from the decomposition it finds and writes them out, so deriving a fast algorithm and then reducing its additions is two commands. On F2 5x5 that is 25 multiplications down to 14, and the left operator's 31 nonzeros down to 27."
   ],
@@ -53,7 +62,7 @@
     "Its search returns None when it finds no candidate, into a caller that unpacks the result into two variables. It does not fire on these operators, so it was latent rather than observed.",
     "The search objective counts zeros exactly by testing field equality, not floating-point equality. Using `== 0` on raw doubles can miscount: on the alternative-basis operator this sees 86 zeros where 144 exist, even with post-rounding applied. The reported count can be sound while the objective being maximised is not."
   ],
-  "limits": "The matroid greedy over Q returns the minimum and stops on collecting a basis rather than on a proof that nothing lighter exists, so it does not finish on an operator whose greedy weights are large: 4x4x4_49_156_L needs weight 6 or more for 7 of its 16 vectors, where the scan is 14 million column subsets rising to 451 million at weight 8. That operator's column matroid does look regular, and there the minimum weight is a linear programme rather than a search: see matrix_sparsification/method/when-the-matroid-is-regular.md, which reaches a 16-vector basis at 100 nonzeros in 0.08 s with its first nine weights proved optimal. The greedy by rescaling, behind --operations, guarantees nothing and minimises nnz + nns rather than nnz, which is why speed does not order it against the rest.",
+  "limits": "The matroid greedy over Q returns the minimum over every invertible V and stops on collecting a basis rather than on a proof that nothing lighter exists, so it does not finish on an operator whose greedy weights are large: 4x4x4_49_156_L needs weight 6 or more for 7 of its 16 vectors, and the command now refuses that operator in milliseconds rather than running on. --simplex answers it instead, by linear programming, in 0.34 s and at 100 nonzeros. That is an UPPER BOUND: it would be the minimum if the operator's column matroid were regular, and it is not, a sixteen-column minor having determinant -2. What is verified rather than assumed is that the answer spans the same row space. The greedy by rescaling, behind --operations, guarantees nothing and minimises nnz + nns rather than nnz, which is why speed does not order it against the rest. See matrix_sparsification/method/answering-without-searching.md.",
   "provenance": {
     "commit": null,
     "tree_clean": null,
@@ -79,7 +88,7 @@
     }
   },
   "counts_provenance": {
-    "commit": "43cfd309c974fb79231ba77497cb412212b540f4",
+    "commit": "8e53bd6059c988743fdab2af9dad02309db790b1",
     "tree_clean": false,
     "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",

@@ -93,7 +93,7 @@
   <h2>The other half of the cost</h2>
   <p>A fast algorithm costs multiplications and additions both, and the additions are set by how many nonzero entries its operators carry. Fewer nonzeros means fewer additions, the cost the multiplication count does not capture.</p>
 
-  <figure><div id="nonzeros"></div><figcaption>Nonzero entries in the encoding operators, before and after. All three methods reach 10. Source: <code>matrix_sparsification/results.json</code>.</figcaption></figure>
+  <figure><div id="nonzeros"></div><figcaption>Nonzero entries in the encoding operators, before and after. The bar is the proved minimum over every change of basis. Source: <code>matrix_sparsification/results.json</code>.</figcaption></figure>
 
   <p>Strassen's two encoding operators go from <strong>12 nonzeros to 10</strong>, and an alternative-basis operator from <strong>21 to 10</strong>, in milliseconds.</p>
 
@@ -199,7 +199,10 @@ try {
     rows: sparsification.fixtures.map((fixture) => ({
       label: mapLabel(fixture.name),
       from: fixture.as_given,
-      to: fixture.row_basis_heuristic,
+      // The proved minimum, not one heuristic's answer. Reading
+      // `row_basis_heuristic` here outlived the method by a day and would
+      // have drawn an empty chart the moment results.json was regenerated.
+      to: fixture.exact_matroid_greedy,
     })),
     unit: ' nonzeros',
   });

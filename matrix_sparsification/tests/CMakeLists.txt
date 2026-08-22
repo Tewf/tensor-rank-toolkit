@@ -12,7 +12,8 @@ target_link_libraries(test_algorithm_cost PRIVATE matrix_sparsification project_
 add_test(NAME algorithm_cost COMMAND test_algorithm_cost ${PROJECT_SOURCE_DIR}/fixtures)
 
 # An operator and its transpose reach the same count. They must, and until
-# 2026-08-22 they did not: a wide operator went through every method unchanged
+# 2026-08-22 they did not: a wide operator went through every method then
+# shipped unchanged
 # because the question is vacuous on that side. Every fixture here is 7x4, which
 # is why nothing caught it; this check writes the transpose itself.
 add_test(NAME sparsify_orientation
@@ -49,3 +50,11 @@ add_executable(test_lightest_vector_by_simplex test_lightest_vector_by_simplex.c
 target_link_libraries(test_lightest_vector_by_simplex
                       PRIVATE sparsify_by_simplex project_warnings testing)
 add_test(NAME lightest_vector_by_simplex COMMAND test_lightest_vector_by_simplex)
+
+# Every route the command offers still answers, and none beats the proved
+# minimum. Three flags changed meaning on 2026-08-22 and nothing exercised them;
+# this also asserts that the flag which was removed is refused rather than
+# ignored, which is how a stale script goes on looking correct.
+add_test(NAME sparsify_routes
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_every_route_answers.sh
+                 $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)

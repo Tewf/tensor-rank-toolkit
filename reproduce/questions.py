@@ -241,22 +241,32 @@ def descent_of(build, name, repeats=REPEATS):
 
 
 def sparsification_of(build, name, repeats=REPEATS):
-    """One operator through sparsify-operator, per method."""
-    command = [str(build / "matrix_sparsification" / "sparsify-operator"),
-               str(ROOT / "fixtures" / f"{name}.matrix")]
+    """One operator through every route `sparsify-operator` offers.
+
+    Three runs rather than one, because the three answer different questions and
+    a results file that publishes only the default would leave two of them
+    unmeasured. `--operations` minimises `nnz + nns`; `--simplex` does not search
+    at all. Both cost far more than the default, which is why neither is the
+    default and why both are asked for here explicitly.
+    """
+    binary = str(build / "matrix_sparsification" / "sparsify-operator")
+    operator = str(ROOT / "fixtures" / f"{name}.matrix")
+    command = [binary, operator]
     text, seconds = fastest(command, repeats)
+    with_operations, _ = fastest(command + ["--operations"], repeats)
+    by_simplex, simplex_seconds = fastest(command + ["--simplex"], repeats)
 
     counts = {}
-    for key, pattern in (
-            ("as_given", r"as given: (\d+) nonzeros"),
-            ("row_basis_heuristic", r"row-basis heuristic: (\d+) nonzeros"),
-            ("oracle_bottom_up", r"exact oracle, bottom-up: (\d+) nonzeros"),
-            ("oracle_top_down", r"exact oracle, top-down: (\d+) nonzeros"),
-            ("exact_matroid_greedy", r"exact, matroid greedy over Q: (\d+) nonzeros")):
-        found = re.search(pattern, text)
+    for key, pattern, source in (
+            ("as_given", r"as given: (\d+) nonzeros", text),
+            ("exact_matroid_greedy", r"exact, matroid greedy over Q: (\d+) nonzeros", text),
+            ("greedy_by_rescaling", r"greedy, by rescaling: (\d+) nonzeros", with_operations),
+            ("by_linear_programming", r"by linear programming: (\d+) nonzeros", by_simplex)):
+        found = re.search(pattern, source)
         if not found:
-            raise RuntimeError(f"{name}: no '{key}' line in\n{text}")
+            raise RuntimeError(f"{name}: no '{key}' line in\n{source}")
         counts[key] = int(found.group(1))
+    counts["simplex_seconds"] = simplex_seconds
 
     shape = re.search(r"as given: \d+ nonzeros, (\d+x\d+)", text)
     return {"name": name,
