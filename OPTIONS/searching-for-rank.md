@@ -15,7 +15,7 @@ about what they can prove. Precedence and `BILINEAR_TUNABLES`:
 | `--emit-operators <stem>` | off | Nothing to measure. Writes `⟨L, R, P⟩` in SMS, which is the interface PLinOpt's checkers take. |
 | `-s, --symmetry` | `none` | Argument, not measurement: a command not asked for symmetry must answer as it always did. The orbit quotient's own worth is measured elsewhere: **39.2x fewer nodes** refuting `⟨2,2,2⟩` at 6, at a 1.41x surcharge a node ([`../orbit_reduction/what-the-quotient-costs.md`](../orbit_reduction/what-the-quotient-costs.md)). Nodes rather than seconds, because the seconds on that page were taken before the leaf moved on 2026-08-20 and a node count is not a property of the leaf. |
 | `--threads N` | `1` | Argument, asserted rather than measured: one worker so a run reproduces what this repository published, none of which was ever given more than one core (`../run_limits/parallel.h`). |
-| `--max-memory` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. |
+| `--max-memory` | derived | Argument: an eighth of what the machine reports, which is `2G` on the 16 GB laptop every table here was measured on and moves on its own elsewhere. It leaves room for a browser and an editor to survive the run in the same proportion whatever the machine is. |
 
 ## `decide-rank`
 
@@ -60,4 +60,4 @@ and no default below is claimed to be the best value.
 | `--whole-pool` | off | **Not measured on anything it could finish.** Offers every rank-one map of the shape instead of the generated moves, at `\|pool\|` minimum-weight bases a node: 16 129 at 7x7 over GF(2), against the 20 678 moves the whole 22-node `cyclic_f2_7` run offered. |
 | `--emit-operators <stem>` | off | Nothing to measure. Same three SMS files as `minimise-rank`, and what the external check of the 13-product `cyclic_f2_7` scheme was run on. |
 | `--threads N` | `1` | Argument, asserted rather than measured: one worker so a run reproduces what this repository published. The children of one node are prepared in parallel and entered in the same order, so counts are identical at any thread count — asserted on `matmul_2x2x3` (341 nodes, 159 860 children) in `run_limits/tests/check_the_limits_reach_the_commands.sh`. |
-| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. `--summand-rank r` asks for p^r vectors and this is what refuses an r the machine cannot hold. |
+| `--max-memory N` | derived | Argument: an eighth of what the machine reports, which is `2G` on the 16 GB laptop every table here was measured on and moves on its own elsewhere. `--summand-rank r` asks for p^r vectors and this is what refuses an r the machine cannot hold. |

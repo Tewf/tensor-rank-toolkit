@@ -44,7 +44,7 @@ measuring a different thing, so **the changed flag belongs beside the number**.
 | Flag | Default | Set by |
 |---|---|---|
 | `--threads` | 1 | `run_limits/parallel.h` |
-| `--max-memory` | 2 GiB | `run_limits/memory_budget.h` |
+| `--max-memory` | an eighth of the machine, 2 GiB here | `run_limits/memory_budget.h`, `run_limits/machine.h` |
 | `--node-limit` | 5 000 000 | `search_node_limit` in `tunables.conf` |
 | `--timeout` | 300 s | `sat_timeout_seconds` in `tunables.conf` |
 
