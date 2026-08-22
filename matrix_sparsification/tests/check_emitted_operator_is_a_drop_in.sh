@@ -28,7 +28,7 @@ for name in 2x2x2_7_Strassen_P 2x2x2_7_Strassen_L 1o1o2_3_Karatsuba_P; do
     source="$fixtures/plinopt/$name.sms"
     [ -f "$source" ] || { echo "  FAIL  no fixture $source"; status=1; continue; }
 
-    "$tool" "$source" --exact --emit "$work/$name.sms" > "$work/$name.out" 2>&1
+    "$tool" "$source" --emit "$work/$name.sms" > "$work/$name.out" 2>&1
     [ -f "$work/$name.sms" ] || { echo "  FAIL  $name: nothing emitted"; status=1; continue; }
 
     want=$(shape_of "$source")
@@ -39,7 +39,7 @@ for name in 2x2x2_7_Strassen_P 2x2x2_7_Strassen_L 1o1o2_3_Karatsuba_P; do
         continue
     fi
 
-    "$tool" "$work/$name.sms" --exact > "$work/$name.again" 2>&1
+    "$tool" "$work/$name.sms" > "$work/$name.again" 2>&1
     first=$(count_of "$work/$name.out")
     again=$(count_of "$work/$name.again")
     if [ "$first" = "$again" ] && [ -n "$first" ]; then

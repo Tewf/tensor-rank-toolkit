@@ -12,7 +12,6 @@
 #include "greedy_sparsifier.h"
 #include "matrix_ops.h"
 #include "measures.h"
-#include "oracle_sparsifier.h"
 
 namespace {
 

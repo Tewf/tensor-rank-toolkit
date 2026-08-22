@@ -5,9 +5,7 @@
   "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz.",
   "methods": [
     "Exact, matroid greedy over Q: scan column supports in ascending size and keep every codeword that raises the rank. The minimum over every invertible V, by Rado-Edmonds, and the only method here proved so.",
-    "Row-basis heuristic: invert a square block of rows of U, which forces as many rows of the result to be singletons as U has columns.",
-    "Exact oracle, bottom-up: over every column subset one smaller than the row count, keep the validator whose vector has the most zeros.",
-    "Exact oracle, top-down: walk column subsets from the largest down and take the first validator, since a vector forced to zero on more columns cannot be beaten by one forced on fewer."
+    "The three methods removed on 2026-08-22 (row-basis heuristic, and both of [beniamini2020]'s oracles) reached the same counts 88x to 343x more slowly and are on the dominated-methods branch, with their measurements; see matrix_sparsification/dominated.md."
   ],
   "fixtures": [
     {
@@ -55,7 +53,7 @@
     "Its search returns None when it finds no candidate, into a caller that unpacks the result into two variables. It does not fire on these operators, so it was latent rather than observed.",
     "The search objective counts zeros exactly by testing field equality, not floating-point equality. Using `== 0` on raw doubles can miscount: on the alternative-basis operator this sees 86 zeros where 144 exist, even with post-rounding applied. The reported count can be sound while the objective being maximised is not."
   ],
-  "limits": "The matroid greedy over Q returns the minimum and stops on collecting a basis rather than on a proof that nothing lighter exists, so it does not finish on an operator whose greedy weights are large: 4x4x4_49_156_L needs weight 6 or more for 7 of its 16 vectors, where the scan is 14 million column subsets rising to 451 million at weight 8. The bottom-up oracle is [beniamini2020, Alg. 3] and its Theorem 3.22 proves it optimal too: its rank = a-1 filter loses nothing, because a minimum-weight vector has minimal support and a minimal support has a one-dimensional vanishing space. The top-down oracle looks exact on a reading of [beniamini2020, Lem. 3.7]. Only the row-basis heuristic carries no guarantee, and it is the only one measured losing: 37% of 400 random operators and 21% of 203 with a sparse basis hidden behind a change of basis. What separates the rest is cost.",
+  "limits": "The matroid greedy over Q returns the minimum and stops on collecting a basis rather than on a proof that nothing lighter exists, so it does not finish on an operator whose greedy weights are large: 4x4x4_49_156_L needs weight 6 or more for 7 of its 16 vectors, where the scan is 14 million column subsets rising to 451 million at weight 8. That operator's column matroid does look regular, and there the minimum weight is a linear programme rather than a search: see matrix_sparsification/method/when-the-matroid-is-regular.md, which reaches a 16-vector basis at 100 nonzeros in 0.08 s with its first nine weights proved optimal. The greedy by rescaling, behind --operations, guarantees nothing and minimises nnz + nns rather than nnz, which is why speed does not order it against the rest.",
   "provenance": {
     "commit": null,
     "tree_clean": null,

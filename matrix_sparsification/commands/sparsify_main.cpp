@@ -12,10 +12,8 @@
 #include "exit_code.h"
 #include "finite_field_sparsifier.h"
 #include "greedy_sparsifier.h"
-#include "heuristic_sparsifier.h"
 #include "linear_algebra.h"
 #include "memory_budget.h"
-#include "oracle_sparsifier.h"
 #include "rational_sparsifier.h"
 #include "report.h"
 #include "sms_file.h"
@@ -31,17 +29,21 @@ void usage() {
                    "                          [--exact] [--emit out.sms] [--max-memory N]\n"
                    "       sparsify-operator --help\n"
                    "\n"
-                   "  Runs every method on one operator and reports what each reached, so\n"
-                   "  the output is the comparison and nothing here is chosen for you.\n"
+                   "  Reports the minimum number of nonzeros, and how it was reached.\n"
+                   "  Methods that reached the same count more slowly are on the\n"
+                   "  dominated-methods branch; see ../dominated.md\n"
                    "  --field p       read the entries over GF(p) and answer the question\n"
                    "                  there, exactly, by the matroid greedy over the column\n"
                    "                  space. The four methods below work over Q, which is a\n"
                    "                  different and harder question: an operator the rank\n"
                    "                  search emitted is over a finite field and this is the\n"
                    "                  question it is asking. .sms only\n"
-                   "  --exact         run only the matroid greedy over Q, which is the one method\n"
-                   "                  here proved to return the minimum, and the fastest. The\n"
-                   "                  others are what you run when you want the comparison\n"
+                   "  --operations    also run the greedy by rescaling, which minimises\n"
+                   "                  nnz + nns rather than nnz: an entry that is neither 0\n"
+                   "                  nor +-1 costs a multiplication as well as an addition.\n"
+                   "                  A different question, and it costs about 600x more\n"
+                   "                  than the answer above, so it is asked for and not\n"
+                   "                  assumed\n"
                    "  --emit PATH     write that minimum as an SMS file, so it can be handed to\n"
                    "                  another tool. Written the way the file came in, so it\n"
                    "                  drops in where the original did: a decoding operator\n"
@@ -83,7 +85,7 @@ int run(int argc, char** argv) {
     // Three ways to ask for something and be told it was done.
     cli::Arguments arguments(argc, argv);
     bool show_matrix = false;
-    bool exact_only = false;
+    bool with_operations = false;
     std::string emit_to;
     // Zero means "over Q", which is what every method below assumes and what
     // every fixture here is. A prime asks the other question.
@@ -94,8 +96,8 @@ int run(int argc, char** argv) {
             return cli::exit_status(cli::ExitCode::Usage);
         } else if (arguments.is("--show")) {
             show_matrix = true;
-        } else if (arguments.is("--exact")) {
-            exact_only = true;
+        } else if (arguments.is("--operations")) {
+            with_operations = true;
         } else if (arguments.is("--emit")) {
             emit_to = arguments.text();
         } else if (arguments.is("--field")) {
@@ -209,12 +211,11 @@ int run(int argc, char** argv) {
                     << ", and a nonzero count is the same either way up";
     }
 
-    // **The one method here that is proved to return the minimum**, so it comes
-    // first: the others cannot beat it and the run is over in a fraction of a
-    // second. They each answer a narrower question exactly and then assemble
-    // greedily; this one is `[beniamini2020]`'s own Algorithm 2 with an exact
-    // oracle under it, so Rado-Edmonds makes the assembled answer the true
-    // minimum over every invertible `V`.
+    // **The method that is proved to return the minimum.** `[beniamini2020]`'s
+    // own Algorithm 2 with an exact oracle under it, so Rado-Edmonds makes the
+    // assembled answer the true minimum over every invertible `V`. The three
+    // methods that used to run beside it reached the same count 86x to 343x
+    // slower and left on 2026-08-22; `../dominated.md` says where they went.
     // [`../rational_sparsifier.h`](../rational_sparsifier.h).
     auto started = cli::Clock::now();
     const Matrix minimal =
@@ -235,23 +236,7 @@ int run(int argc, char** argv) {
         linear_algebra::write_sms(output, decoding ? minimal : answer);
         cli::note() << "written to " << emit_to;
     }
-    if (exact_only) return cli::exit_status(cli::ExitCode::Yes);
-
-    started = cli::Clock::now();
-    const Matrix sparsifier = matrix_sparsification::row_basis_sparsifier(field, working);
-    report(field, "row-basis heuristic",
-           working, linear_algebra::multiply(field, working, sparsifier),
-           cli::elapsed_seconds(started), show_matrix);
-
-    started = cli::Clock::now();
-    const Matrix exhaustive = matrix_sparsification::sparsify_by_best_corank_one(field, transposed);
-    report(field, "exact oracle, bottom-up", working,
-           linear_algebra::transpose<Field>(exhaustive), cli::elapsed_seconds(started), show_matrix);
-
-    started = cli::Clock::now();
-    const Matrix top_down = matrix_sparsification::sparsify_by_descending_support(field, transposed);
-    report(field, "exact oracle, top-down", working,
-           linear_algebra::transpose<Field>(top_down), cli::elapsed_seconds(started), show_matrix);
+    if (!with_operations) return cli::exit_status(cli::ExitCode::Yes);
 
     // `[beniamini2020, Alg. 6]`, which was implemented, tested and then never
     // run from here. It is the one method that minimises `nnz + nns` rather than

@@ -23,6 +23,8 @@ bool advance(std::vector<std::size_t>& chosen, std::size_t total, std::size_t si
     return true;
 }
 
+}  // namespace
+
 /// `C(total, size)`, saturating rather than wrapping.
 ///
 /// Multiply-then-divide in this order keeps every partial product an exact
@@ -30,7 +32,7 @@ bool advance(std::vector<std::size_t>& chosen, std::size_t total, std::size_t si
 /// multiplication, and it is checked. Saturating is enough: anything at the
 /// ceiling is past any budget, and `require_room` prints the ceiling rather than
 /// a number that wrapped into looking affordable.
-std::size_t how_many_subsets(std::size_t total, std::size_t size) {
+std::size_t subset_count(std::size_t total, std::size_t size) {
     if (size > total) return 0;
     const std::size_t ceiling = std::numeric_limits<std::size_t>::max();
     const std::size_t shorter = size < total - size ? size : total - size;
@@ -41,8 +43,6 @@ std::size_t how_many_subsets(std::size_t total, std::size_t size) {
     }
     return count;
 }
-
-}  // namespace
 
 /// **Priced, because the count is `C(total, size)` and the operators this is
 /// pointed at are not always the 7x4 ones shipped.** `minimise-rank
@@ -57,8 +57,8 @@ std::vector<std::vector<std::size_t>> combinations(std::size_t total, std::size_
 
     bilinear_rank::require_room(
         "the " + std::to_string(size) + "-subsets of " + std::to_string(total) + " columns",
-        how_many_subsets(total, size), sizeof(std::vector<std::size_t>) + sizeof(std::size_t) * size);
-    result.reserve(how_many_subsets(total, size));
+        subset_count(total, size), sizeof(std::vector<std::size_t>) + sizeof(std::size_t) * size);
+    result.reserve(subset_count(total, size));
 
     std::vector<std::size_t> chosen(size);
     std::iota(chosen.begin(), chosen.end(), std::size_t(0));

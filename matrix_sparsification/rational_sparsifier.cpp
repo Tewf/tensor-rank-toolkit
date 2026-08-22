@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "combinations.h"
+#include "memory_budget.h"
 #include "solver.h"
 #include "span_basis.h"
 
@@ -86,6 +87,22 @@ Matrix sparsest_basis_over_the_rationals(const Field& field, const Matrix& rows)
 
     const Space space = echelon_form(field, rows);
     const std::size_t dimension = space.dimension();
+
+    // **Priced before it is walked, because the walk is what runs forever.**
+    // The scan stops at the first weight that completes a basis, and how soon
+    // that is depends on the answer, so the only honest thing to price up front
+    // is the worst case: the widest level it could reach, `C(b, w)` at
+    // `w = (b - r + 1) / 2`. On the 23x9 operators of a rank-23 <3,3,3> scheme
+    // that is about ten megabytes and passes; on a 49x16 one it is past any
+    // budget, which is the right answer and the one nobody got before. Left to
+    // itself that operator ran for thirty minutes and said nothing, and the
+    // refusal now names the number and where to go instead.
+    const std::size_t ceiling = width - dimension + 1;
+    bilinear_rank::require_room(
+        "the column supports this scan may walk (see "
+        "matrix_sparsification/method/when-the-matroid-is-regular.md for the "
+        "route that does not walk them)",
+        subset_count(width, ceiling / 2 + 1), sizeof(std::size_t) * (ceiling / 2 + 1));
     Space held(field, width);
     std::vector<char> is_pivot(width, 0);
     for (std::size_t pivot : space.pivot_columns()) is_pivot[pivot] = 1;

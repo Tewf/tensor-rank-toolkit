@@ -10,7 +10,7 @@ multiplication on top of its addition.
 ```sh
 sparsify-operator fixtures/strassen_u.matrix --show
 sparsify-operator operator.sms              # SMS is read directly, by extension
-sparsify-operator operator.sms --exact --emit sparser.sms   # just the minimum
+sparsify-operator operator.sms --emit sparser.sms   # and hand the minimum on
 ```
 
 **What the problem is and what is proved hard about it**, including the four
@@ -19,11 +19,12 @@ any of the hardness results:
 [`what-is-hard-about-it.md`](what-is-hard-about-it.md).
 
 As in the other strand, the filenames carry what each method guarantees, and
-[`method/README.md`](method/README.md) says what each is and where it fails. Two
-of the five are `[beniamini2020]`'s oracles, one is `[dumas2024cex]`'s unpublished
-feasibility test, one is a heuristic, and one
-([`method/exact-over-q.md`](method/exact-over-q.md)) **returns the minimum over
-every invertible `V`** rather than a good answer. Keys are
+[`method/README.md`](method/README.md) says what each is and where it fails.
+**Two methods run here**: [`method/exact-over-q.md`](method/exact-over-q.md),
+which returns the minimum over every invertible `V` rather than a good answer,
+and the greedy by rescaling, which minimises `nnz + nns` instead and is the only
+one that does. Three others reached the same counts 88x to 343x more slowly and
+moved to a branch: [`dominated.md`](dominated.md). Keys are
 [`../references.md`](../references.md).
 
 The operators do not have to be typed in. [The rank
