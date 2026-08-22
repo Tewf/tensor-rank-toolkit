@@ -12,7 +12,7 @@ calculer. Le sept-au-lieu-de-huit de Strassen pour les matrices 2×2 est à
 l'origine de la multiplication matricielle rapide, et trouver de telles
 décompositions dans le cas général reste un problème ouvert.
 
-Le problème est ici attaqué sur neuf axes, d'une descente peu coûteuse à un
+Le problème est ici attaqué sur dix axes, d'une descente peu coûteuse à un
 solveur jusqu'à une forme canonique qui ne cherche rien du tout. **Rien ici n'est
 jamais un flottant** : un rang annoncé est donc un fait sur l'application et non
 un artefact d'arrondi.
@@ -24,7 +24,7 @@ pour le pilote qui les régénère.
 
 ## Ce qu'il calcule
 
-Neuf axes. Les nombres ci-dessous sont vérifiés par la suite de tests et se
+Dix axes. Les nombres ci-dessous sont vérifiés par la suite de tests et se
 reproduisent partout ; la forme longue de chacun, avec sa méthode et ses
 réserves, est dans [`what-it-computes.md`](what-it-computes.md), en anglais
 comme le reste de la documentation technique.
@@ -39,6 +39,7 @@ comme le reste de la documentation technique.
 | [satisfiabilité](satisfiability/) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
 | [symétrie](orbit_reduction/) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
 | [sans isomorphes](oracle_guided_search/) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
+| [titulaire](incumbent_search/) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [creusement](matrix_sparsification/) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum prouvé |
 
 ## Le résultat qui vaut d'être énoncé à part
@@ -63,10 +64,10 @@ sparsify-operator out_L.sms                                 # 31 -> 27 coefficie
 
 ## Ce qu'il y a, et où
 
-Treize modules et **douze outils**, détaillés dans
+Treize modules et **treize outils**, détaillés dans
 [`what-is-where.md`](what-is-where.md) : ce que sert chaque dossier et quel outil
 répond à quelle question. La question à laquelle chacun répond et qu'aucun autre
-ne traite, et pourquoi douze plutôt que huit :
+ne traite, et pourquoi treize plutôt que huit :
 [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
 Chaque option, sa valeur par défaut et la mesure qui l'a choisie :
 [`OPTIONS.md`](OPTIONS.md). Chaque article implémenté est nommé une seule fois,
