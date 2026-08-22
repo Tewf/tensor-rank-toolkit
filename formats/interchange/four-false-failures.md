@@ -14,7 +14,7 @@ falls back to rational arithmetic and reports
 correct `GF(2)` algorithm fails this way, and nothing in the message says the
 modulus is missing.
 
-**Do not copy `-E -N` from his Makefile.** The `slpcheck` recipe passes exhaustive
+**Do not copy `-E -N` from PLinOpt's Makefile.** The `slpcheck` recipe passes exhaustive
 common-subexpression elimination and exhaustive nullspace permutations, which
 stalls past 300 s on a 9x14. Without them the round trip above finishes in
 moments. Roughly 10x10 is where they stop being usable.

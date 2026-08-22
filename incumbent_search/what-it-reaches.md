@@ -66,7 +66,7 @@ anybody rents a machine to run it wider.
 The 13 was checked outside the search that found it: the emitted `⟨L, R, P⟩` were
 read back by [`operators-to-tensor`](../formats/) and rebuilt the fixture's 125
 entries exactly. `PMchecker` is the wrong checker here and says so —
-[`four-false-failures.md`](../formats/plinopt_interoperability/four-false-failures.md)
+[`four-false-failures.md`](../formats/interchange/four-false-failures.md)
 covers that case: it checks polynomial multiplication, and this is multiplication
 in GF(32).
 

@@ -21,7 +21,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `matmul_2x2x2` entry for entry, his Karatsuba rebuilds `f2_2x2`, and his
   63-product ⟨3,4,7⟩ rebuilds that map, which the two square triples cannot
   check because a transposed slice rebuilds them correctly.
-  [`formats/plinopt_interoperability/exchanging-files.md`](formats/plinopt_interoperability/exchanging-files.md)
+  [`formats/interchange/exchanging-files.md`](formats/interchange/exchanging-files.md)
   is the page for whoever has such files.
 
 - **Twelve of PLinOpt's own operators, vendored under CeCILL-B** in
@@ -89,7 +89,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   takes the field from `-q`, so `read_sms` gained the modular overload that
   `write_sms(ostream, ModularMatrix)` never had a partner for. The field-by-field
   comparison, with the file and line on both sides, is
-  [`formats/plinopt_interoperability/what-both-sides-do.md`](formats/plinopt_interoperability/what-both-sides-do.md);
+  [`formats/interchange/where-the-conventions-differ.md`](formats/interchange/where-the-conventions-differ.md);
   149 of his 153 matrices round-trip through the two halves and print
   identically under his own reader.
 
@@ -147,7 +147,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `13 ≤ rank ≤ 14` before. The exhaustive search refutes 12 in 146 402 553 nodes
   and `lower-the-bound` exhibits 13 in 80, so `[bdez2012]`'s 9.65·10⁹ tests
   agree with the answer rather than being what it rests on.
-  [`state-of-the-art/where-we-stand.md`](state-of-the-art/where-we-stand.md) and
+  [`the-research-front/where-we-stand.md`](the-research-front/where-we-stand.md) and
   [`descent_search/known_ranks.md`](descent_search/known_ranks.md) both said the
   older bracket.
 

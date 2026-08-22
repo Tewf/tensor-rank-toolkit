@@ -55,7 +55,7 @@ this search.
 
 **It is not a rival to a flip graph.** Every recent record in the field came
 from rewriting a decomposition that already works
-([`../state-of-the-art/upper-bounds.md`](../state-of-the-art/upper-bounds.md)),
+([`../the-research-front/upper-bounds.md`](../the-research-front/upper-bounds.md)),
 and a walk never runs out of moves where this is bounded by
 `C(|pool|, best − dim span T)` before any beam is imposed. What it has instead is
 a starting point the walk does not: it begins at the minimum-weight basis, which

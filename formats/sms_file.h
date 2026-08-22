@@ -38,7 +38,7 @@ namespace linear_algebra {
 /// Enables interchange with the exact-linear-algebra ecosystem: LinBox, Givaro,
 /// and external solvers all speak this format. What was measured
 /// travelling each way, and the four ways to get a failure that is not about SMS,
-/// is [`plinopt_interoperability/`](plinopt_interoperability/README.md).
+/// is [`interchange/`](interchange/README.md).
 RationalMatrix read_sms(std::istream& input);
 
 RationalMatrix read_sms_file(const std::string& path);

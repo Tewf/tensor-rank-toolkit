@@ -20,7 +20,7 @@
 /// against `plinopt/bin/sms2pretty` on the same bytes before it was written
 /// down: a value that does not end its line, an entry that is not a rational, a
 /// file holding more than one matrix, and the field, which the file does not
-/// carry at all. `../plinopt_interoperability/what-both-sides-do.md` is the
+/// carry at all. `../interchange/where-the-conventions-differ.md` is the
 /// table, with the file and line on his side of each row.
 #include <cstdio>
 #include <fstream>

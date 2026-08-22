@@ -9,7 +9,7 @@ written out under the repository rather than piped through a temporary that
 disappears.
 
 The second is that `sparsify-operator` picks its reader by the literal four
-characters `.sms`, which `formats/plinopt_interoperability/four-false-failures.md`
+characters `.sms`, which `formats/interchange/four-false-failures.md`
 records as a way to make that layer look broken when it is not: any other name
 silently gets the dense reader. So the suffix is chosen here from what the file
 actually contains, and the choice is reported to the caller rather than made
