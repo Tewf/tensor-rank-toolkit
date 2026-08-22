@@ -60,13 +60,14 @@ curve-bounds --solvers                              # which backends this machin
 
 ## Timing one choice against another on one question
 
-A comparison across two questions is not a comparison, so three flags exist to
+A comparison across two questions is not a comparison, so four flags exist to
 force a route on a single one. None of them changes an answer.
 
 ```sh
 decide-rank <map> --target k --leaf-route scan      # against --leaf-route walk
 decide-rank <map> --target k --general-leaf         # against the packed GF(2) leaf
 decide-rank <map> --target k -s matmul n m k --orbit-test generators   # against full
+lower-the-bound <map> --general-span                # against the packed GF(2) span walk
 ```
 
 Flags that mean the same thing under different names, and the ones that mean
