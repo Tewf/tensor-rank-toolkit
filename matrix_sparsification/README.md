@@ -10,6 +10,7 @@ multiplication on top of its addition.
 ```sh
 sparsify-operator fixtures/strassen_u.matrix --show
 sparsify-operator operator.sms              # SMS is read directly, by extension
+sparsify-operator operator.sms --exact --emit sparser.sms   # just the minimum
 ```
 
 **What the problem is and what is proved hard about it**, including the four

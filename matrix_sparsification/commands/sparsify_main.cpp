@@ -3,6 +3,7 @@
 ///
 /// Takes a file and optionally --show flag to control output, enabling scripted
 /// runs without interactive prompts.
+#include <fstream>
 #include <stdexcept>
 #include <string>
 
@@ -27,7 +28,7 @@ using matrix_sparsification::Matrix;
 
 void usage() {
     cli::note() << "usage: sparsify-operator <matrix-file|.sms> [--field p] [--show]\n"
-                   "                          [--max-memory N]\n"
+                   "                          [--exact] [--emit out.sms] [--max-memory N]\n"
                    "       sparsify-operator --help\n"
                    "\n"
                    "  Runs every method on one operator and reports what each reached, so\n"
@@ -38,6 +39,14 @@ void usage() {
                    "                  different and harder question: an operator the rank\n"
                    "                  search emitted is over a finite field and this is the\n"
                    "                  question it is asking. .sms only\n"
+                   "  --exact         run only the matroid greedy over Q, which is the one method\n"
+                   "                  here proved to return the minimum, and the fastest. The\n"
+                   "                  others are what you run when you want the comparison\n"
+                   "  --emit PATH     write that minimum as an SMS file, so it can be handed to\n"
+                   "                  another tool. Written the way the file came in, so it\n"
+                   "                  drops in where the original did: a decoding operator\n"
+                   "                  goes back the way up it was given, which is the program\n"
+                   "                  that is actually run\n"
                    "  --show          print the sparsified matrix as well as its count\n"
                    "  --max-memory N  bytes one bulk allocation may take, 2G by default. Every\n"
                    "                  method here enumerates column subsets, which is C(b, a-1)\n"
@@ -74,6 +83,8 @@ int run(int argc, char** argv) {
     // Three ways to ask for something and be told it was done.
     cli::Arguments arguments(argc, argv);
     bool show_matrix = false;
+    bool exact_only = false;
+    std::string emit_to;
     // Zero means "over Q", which is what every method below assumes and what
     // every fixture here is. A prime asks the other question.
     std::size_t modulus = 0;
@@ -83,6 +94,10 @@ int run(int argc, char** argv) {
             return cli::exit_status(cli::ExitCode::Usage);
         } else if (arguments.is("--show")) {
             show_matrix = true;
+        } else if (arguments.is("--exact")) {
+            exact_only = true;
+        } else if (arguments.is("--emit")) {
+            emit_to = arguments.text();
         } else if (arguments.is("--field")) {
             modulus = arguments.count();
         } else if (arguments.is("--max-memory")) {
@@ -133,6 +148,16 @@ int run(int argc, char** argv) {
             matrix_sparsification::sparsest_basis_over_a_finite_field(finite, working);
         report(finite, "exact, matroid greedy over GF(" + std::to_string(modulus) + ")", working,
                answer, cli::elapsed_seconds(started_here), show_matrix);
+        if (!emit_to.empty()) {
+            std::ofstream output(emit_to);
+            if (!output) throw std::runtime_error("cannot write " + emit_to);
+            output << "# minimum-weight basis of " << path << ", by the matroid greedy over GF("
+                   << modulus << ")\n";
+            linear_algebra::write_sms(
+                output, decoding ? linear_algebra::transpose<linear_algebra::ModularField>(answer)
+                                 : answer);
+            cli::note() << "written to " << emit_to;
+        }
         return cli::exit_status(cli::ExitCode::Yes);
     }
 
@@ -194,8 +219,23 @@ int run(int argc, char** argv) {
     auto started = cli::Clock::now();
     const Matrix minimal =
         matrix_sparsification::sparsest_basis_over_the_rationals(field, transposed);
-    report(field, "exact, matroid greedy over Q", working,
-           linear_algebra::transpose<Field>(minimal), cli::elapsed_seconds(started), show_matrix);
+    const Matrix answer = linear_algebra::transpose<Field>(minimal);
+    report(field, "exact, matroid greedy over Q", working, answer,
+           cli::elapsed_seconds(started), show_matrix);
+
+    if (!emit_to.empty()) {
+        std::ofstream output(emit_to);
+        if (!output) throw std::runtime_error("cannot write " + emit_to);
+        output << "# minimum-weight basis of " << path << ", by the matroid greedy over Q\n";
+        // Back the way it came in. The count is the same either way up, but the
+        // program is not: a decoding operator written tall computes the
+        // transposed map, which is a different straight-line program and a
+        // different addition count, and the tool that reads this next has no way
+        // to know it was handed the wrong one.
+        linear_algebra::write_sms(output, decoding ? minimal : answer);
+        cli::note() << "written to " << emit_to;
+    }
+    if (exact_only) return cli::exit_status(cli::ExitCode::Yes);
 
     started = cli::Clock::now();
     const Matrix sparsifier = matrix_sparsification::row_basis_sparsifier(field, working);

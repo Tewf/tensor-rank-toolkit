@@ -8,6 +8,8 @@ can beat it. The comparison is still what the default output is for. Precedence 
 
 | Flag | Default | What chose the default |
 |---|---|---|
+| `--exact` | off | Argument: the matroid greedy over `Q` is proved minimal and is also much the fastest. Off by default because the command exists to compare. |
+| `--emit PATH` | off | Nothing to measure: writes that minimum as SMS, the way up the file came in, so another tool can read it. |
 | `--show` | off | Nothing to measure: prints the sparsified matrix as well as its count. |
 | `--max-memory N` | derived | Argument: an eighth of what the machine reports, which is `2G` on the 16 GB laptop every table here was measured on and moves on its own elsewhere. Every method enumerates column subsets, C(b, a-1): 35 for the 7x4 operators shipped, about 1.6e13 for a <4,4,4> one. |
 

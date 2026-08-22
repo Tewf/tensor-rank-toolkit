@@ -34,3 +34,9 @@ target_link_libraries(test_rational_sparsifier
                       PRIVATE matrix_sparsification project_warnings testing)
 add_test(NAME rational_sparsifier COMMAND test_rational_sparsifier)
 
+# What `--emit` writes is a drop-in for what it read: same shape, already minimal.
+# The count is the same either way up and a program is not, so nothing about the
+# reported number would have caught this.
+add_test(NAME sparsify_emit
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_emitted_operator_is_a_drop_in.sh
+                 $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)
