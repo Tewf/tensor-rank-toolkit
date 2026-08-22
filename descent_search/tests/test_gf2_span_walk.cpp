@@ -21,11 +21,13 @@
 /// checked as one, rather than by trusting that a field nobody tested still
 /// works.
 ///
-/// `gf2_rank` itself is checked separately and exhaustively, over every matrix
-/// of the small shapes, the way `is_rank_one` is: it is the one new primitive
-/// under all of this, and neither direction of an error in it announces itself.
+/// `gf2_rank` itself is checked separately, over every matrix of the small
+/// shapes the way `is_rank_one` is, and then over a spread sample at the widths
+/// no fixture here reaches: it is the one new primitive under all of this, and
+/// neither direction of an error in it announces itself.
 #include <cstddef>
 #include <cstdint>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -197,6 +199,58 @@ void the_packed_rank_is_the_rank(std::size_t rows, std::size_t columns) {
     check::equal("GF(2) " + shape + ": matrices the packed rank gets wrong", disagreements, 0);
 }
 
+/// The same check where the shape is too wide to enumerate: a sample, at the
+/// widths where a matrix takes more than one word and a row straddles two.
+///
+/// Every shipped GF(2) fixture is one word wide, so without this nothing here
+/// would ever take `gf2_row`'s straddling branch or `gf2_rank`'s second word,
+/// and 12x20 is the shape this file was written for.
+///
+/// The ranks are spread on purpose. Uniform bits give a nearly full rank almost
+/// every time, and a rank routine that is wrong only below full rank would pass
+/// on them, so each trial draws a target rank, builds that many generator rows,
+/// and makes every row an exclusive or of a random subset of them.
+void the_packed_rank_is_the_rank_on_a_sample(std::size_t rows, std::size_t columns) {
+    const Field field(2);
+    const std::string shape = std::to_string(rows) + "x" + std::to_string(columns);
+    const std::size_t width = rows * columns;
+    std::mt19937_64 source(20260822);
+
+    Matrix matrix(rows, columns);
+    std::vector<std::uint64_t> packed(linear_algebra::gf2_word_count(width));
+    std::size_t disagreements = 0;
+    std::size_t widest = 0;
+    for (std::size_t trial = 0; trial < 4000; ++trial) {
+        const std::size_t most = rows < columns ? rows : columns;
+        const std::size_t wanted = source() % (most + 1);
+        std::vector<std::vector<int64_t>> generators(wanted, std::vector<int64_t>(columns, 0));
+        for (std::vector<int64_t>& generator : generators) {
+            for (int64_t& entry : generator) entry = static_cast<int64_t>(source() & 1);
+        }
+        for (std::size_t row = 0; row < rows; ++row) {
+            for (std::size_t column = 0; column < columns; ++column) {
+                field.assign(matrix.data()[row * columns + column], static_cast<int64_t>(0));
+            }
+            for (const std::vector<int64_t>& generator : generators) {
+                if ((source() & 1) == 0) continue;
+                for (std::size_t column = 0; column < columns; ++column) {
+                    int64_t& entry = matrix.data()[row * columns + column];
+                    field.assign(entry, static_cast<int64_t>((entry + generator[column]) % 2));
+                }
+            }
+        }
+        linear_algebra::gf2_pack(matrix.data(), width, packed.data());
+        const std::size_t theirs = linear_algebra::rank(field, matrix);
+        if (linear_algebra::gf2_rank(packed.data(), rows, columns) != theirs) ++disagreements;
+        widest = widest > theirs ? widest : theirs;
+    }
+    check::equal("GF(2) " + shape + ": sampled matrices the packed rank gets wrong", disagreements,
+                 0);
+    // That the sample reached ranks worth disagreeing about, rather than four
+    // thousand zero matrices.
+    check::equal("GF(2) " + shape + ": the sample reached a rank above one", widest > 1, 1);
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -215,9 +269,20 @@ int main(int argc, char** argv) {
     the_packed_rank_is_the_rank(5, 2);
     the_packed_rank_is_the_rank(2, 5);
 
+    // Wider than one word, which every shipped GF(2) fixture is not: 9x9 is the
+    // slice of <3,3,3>, 12x20 is the slice of <3,4,5> that asked for this file,
+    // and 5x13 is 65 bits, one over the word, where a row straddles and the
+    // second word holds a single bit.
+    the_packed_rank_is_the_rank_on_a_sample(9, 9);
+    the_packed_rank_is_the_rank_on_a_sample(12, 20);
+    the_packed_rank_is_the_rank_on_a_sample(5, 13);
+
     for (const std::string& name :
          {std::string("f2_2x3"), std::string("gf4_multiplication"), std::string("matmul_2x2x2"),
-          std::string("cyclic_f2_5"), std::string("gf8_multiplication")}) {
+          std::string("cyclic_f2_5"), std::string("gf8_multiplication"),
+          // 6x12: two words a slice, and rows that straddle the boundary
+          // between them. The five above are one word each.
+          std::string("matmul_2x3x4")}) {
         the_two_representations_agree(name);
     }
 
