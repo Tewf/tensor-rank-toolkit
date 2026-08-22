@@ -39,7 +39,7 @@ comme le reste de la documentation technique.
 | [satisfiabilité](satisfiability/) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
 | [symétrie](orbit_reduction/) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
 | [sans isomorphes](oracle_guided_search/) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
-| [creusement](matrix_sparsification/) | moins d'additions, rang fixé | les opérateurs de Strassen de **12 non-nuls à 10** |
+| [creusement](matrix_sparsification/) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum prouvé |
 
 ## Le résultat qui vaut d'être énoncé à part
 

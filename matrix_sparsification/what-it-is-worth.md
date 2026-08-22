@@ -21,11 +21,42 @@ the alternative-basis version, reached here from the fixtures.
 so.** In the standard basis 15 additions are *necessary* for any `⟨2,2,2;7⟩`
 algorithm, over an arbitrary ring: `[probert1976]` and `[bshouty1995]`. That is a
 bound over every rank-7 decomposition, not over one orbit, and Winograd's variant
-attains it. Changing basis is what gets past it, and 12 is stated optimal there too
-(`[martensson2026]`). So no search over this fixture can win, and anything that looks
-like it has is a measurement error. For `⟨3,3,3⟩` at rank 23 the record is live and
-currently 55 additions (`[karunaratne2026]`), against the 61 `[beniamini2020]`
-reports.
+attains it. Changing basis is what gets past it, and 12 is proved optimal there
+too, `[karstadt2017, Thm. 1.2]`. So no search over this fixture can win, and
+anything that looks like it has is a measurement error.
+
+## Three cost models, and this page is in one of them
+
+**An addition count in this literature is one of three incomparable things**, and
+this page compared two of them until 2026-08-22.
+
+| | how additions are counted | basis change | who reports it |
+|---|---|---|---|
+| **(a) nnz, standard basis** | `nnz(U) − rows(U)` and so on, no reuse of intermediates | no | Strassen 18, Winograd 15 |
+| **(b) nnz, alternative basis** | the same formula on a sparsified `⟨Uφ, Vψ, Wτ⟩`, the basis maps costing `O(n² log n)` | yes | `[karstadt2017]`, `[beniamini2020]`, and **everything on this page** |
+| **(c) straight-line program with common subexpressions** | the length of the program, which can be **below** `nnz − rows` | no | `[plinopt]`, and the `⟨3,3,3⟩` record chain |
+
+**This repository measures nnz, so it is in (a) and (b) and structurally cannot
+see (c)** on its own. What it can do is hand its answer to something that does,
+and [`in-front-of-plinopt.md`](in-front-of-plinopt.md) measures that: in front of
+`[plinopt]`'s subexpression pass the exact stage takes `Grey-221` from 81
+additions to 62, and two already-optimised schemes by 2% and 7%. That is (b)
+crossed with (c), a fourth thing again and not comparable to either record below.
+It also shows the two models pulling apart: on `3x3x3_23_58_L` six more zeros
+cost two additions. The gap is not small: `[plinopt]`'s own `3x3x3_23_55` operators carry
+enough nonzeros to imply 122 additions by `nnz − rows`, and the straight-line
+program it ships for them runs in **55**. A sparsification-only pipeline reports
+roughly twice the literature's number for the same algorithm, and reporting them
+side by side without saying which model each is in is the error this section
+exists to stop repeating.
+
+For `⟨3,3,3⟩` at rank 23, then, two records and they are not competing:
+**61 linear operations in model (b)** (`[beniamini2020]` Table 2, reproduced
+exactly by `[holtz2025]`), and **55 additions in model (c)**
+(`[karunaratne2026]`). The 55 gives a leading coefficient near 4.93, under
+`[holtz2025]`'s lower bound of 5 — which is not a contradiction, because that
+bound is stated in model (b) and a program with common subexpressions is not
+bound by `nnz − rows`.
 
 Computing `q_w` needed Strassen's decoding operator, which is a fixture now, and
 it is not asserted to be Strassen's: [`algorithm_check.h`](algorithm_check.h)

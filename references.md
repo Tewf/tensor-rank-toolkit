@@ -1068,6 +1068,23 @@ in [`matrix_sparsification/oracle_sparsifier.h`](matrix_sparsification/oracle_sp
 Algorithm 2 is the driver they feed, from `gottlieb2010`; Algorithm 6 is the
 greedy in `greedy_sparsifier.h`.
 
+**Problem 2.15 and Algorithm 2 together are the composition
+[`matrix_sparsification/method/exact-over-q.md`](matrix_sparsification/method/exact-over-q.md)
+implements, and the paper states it is exact.** Problem 2.15 asks for a vector in
+the row space, *not in the span of the rows already settled*, with a minimal
+number of nonzeros; Algorithm 2 builds the settled set from empty by calling it.
+The paper's own words: given such a subroutine, "Algorithm 2 returns an exact
+solution for MS". So the matroid greedy is not a new arrangement of their pieces,
+it is their arrangement, and what was missing here was an oracle that answered
+Problem 2.15 rather than a restricted version of it. **Read in the paper.**
+
+**They solve Algorithm 6 with a solver, and it is Z3.** §5 encodes the objective
+as a **MaxSAT** instance with two kinds of soft constraint, one penalising
+nonzero entries and one penalising non-singleton entries, so the optimum
+minimises `nnz + nns` directly. Reported costs on their corpus: Algorithms 3 and
+4 within 40 minutes, Algorithm 6 under one minute. **Read in the paper**; not
+reproduced here, and not comparable to anything measured on this machine.
+
 **This entry claimed Claim 2.11 and the paper has no such claim.** Its numbered
 claims run 2.12, 3.10, 3.11 and 3.18, and 2.12 is the complexity of a recursively
 applied linear map, not an additive complexity. The additive complexity
@@ -1130,10 +1147,313 @@ own in another.
 Sparse Null Space Problem.* APPROX/RANDOM 2010. The greedy driver that the
 sparsest-independent-vector oracles are oracles for.
 
+**`lisonek2016`**: P. Lisoněk, L. Trummer. *Algorithms for the minimum weight of
+linear codes.* Adv. Math. Commun. **10**(1):195-207, 2016. **The authoritative
+statement of the bound, read in full.** Its equation (5), after the step that
+enumerates information weight `w` in the first `j` of `D` systematic matrices, is
+
+> `d ≥ Σ_{i≤j} max(0, w+1−k+r_i) + Σ_{i>j} max(0, w−k+r_i)`
+
+with `r_i = |T_i \ (T_1 ∪ … ∪ T_{i-1})|` the relative rank, `Σ r_i = n`. For
+disjoint information sets it collapses to `D·w + j`. Also Proposition 4, the
+caveat that matters before anyone invests in this: **if `n ≤ 1.5k` the later
+matrices never contribute and BZ degenerates to brute force.** And the
+information sets are chosen by matroid partitioning in `O(n³k³)`, which is where
+Edmonds enters this literature. Example 4.2: a `[1344,128]₂` code Magma estimated
+at 10⁶ years, answered in 94 s once ten disjoint information sets were found.
+
+**`zimmermann1996`**: K.-H. Zimmermann. *Integral Hecke Modules, Integral
+Generalized Reed-Muller Codes, and Linear Codes.* Technical Report 3-96,
+Technische Universität Hamburg-Harburg, 1996. With A. Brouwer's earlier work this
+is the **Brouwer-Zimmermann algorithm**, the standard method for the minimum
+weight of a linear code and what Magma and GAP/GUAVA ship. It enumerates over
+several information sets, which buys a **lower** bound alongside the upper bound
+and lets it stop before the enumeration is exhausted; the scan in
+[`matrix_sparsification/method/exact-over-q.md`](matrix_sparsification/method/exact-over-q.md)
+has the upper bound and no lower bound, which is where it stops being able to
+finish. **Cited from the citing literature**, not read: the primary is an
+unindexed 1996 technical report. What was read is the description in the two
+entries below. Named here because our exact oracle solves *exactly* the
+minimum-weight-codeword problem, under a different name, and this is that
+problem's mature algorithm.
+
+**`hernando2019`**: F. Hernando, F. D. Igual, G. Quintana-Ortí. *Algorithm 994:
+Fast Implementations of the Brouwer-Zimmermann Algorithm for the Computation of
+the Minimum Distance of a Random Linear Code.* ACM Trans. Math. Softw.
+**45**(2), 2019, [doi:10.1145/3302389](https://doi.org/10.1145/3302389).
+Sequential, vectorised and shared-memory implementations, over GF(2), reporting
+speed-ups in **time** against Magma and Guava. **Abstract only; the full text is
+paywalled and returned 403.**
+
+**The codeword counts this entry first carried are not from this paper.** They
+are Table 1 of `[bouyuklieva2021]`, comparing Magma V2.25-2 against the authors'
+own QextNewEdition, and the entry said "Algorithm 994" because that is where a
+search result put them. **The numbers are right and the paper was wrong**: see
+[`matrix_sparsification/what-was-corrected.md`](matrix_sparsification/what-was-corrected.md).
+
+**`quintanaorti2019`**: G. Quintana-Ortí, F. Hernando, F. D. Igual. *Parallel
+Implementations for Computing the Minimum Distance of a Random Linear Code on
+Multicomputers.* [arXiv:1911.08963](https://arxiv.org/abs/1911.08963), 2019.
+The same algorithm on distributed memory, hundreds to thousands of cores, "up to
+several orders of magnitude" faster than what is widely used. **This is where the
+parallel work on this problem went, and it is not a card**: no GPU
+implementation of Brouwer-Zimmermann was found. **Abstract read.**
+
+**`sanjose2025`**: R. San-José. *An algorithm for computing generalized Hamming
+weights and the Sage package GHWs.* ACM Trans. Math. Softw. **51**(4), 2025;
+[arXiv:2503.17764](https://arxiv.org/abs/2503.17764). Generalises
+Brouwer-Zimmermann from the minimum distance to the whole weight hierarchy **and
+to the relative case**, and ships it as Sage at `github.com/RodrigoSanJose/GHWs`,
+GPL-3.0-or-later, so the algorithm may be read and the code may not be lifted.
+Full text read 2026-08-22.
+
+**Its relative weight at `r = 1` is `[beniamini2020]`'s Sparsest Independent
+Vector oracle, and neither paper knows about the other.** Definition 2.7, read
+verbatim:
+
+> `M_r(C₁, C₂) = min{ |supp(D)| : D a subcode of C₁ with dim D = r, D ∩ C₂ = {0} }`
+
+At `r = 1` a subcode `D` is `⟨c⟩`, so `|supp(D)|` is `wt(c)` and `D ∩ C₂ = {0}`
+says `c ∉ C₂`. So `M₁(C₁, C₂) = min{ wt(c) : c ∈ C₁ \ C₂ }`, which is Problem
+2.15 word for word with `C₂` the span of the rows already settled. **The coding
+side has had a Brouwer-Zimmermann-pruned algorithm for the sparsification side's
+oracle since 2025, in ACM TOMS, shipping.** That is the same non-citation
+[`matrix_sparsification/what-is-hard-about-it.md`](matrix_sparsification/what-is-hard-about-it.md)
+records on the hardness side, showing up again on the algorithms side.
+
+**`RGHW(C, C2, 1)` from that package is the baseline this module has to name**,
+and the review is not finished until it has.
+
+**But do not trust that baseline's answer without checking it.** Reading the
+implementation on 2026-08-22 turned up an unsoundness in `core.py`, not in the
+paper. Line 759 drops a generator matrix from a pass whenever its redundancy
+exceeds the pass index, `red[j] <= w`; line 794 then credits that same matrix the
+full `(w+1) − R_j` in the lower bound from `w = R_j` onward. The bound needs every
+credited matrix to have had its message weights `1 … w` enumerated, and a
+late-entering matrix has not, so the bound can overshoot and the search can stop
+early with an answer that is **too high**.
+
+Verified here from scratch, over GF(2), `n = 16`, `k = 8`, generator rows
+`[2817, 17154, 6404, 27400, 27920, 41504, 53056, 9600]` read as bitmasks. Brute
+force over all 256 codewords gives `d = 3` at support `{4,5,6}`. The information
+sets come out `[[0..7], [0,4,8..13]]` with redundancies `[0,2]`, and that codeword
+has message weight **1** in the second set and **3** in the first: the cheap route
+to it is through the matrix that is skipped until `w = 2`. Algorithm 1 of the
+paper enumerates with **all** `m` matrices every pass and is sound; the skip is an
+"improvement" introduced only in §5.1.
+
+**What was verified here and what was not.** The source lines, the arithmetic of
+the counterexample, and the inference from the two: all checked directly. The
+package itself was **not run** — Sage is not installed on this machine — so this
+is a reading plus a proof, not an observed failure. Two consequences for this
+module: implement `[lisonek2016]`'s per-`(w, j)` refinement, which `core.py` does
+not do and which is strictly better; and keep the redundancy beside its matrix
+rather than in a parallel array, because line 794 indexes an uncompressed `red`
+with a compressed index and is only correct while `red` happens to be
+non-decreasing. What nobody has done is put the
+Rado-Edmonds driver on top of that oracle and sum the successive `M₁`, which is
+the minimum-weight basis, and nobody has done any of it outside a finite field.
+
+Three things still separate it from what this module needs:
+
+- **A different invariant at `r > 1`.** `d_r` is the smallest *union of supports*
+  over an `r`-dimensional subcode, not a sum of weights. Only `r = 1` is ours.
+  The paper never mentions matroids, Rado or Edmonds: zero occurrences of all
+  three.
+- **The bound does not detach from the enumeration.** Everything structural is
+  field-agnostic: Lemma 3.1, the information sets, and the bound itself,
+  `Σ_j max{0, (w+1) − R_j}` with `R_j` the redundancy of the `j`-th information
+  set, which is `m(w+1)` for `m` disjoint ones. But that bound is sound **only
+  because** every message-space subspace of support `≤ w` was exhausted first,
+  and that enumeration is `{v ∈ F_q^r : 1 ≤ wt(v) ≤ z}`, which over `Q` is
+  infinite. There is no seam along which to keep the bound and drop the walk.
+- **The scale is not there.** Its only length-49 measurement is at dimension 6
+  and takes 517 s over GF(7). Ours is dimension 16.
+
+**What survives for this module is the degenerate case**, `m = 1`, which the scan
+here already licenses for nothing: having solved every support of size `≤ t`,
+every remaining codeword weighs at least `t+1`. Measured against a cheap upper
+bound, that rule fires on six of nine greedy steps for `Grey-221_L` and on none
+at all for `4x4x4_49_156_L`, which is the operator it would need to rescue.
+
+**`tillmann2019`**: A. M. Tillmann. *Computing the spark: mixed-integer
+programming for the (vector) matroid girth problem.* Comput. Optim. Appl. **74**
+(2019), 387-441,
+[doi:10.1007/s10589-019-00114-9](https://doi.org/10.1007/s10589-019-00114-9).
+Spark is NP-hard even for integer matrices, and its **Theorem 5** is the one that
+matters here: for a **unimodular** matrix the spark is computable in *polynomial*
+time, `ℓ0` collapsing to `ℓ1` on basic solutions, and the vector matroids of
+totally unimodular matrices are the regular ones. Since regular matroids are
+closed under duality and the quantity this module minimises is a **co**girth, the
+theorem reaches it through the dual. Measured consequence:
+[`matrix_sparsification/method/when-the-matroid-is-regular.md`](matrix_sparsification/method/when-the-matroid-is-regular.md),
+where `4x4x4_49_156_L` looks regular and answers in 0.08 s while the exact scan
+cannot finish it. **Cited from the citing literature**, not read: the statement
+and its matroid corollary are quoted at second hand and the theorem's proof was
+not opened.
+
+**`chenklove2001`, `chenklove2004`**: W. Chen, T. Kløve. *The weight hierarchies
+of q-ary codes of dimension 4*, and *On the second greedy weight for linear codes
+of dimension at least 4*, IEEE Trans. Inform. Theory **50**(2):354-356, 2004,
+with companions in Discrete Math. 241 (2001) and AAECC 1999. **The name "greedy
+weight" is theirs and it does not mean what this module means by it.** Chen and
+Kløve's `g_r` is the *support* weight of a greedy `r`-dimensional subcode, a
+union of supports like `d_r`; what the matroid greedy takes here is the weight of
+one vector, and the module's objective is a *sum* of those. Named so the
+collision is on the record rather than waiting to be discovered in a referee
+report. The papers are structural, bounding `max(g₂ − d₂)` for small dimensions;
+there is no algorithm and no code. **Cited from the citing literature.**
+
+**`johnsenverdure2020`**: T. Johnsen, H. Verdure. *Greedy weights for matroids.*
+[arXiv:2002.08824](https://arxiv.org/abs/2002.08824), 2020. Lifts Chen and
+Kløve's greedy weights to matroids and proves a Wei duality for them. The one
+place matroids and this weight literature meet, and it is a duality result rather
+than an algorithm. **Abstract only.**
+
+**`sparsevectorfocs2025`**: *Inapproximability of Finding Sparse Vectors in
+Codes, Subspaces, and Lattices.* FOCS 2025,
+[arXiv:2410.02636](https://arxiv.org/abs/2410.02636). NP-hard to approximate the
+sparsest vector in a **real** subspace within any constant factor. Belongs beside
+`[tillmann2014]` in
+[`matrix_sparsification/what-is-hard-about-it.md`](matrix_sparsification/what-is-hard-about-it.md):
+it is the sharpest statement over `R`, and the one that says the exact method
+here is not one theorem away from being polynomial. **Abstract only.**
+
+**`narisada2021`**: S. Narisada, K. Fukushima, S. Kiyomoto. *Fast GPU
+Implementation of Dumer's Algorithm Solving the Syndrome Decoding Problem.*
+IEEE, 2021. The one place low-weight-codeword search really is on a GPU, and it
+is information-set decoding for code-based cryptanalysis rather than an exact
+minimum. Named so that "put it on the card" has a citation attached to it and a
+statement of what that citation actually did. **Abstract and summary only.**
+
+**`bouyuklieva2021`**: S. Bouyuklieva, I. Bouyukliev. *An Extension of the
+Brouwer-Zimmermann Algorithm for Calculating the Minimum Weight of a Linear
+Code.* Mathematics **9**(19):2354, 2021,
+[doi:10.3390/math9192354](https://doi.org/10.3390/math9192354). Uses the *short*
+systematic matrix where classical BZ pads a partial information set back up to
+size `k` by re-borrowing covered coordinates. **Read in full** (MDPI's own PDF
+endpoint returns 403; reached through the Semantic Scholar mirror). **Its Table 1
+is the source of the `[115, 60, 13]` codeword counts**: 198 461 377 against
+Magma's 6 001 753 644, which is the lower bound doing the work rather than a
+faster inner loop, and 28.56 s against 1.52 s on machines the authors say are not
+comparable. Together with P. Lisoněk, L. Trummer,
+*Algorithms for the minimum weight of linear codes*, Adv. Math. Commun.
+**10**(1):195-207, 2016, and *Algorithm 994* (ACM TOMS **45**(2), 2019) for fast
+implementations, these are the entry points to that literature.
+
+**`qldpcsat2026`**: *SAT, MaxSAT, and SMT for QLDPC Distance Computation: A
+Large-Scale Empirical Study.* [arXiv:2606.12445](https://arxiv.org/abs/2606.12445),
+2026. The solver route to the same subproblem, benchmarked across Minisat,
+**Glucose**, CaDiCaL, Lingeling and MapleSat. Named because this repository
+already forks `kissat` and `cadical` for the rank strand, so the route is open
+here at no new dependency. **Abstract and summary only.** Not attempted: at
+`⟨3,3,3⟩` rank 23 the exact scan finishes in a third of a second and there is
+nothing for a solver to improve.
+
 **`dumas2024cex`**: J-G. Dumas. *Cex_Poldet*, Maple worksheet, 27 May 2024,
 unpublished; supplied directly. The determinant-polynomial
 feasibility test in `matrix_sparsification/pattern_feasibility.h`, and the
 counterexample fixture `fixtures/dumas_counterexample_l.matrix`.
+
+### How hard the sparsity problem is, and under which name
+
+Surveyed 2026-08-22 for
+[`matrix_sparsification/what-is-hard-about-it.md`](matrix_sparsification/what-is-hard-about-it.md),
+which is where the four names for one problem are set out. **Provenance is marked
+on every entry**, because most of this was reached through the citing literature
+rather than through the paper, and a bibliography that hides that is worse than a
+short one.
+
+**`mccormick1983`**: S. T. McCormick. *A Combinatorial Approach to Some Sparse
+Matrix Problems.* Technical report / PhD thesis, Stanford, 1983. The original
+NP-hardness of the sparsest-basis problem. **Cited from the citing literature**;
+`[gottlieb2010]`, `[tillmann2014]` and `[qu2020]` all name it for this.
+
+**`tillmann2014`**: A. M. Tillmann, M. E. Pfetsch. *The Computational Complexity
+of the Restricted Isometry Property, the Nullspace Property, and Related Concepts
+in Compressed Sensing.* IEEE Trans. Inform. Theory **60**(2):1248-1259, 2014.
+Deciding whether a rational matrix has a circuit of size at most `k` is **strongly**
+NP-complete, by a reduction from `k`-CLIQUE adapting `[mccormick1983]`. The
+sharpest published statement of spark hardness over `Q`. **Abstract only.**
+
+**`vardy1997`**: A. Vardy. *The intractability of computing the minimum distance
+of a code.* IEEE Trans. Inform. Theory **43**(6):1757-1766, 1997; STOC 1997.
+NP-completeness of the minimum distance problem over `GF(2)`, by a deterministic
+reduction. **Not read: IEEE elides the abstract on every route tried**, so the
+problem it reduces from is unknown here and no claim above rests on it.
+
+**`berlekamp1978`**: E. R. Berlekamp, R. J. McEliece, H. C. A. van Tilborg. *On
+the inherent intractability of certain coding problems.* IEEE Trans. Inform.
+Theory **24**(3):384-386, 1978. Proves **coset weight** and **subspace weight**
+NP-complete, the latter being weight *exactly* `w`. Its own abstract says the
+result "strongly suggests, but does not rigorously imply" the general case, so
+**it is the wrong citation for minimum distance** and is frequently given as one.
+**Abstract verbatim; body through a restatement.**
+
+**`downey1999`**: R. G. Downey, M. R. Fellows, A. Vardy, G. Whittle. *The
+parametrized complexity of some fundamental problems in coding theory.* SIAM J.
+Comput. **29**(2):545-570, 1999. W[1]-hardness of **maximum-likelihood decoding**
+and **weight distribution**, and **not** of minimum distance, which it leaves
+open. **Paywalled; abstract from two independent renderings.**
+
+**`dumer2003`**: I. Dumer, D. Micciancio, M. Sudan. *Hardness of approximating the
+minimum distance of a linear code.* IEEE Trans. Inform. Theory **49**(1):22-37,
+2003; FOCS 1999. **Theorem 22 read in full** from the authors' copy: over every
+finite field, approximating within any constant is NP-hard under randomised
+reductions, and within `2^(log^(1−ε) n)` under quasi-polynomial ones.
+
+**`cheng2012`**: Q. Cheng, D. Wan. *A Deterministic Reduction for the Gap Minimum
+Distance Problem.* IEEE Trans. Inform. Theory **58**(11):6935-6941, 2012; STOC
+2009. **Theorem 1.4 read**: the same inapproximability without randomness, over
+any `F_q`, by Weil character sums.
+
+**`austrin2014`**: P. Austrin, S. Khot. *A Simple Deterministic Reduction for the
+Gap Minimum Distance of Code Problem.* IEEE Trans. Inform. Theory
+**60**(10):6636-6645, 2014; ICALP 2011. Hardness within `1+γ` **even on
+asymptotically good codes**, which `[cheng2012]` left open. **Abstract only.**
+
+**`bhattiprolu2025`**: V. Bhattiprolu, V. Guruswami, X. Ren. *Deterministic
+hardness of the minimum distance and nearest codeword problems.*
+[arXiv:2503.11131](https://arxiv.org/abs/2503.11131), 2025. Deterministic
+hardness over any `F_q` reducing from homogeneous quadratic equations with no PCP
+theorem. The cleanest proof to cite. **Abstract only.**
+
+**`bhattacharyya2021`**: A. Bhattacharyya, É. Bonnet, L. Egri, S. Ghoshal,
+Karthik C. S., B. Lin, P. Manurangsi, D. Marx. *Parameterized Intractability of
+Even Set and Shortest Vector Problem.* J. ACM **68**(3):16, 2021. **Theorem 6.1
+read**: `GapMDP_γ` is W[1]-hard under randomised reductions, over `GF(2)` only,
+the field restriction explained in their §8. **Its dual formulation, read and
+quoted in our page, is the identification of minimum distance with the shortest
+circuit of a represented binary matroid.**
+
+**`bennett2023`**: H. Bennett, M. Cheraghchi, V. Guruswami, J. Ribeiro.
+*Parameterized Inapproximability of the Minimum Distance Problem over all Fields
+and the Shortest Vector Problem in all `ℓ_p` Norms.* STOC 2023,
+[arXiv:2211.07900](https://arxiv.org/abs/2211.07900). The same W[1]-hardness over
+**any fixed finite field**, which is the citation for `GF(p)`, `p > 2`.
+**Abstract read.**
+
+**`stephensdavidowitz2019`**: N. Stephens-Davidowitz, V. Vaikuntanathan.
+*SETH-hardness of Coding Problems.* FOCS 2019, pp. 287-301. **Abstract read
+verbatim**: under SETH there is no `q^((1−ε)n)` algorithm for the minimum distance
+problem over any finite field, for a code with `q^n` codewords. `n` is the
+dimension, so **this is the lower bound matching the `q^k` walk in
+[`matrix_sparsification/finite_field_sparsifier.h`](matrix_sparsification/finite_field_sparsifier.h)**.
+
+**`qu2020`**: Q. Qu, Z. Zhu, X. Li, M. C. Tsakiris, J. Wright, R. Vidal. *Finding
+the Sparsest Vectors in a Subspace: Theory, Algorithms, and Applications.*
+[arXiv:2001.06970](https://arxiv.org/abs/2001.06970), 2020. The survey of the
+real-field side. **Read in full, and what it does not contain is the point**: no
+occurrence of "Vardy", "coding theory", "minimum distance", "Berlekamp", "finite
+field" or "GF(2)". For hardness it cites `[mccormick1983]` and
+`[colemanpothen1986]` and stops.
+
+**`holtz2025`**: O. Holtz, J. Hsu, S. Moran, O. Schwartz, N. Wiernik.
+*Alternative Bases for New Fast Matrix Multiplication Algorithms.* ACDA 2025.
+Sparsifies the AlphaTensor and flip-graph algorithms, proves its method optimal
+for the alternative-basis model, and gives a general lower bound of 5 on the
+leading coefficient. Reproduces `[beniamini2020]`'s Table 2 on almost every row.
+**Tables read; the bound's statement read.**
 
 ## Finite field extensions and curves
 

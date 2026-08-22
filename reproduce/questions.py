@@ -251,7 +251,8 @@ def sparsification_of(build, name, repeats=REPEATS):
             ("as_given", r"as given: (\d+) nonzeros"),
             ("row_basis_heuristic", r"row-basis heuristic: (\d+) nonzeros"),
             ("oracle_bottom_up", r"exact oracle, bottom-up: (\d+) nonzeros"),
-            ("oracle_top_down", r"exact oracle, top-down: (\d+) nonzeros")):
+            ("oracle_top_down", r"exact oracle, top-down: (\d+) nonzeros"),
+            ("exact_matroid_greedy", r"exact, matroid greedy over Q: (\d+) nonzeros")):
         found = re.search(pattern, text)
         if not found:
             raise RuntimeError(f"{name}: no '{key}' line in\n{text}")

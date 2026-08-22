@@ -3,7 +3,7 @@
 #include "combinations.h"
 #include "matrix_ops.h"
 #include "measures.h"
-#include "oracle_sparsifier.h"
+#include "omega_validator.h"
 
 namespace matrix_sparsification {
 

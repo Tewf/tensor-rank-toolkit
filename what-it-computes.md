@@ -53,9 +53,13 @@ raise GF(16) from 4 to **8** and cyclic convolution from 5 to **9**, each of
 which previously cost a minute of exhaustion.
 
 **[Sparsifying the operators](matrix_sparsification/)**, which is the other half
-of the cost. Strassen's encoding operators go from **12 nonzeros to 10**, and an
-alternative-basis operator from **21 to 10**, in milliseconds. Fewer nonzeros
-means fewer additions, the cost the multiplication count does not capture.
+of the cost. Fewer nonzeros means fewer additions, the cost the multiplication
+count does not capture. Strassen's encoding operators go from **12 nonzeros to
+10**, and on the operators of a published rank-23 ⟨3,3,3⟩ scheme **221 nonzeros
+to 128**, against 167 for `[plinopt]`, the reference implementation. That 128 is
+**the minimum over every change of basis** and not the best found: the method is
+`[gottlieb2010]`'s greedy with an exact oracle under it, so Rado-Edmonds settles
+it.
 
 **[The rank question as satisfiability](satisfiability/).** Håstad proved
 deciding tensor rank NP-complete over every finite field, and that cuts both

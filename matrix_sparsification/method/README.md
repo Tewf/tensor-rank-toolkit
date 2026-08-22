@@ -18,8 +18,9 @@ trivial to improve by returning a different matrix.
 
 | | |
 |---|---|
-| [`row-basis-heuristic.md`](row-basis-heuristic.md) | invert a square block of rows, which forces `c` of them to singletons |
-| [`the-validator.md`](the-validator.md) | the sparse vector both oracles look for, and when one exists |
-| [`oracle-bottom-up.md`](oracle-bottom-up.md) | column subsets one smaller than the row count, keeping the emptiest vector |
-| [`oracle-top-down.md`](oracle-top-down.md) | the same subsets walked downwards, taking the first hit |
+| [`the-validator.md`](the-validator.md) | the sparse vector the search looks for, and when one exists |
+| [`../dominated.md`](../dominated.md) | the three methods that reached the same answer more slowly, and where they went |
+| [`exact-over-q.md`](exact-over-q.md) | **the one proved minimal**: the matroid greedy, scanning supports upwards |
+| [`where-the-scan-stops.md`](where-the-scan-stops.md) | the operator it cannot finish, and the published algorithm that could |
+| [`when-the-matroid-is-regular.md`](when-the-matroid-is-regular.md) | **a way past it that is not a search**: an LP, on exactly the operator that needed one |
 | [`the-caveat.md`](the-caveat.md) | why these operation counts are not wall clock, and what is not proved |

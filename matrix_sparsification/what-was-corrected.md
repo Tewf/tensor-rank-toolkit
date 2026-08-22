@@ -22,3 +22,23 @@ reported results are misleading.
 
 Everything here is exact rationals, so none of that is possible: a zero is a
 zero because it is one.
+
+## And one this session made, on 2026-08-22
+
+**A citation was attached to the wrong paper.** `references.md` credited ACM
+TOMS Algorithm 994 with the codeword counts 198 461 377 against Magma's
+6 001 753 644 on a `[115, 60, 13]` code. The numbers are right; the paper is not.
+They are Table 1 of `[bouyuklieva2021]`, comparing Magma against the authors' own
+QextNewEdition. Algorithm 994 is merely reference [11] of that table's paper,
+cited there for a parallel implementation.
+
+**How it got in, and why it is worth a paragraph.** The figures came from a
+search-result snippet that named Algorithm 994 in the same breath, and the paper
+itself is paywalled and returns 403, so nothing checked the pairing. A number
+that survives verification while its attribution does not is the most durable
+kind of error: the citation lends the number credit, and the number lends the
+citation credit, and neither was ever opened. Caught by having somebody read the
+primary sources rather than the snippets, which is the only thing that catches it.
+
+The bound itself is now cited to `[lisonek2016]`, read in full, with its equation
+number.

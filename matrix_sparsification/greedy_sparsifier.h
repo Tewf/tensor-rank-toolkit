@@ -9,9 +9,10 @@
 ///
 /// `[beniamini2020, Alg. 6]`, which the article reports as beating both exact
 /// oracles on several operators while guaranteeing nothing.
-/// It differs from [the oracles](oracle_sparsifier.h) in what it minimises:
-/// they count zeros, this counts `nnz + nns`, so an entry that is 4/9 costs
-/// more than an entry that is 1.
+/// It differs from every other method here in what it minimises: they count
+/// zeros, this counts `nnz + nns`, so an entry that is 4/9 costs more than an
+/// entry that is 1. **That is why it survives on this branch** while the methods
+/// it once sat beside do not: it is the only one answering that question.
 ///
 /// **Where this departs from the article, and why.** Its line 4 is an `argmin`
 /// over every vector of the space, which the authors solve by encoding the

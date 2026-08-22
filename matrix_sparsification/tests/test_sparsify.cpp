@@ -8,9 +8,8 @@
 #include "combinations.h"
 #include "dense_matrix_file.h"
 #include "greedy_sparsifier.h"
-#include "heuristic_sparsifier.h"
 #include "linear_algebra.h"
-#include "oracle_sparsifier.h"
+#include "rational_sparsifier.h"
 
 namespace {
 
@@ -18,17 +17,23 @@ struct Expectation {
     const char* name;
     long long as_given;
     long long sparsified;
-    /// `nnz + nns`, the cost the article minimises. The oracles count zeros
-    /// only, so on an operator whose entries are ninths they reach the same
-    /// nonzero count at twice the operations.
-    long long oracle_operations;
+    /// `nnz + nns`, the cost the article minimises.
+    ///
+    /// **This was 20 for the oracles and is 10 for the exact method**, on the
+    /// alternative-basis operator whose entries are ninths. The oracles left all
+    /// ten entries as ninths, twenty operations; the exact method returns a
+    /// basis of ten signs, ten. It does not *aim* at this — it minimises zeros
+    /// and breaks ties by the order it walks supports in — so read the 10 as a
+    /// measurement of one tie-break and not as a guarantee. The method that
+    /// guarantees it is the greedy by rescaling, in the column beside.
+    long long exact_operations;
     long long greedy_operations;
 };
 
 constexpr Expectation kExpectations[] = {
     {"strassen_u", 12, 10, 10, 10},
     {"strassen_v", 12, 10, 10, 10},
-    {"alternative_basis_u", 21, 10, 20, 10},
+    {"alternative_basis_u", 21, 10, 10, 10},
 };
 
 void check_equivalent(const matrix_sparsification::Field& field, const matrix_sparsification::Matrix& original,
@@ -100,20 +105,15 @@ void check_degenerate_shapes(const matrix_sparsification::Field& field) {
             field.assign(operand.data()[entry], field.one);
         }
         const std::string what = std::to_string(shape.first) + "x" + std::to_string(shape.second);
-        const matrix_sparsification::Matrix bottom_up =
-            matrix_sparsification::sparsify_by_best_corank_one(field, operand);
-        const matrix_sparsification::Matrix top_down =
-            matrix_sparsification::sparsify_by_descending_support(field, operand);
+        const matrix_sparsification::Matrix exact =
+            matrix_sparsification::sparsest_basis_over_the_rationals(field, operand);
         const matrix_sparsification::Matrix greedy =
             matrix_sparsification::sparsify_by_rescaling(field, operand);
         check::equal(what + " greedy keeps the shape",
                      static_cast<long long>(greedy.entry_count()),
                      static_cast<long long>(operand.entry_count()));
-        check::equal(what + " bottom-up keeps the shape",
-                     static_cast<long long>(bottom_up.entry_count()),
-                     static_cast<long long>(operand.entry_count()));
-        check::equal(what + " top-down keeps the shape",
-                     static_cast<long long>(top_down.entry_count()),
+        check::equal(what + " exact keeps the shape",
+                     static_cast<long long>(exact.entry_count()),
                      static_cast<long long>(operand.entry_count()));
     }
 }
@@ -142,29 +142,16 @@ int main(int argc, char** argv) {
                      static_cast<long long>(linear_algebra::nonzero_count(field, original)),
                      expected.as_given);
 
-        const matrix_sparsification::Matrix heuristic =
-            linear_algebra::multiply(field, original, matrix_sparsification::row_basis_sparsifier(field, original));
-        check_equivalent(field, original, heuristic, name + " row-basis heuristic");
-        check::equal(name + " row-basis heuristic",
-                     static_cast<long long>(linear_algebra::nonzero_count(field, heuristic)),
+        const matrix_sparsification::Matrix exact =
+            linear_algebra::transpose<matrix_sparsification::Field>(
+                matrix_sparsification::sparsest_basis_over_the_rationals(field, transposed));
+        check_equivalent(field, original, exact, name + " exact over Q");
+        check::equal(name + " exact over Q",
+                     static_cast<long long>(linear_algebra::nonzero_count(field, exact)),
                      expected.sparsified);
-
-        const matrix_sparsification::Matrix bottom_up =
-            linear_algebra::transpose<matrix_sparsification::Field>(matrix_sparsification::sparsify_by_best_corank_one(field, transposed));
-        check_equivalent(field, original, bottom_up, name + " bottom-up oracle");
-        check::equal(name + " bottom-up oracle",
-                     static_cast<long long>(linear_algebra::nonzero_count(field, bottom_up)),
-                     expected.sparsified);
-
-        const matrix_sparsification::Matrix top_down =
-            linear_algebra::transpose<matrix_sparsification::Field>(matrix_sparsification::sparsify_by_descending_support(field, transposed));
-        check_equivalent(field, original, top_down, name + " top-down oracle");
-        check::equal(name + " top-down oracle",
-                     static_cast<long long>(linear_algebra::nonzero_count(field, top_down)),
-                     expected.sparsified);
-        check::equal(name + " top-down operations",
-                     static_cast<long long>(linear_algebra::operation_count(field, top_down)),
-                     expected.oracle_operations);
+        check::equal(name + " exact over Q operations",
+                     static_cast<long long>(linear_algebra::operation_count(field, exact)),
+                     expected.exact_operations);
 
         const matrix_sparsification::Matrix greedy =
             linear_algebra::transpose<matrix_sparsification::Field>(
