@@ -16,6 +16,19 @@ laboratory with real hardware can multiply, not a faster laptop.
 How to build it, which is not the obvious command on this machine:
 [`building-it.md`](building-it.md).
 
+**The suite has now been run with the kernels compiled in, and it was not before.**
+That claim ran one way only: a machine without `nvcc` builds and tests as before,
+checked continuously, while the case with a toolkit present had never been
+exercised here at all. Built 2026-08-23 with `nvcc` 12.9 from the `cuda` conda
+environment and the system C++ compiler, against an RTX 4060 Laptop:
+**76 of 76 fast tests pass**. So the kernels are not merely compilable, they are
+test-clean, and the asymmetry in that claim is closed.
+
+Two things that build needed and the obvious command does not give:
+`-DCUDAToolkit_ROOT` pointing at the conda environment, since `find_package`
+looks on `PATH` and `nvcc` is not on it, and the system C++ compiler rather than
+the environment's, which does not see the system Givaro headers.
+
 ## What the kernel does
 
 `RankOnePool::at(i)` is a pure function of `i`: element `i` is
