@@ -1222,7 +1222,35 @@ oracle since 2025, in ACM TOMS, shipping.** That is the same non-citation
 records on the hardness side, showing up again on the algorithms side.
 
 **`RGHW(C, C2, 1)` from that package is the baseline this module has to name**,
-and the review is not finished until it has. What nobody has done is put the
+and the review is not finished until it has.
+
+**But do not trust that baseline's answer without checking it.** Reading the
+implementation on 2026-08-22 turned up an unsoundness in `core.py`, not in the
+paper. Line 759 drops a generator matrix from a pass whenever its redundancy
+exceeds the pass index, `red[j] <= w`; line 794 then credits that same matrix the
+full `(w+1) − R_j` in the lower bound from `w = R_j` onward. The bound needs every
+credited matrix to have had its message weights `1 … w` enumerated, and a
+late-entering matrix has not, so the bound can overshoot and the search can stop
+early with an answer that is **too high**.
+
+Verified here from scratch, over GF(2), `n = 16`, `k = 8`, generator rows
+`[2817, 17154, 6404, 27400, 27920, 41504, 53056, 9600]` read as bitmasks. Brute
+force over all 256 codewords gives `d = 3` at support `{4,5,6}`. The information
+sets come out `[[0..7], [0,4,8..13]]` with redundancies `[0,2]`, and that codeword
+has message weight **1** in the second set and **3** in the first: the cheap route
+to it is through the matrix that is skipped until `w = 2`. Algorithm 1 of the
+paper enumerates with **all** `m` matrices every pass and is sound; the skip is an
+"improvement" introduced only in §5.1.
+
+**What was verified here and what was not.** The source lines, the arithmetic of
+the counterexample, and the inference from the two: all checked directly. The
+package itself was **not run** — Sage is not installed on this machine — so this
+is a reading plus a proof, not an observed failure. Two consequences for this
+module: implement `[lisonek2016]`'s per-`(w, j)` refinement, which `core.py` does
+not do and which is strictly better; and keep the redundancy beside its matrix
+rather than in a parallel array, because line 794 indexes an uncompressed `red`
+with a compressed index and is only correct while `red` happens to be
+non-decreasing. What nobody has done is put the
 Rado-Edmonds driver on top of that oracle and sum the successive `M₁`, which is
 the minimum-weight basis, and nobody has done any of it outside a finite field.
 
