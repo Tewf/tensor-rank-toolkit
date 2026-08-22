@@ -19,7 +19,9 @@
 /// The arithmetic is not written a second time. Each row comes from
 /// [`pool_orbits.h`](../../orbit_reduction/pool_orbits.h)'s `PoolAction`, which is
 /// the repository's one statement of where an automorphism sends a rank-one map,
-/// and which `tests/test_orbit_cubes.cpp` already holds against
+/// and which
+/// [`test_orbit_cubes.cpp`](../../orbit_reduction/tests/test_orbit_cubes.cpp)
+/// already holds against
 /// `permutation_action_on`'s independent table on all 48 600 images at `⟨2,2,2⟩`.
 namespace pool_action_table {
 
