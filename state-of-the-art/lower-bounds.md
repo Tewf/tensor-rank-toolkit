@@ -46,29 +46,21 @@ this repository is, and the front is much closer to us:
   contains no pruner at all, so the paper's own timings are unpruned and no
   implementation anywhere combines the two halves.
 
-  **`rref` is not ported, and what it is had to be read from the author's code.**
-  `coolcomputery/tensor-cpd-search`, notebook `other/k-th order rref pruning.ipynb`;
-  the paper's abstract does not mention it.
+  **`rref` was ported to nothing, because it was measured first.** What
+  `--pruners rref` runs is `prune_rref0` in `cpd/original/cpd_search.py`, and not
+  the wedge-and-Grassmannian test in `other/k-th order rref pruning.ipynb` that
+  an earlier version of this page described. The pruner argues from the weight of
+  an rref row: a rank-`R` CPD forces `n_0` independent vectors `v` with
+  `rk(v ._0 T) <= R - n_0 + 1` to exist, and refuses the rank when they do not.
 
-  It is **not** a reduction of the rank-one pool, which is what the name suggests
-  and what two readers here guessed. It is a **refutation test of a different
-  family from the bounds we hold**: contract the tensor with `k`-tuples of
-  vectors, wedge them, and refuse the rank when the resulting `k`-planes fail to
-  span enough of the Grassmannian. `k_th_rref_prune0` returns "no CPD exists"
-  outright when its condition fails, so it can refuse at a node rather than only
-  narrow one.
+  **It never beats `rank_lower_bound` on any fixture here**, ties on five and
+  loses on fifteen, including 11 against our 14 on `⟨3,3,3⟩`. The whole table,
+  what the two names mean, and the one thing it does that no bound here does:
+  [`what-rref-is-worth.md`](what-rref-is-worth.md).
 
-  **Two things about it are not established, and are recorded as not
-  established.** Its cost there is `C(|F|^n_0, k)` tuples, cheap at `⟨2,2,2⟩` over
-  GF(2) and not polynomial in general, so calling it a free bound would be wrong.
-  And that README pairs it with `ranksum` when reporting the Strassen refutation,
-  so whether `rref` alone refuses rank 6, or only does so inside a pruned search,
-  is not something the README settles.
-
-  What is worth stating is where it would land. Our `rank_lower_bound` is the
-  maximum over the flattening rank and both rank sums, and on `⟨2,2,2⟩` that
-  maximum is **6**; ruling out 6 then costs `decide-rank` **25 399 nodes and
-  0.65 s** of exhaustion. So this is a shape where every bound we have stops one
-  short of the answer and a search pays for the last step, and `rref` is the only
-  candidate in the literature aimed at exactly that gap. Establishing whether it
-  closes it means reading the thesis rather than the repository.
+  It leaves `⟨2,2,2⟩` where it was. Our `rank_lower_bound` is the maximum over the
+  flattening rank, both rank sums and Griesmer, and on `⟨2,2,2⟩` that maximum is
+  **6**; ruling out 6 then costs `decide-rank` **25 399 nodes and 0.65 s** of
+  exhaustion. That shape is still one where every bound we have stops one short of
+  the answer and a search pays for the last step, and the literature's one
+  candidate aimed at that gap has now been tried.
