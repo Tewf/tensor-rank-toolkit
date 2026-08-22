@@ -91,26 +91,59 @@ int run(int argc, char** argv) {
     const Matrix operator_matrix =
         is_sms ? linear_algebra::read_sms_file(path)
                : linear_algebra::read_rational_matrix_file(path);
-    const Matrix transposed = linear_algebra::transpose<Field>(operator_matrix);
+    // **A wide operator is a decoding operator, and its basis change is on the
+    // other side.** Every method here answers "find invertible `V` minimising
+    // `nnz(U V)`", which changes the basis of the space `U`'s columns live in.
+    // That is the admissible transform for an encoding operator, `R x n^2`, and
+    // it is the wrong one for a decoding operator, `n^2 x R`: there `V` would be
+    // `R x R` and would recombine the products themselves, which no change of
+    // basis may do and which the other two operators would have to match.
+    //
+    // The admissible transform for a decoding operator is `W P` with `W`
+    // invertible on the output space, and `nnz(W P) = nnz(P^T W^T)` with `W^T`
+    // invertible and on the right, so **it is this same question asked of the
+    // transpose**. Asked of `P` itself the question is not merely wrong, it is
+    // vacuous: every full-rank `n^2 x R` matrix has the whole space as its column
+    // space, so the constraint holds for anything and the methods return what
+    // they were given.
+    //
+    // They did exactly that, silently, until 2026-08-22. Every operator fixture
+    // shipped here is 7x4, and `lower-the-bound --emit-operators` writes `P` the
+    // other way up, so the two halves of this repository's own pipeline
+    // disagreed about the orientation of the third operator and nothing said so.
+    // Measured on a 19-product GF(64) scheme: `P` as emitted, 6x19, reported 54
+    // nonzeros from all four methods in microseconds; the same operator
+    // transposed goes to **38**.
+    const bool decoding = operator_matrix.rows() < operator_matrix.columns();
+    const Matrix working =
+        decoding ? linear_algebra::transpose<Field>(operator_matrix) : operator_matrix;
+    const Matrix transposed = linear_algebra::transpose<Field>(working);
 
     cli::result() << path << "\n  as given: "
                   << linear_algebra::nonzero_count(field, operator_matrix) << " nonzeros, "
                   << operator_matrix.rows() << "x" << operator_matrix.columns() << "\n";
+    if (decoding) {
+        cli::note() << "wider than tall, so this is a decoding operator: its basis change acts "
+                       "on the outputs, which is this question asked of the transpose. Counts "
+                       "below are for "
+                    << working.rows() << "x" << working.columns()
+                    << ", and a nonzero count is the same either way up";
+    }
 
     auto started = cli::Clock::now();
-    const Matrix sparsifier = matrix_sparsification::row_basis_sparsifier(field, operator_matrix);
+    const Matrix sparsifier = matrix_sparsification::row_basis_sparsifier(field, working);
     report(field, "row-basis heuristic",
-           operator_matrix, linear_algebra::multiply(field, operator_matrix, sparsifier),
+           working, linear_algebra::multiply(field, working, sparsifier),
            cli::elapsed_seconds(started), show_matrix);
 
     started = cli::Clock::now();
     const Matrix exhaustive = matrix_sparsification::sparsify_by_best_corank_one(field, transposed);
-    report(field, "exact oracle, bottom-up", operator_matrix,
+    report(field, "exact oracle, bottom-up", working,
            linear_algebra::transpose<Field>(exhaustive), cli::elapsed_seconds(started), show_matrix);
 
     started = cli::Clock::now();
     const Matrix top_down = matrix_sparsification::sparsify_by_descending_support(field, transposed);
-    report(field, "exact oracle, top-down", operator_matrix,
+    report(field, "exact oracle, top-down", working,
            linear_algebra::transpose<Field>(top_down), cli::elapsed_seconds(started), show_matrix);
 
     // `[beniamini2020, Alg. 6]`, which was implemented, tested and then never
@@ -122,7 +155,7 @@ int run(int argc, char** argv) {
     // `../README.md` carries the one that does.
     started = cli::Clock::now();
     const Matrix rescaled = matrix_sparsification::sparsify_by_rescaling(field, transposed);
-    report(field, "greedy, by rescaling", operator_matrix,
+    report(field, "greedy, by rescaling", working,
            linear_algebra::transpose<Field>(rescaled), cli::elapsed_seconds(started), show_matrix);
 
     return cli::exit_status(cli::ExitCode::Yes);
