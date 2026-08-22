@@ -12,4 +12,12 @@ add_library(run_limits STATIC child_process.cpp device.cpp machine.cpp memory_bu
 target_include_directories(run_limits PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(run_limits PRIVATE project_warnings)
 
+# An instrument, not a tool: it asks nothing about a tensor and answers no
+# question on the command list. It prints what this machine and this working
+# directory bound a run to, which until now could only be inferred from a plan
+# printed after a search had already started.
+add_executable(show-limits show_limits.cpp)
+target_link_libraries(show-limits PRIVATE run_limits cli project_warnings)
+set_target_properties(show-limits PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+
 add_subdirectory(tests)

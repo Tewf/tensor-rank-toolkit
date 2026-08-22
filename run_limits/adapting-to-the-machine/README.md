@@ -13,6 +13,11 @@ is three resources and this repository already treats them as three:
 They are independent. A strand can be perfect on one and absent on the other
 two, and most of them are.
 
+**What each of the three resolved to on the machine in front of you is one
+command**: `show-limits` prints the machine, the ceilings derived from it, and
+every tunable with the value in force and where it came from. It runs nothing and
+measures nothing, so it costs a moment rather than an hour.
+
 ## The short answer, and it is not the flattering one
 
 **No. Two strands of twelve are wired for all three axes, and the card is the
