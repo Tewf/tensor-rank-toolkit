@@ -82,7 +82,8 @@
   ],
   "readings": [
     "Step 3 improved the answer in two of the four cases, by one product each time: 16 to 15 on f2_3x8 and 11 to 10 on f3_3x6. On f2_5x5 and f2_4x7 it confirmed what step 2 already had.",
-    "Step 3 is where almost all the cost is. It costs between 58 and 184 times what steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay."
+    "Step 3 is where almost all the cost is. It costs between 58 and 184 times what steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay.",
+    "What the orbit quotient is worth, and where. Refuting 6 products on <2,2,2> costs 25 399 nodes plainly and 648 under `-s matmul 2 2 2`, 39.2x fewer for the identical verdict. Finding 7 costs 7 436 and 3 167, only 2.3x. The quotient pays on the proof far more than on the witness, which is the shape you would expect: a refutation has to walk every branch, and every branch that is another branch in a different basis is walked again, while a search that stops at the first decomposition stops before most of that repetition. Both rows are re-derived by `reproduce/measure.py --check`, and the verdict is checked on both sides rather than recorded: a quotient that changed the answer would be a bug, not a speed-up."
   ],
   "limits": "Every step is greedy and nothing here proves a result is optimal. The bilinear rank problem is open, and none of this settles it.",
   "methods": {
@@ -316,6 +317,36 @@
     },
     "finding": "The heuristic and the exact search fail on different tensors. On every matrix multiplication tensor whose pool scan can finish the heuristic does not improve the naive count at all, with an empty shortlist out of 225, 945 and 32193 candidates, and the tool says why: not one of the 225 rank-one maps improves <2,2,2>, so a first-improvement greedy has nowhere to step. Step 1 is a matroid greedy and therefore optimal over bases of span(T), which is exactly the ceiling: 8 is the true minimum over those bases, and Strassen's 7 products are not a basis of span(T) but a rank-one basis of a 7-dimensional space containing it. The exact search finds that in 0.14 s."
   },
+  "quotient": [
+    {
+      "name": "<2,2,2> refuting 6 products",
+      "tensor": "matmul_2x2x2",
+      "target": 6,
+      "symmetry": "matmul 2 2 2",
+      "products": null,
+      "nodes": 25399,
+      "quotiented_nodes": 648,
+      "fewer_nodes_by": 39.2,
+      "seconds": 0.029776,
+      "quotiented_seconds": 0.001384,
+      "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
+      "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2"
+    },
+    {
+      "name": "<2,2,2> finding 7 products",
+      "tensor": "matmul_2x2x2",
+      "target": 7,
+      "symmetry": "matmul 2 2 2",
+      "products": 7,
+      "nodes": 7436,
+      "quotiented_nodes": 3167,
+      "fewer_nodes_by": 2.3,
+      "seconds": 0.015677,
+      "quotiented_seconds": 0.006186,
+      "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7",
+      "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2"
+    }
+  ],
   "provenance": {
     "commit": null,
     "tree_clean": null,
