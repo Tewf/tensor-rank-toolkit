@@ -60,7 +60,7 @@ heuristic, and it is what the exhaustive search drops.
 the `⟨L, R, P⟩` triple. That is where a published scheme is genuinely useful input
 here.
 
-**Can**: refute `k − 1` with [`../exhaustive_search/`](../exhaustive_search/README.md)
+**Can**: refute `k − 1` with [`../exhaustive_search/`](../exhaustive_search/what-a-node-cannot-tell-you.md)
 or the solver, neither of which needs a seed, both of which need the tree to be
 reachable. At `⟨3,4,5⟩` the pool is `(2^12 − 1)(2^20 − 1) = 4 293 914 625` and it
 is not.
