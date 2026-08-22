@@ -13,14 +13,16 @@
 /// collapses to minimising the sum of absolute values on basic solutions
 /// `[tillmann2019, Thm. 5]`, and the answer is a linear programme. The reasoning,
 /// which operators qualify, and what it reaches:
-/// [`method/when-the-matroid-is-regular.md`](method/when-the-matroid-is-regular.md).
+/// [`method/answering-without-searching.md`](method/answering-without-searching.md).
 ///
-/// **What it costs to be wrong about regularity.** Everything below runs and
-/// returns whatever the LP says, on any operator. The result is a genuine basis
-/// of the right space either way, because that is checked rather than assumed;
-/// what regularity buys is that the weight is the *minimum*. On an operator that
-/// is not regular this is an upper bound and nothing more, and the caller is
-/// told which it holds.
+/// **No operator measured here is regular**, including the one this was written
+/// for: `4x4x4_49_156_L` has a 16-column minor of determinant −2. So in practice
+/// this returns an upper bound, and it is the caller's job to say so. What is
+/// checked rather than assumed is that the result spans the operator's own row
+/// space; `LightestVectors::spans` carries that and it is not optional.
+///
+/// It reaches the proved minimum on every operator where the search can prove
+/// one, which the theorem does not explain and this file does not claim to.
 ///
 /// **Exact, and deliberately not through the solver chain.**
 /// [`../integer_programme/simplex.h`](../integer_programme/simplex.h) is a

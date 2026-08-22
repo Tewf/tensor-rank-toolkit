@@ -56,7 +56,7 @@ that actually runs away: the widest level it could reach, `C(b, w)` at
 `w = (b − r + 1) / 2`. On a 23×9 operator that is about ten megabytes and passes.
 On `4x4x4_49_156_L` it is 1.4 PiB, so the command refuses **in milliseconds**,
 names the number, and points at
-[`method/when-the-matroid-is-regular.md`](method/when-the-matroid-is-regular.md).
+[`method/answering-without-searching.md`](method/answering-without-searching.md).
 That operator used to run for thirty minutes and say nothing at all.
 
 ## If you are looking for something here

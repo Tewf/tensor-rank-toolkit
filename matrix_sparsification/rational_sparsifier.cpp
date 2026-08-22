@@ -100,7 +100,7 @@ Matrix sparsest_basis_over_the_rationals(const Field& field, const Matrix& rows)
     const std::size_t ceiling = width - dimension + 1;
     bilinear_rank::require_room(
         "the column supports this scan may walk (see "
-        "matrix_sparsification/method/when-the-matroid-is-regular.md for the "
+        "matrix_sparsification/method/answering-without-searching.md for the "
         "route that does not walk them)",
         subset_count(width, ceiling / 2 + 1), sizeof(std::size_t) * (ceiling / 2 + 1));
     Space held(field, width);

@@ -22,5 +22,5 @@ trivial to improve by returning a different matrix.
 | [`../dominated.md`](../dominated.md) | the three methods that reached the same answer more slowly, and where they went |
 | [`exact-over-q.md`](exact-over-q.md) | **the one proved minimal**: the matroid greedy, scanning supports upwards |
 | [`where-the-scan-stops.md`](where-the-scan-stops.md) | the operator it cannot finish, and the published algorithm that could |
-| [`when-the-matroid-is-regular.md`](when-the-matroid-is-regular.md) | **a way past it that is not a search**: an LP, on exactly the operator that needed one |
+| [`answering-without-searching.md`](answering-without-searching.md) | **a way past it that is not a search**: an LP, and the theorem that turned out not to apply |
 | [`the-caveat.md`](the-caveat.md) | why these operation counts are not wall clock, and what is not proved |

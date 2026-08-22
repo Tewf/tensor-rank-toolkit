@@ -7,7 +7,7 @@
 /// weight.
 ///
 /// The prototypes this replaces are in [`../prototypes/`](../prototypes/README.md)
-/// and the finding is [`../method/when-the-matroid-is-regular.md`](../method/when-the-matroid-is-regular.md).
+/// and the finding is [`../method/answering-without-searching.md`](../method/answering-without-searching.md).
 #include <cstddef>
 #include <string>
 #include <vector>

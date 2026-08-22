@@ -41,10 +41,12 @@ void usage() {
                    "                  search emitted is over a finite field and this is the\n"
                    "                  question it is asking. .sms only\n"
                    "  --simplex       answer by linear programming instead of by searching\n"
-                   "                  column supports. The minimum only where the operator's\n"
-                   "                  matroid is regular, an upper bound otherwise, and the\n"
-                   "                  only route that finishes an operator the search cannot.\n"
-                   "                  See method/when-the-matroid-is-regular.md\n"
+                   "                  column supports. An upper bound, and the minimum only\n"
+                   "                  where the matroid is regular, which no operator measured\n"
+                   "                  here is. It reaches the proved minimum anyway wherever\n"
+                   "                  the search can prove one, and it is the only route that\n"
+                   "                  finishes an operator the search cannot.\n"
+                   "                  See method/answering-without-searching.md\n"
                    "  --operations    also run the greedy by rescaling, which minimises\n"
                    "                  nnz + nns rather than nnz: an entry that is neither 0\n"
                    "                  nor +-1 costs a multiplication as well as an addition.\n"
@@ -237,8 +239,10 @@ int run(int argc, char** argv) {
                linear_algebra::transpose<Field>(found.basis),
                cli::elapsed_seconds(started_lp), show_matrix);
         cli::note() << "least weight " << found.least
-                    << ", which is the minimum where the matroid is regular and an upper "
-                       "bound otherwise";
+                    << ", an upper bound. It is the minimum only if this operator's column "
+                       "matroid is regular, which is a decision procedure away and is false "
+                       "for every operator measured here: see "
+                       "matrix_sparsification/method/answering-without-searching.md";
         return cli::exit_status(cli::ExitCode::Yes);
     }
 

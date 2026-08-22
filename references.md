@@ -1285,12 +1285,34 @@ matters here: for a **unimodular** matrix the spark is computable in *polynomial
 time, `ℓ0` collapsing to `ℓ1` on basic solutions, and the vector matroids of
 totally unimodular matrices are the regular ones. Since regular matroids are
 closed under duality and the quantity this module minimises is a **co**girth, the
-theorem reaches it through the dual. Measured consequence:
-[`matrix_sparsification/method/when-the-matroid-is-regular.md`](matrix_sparsification/method/when-the-matroid-is-regular.md),
-where `4x4x4_49_156_L` looks regular and answers in 0.08 s while the exact scan
-cannot finish it. **Cited from the citing literature**, not read: the statement
+theorem reaches it through the dual. **The hypothesis was tested properly and it fails on every operator here**,
+including `4x4x4_49_156_L`, which sampling had suggested was regular: it has a
+16-column minor of determinant −2, so it is not unimodular and its matroid is not
+regular. The route is still what answers that operator, and now for no reason
+this bibliography can supply:
+[`matrix_sparsification/method/answering-without-searching.md`](matrix_sparsification/method/answering-without-searching.md). **Cited from the citing literature**, not read: the statement
 and its matroid corollary are quoted at second hand and the theorem's proof was
 not opened.
+
+**`truemper1990`**: K. Truemper. *A decomposition theory for matroids. V.
+Testing of matrix total unimodularity.* J. Combin. Theory Ser. B **49**(2):241-281,
+1990, [doi:10.1016/0095-8956(90)90030-4](https://doi.org/10.1016/0095-8956(90)90030-4).
+Decides total unimodularity in `O((m+n)³)`, on top of Seymour's decomposition of
+regular matroids (JCTB **28**(3):305-359, 1980). **Cited from the citing
+literature.**
+
+**`cmr`**: M. Walter et al. *CMR: Combinatorial Matrix Recognition*,
+[github.com/discopt/cmr](https://github.com/discopt/cmr), MIT. Implements the
+simplified Walter-Truemper variant of the above, `O((m+n)⁵)`, and is the
+successor of the TUtest library of Walter & Truemper, Math. Prog. Computation
+**5**(1):57-73, 2013. **This is the instrument that refuted the regularity of
+`4x4x4_49_156_L` in under three milliseconds**, where 200 000 random basis
+determinants had found nothing: only about 0.8% of random 16-subsets are bases at
+all. `cmr-equimodular M -u` is the exact hypothesis of `[tillmann2019, Thm. 5]`;
+`cmr-tu --algo partition` is Ghouila-Houri's characterisation, an independent
+code path at `O((m+n)·3^min(m,n))`, which is a quarter of a second at this size.
+**Not vendored and not a dependency**: a witness it returns is checked here in
+exact arithmetic, and a refutation needs no trust.
 
 **`chenklove2001`, `chenklove2004`**: W. Chen, T. Kløve. *The weight hierarchies
 of q-ary codes of dimension 4*, and *On the second greedy weight for linear codes
