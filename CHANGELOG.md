@@ -6,7 +6,68 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING: `sparsify-operator --exact` is gone**, because the method it
+  selected is the default now. `--operations` opts into the greedy by rescaling,
+  which minimises `nnz + nns` rather than `nnz`; `--simplex` answers by linear
+  programming; `--emit PATH` writes the answer as SMS, the way up the file came
+  in. A script passing `--exact` is refused rather than silently ignored, which
+  `matrix_sparsification/tests/check_every_route_answers.sh` asserts.
+- **The default run costs about a third of a second rather than about 500 s**,
+  because it no longer runs five methods to report a comparison. Three of them
+  reached the same counts 88x to 343x more slowly and moved to the
+  **`dominated-methods`** branch with their tests and measurements:
+  `matrix_sparsification/dominated.md` says what went and where to find it.
+  Nothing was deleted, and two of the three are `[beniamini2020]`'s own
+  Algorithms 3 and 4.
+- `--max-memory` now prices the *walk* rather than an allocation. The scan
+  allocates almost nothing, so the budget had stopped reaching the command; it is
+  the column supports the scan may visit that runs away. `4x4x4_49_156_L` is
+  refused in milliseconds at 1.4 PiB where it used to run for thirty minutes and
+  say nothing.
+
 ### Added
+
+- **`sparsest_basis_over_the_rationals`: the minimum, and a proof of it.**
+  `[gottlieb2010]`'s driver with an oracle that answers `[beniamini2020]`'s
+  Problem 2.15, so Rado-Edmonds makes the assembled answer the least number of
+  nonzeros any invertible `V` can leave. The counts did not move — 43 / 42 / 43
+  on a published rank-23 `⟨3,3,3⟩` scheme were already minimal — but nothing
+  here could say so, and the cheapest route to them was 86x to 112x slower.
+- **`--simplex`, which answers without searching.** One continuous programme per
+  coordinate against `integer_programme`'s exact rational simplex, no new
+  dependency. It is the only route that answers `4x4x4_49_156_L`, at 100
+  nonzeros in 0.34 s, and it reaches the proved minimum four to fifteen times
+  faster than the search wherever the search can prove one. An upper bound, not
+  a proof: `matrix_sparsification/method/answering-without-searching.md`.
+- `matrix_sparsification/omega_validator.{h,cpp}`, extracted so that the routes
+  that left could leave: it is `[beniamini2020, Def. 3.2]` and the rescaling
+  greedy still calls it.
+- The measurement against `[plinopt]` the module's README had asked for since it
+  was written: 221 nonzeros to 128 against its 167. And the composition
+  experiment in front of its subexpression pass, which shows **minimising
+  nonzeros can cost additions**.
+
+### Fixed
+
+- Every `results.json` was publishing an absolute home path into a public
+  repository, the same defect the 2026-08-18 restructure fixed and the line that
+  generates them put back. Fixed at the source.
+- `index.html`'s sparsification chart read a field that the removed methods
+  produced, and would have drawn nothing the next time `results.json` was
+  regenerated.
+
+### Retracted
+
+- **`4x4x4_49_156_L` was published as having a regular column matroid and does
+  not.** The claim rested on 200 000 random basis determinants all in `{0, ±1}`,
+  which is not evidence: only about 0.8% of random 16-subsets are bases at all.
+  A decision procedure refuted it in under three milliseconds with a
+  sixteen-column minor of determinant −2, recomputed here in exact arithmetic.
+  What it cost is one sentence, that the linear programme's answer was minimal
+  *by Tillmann's theorem*; it is an upper bound.
+  `matrix_sparsification/what-was-corrected.md` has the rest.
 
 - **`operators-to-tensor`, and with it a way in for somebody else's algorithm.**
   Nobody publishes a tensor: PLinOpt's `data/` is 153 SMS operators in
