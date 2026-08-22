@@ -2,8 +2,9 @@
 
 The least rank each argument fails to refute, one core, fastest of three, from
 `build/rank_metric_bound/tests/test_rank_metric_bound fixtures` under
-[`../MEASURING.md`](../MEASURING.md). `rank_lower_bound` is the flattening bound
-and both rank sums together, which is what a caller gets today; `k` and `d` are
+[`../MEASURING.md`](../MEASURING.md). The `flattening + rank sums` column is what
+`rank_lower_bound` returned before Griesmer joined it; `floor today` is what a
+caller gets now, which is that column and the Griesmer one under one `max`; `k` and `d` are
 the deciding axis's, printed by that same command. Cost is
 [`joining-the-shared-floor.md`](joining-the-shared-floor.md)'s subject and the column here is
 the whole bound from the tensor, taken on one core under the measurement lock on
@@ -16,32 +17,32 @@ arrived with
 in a later run of the same command, which moved the other eighteen by less than
 the 13% the chassis varies by on its own, so those stand as first taken.
 
-| fixture | rank held | `rank_lower_bound` | `k` | `d` | Kruskal | Griesmer | cost |
-|---|---|---|---|---|---|---|---|
-| `f2_5x5` | 13 | 10 | 5 | 5 | 9 | **12** | 0.46 ms |
-| `f2_3x8` | 15 | 14 | 3 | 8 | 10 | 14 | 0.84 ms |
-| `f2_4x7` | 16 | 14 | 4 | 7 | 10 | 14 | 0.94 ms |
-| `f3_3x6` | 10 | 9 | 3 | 6 | 8 | 9 | 4.12 ms |
-| `gf16_multiplication` | 9 | 8 | 4 | 4 | 7 | 8 | 0.02 ms |
-| `gf32_multiplication` | 25 | 12 | 5 | 5 | 9 | 12 | 0.06 ms |
-| `gf64_multiplication` | 36 | 14 | 6 | 6 | 11 | 14 | 0.18 ms |
-| `gf8_multiplication` | 6 | 6 | 3 | 3 | 5 | 6 | 0.01 ms |
-| `gf4_multiplication` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms |
-| `f2_2x2` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms |
-| `f2_2x3` | 5 | 5 | 2 | 3 | 4 | 5 | 0.01 ms |
-| `pencil_irreducible_f2_4` | 6 | 6 | 2 | 4 | 5 | 6 | 0.01 ms |
-| `pencil_singular_f2_2x3` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms |
-| `pencil_split_f3_3` | 3 | 3 | 2 | 2 | 3 | 3 | 0.01 ms |
-| `pencil_nilpotent_f2_3` | 4 | 4 | 2 | 2 | 3 | 3 | 0.01 ms |
-| `matmul_2x2x2` | 7 | 6 | 4 | 2 | 5 | 5 | 0.02 ms |
-| `matmul_2x2x3` | 11 | 9 | 4 | 3 | 7 | 7 | 0.08 ms |
-| `matmul_2x3x4` | 20 | 14 | 12 | 2 | 13 | 13 | 5.91 ms |
-| `matmul_3x3x3` | 23 | 14 | 9 | 3 | 11 | 12 | 2.60 ms |
-| `matmul_3x3x4` | 29 | 18 | 12 | 3 | 14 | 15 | 21.69 ms |
-| `matmul_3x4x4` | 38 | 21 | 16 | 3 | 18 | 19 | 324.62 ms |
-| `cyclic_f2_5` | 10 | 9 | 5 | 1 | 5 | 5 | 0.07 ms |
-| `cyclic_f2_7` | 13 | 12 | 7 | 1 | 7 | 7 | 0.45 ms |
-| `w_state` | 3 | 3 | 2 | 1 | 2 | 2 | 0.00 ms |
+| fixture | rank held | flattening + rank sums | `k` | `d` | Kruskal | Griesmer | cost | floor today |
+|---|---|---|---|---|---|---|---|---|
+| `f2_5x5` | 13 | 10 | 5 | 5 | 9 | **12** | 0.46 ms | **12** |
+| `f2_3x8` | 15 | 14 | 3 | 8 | 10 | 14 | 0.84 ms | **14** |
+| `f2_4x7` | 16 | 14 | 4 | 7 | 10 | 14 | 0.94 ms | **14** |
+| `f3_3x6` | 10 | 9 | 3 | 6 | 8 | 9 | 4.12 ms | **9** |
+| `gf16_multiplication` | 9 | 8 | 4 | 4 | 7 | 8 | 0.02 ms | **8** |
+| `gf32_multiplication` | 25 | 12 | 5 | 5 | 9 | 12 | 0.06 ms | **12** |
+| `gf64_multiplication` | 36 | 14 | 6 | 6 | 11 | 14 | 0.18 ms | **14** |
+| `gf8_multiplication` | 6 | 6 | 3 | 3 | 5 | 6 | 0.01 ms | **6** |
+| `gf4_multiplication` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms | **3** |
+| `f2_2x2` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms | **3** |
+| `f2_2x3` | 5 | 5 | 2 | 3 | 4 | 5 | 0.01 ms | **5** |
+| `pencil_irreducible_f2_4` | 6 | 6 | 2 | 4 | 5 | 6 | 0.01 ms | **6** |
+| `pencil_singular_f2_2x3` | 3 | 3 | 2 | 2 | 3 | 3 | 0.00 ms | **3** |
+| `pencil_split_f3_3` | 3 | 3 | 2 | 2 | 3 | 3 | 0.01 ms | **3** |
+| `pencil_nilpotent_f2_3` | 4 | 4 | 2 | 2 | 3 | 3 | 0.01 ms | **4** |
+| `matmul_2x2x2` | 7 | 6 | 4 | 2 | 5 | 5 | 0.02 ms | **6** |
+| `matmul_2x2x3` | 11 | 9 | 4 | 3 | 7 | 7 | 0.08 ms | **9** |
+| `matmul_2x3x4` | 20 | 14 | 12 | 2 | 13 | 13 | 5.91 ms | **14** |
+| `matmul_3x3x3` | 23 | 14 | 9 | 3 | 11 | 12 | 2.60 ms | **14** |
+| `matmul_3x3x4` | 29 | 18 | 12 | 3 | 14 | 15 | 21.69 ms | **18** |
+| `matmul_3x4x4` | 38 | 21 | 16 | 3 | 18 | 19 | 324.62 ms | **21** |
+| `cyclic_f2_5` | 10 | 9 | 5 | 1 | 5 | 5 | 0.07 ms | **9** |
+| `cyclic_f2_7` | 13 | 12 | 7 | 1 | 7 | 7 | 0.45 ms | **12** |
+| `w_state` | 3 | 3 | 2 | 1 | 2 | 2 | 0.00 ms | **3** |
 
 "Rank held" is a rank somebody has exhibited, so no lower bound may exceed it,
 the convention `linear_algebra/tests/test_rank_sum.cpp` already uses. On `f2_5x5`
