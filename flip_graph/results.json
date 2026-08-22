@@ -1,0 +1,119 @@
+{
+  "task": "Crossing a plateau: reaching a cheaper scheme through maps that cost the same, where a strictly descending walk cannot take a first step at all.",
+  "source": "Produced by `reproduce/measure.py`, which runs `minimise-rank --plateau` and `walk-scheme` at exactly the flags each row records.",
+  "why": "Steps 2 and 3 adopt a candidate only when it makes the map strictly cheaper, and on matrix multiplication no single rank-one map ever does: the shortlist for <2,2,2> is 0 of 225. Yet <2,2,2> has a 7-product algorithm. Strassen's seven are reachable from the naive eight only through maps costing the same, so a method that refuses a sideways step cannot get there by construction. These rows are what it costs to allow one.",
+  "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz.",
+  "readings": [
+    "Two different tools cross this plateau, and a timing from one was printed beside a claim about the other. `oracle_guided_search/measurements/three-by-three.md` says `minimise_rank` cannot take a first step on <2,2,2> but `plateau_search` can, and then gives 0.11 s. That 0.11 s is `walk-scheme`'s, the figure `famous_tensors/README.md` publishes in a column it correctly labels as walk-scheme. `plateau_search` does cross, and it is not what was timed there.",
+    "What `plateau_search` costs, measured: at a 380-state budget it reaches 7 in 0.065 s having visited 386 subspaces. At the default budget of 200 000 it reaches the same 7 and takes 20 s over 66 063 subspaces, because it keeps walking after it has already seen the best map it will find.",
+    "380 is where it crosses. At 370 the walk visits 376 subspaces, takes one improvement and stays at the naive 8; at 380 it takes two, visits 386 and reaches 7. Both rows are published so the boundary itself is checked: a change that makes the crossing cheaper moves it, and a single positive row would hide that.",
+    "So `plateau_state_budget = 200 000` is 526 times what the one crossing anyone here has measured needs. `tunables.conf` marks it PROVISIONAL and never measured; it is measured now, and the default is not what that crossing wants.",
+    "The walk rows pin the three counts `famous_tensors/README.md` quotes: 7 on <2,2,2>, 9 on GF(16), and 24 on <3,3,3> from the naive 27, each over 8 independent seeds of 20 000 flips. <3,3,3> is the one shape in this repository where nothing else improves on naive at all."
+  ],
+  "limits": [
+    "A plateau crossing guarantees nothing about optimality. It returns the cheapest map it ever saw, so it can only match or beat the strict walk it extends, and neither is a proof of anything. The refutations live in `exhaustive_search` and `satisfiability`.",
+    "<2,2,3> does not cross at a 2 000-state budget: the pool is 945, the shortlist is 0, and the walk stays at the naive 12. What budget it would need is not measured, so no row claims one.",
+    "The three timings quoted in prose around this file predate it and are slower than what the code now does: 0.11 s, 0.69 s and 38.1 s against 0.026 s, 0.20 s and 11.7 s today. They are not corrected here. MEASURING.md says a protocol timing is superseded by another protocol timing, and this machine was running other work; the counts are what `--check` compares and the counts are unchanged."
+  ],
+  "plateau": [
+    {
+      "name": "<2,2,2> at a 380-state budget",
+      "tensor": "matmul_2x2x2",
+      "depth": 2,
+      "state_budget": 380,
+      "pool": 225,
+      "shortlist": 0,
+      "naive": 8,
+      "improvements": 2,
+      "sideways": 12,
+      "states_visited": 386,
+      "reached": 7,
+      "seconds": 0.0868,
+      "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 380"
+    },
+    {
+      "name": "<2,2,2> at a 370-state budget",
+      "tensor": "matmul_2x2x2",
+      "depth": 2,
+      "state_budget": 370,
+      "pool": 225,
+      "shortlist": 0,
+      "naive": 8,
+      "improvements": 1,
+      "sideways": 12,
+      "states_visited": 376,
+      "reached": 8,
+      "seconds": 0.0629,
+      "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 370"
+    }
+  ],
+  "walk": [
+    {
+      "name": "<2,2,2> from naive, 20 000 flips over 8 seeds",
+      "tensor": "matmul_2x2x2",
+      "flips": 20000,
+      "seeds": 8,
+      "naive": 8,
+      "reached": 7,
+      "rank_bound": 6,
+      "gap": 1,
+      "best_seed": 1,
+      "reductions": 1,
+      "seconds": 0.0294,
+      "command": "build/flip_graph/walk-scheme fixtures/matmul_2x2x2.tensor --flips 20000 --seeds 8"
+    },
+    {
+      "name": "GF(16) from naive, 20 000 flips over 8 seeds",
+      "tensor": "gf16_multiplication",
+      "flips": 20000,
+      "seeds": 8,
+      "naive": 16,
+      "reached": 9,
+      "rank_bound": 8,
+      "gap": 1,
+      "best_seed": 1,
+      "reductions": 6,
+      "seconds": 0.2217,
+      "command": "build/flip_graph/walk-scheme fixtures/gf16_multiplication.tensor --flips 20000 --seeds 8"
+    },
+    {
+      "name": "<3,3,3> from naive, 20 000 flips over 8 seeds",
+      "tensor": "matmul_3x3x3",
+      "flips": 20000,
+      "seeds": 8,
+      "naive": 27,
+      "reached": 24,
+      "rank_bound": 14,
+      "gap": 10,
+      "best_seed": 1,
+      "reductions": 3,
+      "seconds": 13.2974,
+      "command": "build/flip_graph/walk-scheme fixtures/matmul_3x3x3.tensor --flips 20000 --seeds 8"
+    }
+  ],
+  "counts_provenance": {
+    "commit": "d3b5e439c470dacbbb71eb0844a4037c2aa2b5e5",
+    "tree_clean": false,
+    "covers": "The counts in this file and the invocations that produced them. This file is new, so it carries no `provenance` block: its `seconds` fields are a first reading taken on a machine that was running other work, and are not the quiet-machine protocol of MEASURING.md. They are here because a reader deserves an order of magnitude, and they are to be superseded by a protocol run rather than trusted as one. The counts are exact arithmetic and reproduce anywhere, which is why `--check` compares those and not these.",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "reports no version; binary at /home/hamlil/.local/bin/drat-trim",
+      "cbc": "Version: 2.10.11",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "build",
+    "repeats": 1,
+    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
+  }
+}
