@@ -66,7 +66,7 @@ both routes back to back on an idle machine:
 | canonical, walking the group | 1 | 954 | 21.9 s |
 | canonical, canonical image | 1 | **83** | **3.04 s** |
 
-**22 779x fewer nodes than the plain route and 11.8x faster**, against 1 982x and
+**22 778x fewer nodes than the plain route and 11.8x faster**, against 1 982x and
 1.7x before. The group is no longer walked at all: `group_visits` is 0 and
 `canonisations` is what counts now. Handing the caller's group as **generators**
 rather than as a list took the same run from 3.04 s to **1.12 s**, because the

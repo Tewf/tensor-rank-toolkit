@@ -90,7 +90,7 @@ has nothing left to buy.
 ## Where the route does win outright is a question, not a shape
 
 Counting solution subspaces up to the group, where the plain enumerator must
-store one canonical code per distinct object and re-walk every orbit: 22 779x
+store one canonical code per distinct object and re-walk every orbit: 22 778x
 fewer nodes and 11.8x the clock at `<2,2,2>` target 7, the margin growing with
 the group ([`../deduplication-cost.md`](../deduplication-cost.md)). That is
 already wired, in `enumerate-subspaces`. Deciding is not counting, and

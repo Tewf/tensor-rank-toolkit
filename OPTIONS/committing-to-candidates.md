@@ -30,7 +30,7 @@ Waits for a proof, which is what makes it minimality-preserving and dear.
 | Flag | Default | What chose the default |
 |---|---|---|
 | `--target k` | none; required | Nothing to measure. |
-| `--plain` / `--canonical` | **both run** when neither is named | Measured, and running both is the point. The parent test cut nodes by **247x, 1982x and 3082x** on the three cases while cutting wall clock only 1.2x, 1.6x and 2.1x, spending about 99.9% of the node saving on naming an orbit by walking the group. Naming it from a base and strong generating set instead made the middle case **22 779x fewer nodes and 11.8x faster**, so the two columns are no longer three orders of magnitude apart and running both is now a check rather than a warning. |
+| `--plain` / `--canonical` | **both run** when neither is named | Measured, and running both is the point. The parent test cut nodes by **247x, 1982x and 3082x** on the three cases while cutting wall clock only 1.2x, 1.6x and 2.1x, spending about 99.9% of the node saving on naming an orbit by walking the group. Naming it from a base and strong generating set instead made the middle case **22 778x fewer nodes and 11.8x faster**, so the two columns are no longer three orders of magnitude apart and running both is now a check rather than a warning. |
 | `-s, --symmetry matmul` | `none` | Without a group there is nothing to deduplicate up to. |
 
 Neither a node limit nor a timeout exists here.

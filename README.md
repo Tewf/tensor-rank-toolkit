@@ -32,7 +32,7 @@ Ten strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
 | [factorisation](canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
 | [satisfiability](satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
 | [symmetry](orbit_reduction/) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](oracle_guided_search/) | each class exactly once, no memory | **22 779x fewer nodes** on 2x2 matmul |
+| [isomorph-free](oracle_guided_search/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
 | [sparsification](matrix_sparsification/) | fewer additions, rank fixed | Strassen's operators **12 nonzeros to 10** |
 
 **The leaf is where an exhaustive search lives**, and neither of its two routes
