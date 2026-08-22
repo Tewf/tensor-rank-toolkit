@@ -10,3 +10,11 @@ add_test(NAME pattern_feasibility
 add_executable(test_algorithm_cost test_algorithm_cost.cpp)
 target_link_libraries(test_algorithm_cost PRIVATE matrix_sparsification project_warnings testing)
 add_test(NAME algorithm_cost COMMAND test_algorithm_cost ${PROJECT_SOURCE_DIR}/fixtures)
+
+# An operator and its transpose reach the same count. They must, and until
+# 2026-08-22 they did not: a wide operator went through every method unchanged
+# because the question is vacuous on that side. Every fixture here is 7x4, which
+# is why nothing caught it; this check writes the transpose itself.
+add_test(NAME sparsify_orientation
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_orientation_does_not_decide.sh
+                 $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)
