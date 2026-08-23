@@ -23,8 +23,8 @@ can beat it. The comparison is still what the default output is for. Precedence 
 | `greedy, by rescaling` (`--operations`) | Reaches 10 nonzeros **and 10 operations** on the alternative-basis operator, which is the cost the article minimises. The only route here answering that question, and the reason speed does not order it against the others. |
 
 **Three routes, not five.** The row-basis heuristic and `[beniamini2020]`'s two
-oracles reached the same counts 88x to 343x more slowly and moved to the
-`dominated-methods` branch on 2026-08-22:
+oracles reached the same counts 88x to 343x more slowly and moved on 2026-08-22
+to the archive branch `rejected-experiments` (`retired/dominated_sparsifiers/`):
 [`../matrix_sparsification/dominated.md`](../matrix_sparsification/dominated.md)
 has the measurement and says where to find them.
 

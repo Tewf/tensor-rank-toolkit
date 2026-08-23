@@ -1,13 +1,16 @@
 # What left this module, and where to find it
 
 `main` carries what you would run. Three methods that reached the *same answer*
-more slowly were moved to the **`dominated-methods`** branch on 2026-08-22, with
-their tests, their measurements and their documentation intact. Nothing was
-deleted, and this page exists so that looking for them is one `git switch` rather
-than an archaeology of the history.
+more slowly were moved out on 2026-08-22, with their tests, their measurements
+and their documentation intact. Since 2026-08-23 they are archived on the
+**`rejected-experiments`** branch under `retired/dominated_sparsifiers/`, whose
+`retired/README.md` indexes everything that branch holds. Nothing was deleted,
+and this page exists so that looking for them is one `git switch` rather than an
+archaeology of the history.
 
 ```sh
-git switch dominated-methods      # everything below, exactly as it was
+git switch rejected-experiments   # sources and method notes, indexed
+git switch --detach d3c7f3f       # the full tree with them wired in and tested
 ```
 
 ## What moved, and the measurement that moved it
@@ -65,6 +68,6 @@ That operator used to run for thirty minutes and say nothing at all.
 |---|---|
 | the fastest correct answer | this branch, `rational_sparsifier.h` |
 | `nnz + nns` rather than `nnz` | this branch, `greedy_sparsifier.h` |
-| the article's Algorithms 3 and 4 | `dominated-methods` |
-| a sparsification heuristic to compare against | `dominated-methods` |
-| what each cost when they were measured together | `results.json`, on both branches |
+| the article's Algorithms 3 and 4 | `rejected-experiments`, `retired/dominated_sparsifiers/` |
+| a sparsification heuristic to compare against | `rejected-experiments`, `retired/dominated_sparsifiers/` |
+| what each cost when they were measured together | `results.json` here, and with all five methods at commit `d3c7f3f` |

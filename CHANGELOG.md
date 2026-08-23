@@ -17,7 +17,8 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **The default run costs about a third of a second rather than about 500 s**,
   because it no longer runs five methods to report a comparison. Three of them
   reached the same counts 88x to 343x more slowly and moved to the
-  **`dominated-methods`** branch with their tests and measurements:
+  archive branch (since 2026-08-23 `rejected-experiments`,
+  `retired/dominated_sparsifiers/`) with their tests and measurements:
   `matrix_sparsification/dominated.md` says what went and where to find it.
   Nothing was deleted, and two of the three are `[beniamini2020]`'s own
   Algorithms 3 and 4.

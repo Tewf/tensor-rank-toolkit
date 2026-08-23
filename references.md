@@ -1064,7 +1064,8 @@ method, which shares no machinery with anything here.
 *Sparsifying the Operators of Fast Matrix Multiplication Algorithms.*
 [arXiv:2008.03759](https://arxiv.org/abs/2008.03759), 2020.
 Definition 3.2 is the Ω-valid set; Algorithms 3 and 4 are the two exact oracles
-on the `dominated-methods` branch, with the measurement that moved them in
+archived on the `rejected-experiments` branch
+(`retired/dominated_sparsifiers/`), with the measurement that moved them in
 [`matrix_sparsification/dominated.md`](matrix_sparsification/dominated.md);
 Algorithm 2 is the driver they feed, from `gottlieb2010`; Algorithm 6 is the
 greedy in `greedy_sparsifier.h`.

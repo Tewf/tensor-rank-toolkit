@@ -5,7 +5,7 @@
   "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz.",
   "methods": [
     "Exact, matroid greedy over Q: scan column supports in ascending size and keep every codeword that raises the rank. The minimum over every invertible V, by Rado-Edmonds, and the only method here proved so.",
-    "The three methods removed on 2026-08-22 (row-basis heuristic, and both of [beniamini2020]'s oracles) reached the same counts 88x to 343x more slowly and are on the dominated-methods branch, with their measurements; see matrix_sparsification/dominated.md."
+    "The three methods removed on 2026-08-22 (row-basis heuristic, and both of [beniamini2020]'s oracles) reached the same counts 88x to 343x more slowly and are archived on the rejected-experiments branch under retired/dominated_sparsifiers/, with their measurements; see matrix_sparsification/dominated.md."
   ],
   "fixtures": [
     {
