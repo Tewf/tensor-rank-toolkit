@@ -30,6 +30,24 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **The browser console offers the flags its tools actually take.** Twenty-one
+  had reached the binaries without ever reaching
+  [`web_interface/catalogue.py`](web_interface/catalogue.py), and nineteen of
+  them belonged there: `sparsify-operator --field p`, which is the only route to
+  the exact answer over GF(p) and so the only route to the question an operator
+  the rank search emitted is actually asking; `--max-memory` on the six commands
+  that had grown one, each carrying the sentence saying what it refuses *there*,
+  since one note cannot say six things; `-s`, `--threads`, `--below`,
+  `--cost-drop`, `--span-census` and `--orbit-moves` on `lower-the-bound`, which
+  had shipped with eight of its fifteen; `decide-rank --device`, `--plan-out`
+  and `--trace`; `decide-rank-by-sat --threads`;
+  `factor-over-canonical-basis --ceiling`; and `sparsify-operator --emit`. Two
+  are left off and say why: `decide-rank --plan-in` names a second file to read
+  where this console offers one box, which is the limit that already keeps
+  `operators-to-tensor` off the tool list, and `walk-scheme --steps` is the
+  accepted older spelling of a flag already there. `--field` carries its own
+  reading of exit 0 beside itself, because the badge is the word `minimum`
+  either way and a minimum over GF(p) is not the minimum over Q.
 - **The browser console runs `README.md`'s pipeline as one flow.**
   `minimise-rank --emit-operators` and then `sparsify-operator` on each of the
   three operators it wrote, from one press, declared in

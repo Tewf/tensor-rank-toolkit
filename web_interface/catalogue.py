@@ -1,12 +1,18 @@
 """The tools this console offers, what each one asks, and the flags it takes.
 
 **The list is the interface, so it is checked against the build rather than
-counted.** `tests/check_web_interface.py` asserts in both directions: every
-binary named here exists, and every command the build produces is either here or
-named there as not a tool. A literal count is what let this drift —
-`lower-the-bound` shipped on 2026-08-21 and did not reach this file for a day,
-while `len(TOOLS) == 12` stayed true throughout. Which command answers what, and
-which binaries are deliberately not tools:
+counted.** `tests/catalogue_against_the_build.py` asserts in both directions and
+at both depths: every binary named here exists and every command the build
+produces is either here or named there as not a tool, and every flag a binary's
+own `--help` prints is either an option below or named there as deliberately not
+offered. A literal count is what let the first of those drift: `lower-the-bound`
+shipped on 2026-08-21 and did not reach this file for a day, while
+`len(TOOLS) == 12` stayed true throughout. Nothing at all was watching the
+second, and twenty-one flags had reached the binaries and not this table by
+2026-08-23, of which nineteen belonged here. Among those nineteen was
+`sparsify-operator --field p`, the only route to the exact answer over GF(p) and
+so the only route to the question an operator the rank search emitted is actually
+asking. Which command answers what, and which binaries are deliberately not tools:
 `../OPTIONS/one-question-per-command.md`.
 
 A table and not behaviour: every entry is transcribed from the tool's own
@@ -57,6 +63,22 @@ SOLVER_MEMORY = {"flag": "--max-memory", "kind": "memory",
                          "tunables.conf. Written as a size, 2G or 2048M.",
                  "budget": True}
 
+# The same spelling on the six tools where it decides no pool: still the bulk
+# allocation budget in bytes, and still the one number that decides whether a run
+# can start at all. What it refuses differs a tool at a time, so that sentence is
+# written beside each rather than shared, which is the lesson above.
+ALLOCATION_MEMORY = {"flag": "--max-memory", "kind": "memory",
+                     "label": "memory cap",
+                     "note": "Bytes one bulk allocation may take, 2G by "
+                             "default. Written as a size, 2G or 2048M.",
+                     "budget": True}
+
+
+def memory_cap(refuses):
+    """`--max-memory` on one of those tools, with what it refuses there."""
+    return dict(ALLOCATION_MEMORY,
+                note=ALLOCATION_MEMORY["note"] + " " + refuses)
+
 TOOLS = [
     {
         "name": "minimise-rank",
@@ -106,6 +128,12 @@ TOOLS = [
                      "taller tree, which is what reaches 13 on f2_5x5 where "
                      "descent exhausts at 14: "
                      "incumbent_search/what-it-reaches.md."},
+            {"flag": "--below", "kind": "count",
+             "label": "stop at k products or fewer",
+             "note": "The incumbent is seeded at k+1 instead of at the start, so "
+                     "the bound cuts at dimension k straight away and the tree "
+                     "is smaller. Not reaching k refutes nothing: nothing here "
+                     "does."},
             {"flag": "--nodes", "kind": "count", "label": "subspaces to expand",
              "budget": True,
              "note": "20000 by default. Spending it withdraws no answer."},
@@ -113,6 +141,13 @@ TOOLS = [
              "note": "4 by default, cheapest first. 0 enters every child, "
                      "which is the branch and bound rather than a beam and is "
                      "affordable on matmul_2x2x2 and nothing larger here."},
+            {"flag": "--cost-drop", "kind": "count",
+             "label": "most one move may take off the cost",
+             "note": "0 by default, which leaves the bound as it was. A positive "
+                     "s tightens it from dim+1 to the least value of "
+                     "max(dim+t, cost-s*t), which at <3,4,5> is 38 rather than "
+                     "16. Measured at 1 and not proved, so every child is "
+                     "checked against it and a violation refuses the answer."},
             {"flag": "--summand-rank", "kind": "count",
              "label": "largest rank a move may split",
              "note": "3 by default. An element of rank r offers "
@@ -126,6 +161,17 @@ TOOLS = [
              "label": "offer every rank-one map instead of generated moves",
              "note": "|pool| minimum-weight bases a node: 16 129 at 7x7 over "
                      "GF(2). Not measured on anything it could finish."},
+            {"flag": "--span-census", "kind": "switch",
+             "label": "count the subspaces this run reaches twice",
+             "note": "Off by default and it changes nothing: a run with it on "
+                     "enters the same tree and prints the same counts. What the "
+                     "number is evidence about is whether isomorph rejection "
+                     "could pay here at all."},
+            {"flag": "--orbit-moves", "kind": "switch",
+             "label": "one move per orbit instead of every move",
+             "note": "Under the group -s names. Off by default: every count "
+                     "published for this search was taken without it, and no "
+                     "group is available for most fixtures here."},
             {"flag": "--emit-operators", "kind": "emit_operators",
              "label": "write the operators (L, R, P as SMS)",
              "note": "The same three .sms files minimise-rank writes."},
@@ -135,6 +181,17 @@ TOOLS = [
                      "bit an entry; this forces the general one, same tree and "
                      "same counts, so the two can be timed on one question: "
                      "descent_search/gf2_span_walk.h."},
+            dict(SYMMETRY),
+            # Not the shared note: this search refutes nothing and has no node
+            # limit to run out of, so the sentence that warns about exit 3 on
+            # decide-rank would be a warning about something that cannot happen.
+            {"flag": "--threads", "kind": "count", "label": "threads",
+             "note": "0 for every core, 1 by default. The children of one node "
+                     "are prepared in parallel and entered in the same order at "
+                     "any count, so every number this prints is what one worker "
+                     "printed."},
+            memory_cap("--summand-rank r asks for p^r vectors, and this is what "
+                       "refuses an r the machine cannot hold."),
         ],
     },
     {
@@ -189,6 +246,28 @@ TOOLS = [
                      "branches standing. Same verdict either way, and the node "
                      "counts say what the duplication costs: "
                      "orbit_reduction/what-partial-rejection-leaves.md."},
+            {"flag": "--device", "kind": "choice",
+             "values": ["auto", "cpu", "gpu"],
+             "label": "which processor answers a leaf",
+             "note": "auto is the default and takes the card where one is "
+                     "compiled in, present, has a kernel for the shape, and the "
+                     "leaf is over device_launch_floor elements. gpu asks for it "
+                     "and lifts that floor; cpu takes it off the table. gpu is a "
+                     "request and not an instruction, and the device: line in "
+                     "the plan says which one answered and why."},
+            {"flag": "--plan-out", "kind": "emit_file", "suffix": "_plan.txt",
+             "label": "write the seven choices this run made",
+             "note": "The run carries on. Replayed elsewhere it is "
+                     "--plan-in, which names a second file to read and is "
+                     "therefore not offered here, so the card below is where "
+                     "you fetch this one and carry it to a terminal."},
+            {"flag": "--trace", "kind": "emit_file", "suffix": "_trace.jsonl",
+             "label": "write what the search walked (JSON Lines)",
+             "note": "One line per node opened, bounded, pruned or adopted, so "
+                     "the file grows with the tree rather than with the answer. "
+                     "It needs one worker: two interleave their nodes and what "
+                     "comes out is not a tree, so the run refuses the pair "
+                     "rather than writing one."},
             dict(SYMMETRY), dict(THREADS), dict(MEMORY),
         ],
     },
@@ -241,6 +320,17 @@ TOOLS = [
                      "solver carries, so it bounds what outlives a stop."},
             {"flag": "--probe", "kind": "count", "label": "seconds for questions on the way",
              "budget": True},
+            # Its own note again, and for the same reason: nothing here has a
+            # node limit, and what a second worker changes is which cube an
+            # answer comes back from and how the memory cap is divided.
+            {"flag": "--threads", "kind": "count", "label": "threads",
+             "note": "0 for every core, 1 by default. -s matmul splits the "
+                     "question into one instance per orbit of the first term, "
+                     "and those are independent solver processes; each worker's "
+                     "cap is the cap below divided by the workers, so the "
+                     "aggregate ceiling is the one number the flag names. A "
+                     "refutation is the same at any count; a yes may come back "
+                     "from a different cube."},
             dict(SYMMETRY), dict(SOLVER_MEMORY),
         ],
     },
@@ -262,6 +352,9 @@ TOOLS = [
             {"flag": "--from", "kind": "count", "label": "start from a k-product scheme",
              "note": "The heuristic has to reach k or fewer or the run refuses."},
             dict(THREADS),
+            memory_cap("--from k runs the heuristic first, whose span table is "
+                       "p^dim, so this is what refuses a shape the machine "
+                       "cannot hold."),
         ],
     },
     {
@@ -285,7 +378,12 @@ TOOLS = [
                      "means": "the canonical form was computed. Read which of "
                               "the three claims it makes: lower bound, "
                               "provisional, or exact."}},
-        "options": [],
+        "options": [
+            memory_cap("There is nothing to tune here and this is not a tuning: "
+                       "the Sumi bound builds x^p - x, which is linear in the "
+                       "characteristic the file names, so this is the one number "
+                       "a caller may have to move to run at all."),
+        ],
     },
     {
         "name": "factor-over-canonical-basis",
@@ -302,6 +400,13 @@ TOOLS = [
                               "it was complete."}},
         "options": [
             {"flag": "--floor", "kind": "count", "label": "floor"},
+            {"flag": "--ceiling", "kind": "count", "label": "ceiling",
+             "budget": True,
+             "note": "The sum of the slices' ranks by default, which "
+                     "decomposing each slice alone always reaches. Stopping "
+                     "lower prices the sweep at a stated number of levels; "
+                     "below the rank every level refutes and the run ends "
+                     "undecided, which proves nothing about the rank."},
             {"flag": "--route", "kind": "choice",
              "values": ["auto", "exhaustive", "sat", "canonical"], "label": "route"},
             {"flag": "--node-limit", "kind": "count", "label": "node limit",
@@ -376,11 +481,41 @@ TOOLS = [
                               "minimises nnz + nns instead, which is a different "
                               "question."}},
         "options": [
+            {"flag": "--field", "kind": "count",
+             "label": "field p, to answer over GF(p) instead of over Q",
+             "note": "Reads the entries over GF(p) and answers there, exactly, "
+                     "by the matroid greedy over the column space. .sms only. "
+                     "The routes below work over Q, which is a different and "
+                     "harder question, and an operator a rank search emitted is "
+                     "over a finite field: this is the question it is asking.",
+             # A minimum over GF(p) is not the minimum over Q, and the badge is
+             # the same word for both. So the flag carries the reading, the way
+             # `--emit-cnf` does above, rather than letting the answer be read as
+             # the harder one it is not.
+             "verdicts": {"0": {"badge": "minimum",
+                          "means": "the least number of nonzeros over every "
+                                   "invertible V over GF(p), by Rado-Edmonds. "
+                                   "That is a different and easier question "
+                                   "than the same minimum over Q, which is what "
+                                   "this tool answers without the flag."}}},
             {"flag": "--simplex", "kind": "switch",
              "label": "answer by linear programming, the only route that finishes a large operator"},
             {"flag": "--operations", "kind": "switch",
              "label": "also minimise nnz + nns, where a 4/9 costs more than a 1"},
+            # `_sparsified` and not the stem alone: this tool is the one whose
+            # input and output are the same format, so a name built from the
+            # stem and `.sms` would be the operator it was asked to read.
+            {"flag": "--emit", "kind": "emit_file", "suffix": "_sparsified.sms",
+             "label": "write the sparsified operator (SMS)",
+             "note": "Written the way the file came in, so it drops in where "
+                     "the original did: a decoding operator goes back up the "
+                     "way it was given, which is the program that is run."},
             {"flag": "--show", "kind": "switch", "label": "print the matrix as well"},
+            memory_cap("The scan is priced by the column supports it may walk "
+                       "rather than by what it allocates: about ten megabytes "
+                       "on a 23x9 operator and 1.4 PiB on a 49x16 one, which is "
+                       "what refuses the second in milliseconds. --simplex "
+                       "answers it."),
         ],
     },
     {
@@ -421,6 +556,8 @@ TOOLS = [
              "verdicts": {"0": {"badge": "listed",
                           "means": "the machine was asked which backends it "
                                    "has. Nothing was minimised."}}},
+            memory_cap("The frontier is quadratic in --degree, so this is what "
+                       "refuses a degree this machine cannot hold."),
         ],
     },
     {
@@ -444,7 +581,10 @@ TOOLS = [
              "fields": ["field p", "modulus coefficients, highest degree first"],
              "trailing": True},
         ],
-        "options": [],
+        "options": [
+            memory_cap("Every mode above is cubic in the numbers it takes, so "
+                       "this is what refuses a shape the machine cannot hold."),
+        ],
     },
 ]
 
