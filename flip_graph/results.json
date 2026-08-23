@@ -13,7 +13,7 @@
   "limits": [
     "A plateau crossing guarantees nothing about optimality. It returns the cheapest map it ever saw, so it can only match or beat the strict walk it extends, and neither is a proof of anything. The refutations live in `exhaustive_search` and `satisfiability`.",
     "<2,2,3> does not cross at a 2 000-state budget: the pool is 945, the shortlist is 0, and the walk stays at the naive 12. What budget it would need is not measured, so no row claims one.",
-    "The three timings quoted in prose around this file predate it and are slower than what the code now does: 0.11 s, 0.69 s and 38.1 s against 0.026 s, 0.20 s and 11.7 s today. They are not corrected here. MEASURING.md says a protocol timing is superseded by another protocol timing, and this machine was running other work; the counts are what `--check` compares and the counts are unchanged."
+    "The three timings quoted in prose around this file predate it and are slower than what the code now does: 0.11 s, 0.69 s and 38.1 s against the 0.027 s, 0.20 s and 11.4 s in the walk rows below. They are not corrected here. MEASURING.md says a protocol timing is superseded by another protocol timing, and this machine was running other work; the counts are what `--check` compares and the counts are unchanged."
   ],
   "plateau": [
     {
@@ -28,7 +28,7 @@
       "sideways": 12,
       "states_visited": 386,
       "reached": 7,
-      "seconds": 0.0181,
+      "seconds": 0.0179,
       "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 380"
     },
     {
@@ -43,7 +43,7 @@
       "sideways": 12,
       "states_visited": 376,
       "reached": 8,
-      "seconds": 0.0166,
+      "seconds": 0.0164,
       "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 370"
     }
   ],
@@ -59,7 +59,7 @@
       "gap": 1,
       "best_seed": 1,
       "reductions": 1,
-      "seconds": 0.0269,
+      "seconds": 0.0273,
       "command": "build/flip_graph/walk-scheme fixtures/matmul_2x2x2.tensor --flips 20000 --seeds 8"
     },
     {
@@ -73,7 +73,7 @@
       "gap": 1,
       "best_seed": 1,
       "reductions": 6,
-      "seconds": 0.1961,
+      "seconds": 0.1968,
       "command": "build/flip_graph/walk-scheme fixtures/gf16_multiplication.tensor --flips 20000 --seeds 8"
     },
     {
@@ -87,12 +87,12 @@
       "gap": 10,
       "best_seed": 1,
       "reductions": 3,
-      "seconds": 11.4423,
+      "seconds": 11.4446,
       "command": "build/flip_graph/walk-scheme fixtures/matmul_3x3x3.tensor --flips 20000 --seeds 8"
     }
   ],
   "provenance": {
-    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "commit": "aae2fe358d17d88697c04b78ac68d9e365102ba2",
     "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",

@@ -6,7 +6,34 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing since 0.4.0.
+### Changed
+
+- **The one timing this repository published as a ceiling is measured, and the
+  ceiling was worth an order of magnitude.** Refuting eight products on GF(16)
+  exhaustively stood at **2328 s**, a figure older than the count beside it: it
+  was taken before the GF(2) bit-packed leaf existed, and it survived two
+  regenerations because `measure.py` skips that question by default at 4.1
+  minutes of one core, and because the only replacement runs anybody had were
+  taken on a machine with a browser open, which `MEASURING.md` does not accept.
+  `measure.py --slow` asked it properly on 2026-08-23: **247.118 s**, at the
+  same 105 600 301 nodes to the digit. The projection that stood in for it
+  guessed the shipped binary at about six times faster; it is **9.4 times**.
+
+  **The number it was propping up was the comparison against a SAT solver.**
+  `satisfiability/measurements.md` had the solver ahead by 21.8x on the hardest
+  question here, marked as a ceiling; it is ahead by **2.30x**. The standing
+  claim survives — the solver's advantage grows with the instance, from 11.7x
+  behind on `⟨2,2,2⟩` to 2.3x ahead on GF(16) — but it is a slope rather than a
+  cliff, and eight documents were quoting the cliff.
+
+- **Two ratios stopped being quoted to three digits, by this repository's own
+  rule.** The orbit quotient's seconds read 29.6x after one regeneration and
+  29.5x after the next, off a quotiented run of 0.000992 s. `MEASURING.md` says
+  a ratio whose smaller end is under a millisecond is an order of magnitude and
+  not two digits, so it is **about 30x** now, and the per-node surcharge is
+  **about 1.1x to 1.3x**. The node columns, which do not move, are what those
+  pages argue from.
+
 
 ## [0.4.0] - 2026-08-23
 

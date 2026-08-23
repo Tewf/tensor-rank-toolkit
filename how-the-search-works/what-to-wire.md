@@ -7,7 +7,7 @@ behind its flag.
 
 | piece | verdict | the number it rests on |
 |---|---|---|
-| orbit quotient | **wired**, on `-s` | 39.2x fewer nodes refuting `⟨2,2,2⟩` at 6, at a 1.32x surcharge a node |
+| orbit quotient | **wired**, on `-s` | 39.2x fewer nodes refuting `⟨2,2,2⟩` at 6, at about a 1.3x surcharge a node |
 | odometer | **wired**, automatic | the only route at `⟨4,4,4⟩`, where a held pool is 8.2 TiB |
 | GPU leaf | **verdict suspended** — the host moved under it | was 81x on the hardest comparison; the host leaf has since changed twice |
 | `SortedSpan` | **wire the cost query, not the search** | 1.10x there; refuted at a node, dominated at a leaf |

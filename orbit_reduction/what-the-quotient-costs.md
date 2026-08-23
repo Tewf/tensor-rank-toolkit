@@ -11,17 +11,22 @@ against `-s matmul 2 2 2`:
 
 | question | plain | quotiented | nodes removed | seconds |
 |---|---|---|---|---|
-| refuting k = 6 | 25 399 | **648** | 39.2x | 0.02923 to 0.000986, **29.6x** |
-| finding k = 7 | 7 436 | **3 167** | 2.35x | 0.012591 to 0.005998, **2.10x** |
+| refuting k = 6 | 25 399 | **648** | 39.2x | 0.029257 to 0.000992, **about 30x** |
+| finding k = 7 | 7 436 | **3 167** | 2.35x | 0.012633 to 0.005903, **about 2.1x** |
 
-The seconds are the ones `descent_search/results.json` published on 2026-08-23,
-regenerated from a clean tree; they were 0.0362 and 0.0214 before the GF(2) leaf
-and the reflected Gray walk landed, and the two ratios were 27.8x and 2.14x.
-**Nothing in the node columns moved and nothing was expected to.** Read the
-quotiented second at k = 6 as an order of magnitude rather than as three digits:
-under a millisecond it is measuring the process as much as the search,
-[`../MEASURING.md`](../MEASURING.md) says why, and the node column is the one
-this page argues from for that reason.
+The seconds are the ones `descent_search/results.json` publishes, last written by
+a full `measure.py` run on 2026-08-23; they were 0.0362 and 0.0214 before the
+GF(2) leaf and the reflected Gray walk landed, when the two ratios read 27.8x and
+2.14x. **Nothing in the node columns moved and nothing was expected to.**
+
+**The seconds ratios are given as "about" and that is deliberate.** The
+quotiented refutation is under a millisecond and the quotiented find is six of
+them, so at the small end this is timing the process as much as the search:
+[`../MEASURING.md`](../MEASURING.md)'s rule is that a ratio with an end that
+small is quoted as an order of magnitude. Two successive regenerations of the
+same unchanged code put the first ratio at 29.6 and then 29.5, which is exactly
+the digit the rule says not to publish. The node column does not have the
+problem, and it is what this page argues from.
 
 The refutation loses far more of its tree than the satisfiable question does,
 and that is structural rather than lucky: a refutation visits every node, so
@@ -31,8 +36,8 @@ stops at the first witness and may well have stopped early anyway.
 ## The surcharge, which is now small
 
 A quotiented node runs `least_in_orbit` and a plain node does not. That
-surcharge is the gap between the two rightmost columns: **1.32x** a node at
-k = 6, **1.12x** at k = 7. Time therefore tracks nodes almost exactly, and the
+surcharge is the gap between the two rightmost columns: **about 1.3x** a node at
+k = 6, **about 1.1x** at k = 7. Time therefore tracks nodes almost exactly, and the
 node table above is very nearly the whole story. It is also why paying fewer
 nodes matters more here than paying less per node, which is the finding of
 [`what-partial-rejection-leaves.md`](what-partial-rejection-leaves.md).

@@ -76,7 +76,7 @@ SAT_QUESTIONS = [
     {"name": "matmul_2x2x3", "ruled_out_at": 8, "exhaustive": True},
     {"name": "gf16_multiplication", "found_at": 9, "ruled_out_at": 8, "exhaustive": True,
      "exhaustive_costs": (
-         "105 600 301 nodes, which is 6.6 minutes of one core and longer than "
+         "105 600 301 nodes, which is 4.1 minutes of one core and longer than "
          "every other question here together. The invocation is recorded in "
          "`exhaustive_command`, node limit and all; `measure.py --slow` asks it.")},
     {"name": "f2_5x5"},

@@ -15,8 +15,8 @@ of `⟨2,2,2⟩` costs about half a second from nothing:
 
 ```
 lower bound: rank is at least 6                 rank_lower_bound, before any question
-k = 6: NO, rank is more than 6   (0.338 s)
-k = 7: FOUND a decomposition     (0.185 s)      0.517 s, two questions
+k = 6: NO, rank is more than 6   (0.339 s)
+k = 7: FOUND a decomposition     (0.183 s)      0.517 s, two questions
 ```
 
 Strassen's seven products and Winograd's proof that six are impossible, neither
@@ -36,18 +36,18 @@ unsatisfiable, which is a false lower bound
 
 ## What it costs against the exhaustive search
 
-Both columns are the 2026-08-23 run, against the exhaustive searches on the same
+Both columns are the 2026-08-23 `--slow` run, against the exhaustive searches on the same
 fixtures. Every rank agrees in both directions, which is the point of having two
 methods.
 
 | Question | Exhaustive | SAT | |
 |---|---|---|---|
-| `⟨2,2,2⟩` find 7 | 7 436 nodes, **0.0126 s** | 0.185 s | both find Strassen |
-| `⟨2,2,2⟩` rule out 6 | 25 399 nodes, **0.0292 s** | 0.338 s | **11.6x**, and it is the tree |
-| `⟨2,2,3⟩` rule out 8 | retired, 0 nodes (was 446 923, 53.1 s) | 34.1 s | the bounds refute 8 in ms, beating both |
-| GF(16) find 9 | not reachable | **0.288 s** | |
-| GF(16) rule out 8 | 105 600 301 nodes at `--node-limit 200000000`, 2328 s | **106.9 s** | **21.8x**, and it is a ceiling |
-| GF(8) rule out 5 | | **0.055 s** | |
+| `⟨2,2,2⟩` find 7 | 7 436 nodes, **0.0127 s** | 0.183 s | both find Strassen |
+| `⟨2,2,2⟩` rule out 6 | 25 399 nodes, **0.0291 s** | 0.339 s | **11.7x**, and it is the tree |
+| `⟨2,2,3⟩` rule out 8 | retired, 0 nodes (was 446 923, 53.1 s) | 34.3 s | the bounds refute 8 in ms, beating both |
+| GF(16) find 9 | not reachable | **0.287 s** | |
+| GF(16) rule out 8 | 105 600 301 nodes at `--node-limit 200000000`, **247.1 s** | 107.4 s | **2.30x**, and it is the solver |
+| GF(8) rule out 5 | | **0.054 s** | |
 | Karatsuba, GF(4), W state | | under 0.02 s | |
 | F₂ 5×5 rule out 12 | never run | **unresolved** | neither method has an answer |
 
@@ -60,20 +60,24 @@ three days later. The solver's end barely moved, and would not: it is another
 program's second, and kissat did not change. So the pair is a fact about this
 repository's leaf and not a finding about SAT.
 
-**The last row's 21.8x is a ceiling, and the file it comes from says so.** The
-2328 s is older than the count beside it: it predates the same GF(2) leaf, and
-`results.json`'s `exhaustive_note` records that the shipped binary does that
-search about six times faster with **no replacement timing published**, because
-the runs that showed it were taken on a machine that was not quiet. So the
-solver's margin on GF(16) is at most 21.8x and the honest reading is "still
-ahead, by less than this". `measure.py --check --slow` is what would settle it,
-at 6.6 minutes of one core a run.
+**The last row moved further than the first one did, and it was the ceiling that
+came down.** It stood at 2328 s against 106.9 s and was quoted as the solver being
+ahead by 21.8x, with the number marked as a ceiling because the 2328 s was older
+than the count beside it: it predates the same GF(2) leaf, and the projection
+recorded next to it guessed the shipped binary at about six times faster. It is
+**9.4 times faster**, measured. `measure.py --slow` asked the question on
+2026-08-23 and the tree refutes eight products on GF(16) in **247.1 s**, at the
+same 105 600 301 nodes to the digit.
+
+**So the solver's margin on the hardest question here is 2.3x, not 21.8x.** The
+ceiling was worth about an order of magnitude, which is why it was labelled one
+rather than quoted as a result.
 
 **The SAT column is kissat, fastest of three, and it says so because it once did
 not.** Three of these cells were cryptominisat timings sitting under a heading
 naming kissat, which is a worse fault than a stale number: `⟨2,2,2⟩` find 7 was
-0.469 s, which is what cryptominisat costs against kissat's 0.185 s, and GF(16)
-find 9 was 36.19 s against 0.288 s. Solver by solver, per column, in
+0.469 s, which is what cryptominisat costs against kissat's 0.183 s, and GF(16)
+find 9 was 36.19 s against 0.287 s. Solver by solver, per column, in
 [`results.json`](results.json).
 
 `⟨2,2,3⟩` at 8 is retired rather than measured: the bounds refuse it before the
@@ -103,9 +107,9 @@ would reproduce a published exclusion, which is worth doing as a check and settl
 nothing open.
 
 **The advantage grows with the instance, and it now starts from behind.** The
-solver is 11.6 times *slower* than the tree on `⟨2,2,2⟩`, at most 21.8 times
-faster on GF(16), and was 1.6 times faster on `⟨2,2,3⟩` until that comparison
-lost its exhaustive end to the bounds. That is a stronger version of the same
+solver is 11.7 times *slower* than the tree on `⟨2,2,2⟩`, 2.3 times faster on
+GF(16), and was 1.6 times faster on `⟨2,2,3⟩` until that comparison lost its
+exhaustive end to the bounds. That is a stronger version of the same
 claim, not a different one: the table used to have a tie at the small end and a
 win at the large one, and now it has a loss and a win, so **the crossover is
 inside the table rather than argued from its ends**. The exhaustive search prunes

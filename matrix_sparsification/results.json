@@ -12,34 +12,34 @@
       "name": "strassen_u",
       "shape": "7x4",
       "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_u.matrix",
-      "seconds": 0.0015,
+      "seconds": 0.0017,
       "as_given": 12,
       "exact_matroid_greedy": 10,
       "greedy_by_rescaling": 10,
       "by_linear_programming": 10,
-      "simplex_seconds": 0.0024
+      "simplex_seconds": 0.0017
     },
     {
       "name": "strassen_v",
       "shape": "7x4",
       "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_v.matrix",
-      "seconds": 0.0017,
+      "seconds": 0.0019,
       "as_given": 12,
       "exact_matroid_greedy": 10,
       "greedy_by_rescaling": 10,
       "by_linear_programming": 10,
-      "simplex_seconds": 0.0022
+      "simplex_seconds": 0.004
     },
     {
       "name": "alternative_basis_u",
       "shape": "7x4",
       "command": "build/matrix_sparsification/sparsify-operator fixtures/alternative_basis_u.matrix",
-      "seconds": 0.0017,
+      "seconds": 0.0038,
       "as_given": 21,
       "exact_matroid_greedy": 10,
       "greedy_by_rescaling": 10,
       "by_linear_programming": 10,
-      "simplex_seconds": 0.0023
+      "simplex_seconds": 0.0022
     }
   ],
   "against_plinopt": {
@@ -83,7 +83,7 @@
   ],
   "limits": "The matroid greedy over Q returns the minimum over every invertible V and stops on collecting a basis rather than on a proof that nothing lighter exists, so it does not finish on an operator whose greedy weights are large: 4x4x4_49_156_L needs weight 6 or more for 7 of its 16 vectors, and the command now refuses that operator in milliseconds rather than running on. --simplex answers it instead, by linear programming, in 0.34 s and at 100 nonzeros. That is an UPPER BOUND: it would be the minimum if the operator's column matroid were regular, and it is not, a sixteen-column minor having determinant -2. What is verified rather than assumed is that the answer spans the same row space. The greedy by rescaling, behind --operations, guarantees nothing and minimises nnz + nns rather than nnz, which is why speed does not order it against the rest. See matrix_sparsification/method/answering-without-searching.md.",
   "provenance": {
-    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "commit": "aae2fe358d17d88697c04b78ac68d9e365102ba2",
     "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",

@@ -25,7 +25,7 @@
       },
       "step_3": {
         "multiplications": 14,
-        "seconds": 0.0986
+        "seconds": 0.0985
       }
     },
     {
@@ -38,11 +38,11 @@
       },
       "step_2": {
         "multiplications": 16,
-        "seconds": 0.0057
+        "seconds": 0.0041
       },
       "step_3": {
         "multiplications": 15,
-        "seconds": 0.2093
+        "seconds": 0.2071
       }
     },
     {
@@ -55,11 +55,11 @@
       },
       "step_2": {
         "multiplications": 16,
-        "seconds": 0.0021
+        "seconds": 0.0019
       },
       "step_3": {
         "multiplications": 16,
-        "seconds": 0.3982
+        "seconds": 0.3968
       }
     },
     {
@@ -68,15 +68,15 @@
       "command": "build/descent_search/minimise-rank fixtures/f3_3x6.tensor --steps 3",
       "step_1": {
         "multiplications": 12,
-        "seconds": 0.0026
+        "seconds": 0.0017
       },
       "step_2": {
         "multiplications": 11,
-        "seconds": 0.0238
+        "seconds": 0.0228
       },
       "step_3": {
         "multiplications": 10,
-        "seconds": 2.6932
+        "seconds": 2.6909
       }
     }
   ],
@@ -98,7 +98,7 @@
         "naive": 4,
         "exact": 3,
         "nodes": 1,
-        "seconds": 1.6e-05,
+        "seconds": 1.2e-05,
         "why_trustworthy": "Karatsuba's answer, and 2n-1 = 3 is a lower bound, so 3 is optimal.",
         "command": "build/exhaustive_search/decide-rank fixtures/f2_2x2.tensor"
       },
@@ -116,7 +116,7 @@
         "naive": 4,
         "exact": 3,
         "nodes": 2,
-        "seconds": 6e-06,
+        "seconds": 7e-06,
         "why_trustworthy": "The bilinear complexity of GF(4) over GF(2) is classically 3.",
         "command": "build/exhaustive_search/decide-rank fixtures/gf4_multiplication.tensor"
       },
@@ -125,7 +125,7 @@
         "naive": 9,
         "exact": 6,
         "nodes": 329,
-        "seconds": 0.000698,
+        "seconds": 0.000558,
         "why_trustworthy": "The bilinear complexity of GF(8) over GF(2) is classically 6.",
         "command": "build/exhaustive_search/decide-rank fixtures/gf8_multiplication.tensor"
       }
@@ -185,9 +185,9 @@
           ],
           "found": 7,
           "nodes_to_rule_out_6": 25399,
-          "seconds_to_rule_out_6": 0.029192,
+          "seconds_to_rule_out_6": 0.029431,
           "nodes_to_find_7": 7436,
-          "seconds_to_find_7": 0.012602,
+          "seconds_to_find_7": 0.012717,
           "command_to_rule_out_6": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
           "command_to_find_7": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7"
         },
@@ -327,8 +327,8 @@
       "nodes": 25399,
       "quotiented_nodes": 648,
       "fewer_nodes_by": 39.2,
-      "seconds": 0.02923,
-      "quotiented_seconds": 0.000986,
+      "seconds": 0.029257,
+      "quotiented_seconds": 0.000992,
       "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
       "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2"
     },
@@ -341,14 +341,14 @@
       "nodes": 7436,
       "quotiented_nodes": 3167,
       "fewer_nodes_by": 2.3,
-      "seconds": 0.012591,
-      "quotiented_seconds": 0.005998,
+      "seconds": 0.012633,
+      "quotiented_seconds": 0.005903,
       "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7",
       "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2"
     }
   ],
   "provenance": {
-    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "commit": "aae2fe358d17d88697c04b78ac68d9e365102ba2",
     "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",

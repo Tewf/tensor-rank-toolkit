@@ -20,7 +20,7 @@ saying so is the point of listing it.
 
 Here the two methods finish the job between them, which is the case for keeping
 both. The exact search ruled out 5, 6 and 7 in half a minute, then 8 in
-**105 600 301 nodes and 38.8 minutes**, exhaustively. The heuristic had already
+**105 600 301 nodes and 4.12 minutes**, exhaustively. The heuristic had already
 reached 9. Neither could have done it alone: the search cannot get to 9 from
 nothing at this speed, and the heuristic proves nothing.
 
@@ -30,4 +30,4 @@ theorem**: the rank-sum bound gets `≥ 8` from the tensor in milliseconds, with
 theorem, no solver and no exhaustion, because all fifteen nonzero contractions
 have full rank 4 (the span is a field, so every nonzero element is invertible)
 and `60 / 8 = 7.5`. That it needs more than 8 is still decided here by
-exhaustion, and that is the half the 38.8 minutes buys.
+exhaustion, and that is the half the 4.12 minutes buys.

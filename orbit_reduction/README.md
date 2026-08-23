@@ -57,7 +57,8 @@ knowing a command line exists.
 
 The quotient removes 39.2x the nodes on a `⟨2,2,2⟩` refutation and 2.35x on a
 satisfiable question, and since `least_in_orbit` charges only about 1.2x a node,
-the time follows: **29.6x** and **2.10x**. The saving is largest on a refusal,
+the time follows: **about 30x** and **about 2.1x**, quoted that way because the
+quotiented runs are under a millisecond. The saving is largest on a refusal,
 which is the case that costs most, because a refusal has to visit the whole tree
 and the quotient is what shrinks it.
 [`what-the-quotient-costs.md`](what-the-quotient-costs.md) has the table, and

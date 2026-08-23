@@ -21,10 +21,10 @@ cumulative, so each step includes the ones before it.
 
 | Fixture | Field | Product | Naive | Step 1 | Step 2 | Step 3 |
 |---|---|---|---|---|---|---|
-| `f2_5x5` | F2 | 5×5 | 25 | 16 · 0.0001 s | 14 · 0.0009 s | **14** · 0.0986 s |
-| `f2_3x8` | F2 | 3×8 | 24 | 19 · 0.0001 s | 16 · 0.0057 s | **15** · 0.209 s |
-| `f2_4x7` | F2 | 4×7 | 28 | 19 · 0.0001 s | 16 · 0.0021 s | **16** · 0.398 s |
-| `f3_3x6` | F3 | 3×6 | 18 | 12 · 0.0026 s | 11 · 0.0238 s | **10** · 2.69 s |
+| `f2_5x5` | F2 | 5×5 | 25 | 16 · 0.0001 s | 14 · 0.0009 s | **14** · 0.0985 s |
+| `f2_3x8` | F2 | 3×8 | 24 | 19 · 0.0001 s | 16 · 0.0041 s | **15** · 0.207 s |
+| `f2_4x7` | F2 | 4×7 | 28 | 19 · 0.0001 s | 16 · 0.0019 s | **16** · 0.397 s |
+| `f3_3x6` | F3 | 3×6 | 18 | 12 · 0.0017 s | 11 · 0.0228 s | **10** · 2.69 s |
 
 The three steps are the greedy smallest basis (1), rank minimisation over the
 rank-one maps already inside `T` (2), and rank minimisation over the full
@@ -39,8 +39,8 @@ steps 1 and 2 now finish in 0.9 ms to 23.8 ms, and a hand run moved one fixture'
 ratio from 189 to 85 with nothing changed in the code, which is the rule
 [`../MEASURING.md`](../MEASURING.md) states for a denominator that small. On
 `f2_5x5` it
-spent 0.0986 seconds to confirm the 14 that step 2 already had; on `f2_4x7`,
-0.398 seconds to confirm 16. Where it did pay, it paid by one product: 16 to
+spent 0.0985 seconds to confirm the 14 that step 2 already had; on `f2_4x7`,
+0.397 seconds to confirm 16. Where it did pay, it paid by one product: 16 to
 15 on `f2_3x8`, 11 to 10 on `f3_3x6`.
 
 So step 3 accounts for essentially all of the cost and about half of the answer,

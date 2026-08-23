@@ -10,8 +10,8 @@ reach for ever.
 **The two count columns are exact and the Time column is three different eras**,
 which is worth saying before the table rather than after it. Nodes and pool sizes
 are facts about the problem and come out the same on any machine and any leaf.
-The times do not: only the first row was retaken on the leaf that ships, on
-2026-08-23 and from a clean tree, and every other figure below was measured or
+The times do not: the two rows marked *on the leaf that ships* were retaken on
+2026-08-23 from a clean tree, and every other figure below was measured or
 projected at the general leaf's rate of about **1.5×10⁹ field operations a
 second**, before the GF(2) leaf and the reflected Gray walk landed on 2026-08-20.
 
@@ -21,7 +21,7 @@ second**, before the GF(2) leaf and the reflected Gray walk landed on 2026-08-20
 | `⟨2,2,3⟩` rule out 8 | 446 923 | 945 | 53 s, **retired** |
 | cyclic 5 rule out 7 | 461 251 | 961 | 51 s, **retired** |
 | GF(16) rule out 7 | 1 897 576 | 225 | 34 s, **retired** |
-| GF(16) rule out 8 | 105 600 301 | 225 | 38.8 min |
+| GF(16) rule out 8 | 105 600 301 | 225 | **4.12 min**, on the leaf that ships |
 | `⟨2,2,3⟩` rule out 9 | ~1.4×10⁸ | 945 | ~4.6 h, not run |
 | `⟨2,3,3⟩` rule out 10 | `C(32193, 4)` = 4.5×10¹⁶ | 32 193 | stopped at 100 min, hopeless |
 | `⟨3,3,3⟩` rule out 10 | ~2.6×10⁵ | 261 121 | ~10 h, not run |
@@ -51,13 +51,16 @@ being a run at all. All of it is recorded under `retired_by_the_bounds` in
 to the end for a minute, and reading it the other way round is how a repository
 ends up attached to its slowest proof.
 
-The 38.8 minutes is the one that still buys something, because ruling out 8 on
-GF(16) is past what any bound here reaches. Its flags are recorded now,
-`--node-limit 200000000`, in the `exhaustive_command` of
-`satisfiability/results.json`, and `reproduce/measure.py --slow` re-derives the
-count from it exactly. On the GF(2) leaf the same search is 6.6 minutes rather
-than 38.8, which is why it is the one question the default run leaves out and
-prices in a SKIPPED line instead.
+GF(16) at 8 is the row that still buys something, because it is past what any
+bound here reaches. Its flags are recorded, `--node-limit 200000000`, in the
+`exhaustive_command` of `satisfiability/results.json`, and
+`reproduce/measure.py --slow` re-derives both the count and the seconds from it
+exactly. **It was 38.8 minutes and is 4.12**, measured on 2026-08-23 rather than
+projected: the estimate that stood in for it while nobody had run it on the
+current leaf guessed about six times faster and it is **9.4 times faster**. Four
+minutes is still longer than every other question in that file together, which is
+why it is the one the default run leaves out and prices in a SKIPPED line
+instead.
 
 `⟨4,4,4⟩`, where AlphaTensor found 47 products over Z₂, is refused rather than
 attempted, and the refusal is worth reading:

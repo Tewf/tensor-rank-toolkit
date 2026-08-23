@@ -11,14 +11,14 @@ provenance in [`results.json`](results.json). Protocol:
 
 | Map | Naive | Step 1 | Step 2 | Step 3 | Published |
 |---|---|---|---|---|---|
-| F2 5×5 | 25 | 16 | 14 | **14** · 0.0986 s | 13, `[bdez2012]` |
-| F2 3×8 | 24 | 19 | 16 | **15** · 0.209 s | no solution at 14 |
-| F2 4×7 | 28 | 19 | 16 | **16** · 0.398 s | no solution at 14 |
+| F2 5×5 | 25 | 16 | 14 | **14** · 0.0985 s | 13, `[bdez2012]` |
+| F2 3×8 | 24 | 19 | 16 | **15** · 0.207 s | no solution at 14 |
+| F2 4×7 | 28 | 19 | 16 | **16** · 0.397 s | no solution at 14 |
 | F3 3×6 | 18 | 12 | 11 | **10** · 2.69 s | 10, `[bdez2012]` |
 
 **Step 3 is priced badly.** It improved the answer in two of four cases, by one
 product each time, at one to two orders of magnitude what steps 1 and 2 cost
-together: on F2 5×5 it spent 0.0986 s confirming the 14 step 2 already had. The
+together: on F2 5×5 it spent 0.0985 s confirming the 14 step 2 already had. The
 range behind that is 36 to 189 times and it is **not quoted to two digits**,
 because steps 1 and 2 are now 0.9 ms to 23.8 ms and a hand run moved one
 fixture's ratio from 189 to 85 with nothing changed in the code

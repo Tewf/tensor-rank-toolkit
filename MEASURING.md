@@ -34,7 +34,7 @@ measured here is not a speed-up, it is the fan.
 
 Ratios are quoted in this repository only where the two ends are far enough apart
 that the band cannot account for them, which is why the ones that appear are
-**29.6x**, **73x** and **126x** rather than 1.2x. Each of the three is a
+**about 30x**, **73x** and **126x** rather than 1.2x. Each of the three is a
 published pair rather than a remembered figure: the orbit quotient refuting six
 products on ⟨2,2,2⟩
 ([`orbit_reduction/what-the-quotient-costs.md`](orbit_reduction/what-the-quotient-costs.md)),
@@ -79,7 +79,7 @@ The heuristic is unaffected and adopts the same candidates in the same order.
 used, and the row records the flag.** The GF(16) row of
 `satisfiability/results.json` has 105 600 301 exhaustive nodes at `--node-limit
 200000000`, which `reproduce/measure.py` reads back out of `exhaustive_command`
-rather than rebuilding. That search costs 6.6 minutes of one core, so the default
+rather than rebuilding. That search costs 4.1 minutes of one core, so the default
 run carries the count, `--slow` re-derives it, and a SKIPPED line prices it.
 
 ## What is reproducible, and what is not
