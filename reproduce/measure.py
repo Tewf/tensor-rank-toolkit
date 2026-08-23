@@ -143,12 +143,26 @@ def provenance(build, counts=False):
         except OSError:
             return None
 
+    def clean_tree():
+        """Whether the tree carried no uncommitted change when this was taken.
+
+        Asked apart from `git` above rather than through it, because that one
+        folds empty output into `None` and cannot then tell a clean tree from a
+        git that did not answer. Those are precisely the two cases this field
+        exists to tell apart, and folding them is why it never once said true.
+        """
+        try:
+            done = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT,
+                                  capture_output=True, text=True)
+        except OSError:
+            return None
+        return done.stdout.strip() == "" if done.returncode == 0 else None
+
     givaro = None
     if shutil.which("pkg-config"):
         givaro = subprocess.run(["pkg-config", "--modversion", "givaro"],
                                 capture_output=True, text=True).stdout.strip() or None
 
-    dirty = git("status", "--porcelain")
     covers = {} if not counts else {"covers":
         "The counts in this file and the invocations that produced them, and nothing else. "
         "Every `seconds` field here is older than this block and was not touched: a count is "
@@ -157,7 +171,7 @@ def provenance(build, counts=False):
         "produced the timings is the `provenance` block."}
     return {
         "commit": git("rev-parse", "HEAD"),
-        "tree_clean": dirty == "" if dirty is not None else None,
+        "tree_clean": clean_tree(),
         **covers,
         "compiler": version_of("c++"),
         "givaro": givaro,
@@ -280,6 +294,14 @@ def main():
     for where, name, field, why in skipped:
         print(f"SKIPPED  {where}: {name} {field}, carried from the committed row. {why}")
 
+    # One block for the whole run, taken before a number is measured and before a
+    # byte is written. It used to be taken per file, inside the loop below, which
+    # made `tree_clean` a fact about when a file happened to be written rather
+    # than about the tree the run measured: the first write dirties the tree and
+    # every file after it recorded that write. All four committed files said
+    # `false` for that reason alone, on runs made from a clean checkout.
+    stamp = None if arguments.check else provenance(build, counts=arguments.counts)
+
     measured = {
         descent: {"fixtures": [descent_of(build, name, repeats) for name in FIXTURES],
                   "exact_search": exact_search_of(
@@ -320,10 +342,10 @@ def main():
 
         if arguments.counts:
             existing = with_timings_kept(existing, fresh)
-            existing["counts_provenance"] = provenance(build, counts=True)
+            existing["counts_provenance"] = stamp
         else:
             existing.update(fresh)
-            existing["provenance"] = provenance(build)
+            existing["provenance"] = stamp
             # A full rewrite covers what --counts covered and the timings besides,
             # so the narrower block it left behind has nothing left to say.
             existing.pop("counts_provenance", None)
