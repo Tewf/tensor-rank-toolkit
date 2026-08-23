@@ -9,7 +9,7 @@ formulation itself.
 There are three. `--route canonical` is the third and is documented separately,
 in [`canonical-augmentation.md`](canonical-augmentation.md), because what it has
 to say is a negative result rather than a trade-off: it visits 53x fewer nodes
-for 25.8x the wall clock, and is never the default.
+for 5.1x the wall clock, and is never the default.
 
 `--route exhaustive` materialises the pool of rank-one maps and walks a tree
 over it. `--route sat` hands the same sweep to a solver, which never enumerates
