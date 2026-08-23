@@ -74,7 +74,7 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
                            const std::vector<Matrix>& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
-                           bool spread_over_cores = true);
+                           bool spread_over_cores = true, SearchTrace* trace = nullptr);
 
 /// The same quotiented walk over an **addressed** pool, which is never held.
 ///
@@ -87,6 +87,6 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
                            const RankOnePool& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
-                           bool spread_over_cores = true);
+                           bool spread_over_cores = true, SearchTrace* trace = nullptr);
 
 }  // namespace bilinear_rank

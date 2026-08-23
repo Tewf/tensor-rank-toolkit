@@ -1,9 +1,11 @@
 #include "exhaustive_search.h"
 #include "rank_one_basis.h"
+#include "search_trace.h"
 
 #include <atomic>
 #include <mutex>
 #include <optional>
+#include <stdexcept>
 
 #include "parallel.h"
 
@@ -57,7 +59,7 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
                           std::size_t width, const Candidates& pool, std::size_t from,
                           std::size_t target, SearchBudget& budget, std::vector<Element>& scratch,
                           const Gf2Leaf<Candidates>* binary, const std::atomic<bool>* found,
-                          std::vector<Matrix>& products) {
+                          std::vector<Matrix>& products, const TraceNode& where = {}) {
     // Somebody else already has a witness, so this subtree cannot change the
     // answer and every node it spends is spent against the shared budget. Without
     // this test the extra subtrees exhausted the budget and turned a proof into an
@@ -66,12 +68,25 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
     if (found != nullptr && found->load(std::memory_order_relaxed)) return false;
     if (!budget.try_consume_node()) return false;
 
+    // Opened exactly where the budget counts one, so the trace's node total is
+    // the search's and not a second count that could disagree with it. The
+    // returns above are not nodes: neither consumed one.
+    TraceScope here(where, where.trace != nullptr && where.depth == 0);
+
     const std::size_t dimension = span.dimension();
-    if (dimension > target) return false;
+    here.dimension(dimension);
+    if (dimension > target) {
+        here.prune("over-dimension");
+        return false;
+    }
     if (dimension == target) {
         std::vector<Matrix> within =
             rank_one_basis_of(field, span, pool, target, scratch, &budget, binary);
-        if (within.size() != target) return false;
+        if (within.size() != target) {
+            here.prune("leaf");
+            return false;
+        }
+        here.adopt(within.size());
         products = std::move(within);  // a rank-one basis of the span: the products
         return true;
     }
@@ -82,7 +97,7 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
         ReducedBasis extended = span;
         extended.try_add(map);
         if (expand_subspace_impl(field, std::move(extended), width, pool, index + 1, target, budget,
-                                 scratch, binary, found, products)) {
+                                 scratch, binary, found, products, where.child(here.id(), index))) {
             return true;
         }
         if (!budget.exhausted) return false;  // gave up rather than ruled out
@@ -99,7 +114,8 @@ namespace {
 template <typename Candidates>
 bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspace,
                           const Candidates& pool, std::size_t from, std::size_t target,
-                          SearchBudget& budget, std::vector<Matrix>& products) {
+                          SearchBudget& budget, std::vector<Matrix>& products,
+                          SearchTrace* trace) {
     if (subspace.empty()) return false;
     const std::size_t width = linear_algebra::flattened_width<Field>(subspace);
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
@@ -118,7 +134,14 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
     if (worker_count() <= 1) {
         std::vector<Element> scratch;
         return expand_subspace_impl(field, root, width, pool, from, target, budget, scratch, leaf,
-                                    nullptr, products);
+                                    nullptr, products, TraceNode{trace, 0, 0, 0});
+    }
+
+    // Above one worker the subtrees interleave and what comes out is not a tree.
+    // `decide-rank --trace` refuses the combination before reaching here, so this
+    // is the second line of the same defence rather than the only one.
+    if (trace != nullptr) {
+        throw std::invalid_argument("a trace was asked for on more than one worker");
     }
 
     // The root node itself, counted here exactly as the recursion counts it, so
@@ -174,14 +197,15 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
 
 bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
                      const std::vector<Matrix>& pool, std::size_t from, std::size_t target,
-                     SearchBudget& budget, std::vector<Matrix>& products) {
-    return expand_subspace_over(field, subspace, pool, from, target, budget, products);
+                     SearchBudget& budget, std::vector<Matrix>& products, SearchTrace* trace) {
+    return expand_subspace_over(field, subspace, pool, from, target, budget, products, trace);
 }
 
 bool expand_subspace(const Field& field, const std::vector<Matrix>& subspace,
                      const RankOnePool& pool, std::size_t from, std::size_t target,
-                     SearchBudget& budget, std::vector<Matrix>& products) {
-    return expand_subspace_over(field, subspace, Addressed{pool}, from, target, budget, products);
+                     SearchBudget& budget, std::vector<Matrix>& products, SearchTrace* trace) {
+    return expand_subspace_over(field, subspace, Addressed{pool}, from, target, budget, products,
+                                trace);
 }
 
 }  // namespace bilinear_rank

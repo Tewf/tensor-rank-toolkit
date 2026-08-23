@@ -1,4 +1,7 @@
 #include "orbit_search.h"
+#include "search_trace.h"
+
+#include <stdexcept>
 
 #include "pool_orbits.h"
 
@@ -38,7 +41,8 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
                        const std::vector<std::uint32_t>& residual, std::size_t target,
                        std::size_t depth, SearchBudget& budget, std::vector<Element>& scratch,
                        const std::atomic<bool>* found_elsewhere,
-                       const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products) {
+                       const Gf2Leaf<Candidates>* binary, std::vector<Matrix>& products,
+                       const TraceNode& where = {}) {
     // Somebody else already has a witness, so this subtree cannot change the
     // answer and every node it spends is spent against the shared budget. The
     // plain search learnt this the expensive way: without the test the extra
@@ -47,15 +51,28 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
     if (found_elsewhere != nullptr && found_elsewhere->load(std::memory_order_relaxed)) return false;
     if (!budget.try_consume_node()) return false;
 
+    // Opened where the budget counts one, exactly as the plain search does, so
+    // the two traces are counting the same thing and the 39.2x between them is
+    // the quotient rather than a difference in bookkeeping.
+    TraceScope here(where, where.trace != nullptr && depth == 0);
+
     const std::size_t dimension = span.dimension();
-    if (dimension > target) return false;
+    here.dimension(dimension);
+    if (dimension > target) {
+        here.prune("over-dimension");
+        return false;
+    }
     if (dimension == target) {
         // Against the whole subspace or the whole pool, whichever is smaller,
         // but never against the candidates still standing: a rank-one basis of
         // this subspace may use maps the branch stopped carrying.
         std::vector<Matrix> within =
             rank_one_basis_of(field, span, pool, target, scratch, &budget, binary);
-        if (within.size() != target) return false;
+        if (within.size() != target) {
+            here.prune("leaf");
+            return false;
+        }
+        here.adopt(within.size());
         products = std::move(within);
         return true;
     }
@@ -90,7 +107,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
         // child skips it on the containment test above.
         if (expand_up_to_impl(field, std::move(extended), pool, action, chosen, narrowed, target,
                               depth + 1, budget, scratch, found_elsewhere, binary,
-                              products)) {
+                              products, where.child(here.id(), chosen))) {
             found = true;
         } else if (!budget.exhausted) {
             break;  // gave up rather than ruled out
@@ -240,7 +257,7 @@ bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& s
                            const Candidates& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
-                           bool spread_over_cores) {
+                           bool spread_over_cores, SearchTrace* trace) {
     if (subspace.empty()) return false;
 
     // Filtered, never trusted: an element that does not stabilise the target is
@@ -268,6 +285,12 @@ bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& s
 
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
     if (spread_over_cores && worker_count() > 1) {
+        // Above one worker the subtrees interleave and what comes out is not a
+        // tree. `decide-rank --trace` refuses the combination before reaching
+        // here, so this is the second line of the same defence.
+        if (trace != nullptr) {
+            throw std::invalid_argument("a trace was asked for on more than one worker");
+        }
         Branch whole{root, 0, residual};
         return expand_in_parallel(field, std::move(whole), pool, action, target, budget, binary,
                                   products);
@@ -275,7 +298,7 @@ bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& s
 
     std::vector<Element> scratch;
     return expand_up_to_impl(field, root, pool, action, 0, residual, target, 0, budget, scratch,
-                             nullptr, binary, products);
+                             nullptr, binary, products, TraceNode{trace, 0, 0, 0});
 }
 
 }  // namespace
@@ -284,18 +307,18 @@ bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix
                            const std::vector<Matrix>& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
-                           bool spread_over_cores) {
+                           bool spread_over_cores, SearchTrace* trace) {
     return expand_up_to_symmetry_over(field, subspace, pool, group, target, budget, products,
-                                      spread_over_cores);
+                                      spread_over_cores, trace);
 }
 
 bool expand_subspace_up_to_symmetry(const Field& field, const std::vector<Matrix>& subspace,
                            const RankOnePool& pool,
                            const std::vector<Automorphism>& group, std::size_t target,
                            SearchBudget& budget, std::vector<Matrix>& products,
-                           bool spread_over_cores) {
+                           bool spread_over_cores, SearchTrace* trace) {
     return expand_up_to_symmetry_over(field, subspace, Addressed{pool}, group, target, budget,
-                                      products, spread_over_cores);
+                                      products, spread_over_cores, trace);
 }
 
 }  // namespace bilinear_rank
