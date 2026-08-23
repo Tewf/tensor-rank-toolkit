@@ -118,7 +118,7 @@
   <p>A decomposition is not the deliverable; the algorithm is, and an algorithm is three operators: <code>L</code> and <code>R</code> encoding the two operands, <code>P</code> combining the products. The rank search recovers them from the decomposition it finds and writes them out; the sparsification is what they are for.</p>
   <pre><code>minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -&gt; 14 multiplications
 sparsify-operator out_L.sms                                 # 31 -&gt; 27 nonzeros</code></pre>
-  <p>Fewer multiplications, then fewer additions, from one map, in two commands.</p>
+  <p>Fewer multiplications, then fewer additions, from one map, in two commands. The same two run in that order from a browser, as the <a href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/web_interface/README.md">console</a>'s <code>decompose-then-sparsify</code> flow: one press, four runs, each an ordinary run with its own command, its own card and its own exit code. It is local, on the loopback address, and needs Python 3's standard library and nothing else.</p>
 
   <div class="caveat"><h3>Where this stops</h3><p>The descent proves nothing optimal: the 10 for F3 3&times;6 is a decomposition, not a claim about the true rank. The exact search does prove things, but only where it can finish, and from scratch its cost is C(pool,&nbsp;k). Neither settles the bilinear rank problem, which is still open. Nothing in the library is ever a float, so a reported rank is a fact about the map rather than an artefact of rounding, but exact arithmetic makes an answer trustworthy, not optimal.</p></div>
 
