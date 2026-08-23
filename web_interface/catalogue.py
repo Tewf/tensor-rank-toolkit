@@ -39,11 +39,21 @@ SYMMETRY = {"flag": "-s", "kind": "symmetry", "label": "symmetry",
                     "quotients by the map's own stabiliser; matmul uses the "
                     "closed-form orbits of <n,m,k>."}
 
+# One spelling, and what it changes is a fact about each tool. Every one of them
+# moves the wall clock; only a tool that stops at a budget can have an answer
+# moved, because a witness found by one worker stops the others and what they
+# have already spent counts against the same limit. That warning was written
+# once and shared, so a flip walk and a counting enumeration carried a sentence
+# about an exit code neither of them can reach. Written beside each instead, for
+# the reason the memory note above gives.
 THREADS = {"flag": "--threads", "kind": "count", "label": "threads",
-           "note": "0 for every core, 1 by default. More threads change the "
-                   "wall clock, and on a satisfiable question a tight node "
-                   "limit can turn exit 0 into exit 3: "
-                   "exhaustive_search/what-threads-change.md."}
+           "note": "0 for every core, 1 by default."}
+
+
+def threads(changes):
+    """`--threads` on one tool, with what more of them change there."""
+    return dict(THREADS, note=THREADS["note"] + " " + changes)
+
 
 # One spelling, two meanings, which is a fact about the tools and not about this
 # table: on the three searches it is the pool budget in bytes and decides whether
@@ -108,7 +118,11 @@ TOOLS = [
              "label": "states per plateau crossing", "budget": True,
              "note": "From plateau_state_budget. Never measured."},
             {"flag": "--json", "kind": "switch", "label": "results as JSON"},
-            dict(SYMMETRY), dict(THREADS), dict(MEMORY),
+            dict(SYMMETRY),
+            threads("The three descent steps adopt the same candidates in the "
+                    "same order at any count, so only the wall clock moves. "
+                    "The plateau crossing above does not read it at all."),
+            dict(MEMORY),
         ],
     },
     {
@@ -185,14 +199,9 @@ TOOLS = [
                      "same counts, so the two can be timed on one question: "
                      "descent_search/gf2_span_walk.h."},
             dict(SYMMETRY),
-            # Not the shared note: this search refutes nothing and has no node
-            # limit to run out of, so the sentence that warns about exit 3 on
-            # decide-rank would be a warning about something that cannot happen.
-            {"flag": "--threads", "kind": "count", "label": "threads",
-             "note": "0 for every core, 1 by default. The children of one node "
-                     "are prepared in parallel and entered in the same order at "
-                     "any count, so every number this prints is what one worker "
-                     "printed."},
+            threads("The children of one node are prepared in parallel and "
+                    "entered in the same order at any count, so every number "
+                    "this prints is what one worker printed."),
             memory_cap("--summand-rank r asks for p^r vectors, and this is what "
                        "refuses an r the machine cannot hold."),
         ],
@@ -271,7 +280,14 @@ TOOLS = [
                      "It needs one worker: two interleave their nodes and what "
                      "comes out is not a tree, so the run refuses the pair "
                      "rather than writing one."},
-            dict(SYMMETRY), dict(THREADS), dict(MEMORY),
+            dict(SYMMETRY),
+            threads("A refutation visits the same nodes at any count. A "
+                    "satisfiable question does not: a witness stops the "
+                    "workers already running and what they spent counts "
+                    "against the same budget, so a tight node limit can turn "
+                    "exit 0 into exit 3. "
+                    "exhaustive_search/what-threads-change.md."),
+            dict(MEMORY),
         ],
     },
     {
@@ -354,7 +370,9 @@ TOOLS = [
              "budget": True, "note": "8 by default."},
             {"flag": "--from", "kind": "count", "label": "start from a k-product scheme",
              "note": "The heuristic has to reach k or fewer or the run refuses."},
-            dict(THREADS),
+            threads("The seeds are independent walks, each reproducible from "
+                    "its own seed number, so this moves the wall clock and "
+                    "nothing else: same seeds, same schemes, same output."),
             memory_cap("--from k runs the heuristic first, whose span table is "
                        "p^dim, so this is what refuses a shape the machine "
                        "cannot hold."),
@@ -414,7 +432,13 @@ TOOLS = [
              "values": ["auto", "exhaustive", "sat", "canonical"], "label": "route"},
             {"flag": "--node-limit", "kind": "count", "label": "node limit",
              "budget": True},
-            dict(SYMMETRY), dict(THREADS), dict(MEMORY),
+            dict(SYMMETRY),
+            threads("The sweep is sequential and every level of it is the "
+                    "search --route names, so what more workers change is what "
+                    "they change there: the level that succeeds is satisfiable, "
+                    "and a tight --node-limit on it can end the run undecided "
+                    "instead of factored."),
+            dict(MEMORY),
         ],
     },
     {
@@ -466,7 +490,10 @@ TOOLS = [
             {"flag": "--canonical", "kind": "switch",
              "label": "McKay canonical augmentation, one per orbit",
              "note": "Both passes run when neither is named."},
-            dict(SYMMETRY), dict(THREADS),
+            dict(SYMMETRY),
+            threads("This walk counts rather than stops, so there is no budget "
+                    "to spend early against and no witness to stop anybody: "
+                    "every number it reports is the same at any worker count."),
         ],
     },
     {
