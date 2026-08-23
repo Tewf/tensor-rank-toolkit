@@ -108,6 +108,8 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   *by Tillmann's theorem*; it is an upper bound.
   `matrix_sparsification/what-was-corrected.md` has the rest.
 
+### Added
+
 - **`operators-to-tensor`, and with it a way in for somebody else's algorithm.**
   Nobody publishes a tensor: PLinOpt's `data/` is 153 SMS operators in
   `stem_{L,R,P}` triples, `[fmm-catalogue]` publishes the same triple as Maple
