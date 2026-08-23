@@ -59,6 +59,9 @@ minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
 sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 ```
 
+The browser console runs those two lines in order, once per operator, as a flow:
+[`web_interface/`](web_interface/).
+
 ## Reading and writing what the field publishes
 
 A ⟨L, R, P⟩ triple in SMS is what the field publishes a bilinear algorithm as,

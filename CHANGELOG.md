@@ -30,6 +30,17 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **The browser console runs `README.md`'s pipeline as one flow.**
+  `minimise-rank --emit-operators` and then `sparsify-operator` on each of the
+  three operators it wrote, from one press, declared in
+  [`web_interface/flows.py`](web_interface/flows.py) and driven in
+  `web_interface/flow_runner.py`. The paths are the ones the console chose, so
+  the second tool reads what the first one really wrote instead of a path
+  retyped between four presses. A flow adds no binary, no flag and no
+  mathematics: every step is an ordinary run with its own command, its own card
+  and its own exit code, and a step that does not reach the badge its flow names
+  stops the flow rather than handing the next tool a file that is not there. It
+  is also the seventh worked example, and the console's own suite is 58 checks.
 - **`sparsest_basis_over_the_rationals`: the minimum, and a proof of it.**
   `[gottlieb2010]`'s driver with an oracle that answers `[beniamini2020]`'s
   Problem 2.15, so Rado-Edmonds makes the assembled answer the least number of

@@ -30,11 +30,12 @@ rather than beside because its two are read in sequence — the flags, then the
 command they built, then that same command again under the answer. Only a pane
 scrolls, never the page. `layout.css` is the shell, `console.css` the filling.
 
-**Start here.** Six worked examples, behind the button of that name, in
-[`worked_examples.py`](worked_examples.py). Each fills the map, the tool and the
-flags and then stops, so the line is read before it is run. Four of them are the
-same map one flag apart, which is the shortest way to see the difference between
-found, proved impossible, and a budget that ran out.
+**Start here.** Seven worked examples, behind the button of that name, in
+[`worked_examples.py`](worked_examples.py). Each fills the map, the question and
+the flags and then stops, so the line is read before it is run. Four of them are
+the same map one flag apart, which is the shortest way to see the difference
+between found, proved impossible, and a budget that ran out. The last is the
+pipeline below.
 
 1. **The map.** Type it, paste it, load one of the repository's fixtures, open a
    file, or build one with `make-tensor`. The format is the one that already
@@ -56,7 +57,11 @@ panel.
    shipping without reaching this console is a failing check and not a quiet
    omission, and the two exceptions are named with their reasons in that check.
    The flags are those of `OPTIONS.md`, each carrying the note that says what it
-   costs.
+   costs. Under the twelve is [`flows.py`](flows.py), which is the other kind of
+   question: `README.md`'s pipeline, where `minimise-rank --emit-operators` is
+   followed by `sparsify-operator` on each operator it wrote. A flow adds no
+   binary, no flag and no mathematics, only the order, and each of its steps is
+   an ordinary run with its own command, its own card and its own exit code.
 3. **The command.** Shown before you run it and again beside the answer, as a
    line you can retype at a terminal, with a button that copies it. Anything
    worth knowing before you press Run is said underneath it.
@@ -96,12 +101,13 @@ to be discovered.
 ## Checking it
 
 ```sh
-python3 web_interface/tests/check_web_interface.py     # 41 checks
+python3 web_interface/tests/check_web_interface.py     # 58 checks
 ```
 
 It starts a console, drives it over HTTP and asserts against real runs of real
 binaries: that exit 3 arrives as undecided and never as a refutation, that the
 plan lines it promotes are still the characters the tools print, that the tools
-it offers are the binaries the build produced, and that each of the six worked
+it offers are the binaries the build produced, that the pipeline's second tool
+really reads what its first one wrote, and that each of the seven worked
 examples still ends where it says it does. It is deliberately not
 registered with `ctest`, whose count is quoted elsewhere and means something else.

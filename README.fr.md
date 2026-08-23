@@ -62,6 +62,9 @@ minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 multiplic
 sparsify-operator out_L.sms                                 # 31 -> 27 coefficients non nuls
 ```
 
+La console dans le navigateur enchaîne ces deux lignes, une fois par opérateur :
+[`web_interface/`](web_interface/).
+
 ## Ce qu'il y a, et où
 
 Treize modules et **treize outils**, détaillés dans
