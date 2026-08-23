@@ -1783,6 +1783,16 @@ Twelve of its `data/` operators are vendored under
 [`fixtures/plinopt/`](fixtures/plinopt/README.md) with its licence; what was read
 each way is [`formats/interchange/`](formats/interchange/README.md).
 
+**The three operators the sparsification strand reports on are its files too**,
+`data/3x3x3_23_Grey-221_{L,R,P}.sms`, and they are not among the twelve vendored
+here. **Where that scheme itself comes from is recorded nowhere this repository can
+reach.** Its `data/README.md` gives the filename grammar
+`MxKxN_R_text_[L|R|P].sms` and leaves `text` a free label; no file in the checkout
+mentions `Grey` in its contents; and the copy read here arrived as one squashed
+snapshot, so there is no history to read either. `Grey-221` is therefore used as a
+name for three files and is cited to nobody, which is why every surface here says
+"a published rank-23 scheme" and none of them says whose.
+
 **`fmm-catalogue`**: A. Sedoglavic. *Yet another catalogue of fast matrix
 multiplication algorithms*, [fmm.univ-lille.fr](https://fmm.univ-lille.fr/).
 Over five thousand formats with their best known rank, and the reason the
