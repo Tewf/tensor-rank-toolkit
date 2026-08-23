@@ -45,6 +45,6 @@ Two premises this run corrected:
   The part worth carrying away is what `plateau_search` needs to get there.
   `--plateau 2 --plateau-states 380` reaches 7 having visited 386 subspaces; at
   370 it stays at 8; and at the default budget of 200 000 it reaches the same 7
-  and takes 20 s, because it keeps walking long after it has seen the best map it
-  will find. The 0.11 s was a real measurement of a real crossing under a state
+  over 66 063 subspaces and takes 4.56 s, because it keeps walking long after it
+  has seen the best map it will find. The 0.11 s was a real measurement of a real crossing under a state
   budget that was never written down beside it.

@@ -116,7 +116,10 @@ TOOLS = [
                      "run_limits/adapting-to-the-machine/what-was-closed.md."},
             {"flag": "--plateau-states", "kind": "count",
              "label": "states per plateau crossing", "budget": True,
-             "note": "From plateau_state_budget. Never measured."},
+             "note": "From plateau_state_budget, 200000. Measured and left "
+                     "there: <2,2,2> crosses to 7 at 380 states and stays at 8 "
+                     "at 370, and 380 is one shape's answer rather than a "
+                     "rule. flip_graph/results.json."},
             {"flag": "--json", "kind": "switch", "label": "results as JSON"},
             dict(SYMMETRY),
             threads("The three descent steps adopt the same candidates in the "

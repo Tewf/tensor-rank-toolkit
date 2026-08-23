@@ -56,12 +56,31 @@ What they were, for the record:
 | `budget = 2 GiB` | the comment said it: *"leaves room on a 16 GB desktop for a browser and an editor"* |
 | `sat_memory_megabytes = 2048` | the same 16 GB, divided by the worker count in `satisfiability/rank_question.cpp`. The division was always right; the dividend was this machine's |
 
-## Neither, and the file says so
+## Measured on 2026-08-22, and left where it was on purpose
 
-`plateau_state_budget = 200'000` is tagged **PROVISIONAL: never measured** in
-`cli/tunables.h`. That is the right label: it is a guess with a flag on it, not a
-number pretending to be evidence. It is listed here so nobody promotes it to
-"measured" by reading it beside three numbers that were.
+`plateau_state_budget = 200'000` was tagged *PROVISIONAL: never measured* here
+and in `cli/tunables.h` until the crossing it bounds was priced. **It is
+measured now**, and the pair is published in
+[`../../flip_graph/results.json`](../../flip_graph/results.json), where
+`reproduce/measure.py --check` re-derives both rows on every push: `⟨2,2,2⟩`
+crosses to 7 at a **380-state budget**, visiting 386 subspaces, and stays at the
+naive 8 at 370, visiting 376. The negative row is why the boundary itself is
+checked and not just the success.
+
+**The default is 526 times what that crossing needs, and it stays.** At 380 the
+run is 0.018 s; at the default it walks 66 063 subspaces for the same 7 and
+costs **4.56 s**, because the crossing keeps going after it has seen the best map
+it will find. Lowering the default to 380 would nonetheless be fitting a constant
+to a single point: `⟨2,2,3⟩` does not cross at a 2 000-state budget and nobody has
+found what it needs, so one shape's answer is not a rule.
+[`../../tunables.conf`](../../tunables.conf) carries that reasoning beside the
+value, which is where a person changing it will be.
+
+It belongs on this page because it is neither of the two kinds above. It is not
+fitted — nothing about 380 is a fact about this chassis, since it is a count of
+subspaces — and it is not policy either, now that a measurement exists for it.
+It is a bound held above its measurement on purpose, and the day a second shape
+is measured it can be chosen rather than guessed.
 
 ## Genuine — the same on any machine
 

@@ -102,7 +102,7 @@ QUOTIENT_QUESTIONS = [
 # `flip_graph/results.json` publishes a crossing at exactly these flags, and the
 # flags are the whole point of the row: `three-by-three.md` said the walk crossed
 # to 7 in 0.11 s without recording the state budget it was measured under, and at
-# the default budget of 200 000 the same crossing takes 20 s. A figure whose flags
+# the default budget of 200 000 the same crossing takes 4.56 s. A figure whose flags
 # were never written down cannot be reproduced by anybody, which is the failure
 # these rows exist to stop.
 #

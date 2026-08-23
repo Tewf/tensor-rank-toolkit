@@ -28,8 +28,8 @@ They exist because these numbers were prose before. `⟨2,2,2⟩` crossing to 7 
 quoted in three documents at 0.11 s, a figure that is `walk-scheme`'s and was
 printed beside a claim about `plateau_search`; and no run anywhere regenerated
 either. What `plateau_search` actually needs is a 380-state budget, at which it
-visits 386 subspaces, against a default of 200 000 that reaches the same 7 and
-takes 20 s.
+visits 386 subspaces, against a default of 200 000 that reaches the same 7 over
+66 063 subspaces and takes 4.56 s.
 
 ## What the start point is worth, measured
 
