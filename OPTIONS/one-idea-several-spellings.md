@@ -1,6 +1,6 @@
 # One idea, several spellings
 
-Twelve tools share one argument grammar and not one vocabulary. Nothing below is
+Thirteen tools share one argument grammar and not one vocabulary. Nothing below is
 a bug and nothing below is changed by writing it down: a flag that has been
 published under a name keeps it, and a reader who knows what a name means on one
 tool should be told where it means something else. That is what this page is.
