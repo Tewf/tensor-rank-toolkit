@@ -31,7 +31,7 @@
   <p class="meta">tensor-rank-toolkit, a library for exact tensor and bilinear rank<br>C++20 on Givaro, MIT licensed</p>
 
   <h2>What it computes</h2>
-  <p>Four directions on the one question: fewer multiplications, fewer additions, the rank asked as a question a SAT solver can answer, and, where no search can reach, a bound read off an algebraic curve. Nothing here is ever a float, so a reported rank is a fact about the map rather than an artefact of rounding.</p>
+  <p>Two strands, because a fast algorithm pays for both. <strong>Multiplications</strong> are the rank of the map. <strong>Additions</strong> are how many nonzero entries its operators carry. Each is settled exactly here on one map, and settled means proved rather than found: the rank below is closed from both sides, by a refutation and an exhibit, and the nonzero count further down is the least any change of basis can leave. Everything else on this page is a route to one of those two questions: a descent, an exhaustion, a solver, a quotient by symmetry, a canonical form. Nothing here is ever a float, so a reported rank is a fact about the map rather than an artefact of rounding.</p>
   <p>Every count on this page is asserted by the test suite and reproduces anywhere. The timings are not: none of them is asserted, no test fails on one, and they are quoted as evidence of an order of magnitude rather than of a digit. The protocol they were taken under is <code>MEASURING.md</code>.</p>
 
   <p>The cheap direction is rank by descent. Three steps: an exact matroid greedy for the starting basis, then two relaxations that trade the guarantee for reach.</p>
