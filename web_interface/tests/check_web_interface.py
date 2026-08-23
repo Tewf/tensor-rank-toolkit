@@ -74,15 +74,38 @@ def until_finished(port, identifier, most_seconds=120):
     raise AssertionError("run " + identifier + " never finished")
 
 
+def until_flow_ends(port, identifier, most_seconds=120):
+    limit = time.time() + most_seconds
+    while time.time() < limit:
+        status, card = ask(port, "GET", "/api/flows/" + identifier)
+        if not card["running"]:
+            return card
+        time.sleep(0.2)
+    raise AssertionError("flow " + identifier + " never ended")
+
+
+def _box(fixture, text):
+    return {"text": text if text is not None
+            else (repository.fixture_text(fixture) if fixture else ""),
+            "name": fixture or "typed.tensor", "fixture": fixture}
+
+
 def run(port, tool, options, fixture=None, text=None, wall_clock=120):
     body = {"tool": tool, "options": options, "wall_clock_seconds": wall_clock,
-            "input": {"text": text if text is not None
-                      else (repository.fixture_text(fixture) if fixture else ""),
-                      "name": fixture or "typed.tensor", "fixture": fixture}}
+            "input": _box(fixture, text)}
     status, started = ask(port, "POST", "/api/runs", body)
     if status != 200:
         return status, started
     return status, until_finished(port, started["id"])
+
+
+def run_flow(port, flow, fixture=None, text=None, wall_clock=120):
+    body = {"flow": flow, "wall_clock_seconds": wall_clock,
+            "input": _box(fixture, text)}
+    status, started = ask(port, "POST", "/api/flows", body)
+    if status != 200:
+        return status, started
+    return status, until_flow_ends(port, started["id"])
 
 
 def main():
@@ -100,7 +123,7 @@ def main():
     try:
         checks(port, pathlib.Path(chosen.build))
     finally:
-        console.registry.stop_everything()
+        console.stop_everything()
         server.shutdown()
         server.server_close()
 
@@ -111,9 +134,16 @@ def main():
 def checks(port, build):
     print("\nthe catalogue")
     status, setup = ask(port, "GET", "/api/setup")
-    check("and every starter names a tool that is there",
-          all(example["tool"] in {tool["name"] for tool in setup["tools"]}
+    # A starter may name either, since a flow is a question a reader can start
+    # from as much as a tool is, so the two are looked up in one set.
+    offered = ({tool["name"] for tool in setup["tools"]} |
+               {flow["name"] for flow in setup["flows"]})
+    check("and every starter names a tool or a flow that is there",
+          all((example.get("tool") or example.get("flow")) in offered
               for example in setup["examples"]))
+    check("and every step of every flow is a tool that is there",
+          all(step["tool"] in offered
+              for flow in setup["flows"] for step in flow["steps"]))
     catalogue_matches_the_build(setup, build)
 
     # The run pane says what the run is bounded by, and it says it because
@@ -281,12 +311,68 @@ def checks(port, build):
     check("and nothing of that one is left either",
           group_is_gone(ended["process_group"]))
 
+    # README.md's pipeline, driven here rather than retyped. What is asserted is
+    # that the second tool really read what the first one wrote: the paths are
+    # chosen by the console, so a chain that quietly ran on a stale file or on
+    # the fixture again would still look like four green runs from outside.
+    print("\na flow: two tools, in the order the pipeline needs them")
+    _, whole = run_flow(port, "decompose-then-sparsify", "f2_5x5.tensor")
+    check("a flow runs one step per operator the search wrote",
+          len(whole["runs"]) == 4)
+    steps = [ask(port, "GET", "/api/runs/" + identifier)[1]
+             for identifier in whole["runs"]]
+    check("its first step is the descent, asked for its operators",
+          steps[0]["tool"] == "minimise-rank" and
+          "--emit-operators" in steps[0]["command"])
+    check("and the three after it are the sparsifier on those three files",
+          all(step["tool"] == "sparsify-operator" for step in steps[1:]) and
+          sorted(step["command"][-6:] for step in steps[1:]) ==
+          ["_L.sms", "_P.sms", "_R.sms"])
+    check("every step's line is one to retype from the repository root",
+          all(step["command"].startswith("build/") for step in steps))
+    written = "".join(step["result"] for step in steps[1:])
+    check("and README.md's own numbers come back, 31 nonzeros to 27",
+          "14 multiplications" in steps[0]["result"] and
+          "as given: 31 nonzeros" in written and "27 nonzeros" in written)
+    check("the flow claims nothing its steps did not",
+          whole["badge"] == "complete" and whole["stopped_because"] is None)
+    _, every_run = ask(port, "GET", "/api/runs")
+    check("and each of its steps is a run like any other",
+          set(whole["runs"]) <= {card["id"] for card in every_run})
+
+    _, previewed = ask(port, "POST", "/api/preview",
+                       {"flow": "decompose-then-sparsify",
+                        "wall_clock_seconds": 120,
+                        "input": _box("f2_5x5.tensor", None)})
+    check("a flow shows its first line and says what follows it",
+          previewed["command"].startswith("build/descent_search/minimise-rank") and
+          len(previewed["then"]) == 1 and
+          "sparsify-operator" in previewed["then"][0])
+
+    # A step handed a map no reader accepts. The tool after it would be handed a
+    # path nothing wrote, and a sparsifier failing to open a file reads as a
+    # broken sparsifier rather than as a map that could not be read.
+    _, cut = run_flow(port, "decompose-then-sparsify",
+                      text="field 4\nshape 1 1 1\n\n1\n")
+    check("a step that did not reach its badge stops the flow there",
+          len(cut["runs"]) == 1 and cut["badge"] == "cut short")
+    check("and it says which badge it wanted, without a verdict of its own",
+          "minimise-rank ended as error" in cut["stopped_because"] and
+          "nothing after it was started" in cut["stopped_because"])
+
     print("\nthe worked examples, each run rather than read")
     for example in worked_examples.EXAMPLES:
-        _, ended = run(port, example["tool"], example["options"],
-                       example["fixture"])
+        if example.get("flow"):
+            # A flow's word is the flow's own and not a tool's: its steps each
+            # ended with the badge `flows.py` names beside them, which is what
+            # `badge` says here and all it says.
+            _, ended = run_flow(port, example["flow"], example["fixture"])
+        else:
+            _, ended = run(port, example["tool"], example["options"],
+                           example["fixture"])
+            ended = ended.get("outcome", {})
         check(example["title"] + " -> " + example["expect"],
-              ended.get("outcome", {}).get("badge") == example["expect"])
+              ended.get("badge") == example["expect"])
 
     print("\nthis machine only")
     request = urllib.request.Request("http://127.0.0.1:" + str(port) + "/api/setup",
