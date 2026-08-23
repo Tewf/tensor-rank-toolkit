@@ -18,6 +18,11 @@ testing/                 the assertion helper every module's tests use
 run_limits/              how much memory, how many cores, and which processor
                          one run may take; adapting-to-the-machine/ audits
                          every strand against all three
+search_plan/             the seven choices a run makes about how it will be
+                         carried out, in one place that owns no rule of its
+                         own; --plan-out writes them down and --plan-in
+                         replays them, so a run on other hardware differs in
+                         its machine and not in its decisions
 descent_search/          rank from above, by descent
 exhaustive_search/       rank decided outright, and what that costs
 map_construction/        building the maps every method runs on
@@ -48,7 +53,8 @@ reproduce/               regenerates every published number, with its provenance
 references.md            every paper cited anywhere here, by the keys the code uses
 how-the-search-works/    the exact search in pseudocode, every parameter, all
                          five pieces composed, and the verdict on wiring each
-the-research-front/        where the research front is, and which parts of it are here
+the-research-front/      where the research front is, and which parts of it
+                         are here
 positioning/             what this library adds to it, and what it does not
 MEASURING.md             how a timing here was taken, and what it does not mean
 OPTIONS.md               every flag of every tool, its default, and what
