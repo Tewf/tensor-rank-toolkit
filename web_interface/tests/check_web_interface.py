@@ -12,6 +12,13 @@ arrive at a reader as undecided and never as a refutation, because that
 confusion has produced a wrong published result in this repository once already.
 So it is asserted here against a real run of a real binary rather than against a
 table of codes, which would pass whatever the interface did with them.
+
+One thing is asked from beside this file and not in it. Whether the catalogue
+still corresponds to the build, tool by tool and flag by flag, is answered by
+running the binaries rather than by driving the console, so it is
+[`catalogue_against_the_build.py`](catalogue_against_the_build.py)'s. It returns
+its findings and this file reports them, which keeps every check in one printed
+list and one count.
 """
 import argparse
 import json
@@ -26,13 +33,15 @@ import urllib.request
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
+sys.path.insert(0, str(HERE))
 
-import http.server            # noqa: E402
-import http_service           # noqa: E402
-import plan_lines             # noqa: E402
-import repository             # noqa: E402
-import service                # noqa: E402
-import worked_examples        # noqa: E402
+import http.server                    # noqa: E402
+import catalogue_against_the_build    # noqa: E402
+import http_service                   # noqa: E402
+import plan_lines                     # noqa: E402
+import repository                     # noqa: E402
+import service                        # noqa: E402
+import worked_examples                # noqa: E402
 
 PASSED, FAILED = [], []
 
@@ -144,7 +153,8 @@ def checks(port, build):
     check("and every step of every flow is a tool that is there",
           all(step["tool"] in offered
               for flow in setup["flows"] for step in flow["steps"]))
-    catalogue_matches_the_build(setup, build)
+    for what, held in catalogue_against_the_build.findings(setup, build):
+        check(what, held)
 
     # The run pane says what the run is bounded by, and it says it because
     # `show-limits` was actually run. A pane that quietly showed an error string
@@ -225,6 +235,26 @@ def checks(port, build):
     _, asked = run(port, "decide-rank-by-sat", {"--target": "5"}, "f2_2x3.tensor")
     check("and without it the same code is a decomposition",
           asked["exit_status"] == 0 and asked["outcome"]["badge"] == "yes")
+
+    # The second of them, and the one that is easy to read past: the badge is
+    # the same word either way. A minimum over GF(p) is not the minimum over Q,
+    # and a card saying only `minimum` would let the easier answer be read as
+    # the harder one the tool is famous for.
+    operator = "plinopt/2x2x2_7_Strassen_L.sms"
+    _, over_field = run(port, "sparsify-operator", {"--field": "2"}, operator)
+    # `.get`, because a flag the catalogue has stopped offering comes back as a
+    # refusal with no run in it, and this reads better as a failed check than as
+    # a traceback that ends the suite before the rest of it is asked.
+    said = over_field.get("outcome", {})
+    check("--field answers over GF(p) and the card says which question that is",
+          said.get("badge") == "minimum" and
+          "over GF(p)" in said.get("means", "") and
+          "matroid greedy over GF(2)" in over_field.get("result", ""))
+    _, over_rationals = run(port, "sparsify-operator", {}, operator)
+    check("and without it the same badge is the harder question, over Q",
+          over_rationals["outcome"]["badge"] == "minimum" and
+          "over GF(p)" not in over_rationals["outcome"]["means"] and
+          "matroid greedy over Q" in over_rationals["result"])
 
     print("\nwhat a run would leave behind, said before it starts")
     box = {"text": repository.fixture_text("f2_2x3.tensor"),
@@ -382,54 +412,6 @@ def checks(port, build):
         check("a request from another origin is refused", False)
     except urllib.error.HTTPError as refused:
         check("a request from another origin is refused", refused.code == 403)
-
-
-# Binaries the build produces that are deliberately not offered here, each with
-# the reason, because a name on this list is a decision and not an oversight.
-# `OPTIONS/one-question-per-command.md` is where the decisions are argued.
-NOT_TOOLS = {
-    # An instrument: its output is nanoseconds, and MEASURING.md's line is that
-    # counts reproduce anywhere and timings do not. `measure-leaf` is its model
-    # and is CUDA-only, so it is usually not in the build tree at all.
-    "oracle_guided_search/price-canonical-route",
-    "gpu_leaf/measure-leaf",
-    # Retired into `curve-bounds --solvers`. It prints the line to type and
-    # leaves as 2, so offering it here would offer a refusal.
-    "integer_programme/list-solvers",
-    # A tool, and on the list in OPTIONS/one-question-per-command.md, but it
-    # reads three files at once and this console offers one: `repository.py`
-    # hands a tool a single fixture name and `workspace.py` writes a single
-    # typed map. Offering it with two of its three operands missing would be
-    # worse than not offering it. A limit of the console, named here so that it
-    # is a decision rather than a drift.
-    "descent_search/operators-to-tensor",
-    # An instrument that takes no map: it prints what this machine and this
-    # working directory bound a run to. The console shows its output in the run
-    # pane instead of offering it as a tool, because there is no question to ask
-    # it and nothing to choose.
-    "run_limits/show-limits",
-}
-
-
-def catalogue_matches_the_build(setup, build):
-    """The offered tools against the binaries that exist, in both directions.
-
-    A count asserted as a literal is what let this drift: two commands shipped
-    without ever reaching the catalogue and one stayed in it after it stopped
-    being a command, and `len(tools) == 12` was true throughout. So the question
-    asked here is the one that was actually wrong — does the list *correspond* —
-    and the number falls out of it.
-    """
-    offered = {tool["binary"] for tool in setup["tools"]}
-    missing = sorted(name for name in offered if not (build / name).is_file())
-    check("every tool offered is a binary that is there" +
-          (" (" + ", ".join(missing) + ")" if missing else ""), not missing)
-
-    built = {str(path.relative_to(build)) for path in build.glob("*/*")
-             if path.is_file() and os.access(path, os.X_OK)}
-    unoffered = sorted(built - offered - NOT_TOOLS)
-    check("and every command in the build tree is offered or named as not a tool" +
-          (" (" + ", ".join(unoffered) + ")" if unoffered else ""), not unoffered)
 
 
 def page_is_whole(port):

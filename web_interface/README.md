@@ -53,11 +53,12 @@ panel.
 2. **The question.** Every tool but two, each stating what it asks.
    `make-tensor` fills the pane above instead, and `operators-to-tensor` is not
    here at all because it reads three files at once and this console offers one.
-   Which tools those are is checked against the build rather than counted, so one
-   shipping without reaching this console is a failing check and not a quiet
-   omission, and the two exceptions are named with their reasons in that check.
-   The flags are those of `OPTIONS.md`, each carrying the note that says what it
-   costs. Under the twelve is [`flows.py`](flows.py), which is the other kind of
+   Which tools those are is checked against the build rather than counted, and
+   so is every flag of every one of them: a tool or a flag shipping without
+   reaching this console is a failing check and not a quiet omission, and
+   everything left off is named with its reason in that check. The flags are the
+   ones each binary's own `--help` prints, each carrying the note that says what
+   it costs, which is `OPTIONS.md`'s wherever that page has one. Under the twelve is [`flows.py`](flows.py), which is the other kind of
    question: `README.md`'s pipeline, where `minimise-rank --emit-operators` is
    followed by `sparsify-operator` on each operator it wrote. A flow adds no
    binary, no flag and no mathematics, only the order, and each of its steps is
@@ -101,13 +102,16 @@ to be discovered.
 ## Checking it
 
 ```sh
-python3 web_interface/tests/check_web_interface.py     # 58 checks
+python3 web_interface/tests/check_web_interface.py     # 64 checks
 ```
 
 It starts a console, drives it over HTTP and asserts against real runs of real
 binaries: that exit 3 arrives as undecided and never as a refutation, that the
 plan lines it promotes are still the characters the tools print, that the tools
-it offers are the binaries the build produced, that the pipeline's second tool
-really reads what its first one wrote, and that each of the seven worked
-examples still ends where it says it does. It is deliberately not
+it offers are the binaries the build produced and their flags the flags those
+binaries print, that the pipeline's second tool really reads what its first one
+wrote, and that each of the seven worked examples still ends where it says it
+does. The catalogue half runs the binaries rather than the console and is
+[`tests/catalogue_against_the_build.py`](tests/catalogue_against_the_build.py),
+reported here so there stays one list and one count. It is deliberately not
 registered with `ctest`, whose count is quoted elsewhere and means something else.

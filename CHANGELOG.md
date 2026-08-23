@@ -48,6 +48,15 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   accepted older spelling of a flag already there. `--field` carries its own
   reading of exit 0 beside itself, because the badge is the word `minimum`
   either way and a minimum over GF(p) is not the minimum over Q.
+- **The catalogue is checked against the build flag by flag**, in
+  [`web_interface/tests/catalogue_against_the_build.py`](web_interface/tests/catalogue_against_the_build.py),
+  which runs each binary's own `--help` and compares rather than keeping a
+  second table beside the first. Three ways it can be wrong and all three are
+  asked: a flag reached the binary and not the panel, a flag left the binary and
+  stayed in the panel, and an exclusion outlived the flag it excused. The tool
+  half of that check had shipped a day earlier and was green throughout the
+  drift above, which is what a check one level too shallow does. The console's
+  own suite is 64 checks.
 - **The browser console runs `README.md`'s pipeline as one flow.**
   `minimise-rank --emit-operators` and then `sparsify-operator` on each of the
   three operators it wrote, from one press, declared in
@@ -58,7 +67,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   mathematics: every step is an ordinary run with its own command, its own card
   and its own exit code, and a step that does not reach the badge its flow names
   stops the flow rather than handing the next tool a file that is not there. It
-  is also the seventh worked example, and the console's own suite is 58 checks.
+  is also the seventh worked example.
 - **`sparsest_basis_over_the_rationals`: the minimum, and a proof of it.**
   `[gottlieb2010]`'s driver with an oracle that answers `[beniamini2020]`'s
   Problem 2.15, so Rado-Edmonds makes the assembled answer the least number of
