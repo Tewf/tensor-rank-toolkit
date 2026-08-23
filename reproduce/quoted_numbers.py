@@ -1,15 +1,19 @@
 """That a ratio typed into prose is the one something else asserts.
 
-`front_page.py` closes the chain for `index.html`'s two tables, and
+`front_page.py` closes the chain for `index.html`'s three tables, and
 `measure.py --check` closes it for the results files. Neither looks at prose, and
 neither reaches the article, whose Table 2 could drift from `results.json`
 silently. It is guarded here now: a LaTeX tabular carries no sentence to match,
 but the row is a string like any other once the emphasis is dropped, and
 `flattened` says how.
-The oracle-guided speedup is quoted in eight documents in three directories,
-none of which is generated, and it sat at 22 779x while the test beside it
-asserted 1 890 601 and 83 nodes, whose quotient is 22 778.3. Nothing was wrong
-with the measurement; the rounding went up from a number ending in .33.
+
+The oracle-guided speedup is quoted in nine documents, the published front page
+among them, none of which is generated, and it sat at 22 779x while the test
+beside it asserted 1 890 601 and 83 nodes, whose quotient is 22 778.3. Nothing
+was wrong with the measurement; the rounding went up from a number ending in
+.33. The page was the last of the nine to be read here, because its separators
+are HTML entities rather than spaces, and two lines in `flattened` were the
+whole of that obstacle.
 
 A wrong digit next to a correct citation is worse than a missing one, because
 the citation lends it credit. So the constants come from whatever asserts them,
@@ -86,7 +90,8 @@ def claims():
     return [(
         f"isomorph-free speedup, {plain} / {canonical} nodes",
         grouped(round(plain / canonical)),
-        ["README.md",
+        ["index.html",
+         "README.md",
          "README.fr.md",
          "what-it-computes.md",
          "how-the-search-works/README.md",
@@ -97,7 +102,8 @@ def claims():
     ), (
         "what the orbit quotient removes refuting 6 products on <2,2,2>",
         f"{quotient}x",
-        ["README.md",
+        ["index.html",
+         "README.md",
          "what-it-computes.md",
          "how-the-search-works/what-to-wire.md",
          "OPTIONS/searching-for-rank.md",
@@ -132,8 +138,17 @@ def flattened(text):
     the article and the Markdown that quotes it, and it is what makes the
     article's table reachable at all: a LaTeX table carries no prose sentence,
     so the row itself has to be the string, and `& 221 & 128 &` is that row once
-    the money and the boldface are gone."""
-    plain = text.replace("×", "x").replace("$", "")
+    the money and the boldface are gone.
+
+    **HTML is the fourth spelling, and only two entities are translated**:
+    `&nbsp;` is the separator inside `22&nbsp;778` and `&times;` is the sign
+    after it, which is all `index.html` needs to be read like any other
+    document. Dropping every `&...;` instead would be shorter and wrong, for
+    the reason `front_page.py` records: `&ge; 13` reads as 13 once the entities
+    are gone, so a blanket rule would make an inequality invisible to a checker
+    looking for a number."""
+    plain = text.replace("&nbsp;", " ").replace("&times;", "x")
+    plain = plain.replace("×", "x").replace("$", "")
     plain = re.sub(r"\\mathbf\{([^}]*)\}", r"\1", plain)
     return " ".join(re.sub(r"[ \xa0,]", " ", plain).replace("*", "").split())
 
