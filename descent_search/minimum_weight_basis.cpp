@@ -6,6 +6,7 @@
 
 #include "device.h"
 #include "gf2_bits.h"
+#include "gf2_span_walk.h"
 #include "memory_budget.h"
 #include "measures.h"
 #include "reflected_gray_walk.h"
@@ -25,6 +26,8 @@ std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vec
 
 namespace {
 
+class GreedyBasis;
+
 /// The span walked one slice at a time, with the index carried alongside.
 ///
 /// Both loops in this file used to rebuild element `index` from
@@ -38,8 +41,16 @@ namespace {
 /// **The order is invisible to both callers**, and that is the whole reason this
 /// is safe: one writes `ranks[index]`, the other sorts by `(rank, index)`. See
 /// [`minimum_weight_basis.h`](minimum_weight_basis.h) on where it would not be.
+///
+/// This is the general field's representation of the span, one `int64_t` an
+/// entry, and it is what runs over GF(3), GF(5) and every shape too wide to
+/// pack. [`gf2_span_walk.h`](gf2_span_walk.h) is the same span over GF(2) in
+/// bits, offering the same five questions, and the two functions at the bottom
+/// of this file choose between them once a call.
 class SpanElements {
    public:
+    using Greedy = GreedyBasis;
+
     SpanElements(const Field& field, const std::vector<Matrix>& slices)
         : field_(field),
           slices_(slices),
@@ -82,6 +93,24 @@ class SpanElements {
     std::size_t index() const { return index_; }
     const Matrix& at() const { return element_; }
 
+    /// The rank of the element the walk stands on, which is what the whole
+    /// enumeration is for.
+    std::size_t rank() const { return linear_algebra::rank(field_, element_); }
+
+    /// The rank of one slice: what the ceiling and the floor are made of.
+    std::size_t rank_of_slice(std::size_t slice) const {
+        return linear_algebra::rank(field_, slices_[slice]);
+    }
+
+    /// How many elements a basis of this span holds, which is where the greedy
+    /// stops.
+    std::size_t dimension() const { return linear_algebra::span_of(field_, slices_).dimension(); }
+
+    /// What the greedy is built from, so it need not be handed the same two
+    /// things the walk already holds.
+    const Field& field() const { return field_; }
+    const std::vector<Matrix>& slices() const { return slices_; }
+
    private:
     const Field& field_;
     const std::vector<Matrix>& slices_;
@@ -92,6 +121,31 @@ class SpanElements {
     ReflectedGrayWalk walk_;
     Matrix element_;
     std::size_t index_ = 0;
+};
+
+/// The basis the greedy is assembling, over field elements.
+///
+/// Only the rank and the index of a candidate are held while the span is
+/// walked, so the element is rebuilt here from its index when the greedy
+/// actually reaches it. `Gf2GreedyBasis` is the same thing in bits.
+class GreedyBasis {
+   public:
+    explicit GreedyBasis(const SpanElements& walk)
+        : field_(walk.field()),
+          slices_(walk.slices()),
+          span_(walk.field(), linear_algebra::flattened_width<Field>(walk.slices())) {}
+
+    /// The element at `index`, taken if it is outside what is already held.
+    bool take(std::size_t index, Matrix& element) {
+        element = linear_combination(
+            field_, slices_, coefficient_vector(index, slices_.size(), field_.characteristic()));
+        return span_.try_add(element);
+    }
+
+   private:
+    const Field& field_;
+    const std::vector<Matrix>& slices_;
+    ReducedBasis span_;
 };
 
 /// The largest rank the answer is allowed to hold, from the slices alone.
@@ -114,11 +168,11 @@ class SpanElements {
 ///
 /// It costs one rank per slice and saves one per span element above it. On
 /// `cyclic_f2_7` that is 12 ranks a call to skip 1 856 of them.
-std::size_t highest_rank_the_answer_can_hold(const Field& field,
-                                             const std::vector<Matrix>& slices) {
+template <class Elements>
+std::size_t highest_rank_the_answer_can_hold(const Elements& walk, std::size_t slices) {
     std::size_t ceiling = 0;
-    for (const Matrix& slice : slices) {
-        ceiling = std::max(ceiling, linear_algebra::rank(field, slice));
+    for (std::size_t slice = 0; slice < slices; ++slice) {
+        ceiling = std::max(ceiling, walk.rank_of_slice(slice));
     }
     return ceiling;
 }
@@ -160,14 +214,14 @@ struct RankFloor {
 /// A caller may hand over any prefix it likes and the walk believes it only for
 /// the indices it covers, so a vector of another length reads here as "no floor"
 /// rather than as an error. The one rank this costs is paid once a call.
-RankFloor floor_under_the_unranked(const Field& field, const std::vector<Matrix>& slices,
+template <class Elements>
+RankFloor floor_under_the_unranked(const Field& field, const Elements& walk, std::size_t slices,
                                    const std::vector<std::size_t>& ranks_without_last) {
-    if (slices.empty() || ranks_without_last.empty()) return {ranks_without_last};
-    if (ranks_without_last.size() != span_size(field, slices.size() - 1)) {
+    if (slices == 0 || ranks_without_last.empty()) return {ranks_without_last};
+    if (ranks_without_last.size() != span_size(field, slices - 1)) {
         return {ranks_without_last};
     }
-    return {ranks_without_last, ranks_without_last.size(),
-            linear_algebra::rank(field, slices.back())};
+    return {ranks_without_last, ranks_without_last.size(), walk.rank_of_slice(slices - 1)};
 }
 
 /// The same ranks from a card, or false and nothing written.
@@ -215,44 +269,45 @@ bool ranks_from_a_card(const Field& field, const std::vector<Matrix>& slices,
     return card->ranks(span, combinations, ranks);
 }
 
-}  // namespace
-
-std::vector<std::size_t> span_element_ranks(const Field& field,
-                                            const std::vector<Matrix>& slices) {
-    const std::size_t combinations = span_size(field, slices.size());
-    require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
-                 combinations, sizeof(std::size_t));
-
-    std::vector<std::size_t> ranks(combinations);
-    if (ranks_from_a_card(field, slices, combinations, ranks)) return ranks;
-
-    SpanElements walk(field, slices);
-    ranks[0] = linear_algebra::rank(field, walk.at());
+/// Every element of the span ranked into its own slot, whatever the walk is
+/// made of. The walk starts on index 0, the zero combination, whose rank is
+/// zero in either representation.
+template <class Elements>
+void every_rank_into(Elements& walk, std::vector<std::size_t>& ranks) {
+    ranks[0] = walk.rank();
     while (walk.advance()) {
-        ranks[walk.index()] = linear_algebra::rank(field, walk.at());
+        ranks[walk.index()] = walk.rank();
     }
-    return ranks;
 }
 
-std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
-                                   const std::vector<std::size_t>& ranks_without_last,
-                                   std::size_t* cost) {
-    const std::size_t width = linear_algebra::flattened_width<Field>(slices);
-    const std::size_t dimension = linear_algebra::span_of(field, slices).dimension();
+// The elements of the span that could enter a basis, cheapest first. Index 0
+// is the zero combination and is skipped: it can never enter one.
+//
+// Only the rank and the index are held. The element itself is rebuilt from
+// its index by the greedy when it actually reaches it, which is at
+// most `dimension` times. Holding the matrices instead costs
+// `p^slices * (56 + 8*n*m)` bytes: 134 MB for the sixteen slices of 4x4
+// matrix multiplication, against 1 MB this way.
+struct Candidate {
+    std::size_t rank;
+    std::size_t index;
+};
+
+/// The whole of step 1, over whichever representation the walk is made of.
+///
+/// **Every line of the policy is here and none of it is in the walk**: the
+/// ceiling, the floor, which elements are pushed, the sort, and the order the
+/// greedy takes them in. A packed run and a general run execute this one
+/// function, and differ only in what a rank and a membership test are made of,
+/// which is what makes "the same answer" a property of the code rather than a
+/// claim about two copies of it.
+template <class Elements>
+std::vector<Matrix> basis_walked_over(const Field& field, const std::vector<Matrix>& slices,
+                                      const std::vector<std::size_t>& ranks_without_last,
+                                      Elements& walk, std::size_t* cost) {
+    const std::size_t dimension = walk.dimension();
     const std::size_t combinations = span_size(field, slices.size());
 
-    // The elements of the span that could enter a basis, cheapest first. Index 0
-    // is the zero combination and is skipped: it can never enter one.
-    //
-    // Only the rank and the index are held. The element itself is rebuilt from
-    // its index by `linear_combination` when the greedy actually reaches it, which is at
-    // most `dimension` times. Holding the matrices instead costs
-    // `p^slices * (56 + 8*n*m)` bytes: 134 MB for the sixteen slices of 4x4
-    // matrix multiplication, against 1 MB this way.
-    struct Candidate {
-        std::size_t rank;
-        std::size_t index;
-    };
     // The whole span, and not what the walk keeps: this is the budget the
     // enumeration is allowed to ask for, and a run refused before is refused
     // still. Nothing is reserved against it, because the ceiling below leaves a
@@ -279,10 +334,9 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
     // neither the basis nor its cost, so it need not be ranked, sorted or
     // rebuilt. The floor decides that for the unranked half without looking at
     // the matrix at all.
-    const std::size_t ceiling = highest_rank_the_answer_can_hold(field, slices);
-    const RankFloor floor = floor_under_the_unranked(field, slices, ranks_without_last);
+    const std::size_t ceiling = highest_rank_the_answer_can_hold(walk, slices.size());
+    const RankFloor floor = floor_under_the_unranked(field, walk, slices.size(), ranks_without_last);
 
-    SpanElements walk(field, slices);
     while (walk.advance()) {
         const std::size_t index = walk.index();
         if (index < ranks_without_last.size()) {
@@ -291,7 +345,7 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
             continue;
         }
         if (floor.under(index) > ceiling) continue;
-        const std::size_t rank = linear_algebra::rank(field, walk.at());
+        const std::size_t rank = walk.rank();
         if (rank > ceiling) continue;
         candidates.push_back({rank, index});
     }
@@ -308,19 +362,17 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
 
     std::vector<Matrix> basis;
     std::size_t weight = 0;
-    ReducedBasis span(field, width);
+    typename Elements::Greedy greedy(walk);
+    Matrix element;
     for (const Candidate& candidate : candidates) {
         if (basis.size() == dimension) break;
-        Matrix element = linear_combination(
-            field, slices, coefficient_vector(candidate.index, slices.size(), field.characteristic()));
-        if (span.try_add(element)) {
-            // The rank of what was just taken, already computed above: the sum
-            // of these is what `multiplication_count` would recover from the
-            // matrices, one Gaussian elimination per basis element at a time
-            // when the answer is already known.
-            weight += candidate.rank;
-            basis.push_back(std::move(element));
-        }
+        if (!greedy.take(candidate.index, element)) continue;
+        // The rank of what was just taken, already computed above: the sum
+        // of these is what `multiplication_count` would recover from the
+        // matrices, one Gaussian elimination per basis element at a time
+        // when the answer is already known.
+        weight += candidate.rank;
+        basis.push_back(std::move(element));
     }
 
     // The ceiling is a claim about what the answer holds, and a basis that came
@@ -336,6 +388,42 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
     }
     if (cost != nullptr) *cost = weight;
     return basis;
+}
+
+}  // namespace
+
+std::vector<std::size_t> span_element_ranks(const Field& field,
+                                            const std::vector<Matrix>& slices) {
+    const std::size_t combinations = span_size(field, slices.size());
+    require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
+                 combinations, sizeof(std::size_t));
+
+    std::vector<std::size_t> ranks(combinations);
+    if (ranks_from_a_card(field, slices, combinations, ranks)) return ranks;
+
+    // Over GF(2) the same walk in bits, which is the same order over the same
+    // span and writes the same slots: [`gf2_span_walk.h`](gf2_span_walk.h).
+    if (gf2_span_walk_applies(field, slices)) {
+        Gf2SpanElements walk(field, slices);
+        every_rank_into(walk, ranks);
+        return ranks;
+    }
+
+    SpanElements walk(field, slices);
+    every_rank_into(walk, ranks);
+    return ranks;
+}
+
+std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
+                                   const std::vector<std::size_t>& ranks_without_last,
+                                   std::size_t* cost) {
+    if (gf2_span_walk_applies(field, slices)) {
+        Gf2SpanElements walk(field, slices);
+        return basis_walked_over(field, slices, ranks_without_last, walk, cost);
+    }
+
+    SpanElements walk(field, slices);
+    return basis_walked_over(field, slices, ranks_without_last, walk, cost);
 }
 
 }  // namespace bilinear_rank

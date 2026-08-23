@@ -1,7 +1,8 @@
 # A descent heuristic for finding bilinear map rank, corrected and extended.
 # Three steps: a matroid greedy that is exact for the basis it picks, then two
 # that relax the constraint it works under and guarantee nothing.
-add_library(descent_search STATIC span_enumeration.cpp minimum_weight_basis.cpp sorted_span.cpp
+add_library(descent_search STATIC span_enumeration.cpp minimum_weight_basis.cpp
+                                       gf2_span_walk.cpp sorted_span.cpp
                                        minimise_rank.cpp algorithm_recovery.cpp
                                        candidate_pool.cpp card_failure.cpp
                                        span_ranks_on_card.cpp)

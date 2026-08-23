@@ -138,6 +138,37 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Step 1's span walk holds a GF(2) matrix as bits in machine words**, which is
+  the representation
+  [`exhaustive_search/gf2_leaf.h`](exhaustive_search/gf2_leaf.h) already gave the
+  exact search's leaf, applied to the two functions the incumbent search spends
+  its life inside. `lower-the-bound` costs one `minimum_weight_basis_with` per
+  child, and each of those walks a span taking the rank of a matrix at nearly
+  every element, so what a matrix is made of is what that search costs.
+  **2.5x to 19.0x**, measured one question at a time with and without the new
+  `--general-span`, in
+  [`descent_search/gf2_span_walk.h`](descent_search/gf2_span_walk.h) with the
+  spread explained and the protocol caveat attached: the machine was not quiet,
+  so the ratios stand and the seconds are upper bounds.
+
+  **No count moves, and that is a property of the code rather than a claim about
+  two copies of it.** The ceiling, the floor under the unranked half, the sort
+  and the order the greedy takes candidates in stay in
+  `minimum_weight_basis.cpp`, once, templated on the representation; only a
+  rank, a walk step, a dimension and a membership test are packed. Nodes,
+  children, moves offered, improvements, branches bounded and the algorithm at
+  the end are identical on both paths, and
+  [`descent_search/tests/test_gf2_span_walk.cpp`](descent_search/tests/test_gf2_span_walk.cpp)
+  asserts that entry for entry over six GF(2) fixtures and all three calls.
+  GF(3), GF(5), a slice wider than 64 columns and a set of slices that do not
+  share a shape reach none of it, checked rather than assumed.
+  `reproduce/measure.py --check` reproduces every published count with the same
+  four SKIPPED lines.
+
+  One primitive was added under it, `gf2_rank` in
+  [`linear_algebra/gf2_bits.h`](linear_algebra/gf2_bits.h): the leaf only ever
+  needed to know whether a rank was one, and step 1 needs the number.
+
 - **The SMS reader refuses what LinBox would read differently**, which is three
   corrections read off his sources rather than off our notes about them. Its
   comment said the format does not fix how many triples go on a line; it does,

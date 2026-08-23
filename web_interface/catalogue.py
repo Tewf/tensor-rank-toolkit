@@ -129,6 +129,12 @@ TOOLS = [
             {"flag": "--emit-operators", "kind": "emit_operators",
              "label": "write the operators (L, R, P as SMS)",
              "note": "The same three .sms files minimise-rank writes."},
+            {"flag": "--general-span", "kind": "switch",
+             "label": "walk every span by the general field path",
+             "note": "Off by default. Over GF(2) step 1 walks the span with a "
+                     "bit an entry; this forces the general one, same tree and "
+                     "same counts, so the two can be timed on one question: "
+                     "descent_search/gf2_span_walk.h."},
         ],
     },
     {

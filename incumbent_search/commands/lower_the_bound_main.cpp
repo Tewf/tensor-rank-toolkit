@@ -22,6 +22,7 @@
 #include "minimise_rank.h"
 #include "minimum_weight_basis.h"
 #include "fewest_products.h"
+#include "gf2_span_walk.h"
 #include "parallel.h"
 #include "report.h"
 #include "requested_group.h"
@@ -35,7 +36,7 @@ void usage() {
                    "                       [--width N] [--summand-rank r] [--whole-pool]\n"
                    "                       [--below k] [--orbit-moves]\n"
                    "                       [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
-                   "                       [--emit-operators <stem>] [--help]\n"
+                   "                       [--general-span] [--emit-operators <stem>] [--help]\n"
                    "\n"
                    "  --from basis|descent  the root and the first incumbent: the minimum-\n"
                    "                        weight basis of span(T), or the descent's own\n"
@@ -76,7 +77,12 @@ void usage() {
                    "                        search was taken without it, and no group is\n"
                    "                        available for most fixtures here\n"
                 << cli::symmetry_usage()
-                << "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
+                << "  --general-span        walk every span by the general field path, even\n"
+                   "                        over GF(2) where the bit-packed one applies.\n"
+                   "                        Same tree, same nodes, same answer, and slower:\n"
+                   "                        it is here so the two can be timed on one\n"
+                   "                        question rather than on two\n"
+                   "  --emit-operators <stem>  write <stem>_{L,R,P}.sms for the answer\n"
                    "  --threads N           N workers, 0 for every core, 1 by default. The\n"
                    "                        children of one node are prepared in parallel and\n"
                    "                        entered in the same order at any count, so every\n"
@@ -157,6 +163,11 @@ int run(int argc, char** argv) {
             // --max-memory if the machine has the room" — naming a flag this
             // command did not have. It has it now.
             bilinear_rank::set_memory_budget(arguments.memory_size());
+        } else if (arguments.is("--general-span")) {
+            // Step 1's span walk in field elements rather than in bits.
+            // `gf2_span_walk_applies` is asked once per call, inside
+            // `minimum_weight_basis`, and has to see this before the first one.
+            bilinear_rank::set_gf2_span_walk_offered(false);
         } else if (arguments.is("--emit-operators")) {
             operator_stem = arguments.text();
         } else {
