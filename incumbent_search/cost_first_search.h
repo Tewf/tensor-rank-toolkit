@@ -5,6 +5,7 @@
 
 #include "automorphism.h"
 #include "bilinear_rank_aliases.h"
+#include "span_census.h"
 
 /// A branch and bound over subspaces that minimises the **cost** instead of
 /// fixing the dimension, so that it can be stopped at any moment and still hand
@@ -180,9 +181,20 @@ struct IncumbentReport {
 /// adjunction above it, so narrowing is this search's job and doing it once for
 /// the caller would silently weaken the quotient. Empty is what every caller who
 /// was never given one passes, and it means "try every move".
+///
+/// `census`, when not null, receives a fingerprint of every subspace this call
+/// enters and of every child it costs, so that a caller can ask how much of the
+/// tree is one subspace reached twice. It changes nothing the search does, and
+/// costs one null check a node when it is not asked for, which is what keeps
+/// every published count the count of a run that never carried it.
+/// [`span_census.h`](span_census.h) says why an echelon basis is already the
+/// canonical form the question needs. Pass the **same** census to every round of
+/// a multi-round run: duplication across rounds is duplication, and a count of
+/// distinct subspaces is not a thing two calls can each hold half of.
 std::vector<Matrix> search_from_above(const Field& field, const std::vector<Matrix>& start,
                                       const std::vector<Matrix>& pool,
                                       const IncumbentLimits& limits, IncumbentReport* report,
-                                      const std::vector<Automorphism>& ambient = {});
+                                      const std::vector<Automorphism>& ambient = {},
+                                      SpanCensus* census = nullptr);
 
 }  // namespace bilinear_rank

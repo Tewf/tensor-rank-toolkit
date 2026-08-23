@@ -58,6 +58,9 @@ struct Ascent {
     const Field& field;
     const std::vector<Matrix>& pool;
     const std::vector<Automorphism>& ambient;
+    /// Null unless a caller asked what the tree repeats. Nothing reads it but
+    /// the two `record` calls below, and neither changes what is entered.
+    SpanCensus* census;
     IncumbentLimits limits;
     IncumbentReport report;
     std::vector<Matrix> best;
@@ -81,6 +84,10 @@ struct Ascent {
     /// greedy that built this basis summed the ranks it picked, and both callers
     /// below already hold that sum.
     void visit(const std::vector<Matrix>& basis, std::size_t cost, std::size_t depth) {
+        // Before the bound and before the budget, because a node the tree
+        // entered is a node the tree entered whichever of the two turns it back.
+        if (census != nullptr) census->entered.record(field, basis);
+
         if (cost < report.best) {
             report.best = cost;
             best = basis;
@@ -108,6 +115,9 @@ struct Ascent {
             return;
         }
         ++report.nodes;
+        // The same span again, now that it is known to be one the tree pays a
+        // subtree for rather than one the bound turns back on arrival.
+        if (census != nullptr) census->expanded.record(field, basis);
 
         // The one `p^dim` pass this node pays. It answers both questions asked of
         // `V`: which elements are cheap enough to split, and what every candidate
@@ -180,6 +190,12 @@ struct Ascent {
             children[slot].basis = std::move(attempt);
         });
 
+        // Every child, entered or not, because the costing above is what a
+        // repeated child costs and it is already paid by the time the beam picks.
+        if (census != nullptr) {
+            for (const Child& child : children) census->children.record(field, child.basis);
+        }
+
         // What one move is worth, over every child and not only the entered
         // ones: the bound a future version wants needs the largest drop any
         // single step can produce, and the beam would only ever see the cheapest
@@ -216,14 +232,15 @@ struct Ascent {
 std::vector<Matrix> search_from_above(const Field& field, const std::vector<Matrix>& start,
                                       const std::vector<Matrix>& pool,
                                       const IncumbentLimits& limits, IncumbentReport* report,
-                                      const std::vector<Automorphism>& ambient) {
+                                      const std::vector<Automorphism>& ambient,
+                                      SpanCensus* census) {
     // A basis, not whatever the caller happened to hold: the bound reads
     // `basis.size()` as the dimension, and a spanning set with a redundant slice
     // would make it read high and cut branches that were never bounded.
     std::size_t root_cost = 0;
     const std::vector<Matrix> root = minimum_weight_basis(field, start, {}, &root_cost);
 
-    Ascent ascent{field, pool, ambient, limits, {}, root, 0};
+    Ascent ascent{field, pool, ambient, census, limits, {}, root, 0};
     ascent.report.best = root_cost;
     // The incumbent the bound reads, which `--below` may set below anything
     // built. `below + 1` and not `below`, because the question is "at `below` or
