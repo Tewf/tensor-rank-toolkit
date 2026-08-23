@@ -19,7 +19,7 @@ struct Expectation {
     long long sparsified;
     /// `nnz + nns`, the cost the article minimises.
     ///
-    /// **This was 20 for the two oracles, now on the dominated-methods branch,
+    /// **This was 20 for the two oracles, now on `rejected-experiments`,
     /// and is 10 for the exact method**, on the
     /// alternative-basis operator whose entries are ninths. The oracles left all
     /// ten entries as ninths, twenty operations; the exact method returns a
