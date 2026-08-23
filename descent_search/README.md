@@ -41,7 +41,7 @@ guarantees, proved rather than measured:
 
 F2 5x5 to **14**, F2 3x8 to **15**, F2 4x7 to **16**, F3 3x6 to **10**, against
 published 13, no-solution-at-14, no-solution-at-14 and 10. **Step 3 is priced
-badly**: it improved two of the four by one product each, at 58 to 184 times what
+badly**: it improved two of the four by one product each, at 36 to 189 times what
 steps 1 and 2 cost together. Per-step times and the full table:
 [`what-it-reaches.md`](what-it-reaches.md).
 

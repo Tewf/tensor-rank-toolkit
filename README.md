@@ -45,7 +45,7 @@ counts, and one consumer card priced against both: [`gpu_leaf/`](gpu_leaf/).
 
 **The expensive step is priced badly.** Step 3 of the descent enumerates the full
 pool of rank-one maps. Across the four polynomial fixtures it improved the answer
-in **two of four cases**, by one product each, and cost between **58 and 184
+in **two of four cases**, by one product each, and cost between **36 and 189
 times** the first two steps together. A continuation that only makes step 3
 faster optimises the part that mostly does not pay:
 [`fixtures/README.md`](fixtures/README.md) exists to hold that finding still.

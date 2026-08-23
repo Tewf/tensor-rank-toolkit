@@ -1,13 +1,13 @@
 # The two tensors decided outright
 
-## The result worth having: rank ⟨2,2,2⟩ = 7, decided here in 0.55 s
+## The result worth having: rank ⟨2,2,2⟩ = 7, decided here in 0.042 s
 
 Strassen multiplied 2×2 matrices with seven products in 1969 and Winograd proved
 in 1971 that six is impossible. Both halves are reproduced from nothing:
 
 ```sh
-decide-rank fixtures/matmul_2x2x2.tensor --target 6   #     25 399 nodes, 0.41 s: NO
-decide-rank fixtures/matmul_2x2x2.tensor --target 7   #      7 436 nodes, 0.14 s: FOUND
+decide-rank fixtures/matmul_2x2x2.tensor --target 6 #     25 399 nodes, 0.0292 s: NO
+decide-rank fixtures/matmul_2x2x2.tensor --target 7 #      7 436 nodes, 0.0126 s: FOUND
 ```
 
 The 7 products are checked against the map they claim to compute, so this is

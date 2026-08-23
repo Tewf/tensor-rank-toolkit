@@ -12,43 +12,34 @@
       "name": "strassen_u",
       "shape": "7x4",
       "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_u.matrix",
-      "seconds": 0.0044,
+      "seconds": 0.0015,
       "as_given": 12,
-      "row_basis_heuristic": 10,
-      "oracle_bottom_up": 10,
-      "oracle_top_down": 10,
+      "exact_matroid_greedy": 10,
+      "greedy_by_rescaling": 10,
+      "by_linear_programming": 10,
+      "simplex_seconds": 0.0024
+    },
+    {
+      "name": "strassen_v",
+      "shape": "7x4",
+      "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_v.matrix",
+      "seconds": 0.0017,
+      "as_given": 12,
       "exact_matroid_greedy": 10,
       "greedy_by_rescaling": 10,
       "by_linear_programming": 10,
       "simplex_seconds": 0.0022
     },
     {
-      "name": "strassen_v",
-      "shape": "7x4",
-      "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_v.matrix",
-      "seconds": 0.0038,
-      "as_given": 12,
-      "row_basis_heuristic": 10,
-      "oracle_bottom_up": 10,
-      "oracle_top_down": 10,
-      "exact_matroid_greedy": 10,
-      "greedy_by_rescaling": 10,
-      "by_linear_programming": 10,
-      "simplex_seconds": 0.0019
-    },
-    {
       "name": "alternative_basis_u",
       "shape": "7x4",
       "command": "build/matrix_sparsification/sparsify-operator fixtures/alternative_basis_u.matrix",
-      "seconds": 0.0084,
+      "seconds": 0.0017,
       "as_given": 21,
-      "row_basis_heuristic": 10,
-      "oracle_bottom_up": 10,
-      "oracle_top_down": 10,
       "exact_matroid_greedy": 10,
       "greedy_by_rescaling": 10,
       "by_linear_programming": 10,
-      "simplex_seconds": 0.0025
+      "simplex_seconds": 0.0023
     }
   ],
   "against_plinopt": {
@@ -56,9 +47,27 @@
     "source": "Carried, and every column of it. The three operators are PLinOpt's own and are not among the twelve fixtures/plinopt/ ships, so no run here re-derives as_given or minimum either; PLinOpt's own bin/sparsifier is not built in the checkout vendored here, so its column needs that tool built first. All three columns were measured on this machine on 2026-08-22 under MEASURING.md, and reproduce/questions.py names this block in CARRIED so a run says on every pass that it left it alone. What each column means and how P had to be oriented: matrix_sparsification/against-plinopt.md.",
     "why_here": "index.html typesets these nine numbers by hand, so a reader with no JavaScript sees the evidence, and until this block existed they sat in no results file and nothing checked them. reproduce/front_page.py now holds the page's table and the sentence above it to this block, and adds the three column totals rather than reading a fourth row, so a total that stops adding up fails.",
     "operators": [
-      {"operator": "L", "shape": "23x9", "as_given": 69, "plinopt": 59, "minimum": 43},
-      {"operator": "R", "shape": "23x9", "as_given": 66, "plinopt": 53, "minimum": 42},
-      {"operator": "P", "shape": "9x23", "as_given": 86, "plinopt": 55, "minimum": 43}
+      {
+        "operator": "L",
+        "shape": "23x9",
+        "as_given": 69,
+        "plinopt": 59,
+        "minimum": 43
+      },
+      {
+        "operator": "R",
+        "shape": "23x9",
+        "as_given": 66,
+        "plinopt": 53,
+        "minimum": 42
+      },
+      {
+        "operator": "P",
+        "shape": "9x23",
+        "as_given": 86,
+        "plinopt": 55,
+        "minimum": 43
+      }
     ]
   },
   "readings": [
@@ -74,8 +83,8 @@
   ],
   "limits": "The matroid greedy over Q returns the minimum over every invertible V and stops on collecting a basis rather than on a proof that nothing lighter exists, so it does not finish on an operator whose greedy weights are large: 4x4x4_49_156_L needs weight 6 or more for 7 of its 16 vectors, and the command now refuses that operator in milliseconds rather than running on. --simplex answers it instead, by linear programming, in 0.34 s and at 100 nonzeros. That is an UPPER BOUND: it would be the minimum if the operator's column matroid were regular, and it is not, a sixteen-column minor having determinant -2. What is verified rather than assumed is that the answer spans the same row space. The greedy by rescaling, behind --operations, guarantees nothing and minimises nnz + nns rather than nnz, which is why speed does not order it against the rest. See matrix_sparsification/method/answering-without-searching.md.",
   "provenance": {
-    "commit": null,
-    "tree_clean": null,
+    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
     "solvers": {
@@ -90,31 +99,6 @@
     "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
-    "defaults_in_force": {
-      "threads": 1,
-      "max_memory_bytes": 2147483648,
-      "node_limit": 5000000,
-      "solver_timeout_seconds": 300
-    }
-  },
-  "counts_provenance": {
-    "commit": "8e53bd6059c988743fdab2af9dad02309db790b1",
-    "tree_clean": false,
-    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
-    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
-    "givaro": "4.2.0",
-    "solvers": {
-      "kissat": "4.0.4",
-      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
-      "cadical": null,
-      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
-      "drat-trim": "reports no version; found on ~/.local/bin",
-      "cbc": "Version: 2.10.11",
-      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
-    },
-    "build_directory": "build",
-    "repeats": 1,
-    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
     "defaults_in_force": {
       "threads": 1,
       "max_memory_bytes": 2147483648,

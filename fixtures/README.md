@@ -21,10 +21,10 @@ cumulative, so each step includes the ones before it.
 
 | Fixture | Field | Product | Naive | Step 1 | Step 2 | Step 3 |
 |---|---|---|---|---|---|---|
-| `f2_5x5` | F2 | 5×5 | 25 | 16 · 0.0006 s | 14 · 0.0144 s | **14** · 1.33 s |
-| `f2_3x8` | F2 | 3×8 | 24 | 19 · 0.0006 s | 16 · 0.0530 s | **15** · 3.08 s |
-| `f2_4x7` | F2 | 4×7 | 28 | 19 · 0.0009 s | 16 · 0.0487 s | **16** · 8.96 s |
-| `f3_3x6` | F3 | 3×6 | 18 | 12 · 0.0044 s | 11 · 0.0582 s | **10** · 6.93 s |
+| `f2_5x5` | F2 | 5×5 | 25 | 16 · 0.0001 s | 14 · 0.0009 s | **14** · 0.0986 s |
+| `f2_3x8` | F2 | 3×8 | 24 | 19 · 0.0001 s | 16 · 0.0057 s | **15** · 0.209 s |
+| `f2_4x7` | F2 | 4×7 | 28 | 19 · 0.0001 s | 16 · 0.0021 s | **16** · 0.398 s |
+| `f3_3x6` | F3 | 3×6 | 18 | 12 · 0.0026 s | 11 · 0.0238 s | **10** · 2.69 s |
 
 The three steps are the greedy smallest basis (1), rank minimisation over the
 rank-one maps already inside `T` (2), and rank minimisation over the full
@@ -32,11 +32,11 @@ generated set `G` of rank-one maps (3).
 
 ## What that table actually says
 
-**Step 3 improved the answer in two of the four cases, and cost between 58 and
-184 times what the first two steps cost together to do it.** On `f2_5x5` it
-spent 1.33 seconds to confirm the 14 that step 2 already had; on `f2_4x7`, 8.96
-seconds to confirm 16. Where it did pay, it paid by one product: 16 to 15 on
-`f2_3x8`, 11 to 10 on `f3_3x6`.
+**Step 3 improved the answer in two of the four cases, and cost between 36 and
+189 times what the first two steps cost together to do it.** On `f2_5x5` it
+spent 0.0986 seconds to confirm the 14 that step 2 already had; on `f2_4x7`,
+0.398 seconds to confirm 16. Where it did pay, it paid by one product: 16 to
+15 on `f2_3x8`, 11 to 10 on `f3_3x6`.
 
 So step 3 accounts for essentially all of the cost and about half of the answer,
 at a price per product that no other step here comes close to. Any continuation

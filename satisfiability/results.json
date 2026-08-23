@@ -19,10 +19,10 @@
       "field": 2,
       "known_rank": 3,
       "found_at": 3,
-      "found_seconds": 0.0052,
+      "found_seconds": 0.0057,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
-      "ruled_out_seconds": 0.0027,
+      "ruled_out_seconds": 0.0045,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
@@ -30,10 +30,10 @@
       "field": 2,
       "known_rank": 5,
       "found_at": 5,
-      "found_seconds": 0.0113,
+      "found_seconds": 0.0164,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --break-symmetry --plain-cnf",
       "ruled_out_at": 4,
-      "ruled_out_seconds": 0.0101,
+      "ruled_out_seconds": 0.016,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 4 --break-symmetry --plain-cnf"
     },
     {
@@ -41,10 +41,10 @@
       "field": 2,
       "known_rank": 3,
       "found_at": 3,
-      "found_seconds": 0.0028,
+      "found_seconds": 0.0067,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
-      "ruled_out_seconds": 0.0027,
+      "ruled_out_seconds": 0.0105,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
@@ -52,10 +52,10 @@
       "field": 2,
       "known_rank": 6,
       "found_at": 6,
-      "found_seconds": 0.0422,
+      "found_seconds": 0.0544,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --break-symmetry --plain-cnf",
       "ruled_out_at": 5,
-      "ruled_out_seconds": 0.0378,
+      "ruled_out_seconds": 0.0548,
       "ruled_out_seconds_under_cryptominisat": 0.0357,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 5 --break-symmetry --plain-cnf",
       "note": "The 4.13 s recorded here for ruling out 5 could not be reproduced by anything tried: 0.0378 s with the term ordering, 0.534 s without it, 0.0357 s under cryptominisat. It is replaced rather than explained, and said so here so the next reader does not inherit the same puzzle. `search/` was the file that was right: its gf8 floor of 0.085 s is the sum of these two questions."
@@ -65,10 +65,10 @@
       "field": 2,
       "known_rank": 3,
       "found_at": 3,
-      "found_seconds": 0.0044,
+      "found_seconds": 0.0088,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
-      "ruled_out_seconds": 0.0027,
+      "ruled_out_seconds": 0.0155,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
@@ -76,14 +76,14 @@
       "field": 2,
       "known_rank": 7,
       "found_at": 7,
-      "found_seconds": 0.177,
+      "found_seconds": 0.1847,
       "found_seconds_under_cryptominisat": 0.469,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --break-symmetry --plain-cnf",
       "ruled_out_at": 6,
-      "ruled_out_seconds": 0.311,
+      "ruled_out_seconds": 0.3384,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 6 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 25399,
-      "exhaustive_ruled_out_seconds": 0.41,
+      "exhaustive_ruled_out_seconds": 0.029182,
       "exhaustive_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6"
     },
     {
@@ -91,7 +91,7 @@
       "field": 2,
       "known_rank": 11,
       "ruled_out_at": 8,
-      "ruled_out_seconds": 34.26,
+      "ruled_out_seconds": 34.1491,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x3.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 0,
       "exhaustive_ruled_out_seconds": null,
@@ -103,11 +103,11 @@
       "field": 2,
       "known_rank": 9,
       "found_at": 9,
-      "found_seconds": 0.27,
+      "found_seconds": 0.2875,
       "found_seconds_under_cryptominisat": 36.19,
       "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 9 --break-symmetry --plain-cnf",
       "ruled_out_at": 8,
-      "ruled_out_seconds": 108.0,
+      "ruled_out_seconds": 106.8745,
       "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 105600301,
       "exhaustive_ruled_out_seconds": 2328,
@@ -190,8 +190,8 @@
     "cryptominisat_note": "No answer in 120 s without the ordering, 1.57 s with it, which is where the earlier `at least 76x` came from. The pair is kept because it is a lower bound on the same effect from the other solver, and labelled because the file used to present it as kissat's."
   },
   "provenance": {
-    "commit": "4efe1aaa9bbe8af210a22172679a21391cbc8750",
-    "tree_clean": false,
+    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
     "solvers": {
@@ -206,31 +206,6 @@
     "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
-    "defaults_in_force": {
-      "threads": 1,
-      "max_memory_bytes": 2147483648,
-      "node_limit": 5000000,
-      "solver_timeout_seconds": 300
-    }
-  },
-  "counts_provenance": {
-    "commit": "8e53bd6059c988743fdab2af9dad02309db790b1",
-    "tree_clean": false,
-    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
-    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
-    "givaro": "4.2.0",
-    "solvers": {
-      "kissat": "4.0.4",
-      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
-      "cadical": null,
-      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
-      "drat-trim": "reports no version; found on ~/.local/bin",
-      "cbc": "Version: 2.10.11",
-      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
-    },
-    "build_directory": "build",
-    "repeats": 1,
-    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
     "defaults_in_force": {
       "threads": 1,
       "max_memory_bytes": 2147483648,

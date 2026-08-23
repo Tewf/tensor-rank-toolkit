@@ -41,10 +41,10 @@
   <div class="tw"><table id="descent-table">
     <thead><tr><th>Field</th><th>Product</th><th class="n">Naive</th><th class="n">Reached</th><th class="n">Time</th><th>Published rank</th></tr></thead>
     <tbody>
-      <tr data-fixture="f2_5x5"><td>F2</td><td>5&times;5</td><td class="n">25</td><td class="n"><strong>14</strong></td><td class="n">1.33 s</td><td>13, <code>[bdez2012]</code></td></tr>
-      <tr data-fixture="f2_3x8"><td>F2</td><td>3&times;8</td><td class="n">24</td><td class="n"><strong>15</strong></td><td class="n">3.08 s</td><td>no solution at 14</td></tr>
-      <tr data-fixture="f2_4x7"><td>F2</td><td>4&times;7</td><td class="n">28</td><td class="n"><strong>16</strong></td><td class="n">8.96 s</td><td>no solution at 14</td></tr>
-      <tr data-fixture="f3_3x6"><td>F3</td><td>3&times;6</td><td class="n">18</td><td class="n"><strong>10</strong></td><td class="n">6.93 s</td><td>10, <code>[bdez2012]</code></td></tr>
+      <tr data-fixture="f2_5x5"><td>F2</td><td>5&times;5</td><td class="n">25</td><td class="n"><strong>14</strong></td><td class="n">0.0986 s</td><td>13, <code>[bdez2012]</code></td></tr>
+      <tr data-fixture="f2_3x8"><td>F2</td><td>3&times;8</td><td class="n">24</td><td class="n"><strong>15</strong></td><td class="n">0.209 s</td><td>no solution at 14</td></tr>
+      <tr data-fixture="f2_4x7"><td>F2</td><td>4&times;7</td><td class="n">28</td><td class="n"><strong>16</strong></td><td class="n">0.398 s</td><td>no solution at 14</td></tr>
+      <tr data-fixture="f3_3x6"><td>F3</td><td>3&times;6</td><td class="n">18</td><td class="n"><strong>10</strong></td><td class="n">2.69 s</td><td>10, <code>[bdez2012]</code></td></tr>
     </tbody>
   </table></div>
   <p id="descent-drift" class="caveat" hidden></p>
@@ -55,7 +55,7 @@
   <figure><div id="times"></div><figcaption>Total search time per map, log scale. One core of an i5-12450H at 2.2 GHz. Source: <code>descent_search/results.json</code>.</figcaption></figure>
 
   <h2>The finding worth stating on its own</h2>
-  <p>The expensive step buys almost nothing. Step 3 of the descent enumerates the full pool of rank-one maps, and across the four polynomial fixtures it improved the answer in <strong>two of four cases</strong>, by one product each time, while accounting for essentially all of the cost: on F2 4&times;7 almost the whole of the 8.96 seconds went to returning the rank the previous step already had.</p>
+  <p>The expensive step buys almost nothing. Step 3 of the descent enumerates the full pool of rank-one maps, and across the four polynomial fixtures it improved the answer in <strong>two of four cases</strong>, by one product each time, while accounting for essentially all of the cost: on F2 4&times;7 almost the whole of the 0.398 seconds went to returning the rank the previous step already had.</p>
   <p>So the step that costs essentially everything buys essentially nothing. Any continuation that only makes step 3 faster is optimising the part that mostly does not pay, and the fixtures exist to hold that finding still.</p>
 
   <h2>And now a bound from below</h2>

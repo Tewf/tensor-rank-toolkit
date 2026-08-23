@@ -17,15 +17,15 @@
       "command": "build/descent_search/minimise-rank fixtures/f2_5x5.tensor --steps 3",
       "step_1": {
         "multiplications": 16,
-        "seconds": 0.0006
+        "seconds": 0.0001
       },
       "step_2": {
         "multiplications": 14,
-        "seconds": 0.0144
+        "seconds": 0.0009
       },
       "step_3": {
         "multiplications": 14,
-        "seconds": 1.3273
+        "seconds": 0.0986
       }
     },
     {
@@ -34,15 +34,15 @@
       "command": "build/descent_search/minimise-rank fixtures/f2_3x8.tensor --steps 3",
       "step_1": {
         "multiplications": 19,
-        "seconds": 0.0006
+        "seconds": 0.0001
       },
       "step_2": {
         "multiplications": 16,
-        "seconds": 0.053
+        "seconds": 0.0057
       },
       "step_3": {
         "multiplications": 15,
-        "seconds": 3.0786
+        "seconds": 0.2093
       }
     },
     {
@@ -51,15 +51,15 @@
       "command": "build/descent_search/minimise-rank fixtures/f2_4x7.tensor --steps 3",
       "step_1": {
         "multiplications": 19,
-        "seconds": 0.0009
+        "seconds": 0.0001
       },
       "step_2": {
         "multiplications": 16,
-        "seconds": 0.0487
+        "seconds": 0.0021
       },
       "step_3": {
         "multiplications": 16,
-        "seconds": 8.9577
+        "seconds": 0.3982
       }
     },
     {
@@ -68,21 +68,21 @@
       "command": "build/descent_search/minimise-rank fixtures/f3_3x6.tensor --steps 3",
       "step_1": {
         "multiplications": 12,
-        "seconds": 0.0044
+        "seconds": 0.0026
       },
       "step_2": {
         "multiplications": 11,
-        "seconds": 0.0582
+        "seconds": 0.0238
       },
       "step_3": {
         "multiplications": 10,
-        "seconds": 6.9307
+        "seconds": 2.6932
       }
     }
   ],
   "readings": [
     "Step 3 improved the answer in two of the four cases, by one product each time: 16 to 15 on f2_3x8 and 11 to 10 on f3_3x6. On f2_5x5 and f2_4x7 it confirmed what step 2 already had.",
-    "Step 3 is where almost all the cost is. It costs between 58 and 184 times what steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay.",
+    "Step 3 is where almost all the cost is. It costs between 36 and 189 times what steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay.",
     "What the orbit quotient is worth, and where. Refuting 6 products on <2,2,2> costs 25 399 nodes plainly and 648 under `-s matmul 2 2 2`, 39.2x fewer for the identical verdict. Finding 7 costs 7 436 and 3 167, only 2.3x. The quotient pays on the proof far more than on the witness, which is the shape you would expect: a refutation has to walk every branch, and every branch that is another branch in a different basis is walked again, while a search that stops at the first decomposition stops before most of that repetition. Both rows are re-derived by `reproduce/measure.py --check`, and the verdict is checked on both sides rather than recorded: a quotient that changed the answer would be a bug, not a speed-up."
   ],
   "limits": "Every step is greedy and nothing here proves a result is optimal. The bilinear rank problem is open, and none of this settles it.",
@@ -98,7 +98,7 @@
         "naive": 4,
         "exact": 3,
         "nodes": 1,
-        "seconds": 7e-06,
+        "seconds": 1.6e-05,
         "why_trustworthy": "Karatsuba's answer, and 2n-1 = 3 is a lower bound, so 3 is optimal.",
         "command": "build/exhaustive_search/decide-rank fixtures/f2_2x2.tensor"
       },
@@ -107,7 +107,7 @@
         "naive": 6,
         "exact": 5,
         "nodes": 2,
-        "seconds": 2e-05,
+        "seconds": 3.4e-05,
         "why_trustworthy": "A 2x3 product: five products instead of six.",
         "command": "build/exhaustive_search/decide-rank fixtures/f2_2x3.tensor"
       },
@@ -116,7 +116,7 @@
         "naive": 4,
         "exact": 3,
         "nodes": 2,
-        "seconds": 7e-06,
+        "seconds": 6e-06,
         "why_trustworthy": "The bilinear complexity of GF(4) over GF(2) is classically 3.",
         "command": "build/exhaustive_search/decide-rank fixtures/gf4_multiplication.tensor"
       },
@@ -125,7 +125,7 @@
         "naive": 9,
         "exact": 6,
         "nodes": 329,
-        "seconds": 0.0047,
+        "seconds": 0.000698,
         "why_trustworthy": "The bilinear complexity of GF(8) over GF(2) is classically 6.",
         "command": "build/exhaustive_search/decide-rank fixtures/gf8_multiplication.tensor"
       }
@@ -185,14 +185,14 @@
           ],
           "found": 7,
           "nodes_to_rule_out_6": 25399,
-          "seconds_to_rule_out_6": 0.41,
+          "seconds_to_rule_out_6": 0.029192,
           "nodes_to_find_7": 7436,
-          "seconds_to_find_7": 0.14,
+          "seconds_to_find_7": 0.012602,
           "command_to_rule_out_6": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
           "command_to_find_7": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7"
         },
         "known": 7,
-        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.55 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step. Two things cross the plateau it is stuck on, and their costs are published rather than quoted: flip_graph/results.json."
+        "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.042 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step. Two things cross the plateau it is stuck on, and their costs are published rather than quoted: flip_graph/results.json."
       },
       {
         "tensor": "<2,2,3> matrix multiplication",
@@ -315,7 +315,7 @@
       "bytes": "8.2 TiB, as the tool reports when refusing",
       "reading": "Refused by the memory budget rather than attempted. This is the allocation that had no guard."
     },
-    "finding": "The heuristic and the exact search fail on different tensors. On every matrix multiplication tensor whose pool scan can finish the heuristic does not improve the naive count at all, with an empty shortlist out of 225, 945 and 32193 candidates, and the tool says why: not one of the 225 rank-one maps improves <2,2,2>, so a first-improvement greedy has nowhere to step. Step 1 is a matroid greedy and therefore optimal over bases of span(T), which is exactly the ceiling: 8 is the true minimum over those bases, and Strassen's 7 products are not a basis of span(T) but a rank-one basis of a 7-dimensional space containing it. The exact search finds that in 0.14 s."
+    "finding": "The heuristic and the exact search fail on different tensors. On every matrix multiplication tensor whose pool scan can finish the heuristic does not improve the naive count at all, with an empty shortlist out of 225, 945 and 32193 candidates, and the tool says why: not one of the 225 rank-one maps improves <2,2,2>, so a first-improvement greedy has nowhere to step. Step 1 is a matroid greedy and therefore optimal over bases of span(T), which is exactly the ceiling: 8 is the true minimum over those bases, and Strassen's 7 products are not a basis of span(T) but a rank-one basis of a 7-dimensional space containing it. The exact search finds that in 0.0126 s."
   },
   "quotient": [
     {
@@ -327,8 +327,8 @@
       "nodes": 25399,
       "quotiented_nodes": 648,
       "fewer_nodes_by": 39.2,
-      "seconds": 0.029776,
-      "quotiented_seconds": 0.001384,
+      "seconds": 0.02923,
+      "quotiented_seconds": 0.000986,
       "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
       "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2"
     },
@@ -341,15 +341,15 @@
       "nodes": 7436,
       "quotiented_nodes": 3167,
       "fewer_nodes_by": 2.3,
-      "seconds": 0.015677,
-      "quotiented_seconds": 0.006186,
+      "seconds": 0.012591,
+      "quotiented_seconds": 0.005998,
       "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7",
       "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2"
     }
   ],
   "provenance": {
-    "commit": null,
-    "tree_clean": null,
+    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
     "solvers": {
@@ -364,31 +364,6 @@
     "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
-    "defaults_in_force": {
-      "threads": 1,
-      "max_memory_bytes": 2147483648,
-      "node_limit": 5000000,
-      "solver_timeout_seconds": 300
-    }
-  },
-  "counts_provenance": {
-    "commit": "8e53bd6059c988743fdab2af9dad02309db790b1",
-    "tree_clean": false,
-    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
-    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
-    "givaro": "4.2.0",
-    "solvers": {
-      "kissat": "4.0.4",
-      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
-      "cadical": null,
-      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
-      "drat-trim": "reports no version; found on ~/.local/bin",
-      "cbc": "Version: 2.10.11",
-      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
-    },
-    "build_directory": "build",
-    "repeats": 1,
-    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
     "defaults_in_force": {
       "threads": 1,
       "max_memory_bytes": 2147483648,

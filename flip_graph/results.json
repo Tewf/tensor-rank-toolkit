@@ -28,7 +28,7 @@
       "sideways": 12,
       "states_visited": 386,
       "reached": 7,
-      "seconds": 0.0868,
+      "seconds": 0.0181,
       "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 380"
     },
     {
@@ -43,7 +43,7 @@
       "sideways": 12,
       "states_visited": 376,
       "reached": 8,
-      "seconds": 0.0629,
+      "seconds": 0.0166,
       "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 370"
     }
   ],
@@ -59,7 +59,7 @@
       "gap": 1,
       "best_seed": 1,
       "reductions": 1,
-      "seconds": 0.0294,
+      "seconds": 0.0269,
       "command": "build/flip_graph/walk-scheme fixtures/matmul_2x2x2.tensor --flips 20000 --seeds 8"
     },
     {
@@ -73,7 +73,7 @@
       "gap": 1,
       "best_seed": 1,
       "reductions": 6,
-      "seconds": 0.2217,
+      "seconds": 0.1961,
       "command": "build/flip_graph/walk-scheme fixtures/gf16_multiplication.tensor --flips 20000 --seeds 8"
     },
     {
@@ -87,14 +87,13 @@
       "gap": 10,
       "best_seed": 1,
       "reductions": 3,
-      "seconds": 13.2974,
+      "seconds": 11.4423,
       "command": "build/flip_graph/walk-scheme fixtures/matmul_3x3x3.tensor --flips 20000 --seeds 8"
     }
   ],
-  "counts_provenance": {
-    "commit": "8e53bd6059c988743fdab2af9dad02309db790b1",
-    "tree_clean": false,
-    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
+  "provenance": {
+    "commit": "efae55fe0708aa6c03290338be3c458aaa4ca62c",
+    "tree_clean": true,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
     "solvers": {
@@ -107,8 +106,8 @@
       "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
     },
     "build_directory": "build",
-    "repeats": 1,
-    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
+    "repeats": 3,
+    "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
     "defaults_in_force": {
       "threads": 1,
       "max_memory_bytes": 2147483648,

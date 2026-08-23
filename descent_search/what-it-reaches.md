@@ -11,11 +11,11 @@ provenance in [`results.json`](results.json). Protocol:
 
 | Map | Naive | Step 1 | Step 2 | Step 3 | Published |
 |---|---|---|---|---|---|
-| F2 5×5 | 25 | 16 | 14 | **14** · 1.33 s | 13, `[bdez2012]` |
-| F2 3×8 | 24 | 19 | 16 | **15** · 3.08 s | no solution at 14 |
-| F2 4×7 | 28 | 19 | 16 | **16** · 8.96 s | no solution at 14 |
-| F3 3×6 | 18 | 12 | 11 | **10** · 6.93 s | 10, `[bdez2012]` |
+| F2 5×5 | 25 | 16 | 14 | **14** · 0.0986 s | 13, `[bdez2012]` |
+| F2 3×8 | 24 | 19 | 16 | **15** · 0.209 s | no solution at 14 |
+| F2 4×7 | 28 | 19 | 16 | **16** · 0.398 s | no solution at 14 |
+| F3 3×6 | 18 | 12 | 11 | **10** · 2.69 s | 10, `[bdez2012]` |
 
 **Step 3 is priced badly.** It improved the answer in two of four cases, by one
-product each time, at 58 to 184 times what steps 1 and 2 cost together: on F2
-5×5 it spent 1.33 s confirming the 14 step 2 already had.
+product each time, at 36 to 189 times what steps 1 and 2 cost together: on F2
+5×5 it spent 0.0986 s confirming the 14 step 2 already had.
