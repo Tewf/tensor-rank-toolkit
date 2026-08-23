@@ -1131,9 +1131,24 @@ multiplication and the addition counts are optimal for the 2 × 2 case, and give
 
 **`karunaratne2026`**: S. Karunaratne, A. Idamekorala. *55 Additions Suffice for
 3 × 3 Matrix Multiplication at Rank 23.*
-[arXiv:2607.28676](https://arxiv.org/abs/2607.28676), 2026. The current record, and
-provably optimal for its fixed tensor orientation. The baseline any joint search over
-rank and sparsity has to name before it starts.
+[arXiv:2607.28676](https://arxiv.org/abs/2607.28676), submitted 2026-07-28. The
+current record, and provably optimal for its fixed tensor orientation. The baseline
+any joint search over rank and sparsity has to name before it starts.
+
+**Read from the abstract, so that the number is not carried at third hand.** The
+55 is **13 additions on the left input, 14 on the right and 28 at the output**, the
+last obtained by transposing a 14-addition factor circuit, and with the 23 bilinear
+products the circuit is 78 scalar operations. **The coefficient alphabet is
+`{−1, 0, +1}`** and the order of every product is kept, so it holds over any
+associative ring, commutative or not. It improves the **56** it attributes to Sun,
+and it starts from `[perminov2026]`'s published **58**-addition realisation
+`cr58_cn122`, which is
+`schemes/results/addition_reduced_ZT/3x3x3_m23_cr58_cn122_ZT_reduced.json` in that
+repository, checked there rather than assumed from the name. Four exact checks are
+reported, including independent Python and Node.js implementations of all 729 Brent
+identities over `Z`. **It is model (c) in the standard basis**, so what may and may
+not be read against it is
+[`matrix_sparsification/measured-with-other-tools/reading-the-program-length.md`](matrix_sparsification/measured-with-other-tools/reading-the-program-length.md).
 
 **`colemanpothen1986`**: T. F. Coleman, A. Pothen. *The null space problem I.
 Complexity.* SIAM Journal on Algebraic and Discrete Methods **7** (1986), no. 4,

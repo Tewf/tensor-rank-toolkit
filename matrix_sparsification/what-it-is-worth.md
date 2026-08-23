@@ -59,6 +59,17 @@ exactly by `[holtz2025]`), and **55 additions in model (c)**
 bound is stated in model (b) and a program with common subexpressions is not
 bound by `nnz − rows`.
 
+**That 55 strengthens the finding above rather than competing with it.** The three
+`Grey-221` operators at their *proved* minimum carry 128 nonzeros over
+`23 + 23 + 9 = 55` rows, so evaluating them the naive way costs `128 − 55 = 73`
+additions, where `[karunaratne2026]`'s circuit for a rank-23 `⟨3,3,3⟩` tensor runs
+in 55. That is the two models pulling apart one step further out: minimising
+nonzeros as far as they go, with a proof that nothing lighter exists, still leaves
+a count above a published straight-line program. It is not a scoreboard and nothing
+here may be read against that record, for the reason
+[`measured-with-other-tools/reading-the-program-length.md`](measured-with-other-tools/reading-the-program-length.md)
+gives. What the 55 is made of is in [`../references.md`](../references.md).
+
 Computing `q_w` needed Strassen's decoding operator, which is a fixture now, and
 it is not asserted to be Strassen's: [`algorithm_check.h`](algorithm_check.h)
 verifies the triple against the 2×2 product through the trilinear identity.
