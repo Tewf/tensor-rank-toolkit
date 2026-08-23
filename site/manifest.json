@@ -6,16 +6,6 @@
       "path": "",
       "title": "Exact tensor and bilinear rank",
       "short": "Overview"
-    },
-    {
-      "path": "descent_search/",
-      "title": "Rank of bilinear maps",
-      "short": "Rank"
-    },
-    {
-      "path": "matrix_sparsification/",
-      "title": "Sparsifying the operators",
-      "short": "Sparsify"
     }
   ]
 }
