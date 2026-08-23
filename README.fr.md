@@ -53,9 +53,9 @@ tarifée contre les deux : [`gpu_leaf/`](gpu_leaf/).
 **L'étape coûteuse est mal tarifée.** L'étape 3 de la descente énumère le vivier
 complet des applications de rang un. Sur les quatre jeux de test polynomiaux elle
 a amélioré le résultat dans **deux cas sur quatre**, d'un produit chaque fois,
-pour un coût compris entre **36 et 189 fois** celui des deux premières étapes
-réunies. Toute suite qui se contenterait d'accélérer l'étape 3 optimiserait la
-partie qui, le plus souvent, ne paie pas, et
+pour un coût supérieur d'**un à deux ordres de grandeur** à celui des deux
+premières étapes réunies. Toute suite qui se contenterait d'accélérer l'étape 3
+optimiserait la partie qui, le plus souvent, ne paie pas, et
 [`fixtures/README.md`](fixtures/README.md) existe pour maintenir ce constat.
 
 ## Une seule chaîne

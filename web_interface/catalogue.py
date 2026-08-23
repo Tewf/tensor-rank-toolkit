@@ -105,8 +105,8 @@ TOOLS = [
              "label": "steps",
              "note": "Step 3 enumerates the full pool. Across the four "
                      "polynomial fixtures it improved the answer in two of "
-                     "four cases and cost 36 to 189 times steps 1 and 2 "
-                     "together: fixtures/README.md."},
+                     "four cases and cost one to two orders of magnitude "
+                     "more than steps 1 and 2 together: fixtures/README.md."},
             {"flag": "--emit-operators", "kind": "emit_operators",
              "label": "write the operators (L, R, P as SMS)",
              "note": "Three .sms files in the format PLinOpt reads."},

@@ -82,7 +82,7 @@
   ],
   "readings": [
     "Step 3 improved the answer in two of the four cases, by one product each time: 16 to 15 on f2_3x8 and 11 to 10 on f3_3x6. On f2_5x5 and f2_4x7 it confirmed what step 2 already had.",
-    "Step 3 is where almost all the cost is. It costs between 36 and 189 times what steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay.",
+    "Step 3 is where almost all the cost is. It costs one to two orders of magnitude more than steps 1 and 2 cost together, so any effort spent making it faster is spent on the part that mostly does not pay. The computed range is 36 to 189 times and is not published as two digits: steps 1 and 2 are now milliseconds and a hand run moved one fixture's ratio from 189 to 85, which MEASURING.md is the rule for.",
     "What the orbit quotient is worth, and where. Refuting 6 products on <2,2,2> costs 25 399 nodes plainly and 648 under `-s matmul 2 2 2`, 39.2x fewer for the identical verdict. Finding 7 costs 7 436 and 3 167, only 2.3x. The quotient pays on the proof far more than on the witness, which is the shape you would expect: a refutation has to walk every branch, and every branch that is another branch in a different basis is walked again, while a search that stops at the first decomposition stops before most of that repetition. Both rows are re-derived by `reproduce/measure.py --check`, and the verdict is checked on both sides rather than recorded: a quotient that changed the answer would be a bug, not a speed-up."
   ],
   "limits": "Every step is greedy and nothing here proves a result is optimal. The bilinear rank problem is open, and none of this settles it.",

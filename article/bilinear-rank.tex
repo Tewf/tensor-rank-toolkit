@@ -759,8 +759,12 @@ the undivided instance, with the longest single part exceeding the whole. Even
 unbounded parallelism does not recover this.
 
 \emph{The expensive step of the descent.} Step 3 improved the answer on two of
-four fixtures, by one product each time, at between $58$ and $184$ times the cost
-of the first two steps combined. Effort spent accelerating it is spent on the
+four fixtures, by one product each time, at one to two orders of magnitude the
+cost of the first two steps combined. The measured ratios span $36$ to $189$ and
+are deliberately not quoted to two digits: the first two steps finish in
+milliseconds, where the fixed cost of starting a process is a large share of what
+was timed, and a repeat run moved one fixture's ratio from $189$ to $85$ with
+nothing changed in the code. Effort spent accelerating step~3 is spent on the
 part that mostly does not pay.
 
 \section{Limitations}
