@@ -66,7 +66,7 @@ step is one exclusive or and a test for zero. Same verdicts, same counts, and
 **McKay** replaces "have I seen this subspace" with "is this subspace's canonical
 parent the one I came from", so duplicates are never generated and nothing is
 remembered. It is measured at 22 778x fewer nodes while *counting* subspaces and
-at 53x fewer nodes for 25.8x the wall clock while *deciding*, which is why
+at 53x fewer nodes for 5.1x the wall clock while *deciding*, which is why
 deciding does not use it: [the cost model](../canonical_factorisation/canonical-augmentation.md).
 
 **`SortedSpan`** holds `V` as its rank filtration `R[1] ⊆ … ⊆ R[16]` instead of a
