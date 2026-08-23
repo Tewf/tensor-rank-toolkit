@@ -78,6 +78,20 @@ jobs:
       - name: Reproduce every published number
         run: ctest --test-dir build --output-on-failure -j2
 
+      # The one count on the front page that no results file holds. The page
+      # says a machine without a card compiles and passes the same N tests, and
+      # this runner is that machine: no CUDA toolkit, so `gpu_leaf/` returns
+      # before it registers its own tests, and every other `add_test` here is
+      # unconditional. So the number is exactly checkable, and only here. It
+      # reads the phrase rather than a line number, and an empty match is a
+      # failure, so rewording the sentence turns this red instead of quiet.
+      - name: The front page's test count is this suite's
+        run: |
+          registered=$(ctest --test-dir build -N | sed -n 's/^Total Tests: //p')
+          quoted=$(sed -n 's/.*passes the same \([0-9]\{1,\}\) tests.*/\1/p' index.html)
+          echo "index.html says '${quoted}'; this build registers '${registered}'"
+          test -n "$registered" && test -n "$quoted" && test "$registered" = "$quoted"
+
       # The counts in the results files, re-derived and compared. Timings are
       # deliberately not checked: a shared runner cannot reproduce one, and the
       # last wrong number in this repository got in by being typed into a
