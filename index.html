@@ -64,15 +64,15 @@
   <div class="tw"><table>
     <thead><tr><th>Map</th><th class="n">Naive</th><th class="n">Exact answer</th><th>Checked against</th></tr></thead>
     <tbody>
-      <tr><td>F2 2&times;2</td><td class="n">4</td><td class="n"><strong>3</strong></td><td>Karatsuba; 2n&minus;1 says no fewer exists</td></tr>
-      <tr><td>GF(4) over GF(2)</td><td class="n">4</td><td class="n"><strong>3</strong></td><td>classical</td></tr>
-      <tr><td>GF(8) over GF(2)</td><td class="n">9</td><td class="n"><strong>6</strong></td><td>classical</td></tr>
-      <tr><td>⟨2,2,2⟩ matrix multiplication</td><td class="n">8</td><td class="n"><strong>7</strong></td><td>Strassen; decided from the tensor in half a second</td></tr>
-      <tr><td>F2 5&times;5</td><td class="n">25</td><td class="n"><strong>&ge; 13</strong></td><td>9, 10 and 11 refused by the bounds; 12 ruled out by exhaustion</td></tr>
+      <tr data-map="f2_2x2"><td>F2 2&times;2</td><td class="n">4</td><td class="n"><strong>3</strong></td><td>Karatsuba; 2n&minus;1 says no fewer exists</td></tr>
+      <tr data-map="gf4_multiplication"><td>GF(4) over GF(2)</td><td class="n">4</td><td class="n"><strong>3</strong></td><td>classical</td></tr>
+      <tr data-map="gf8_multiplication"><td>GF(8) over GF(2)</td><td class="n">9</td><td class="n"><strong>6</strong></td><td>classical</td></tr>
+      <tr data-map="matmul_2x2x2"><td>⟨2,2,2⟩ matrix multiplication</td><td class="n">8</td><td class="n"><strong>7</strong></td><td>Strassen; decided from the tensor in half a second</td></tr>
+      <tr data-map="f2_5x5"><td>F2 5&times;5</td><td class="n">25</td><td class="n"><strong>13</strong></td><td>9, 10 and 11 refused by the bounds, 12 ruled out by exhaustion, 13 exhibited by <code>lower-the-bound</code></td></tr>
     </tbody>
   </table></div>
 
-  <p>The last line is narrowed from both sides and not closed. Nine, ten and eleven products are refused by <code>rank_lower_bound</code> before the search opens a node, and twelve is ruled out by exhaustion in <strong>146&nbsp;402&nbsp;553 nodes</strong>, so the rank is thirteen or more. The descent exhibits fourteen, so what is proved here is <strong>13 &le; rank &le; 14</strong>. Finding a thirteen is what would close it and has not been run. Barbulescu, Detrey, Estibals and Zimmermann report 13, <code>[bdez2012]</code>, so the descent&rsquo;s 14 is not the last word.</p>
+  <p>The last line is closed, and it took both directions to close it. Nine, ten and eleven products are refused by <code>rank_lower_bound</code> before the search opens a node, and twelve is ruled out by exhaustion in <strong>146&nbsp;402&nbsp;553 nodes</strong>, so no fewer than thirteen will do; <code>lower-the-bound</code> then exhibits a thirteen in <strong>80 nodes</strong>, so <strong>the rank is exactly 13</strong>, settled on 2026-08-21 by this repository&rsquo;s own two searches. Neither half is the answer on its own: the refutation is the floor and the exhibit is the ceiling, and the descent reaches only fourteen. Barbulescu, Detrey, Estibals and Zimmermann report the same 13, <code>[bdez2012]</code>, and the line above no longer rests on their reporting it.</p>
 
   <h2>What made that refutation affordable</h2>
   <p>Ruling out twelve was recorded here as never run and priced at about seven hours, and the price was an extrapolation from a leaf that rebuilt every candidate as a general finite-field matrix: 256 field multiplications and a heap allocation for an object that is 256 bits. Forming it in words instead costs <strong>129.1 ns against 940.2</strong>, and the seven hours became <strong>535.59 seconds</strong>. The estimate was not wrong about the tree, which is still 146&nbsp;402&nbsp;553 nodes; it was wrong about the leaf, and a bound nobody re-derives is a bound that keeps its first mistake.</p>
