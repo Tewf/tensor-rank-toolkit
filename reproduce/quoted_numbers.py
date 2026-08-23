@@ -1,7 +1,11 @@
 """That a ratio typed into prose is the one something else asserts.
 
 `front_page.py` closes the chain for `index.html`'s two tables, and
-`measure.py --check` closes it for the results files. Neither looks at prose.
+`measure.py --check` closes it for the results files. Neither looks at prose, and
+neither reaches the article, whose Table 2 could drift from `results.json`
+silently. It is guarded here now: a LaTeX tabular carries no sentence to match,
+but the row is a string like any other once the emphasis is dropped, and
+`flattened` says how.
 The oracle-guided speedup is quoted in eight documents in three directories,
 none of which is generated, and it sat at 22 779x while the test beside it
 asserted 1 890 601 and 83 nodes, whose quotient is 22 778.3. Nothing was wrong
@@ -103,7 +107,7 @@ def claims():
     ), (
         "the Grey-221 operators, as given and at the proved minimum",
         f"{as_given} nonzeros to {minimum}",
-        ["README.md", "what-it-computes.md"],
+        ["README.md", "what-it-computes.md", "article/bilinear-rank.tex"],
     ), (
         "the same, in French",
         f"{as_given} non-nuls à {minimum}",
@@ -111,7 +115,11 @@ def claims():
     ), (
         "what PLinOpt reaches on those three operators",
         f"against {plinopt}",
-        ["what-it-computes.md"],
+        ["what-it-computes.md", "article/bilinear-rank.tex"],
+    ), (
+        "the same three totals as the article's table row",
+        f"& {as_given} & {plinopt} & {minimum} &",
+        ["article/bilinear-rank.tex"],
     )]
 
 
@@ -120,8 +128,17 @@ def flattened(text):
     failure. Separators vary between documents, so they all read as one space,
     and the multiplication sign reads as the letter: a document writing 39.2×
     where another writes 39.2x is not making a different claim, and both
-    spellings ship here."""
-    plain = text.replace("×", "x")
+    spellings ship here.
+
+    **Emphasis has three spellings across these documents and none of them is
+    part of a claim**: `**` in Markdown, `$` around a number in LaTeX, and
+    `\\mathbf{}` around one. Dropping all three is what lets one string cover
+    the article and the Markdown that quotes it, and it is what makes the
+    article's table reachable at all: a LaTeX table carries no prose sentence,
+    so the row itself has to be the string, and `& 221 & 167 & 128 &` is that
+    row once the money and the boldface are gone."""
+    plain = text.replace("×", "x").replace("$", "")
+    plain = re.sub(r"\\mathbf\{([^}]*)\}", r"\1", plain)
     return " ".join(re.sub(r"[ \xa0,]", " ", plain).replace("*", "").split())
 
 
