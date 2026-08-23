@@ -14,3 +14,5 @@
 
 # Fixtures are data, not source: dense matrices of 0s and 1s.
 fixtures/*.tensor                       linguist-generated=true
+
+*.html linguist-detectable=false
