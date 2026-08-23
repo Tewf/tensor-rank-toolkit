@@ -5,11 +5,19 @@ once. And the node count is `C(pool, k − dim T)`, where the exponent is the ga
 between the map's own span and the target, not the target: `⟨2,2,2⟩` has a
 4-dimensional span and settles at 7 in seconds, while `⟨2,3,3⟩` has a
 6-dimensional span, so asking about 10 is already four levels deep and out of
-reach for ever. Measured at about 1.5×10⁹ field operations a second:
+reach for ever.
+
+**The two count columns are exact and the Time column is three different eras**,
+which is worth saying before the table rather than after it. Nodes and pool sizes
+are facts about the problem and come out the same on any machine and any leaf.
+The times do not: only the first row was retaken on the leaf that ships, on
+2026-08-23 and from a clean tree, and every other figure below was measured or
+projected at the general leaf's rate of about **1.5×10⁹ field operations a
+second**, before the GF(2) leaf and the reflected Gray walk landed on 2026-08-20.
 
 | Run | Nodes | Pool | Time |
 |---|---|---|---|
-| `⟨2,2,2⟩` rule out 6 | 25 399 | 225 | 0.41 s |
+| `⟨2,2,2⟩` rule out 6 | 25 399 | 225 | **0.029 s**, on the leaf that ships |
 | `⟨2,2,3⟩` rule out 8 | 446 923 | 945 | 53 s, **retired** |
 | cyclic 5 rule out 7 | 461 251 | 961 | 51 s, **retired** |
 | GF(16) rule out 7 | 1 897 576 | 225 | 34 s, **retired** |
@@ -18,6 +26,16 @@ reach for ever. Measured at about 1.5×10⁹ field operations a second:
 | `⟨2,3,3⟩` rule out 10 | `C(32193, 4)` = 4.5×10¹⁶ | 32 193 | stopped at 100 min, hopeless |
 | `⟨3,3,3⟩` rule out 10 | ~2.6×10⁵ | 261 121 | ~10 h, not run |
 | `⟨3,3,3⟩` heuristic step 3 | 261 121 candidates | | ~4.2 h, stopped at 45 min |
+
+**So every projected time here is an upper bound, and no rate should be derived
+across the column.** The one row that was retaken runs at about **fourteen times**
+the rate the rest were taken at: 25 399 nodes over a 225-map pool is 5.7×10⁶ leaf
+elements, which was 0.41 s and is 0.029 s. Applying that to the rows nobody has
+run would be arithmetic and not a measurement, so it is not done here; what it
+means is that the projections are ceilings rather than estimates. **The argument
+the table exists for survives either way**, because it is about an exponent and
+not a rate: `⟨2,3,3⟩` at 10 is `C(32193, 4)` = 4.5×10¹⁶ leaves, which is never at
+any of these rates, and fourteen times never is still never.
 
 **"Retired" means the search does not run it at all any more.** `rank_lower_bound`
 refuses the target before the first node opens, so the count is 0 and there is no

@@ -10,9 +10,24 @@
 ///
 /// `[covanov2019]` Algorithm 3, as `expand_subspace_up_to_symmetry`, asked about the map's
 /// span **enlarged by the candidate**. It decides the same thing the cube does and
-/// prices it very differently: unpinned at `⟨2,2,2⟩` and `k = 6` the tree and kissat
-/// are comparable, 0.41 s against 0.31 s, but **pinned the tree takes 0.0085 to
-/// 0.0099 s against the solver's 0.29 to 0.35 s**.
+/// prices it very differently. Measured together at `⟨2,2,2⟩` and `k = 6`, before
+/// 2026-08-20: unpinned the tree took **0.41 s** against kissat's 0.31 s, and
+/// pinned it took **0.0085 to 0.0099 s** against the solver's 0.29 to 0.35 s. So
+/// **pinning is worth about forty-five times to the tree and nothing at all to the
+/// solver**, and that is the comparison this file argues from, one session against
+/// itself.
+///
+/// **What can be refreshed has been, and what cannot is said rather than left to
+/// look current.** The unpinned pair is retaken and both its ends are published:
+/// the tree is **0.029 s** (`descent_search/results.json`) against kissat's
+/// **0.338 s** (`satisfiability/results.json`), so the two are not *comparable*,
+/// which this comment used to say, and it is the tree that is ahead by 11.6x. It
+/// moved because the GF(2) bit-packed leaf and the reflected Gray walk landed on
+/// 2026-08-20 and the solver's second is another program's. **The pinned pair
+/// nothing re-measures**: no results file carries a pinned question, so both of
+/// its ends are quoted as taken and the tree's end of it is an upper bound under
+/// the leaf that ships. Forty-five times is therefore the floor of what pinning
+/// is worth here, not a figure that has aged into being wrong.
 ///
 /// The reason is that enlarging the span removes a level of the tree. `span(T) + t`
 /// has dimension 5 at `⟨2,2,2⟩` and the target is 6, so one level is left and 45
