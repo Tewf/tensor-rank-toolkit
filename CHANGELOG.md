@@ -6,28 +6,6 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Changed
-
-- **BREAKING: `sparsify-operator --exact` is gone**, because the method it
-  selected is the default now. `--operations` opts into the greedy by rescaling,
-  which minimises `nnz + nns` rather than `nnz`; `--simplex` answers by linear
-  programming; `--emit PATH` writes the answer as SMS, the way up the file came
-  in. A script passing `--exact` is refused rather than silently ignored, which
-  `matrix_sparsification/tests/check_every_route_answers.sh` asserts.
-- **The default run costs about a third of a second rather than about 500 s**,
-  because it no longer runs five methods to report a comparison. Three of them
-  reached the same counts 88x to 343x more slowly and moved to the
-  archive branch (since 2026-08-23 `rejected-experiments`,
-  `retired/dominated_sparsifiers/`) with their tests and measurements:
-  `matrix_sparsification/dominated.md` says what went and where to find it.
-  Nothing was deleted, and two of the three are `[beniamini2020]`'s own
-  Algorithms 3 and 4.
-- `--max-memory` now prices the *walk* rather than an allocation. The scan
-  allocates almost nothing, so the budget had stopped reaching the command; it is
-  the column supports the scan may visit that runs away. `4x4x4_49_156_L` is
-  refused in milliseconds at 1.4 PiB where it used to run for thirty minutes and
-  say nothing.
-
 ### Added
 
 - **The browser console offers the flags its tools actually take.** Twenty-one
@@ -48,6 +26,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   accepted older spelling of a flag already there. `--field` carries its own
   reading of exit 0 beside itself, because the badge is the word `minimum`
   either way and a minimum over GF(p) is not the minimum over Q.
+
 - **The catalogue is checked against the build flag by flag**, in
   [`web_interface/tests/catalogue_against_the_build.py`](web_interface/tests/catalogue_against_the_build.py),
   which runs each binary's own `--help` and compares rather than keeping a
@@ -57,6 +36,7 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   half of that check had shipped a day earlier and was green throughout the
   drift above, which is what a check one level too shallow does. The console's
   own suite is 64 checks.
+
 - **The browser console runs `README.md`'s pipeline as one flow.**
   `minimise-rank --emit-operators` and then `sparsify-operator` on each of the
   three operators it wrote, from one press, declared in
@@ -68,47 +48,73 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and its own exit code, and a step that does not reach the badge its flow names
   stops the flow rather than handing the next tool a file that is not there. It
   is also the seventh worked example.
+
+### Changed
+
+- **Step 1's span walk holds a GF(2) matrix as bits in machine words**, which is
+  the representation
+  [`exhaustive_search/gf2_leaf.h`](exhaustive_search/gf2_leaf.h) already gave the
+  exact search's leaf, applied to the two functions the incumbent search spends
+  its life inside. `lower-the-bound` costs one `minimum_weight_basis_with` per
+  child, and each of those walks a span taking the rank of a matrix at nearly
+  every element, so what a matrix is made of is what that search costs.
+  **2.5x to 19.0x**, measured one question at a time with and without the new
+  `--general-span`, in
+  [`descent_search/gf2_span_walk.h`](descent_search/gf2_span_walk.h) with the
+  spread explained and the protocol caveat attached: the machine was not quiet,
+  so the ratios stand and the seconds are upper bounds.
+
+  **No count moves, and that is a property of the code rather than a claim about
+  two copies of it.** The ceiling, the floor under the unranked half, the sort
+  and the order the greedy takes candidates in stay in
+  `minimum_weight_basis.cpp`, once, templated on the representation; only a
+  rank, a walk step, a dimension and a membership test are packed. Nodes,
+  children, moves offered, improvements, branches bounded and the algorithm at
+  the end are identical on both paths, and
+  [`descent_search/tests/test_gf2_span_walk.cpp`](descent_search/tests/test_gf2_span_walk.cpp)
+  asserts that entry for entry over six GF(2) fixtures and all three calls.
+  GF(3), GF(5), a slice wider than 64 columns and a set of slices that do not
+  share a shape reach none of it, checked rather than assumed.
+  `reproduce/measure.py --check` reproduces every published count with the same
+  four SKIPPED lines.
+
+  One primitive was added under it, `gf2_rank` in
+  [`linear_algebra/gf2_bits.h`](linear_algebra/gf2_bits.h): the leaf only ever
+  needed to know whether a rank was one, and step 1 needs the number.
+
+## [0.3.0] - 2026-08-23
+
+Three days across four strands, and the first release that had to withdraw
+something: a sparsification answer that is the minimum over every change of
+basis rather than the best found, a second search direction that hands back an
+algorithm whenever it is stopped, a way in for somebody else's published
+triple, and a published claim about a matroid that a decision procedure
+refuted.
+
+### Added
+
 - **`sparsest_basis_over_the_rationals`: the minimum, and a proof of it.**
   `[gottlieb2010]`'s driver with an oracle that answers `[beniamini2020]`'s
   Problem 2.15, so Rado-Edmonds makes the assembled answer the least number of
   nonzeros any invertible `V` can leave. The counts did not move — 43 / 42 / 43
   on a published rank-23 `⟨3,3,3⟩` scheme were already minimal — but nothing
   here could say so, and the cheapest route to them was 86x to 112x slower.
+
 - **`--simplex`, which answers without searching.** One continuous programme per
   coordinate against `integer_programme`'s exact rational simplex, no new
   dependency. It is the only route that answers `4x4x4_49_156_L`, at 100
   nonzeros in 0.34 s, and it reaches the proved minimum four to fifteen times
   faster than the search wherever the search can prove one. An upper bound, not
   a proof: `matrix_sparsification/method/answering-without-searching.md`.
+
 - `matrix_sparsification/omega_validator.{h,cpp}`, extracted so that the routes
   that left could leave: it is `[beniamini2020, Def. 3.2]` and the rescaling
   greedy still calls it.
+
 - The measurement against `[plinopt]` the module's README had asked for since it
   was written: 221 nonzeros to 128 against its 167. And the composition
   experiment in front of its subexpression pass, which shows **minimising
   nonzeros can cost additions**.
-
-### Fixed
-
-- Every `results.json` was publishing an absolute home path into a public
-  repository, the same defect the 2026-08-18 restructure fixed and the line that
-  generates them put back. Fixed at the source.
-- `index.html`'s sparsification chart read a field that the removed methods
-  produced, and would have drawn nothing the next time `results.json` was
-  regenerated.
-
-### Retracted
-
-- **`4x4x4_49_156_L` was published as having a regular column matroid and does
-  not.** The claim rested on 200 000 random basis determinants all in `{0, ±1}`,
-  which is not evidence: only about 0.8% of random 16-subsets are bases at all.
-  A decision procedure refuted it in under three milliseconds with a
-  sixteen-column minor of determinant −2, recomputed here in exact arithmetic.
-  What it cost is one sentence, that the linear programme's answer was minimal
-  *by Tillmann's theorem*; it is an upper bound.
-  `matrix_sparsification/what-was-corrected.md` has the rest.
-
-### Added
 
 - **`operators-to-tensor`, and with it a way in for somebody else's algorithm.**
   Nobody publishes a tensor: PLinOpt's `data/` is 153 SMS operators in
@@ -177,38 +183,51 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   has every count, and the wall it does not clear: `p^dim` rank computations per
   child, where `dim` is the quantity the search raises.
 
+- **`fixtures/f5_3x3.tensor`**, polynomial multiplication of 3 coefficients by 3
+  over GF(5), and the third characteristic in that directory. It ships for a
+  test rather than for a number: the general-field leaf walks a subspace by its
+  base-`p` digits and every other fixture is over GF(2) or GF(3), so a walk right
+  at `p = 3` and wrong at `p = 5` had nothing to fail against. Its rank is 5,
+  which `decide-rank` closes in one node.
+
+- **`--leaf-route auto|scan|walk`**, so the two ways a leaf can be answered can
+  be timed against each other on one question rather than on two. The rule that
+  chooses between them compares `p^dim` with the pool size, pricing a membership
+  test and a rank test the same, and nothing had ever checked that. Forced onto
+  each route in turn it is right on all four questions timed, including one where
+  it sends a 225-element pool to the subspace walk and the walk wins, so **the
+  cost-weighted rule this was meant to become is not made**:
+  [`exhaustive_search/which-leaf-route-is-cheaper.md`](exhaustive_search/which-leaf-route-is-cheaper.md).
+
+- **A check that the front page is the results files**,
+  [`reproduce/front_page.py`](reproduce/front_page.py), run in CI. `index.html`
+  cited `descent_search/results.json` for two charts and a table and read it
+  never; the charts fetch it now, and the table, which stays hand-typeset so the
+  evidence survives JavaScript being off, is refused by CI when it drifts.
+
 ### Changed
 
-- **Step 1's span walk holds a GF(2) matrix as bits in machine words**, which is
-  the representation
-  [`exhaustive_search/gf2_leaf.h`](exhaustive_search/gf2_leaf.h) already gave the
-  exact search's leaf, applied to the two functions the incumbent search spends
-  its life inside. `lower-the-bound` costs one `minimum_weight_basis_with` per
-  child, and each of those walks a span taking the rank of a matrix at nearly
-  every element, so what a matrix is made of is what that search costs.
-  **2.5x to 19.0x**, measured one question at a time with and without the new
-  `--general-span`, in
-  [`descent_search/gf2_span_walk.h`](descent_search/gf2_span_walk.h) with the
-  spread explained and the protocol caveat attached: the machine was not quiet,
-  so the ratios stand and the seconds are upper bounds.
+- **BREAKING: `sparsify-operator --exact` is gone**, because the method it
+  selected is the default now. `--operations` opts into the greedy by rescaling,
+  which minimises `nnz + nns` rather than `nnz`; `--simplex` answers by linear
+  programming; `--emit PATH` writes the answer as SMS, the way up the file came
+  in. A script passing `--exact` is refused rather than silently ignored, which
+  `matrix_sparsification/tests/check_every_route_answers.sh` asserts.
 
-  **No count moves, and that is a property of the code rather than a claim about
-  two copies of it.** The ceiling, the floor under the unranked half, the sort
-  and the order the greedy takes candidates in stay in
-  `minimum_weight_basis.cpp`, once, templated on the representation; only a
-  rank, a walk step, a dimension and a membership test are packed. Nodes,
-  children, moves offered, improvements, branches bounded and the algorithm at
-  the end are identical on both paths, and
-  [`descent_search/tests/test_gf2_span_walk.cpp`](descent_search/tests/test_gf2_span_walk.cpp)
-  asserts that entry for entry over six GF(2) fixtures and all three calls.
-  GF(3), GF(5), a slice wider than 64 columns and a set of slices that do not
-  share a shape reach none of it, checked rather than assumed.
-  `reproduce/measure.py --check` reproduces every published count with the same
-  four SKIPPED lines.
+- **The default run costs about a third of a second rather than about 500 s**,
+  because it no longer runs five methods to report a comparison. Three of them
+  reached the same counts 88x to 343x more slowly and moved to the
+  archive branch (since 2026-08-23 `rejected-experiments`,
+  `retired/dominated_sparsifiers/`) with their tests and measurements:
+  `matrix_sparsification/dominated.md` says what went and where to find it.
+  Nothing was deleted, and two of the three are `[beniamini2020]`'s own
+  Algorithms 3 and 4.
 
-  One primitive was added under it, `gf2_rank` in
-  [`linear_algebra/gf2_bits.h`](linear_algebra/gf2_bits.h): the leaf only ever
-  needed to know whether a rank was one, and step 1 needs the number.
+- `--max-memory` now prices the *walk* rather than an allocation. The scan
+  allocates almost nothing, so the budget had stopped reaching the command; it is
+  the column supports the scan may visit that runs away. `4x4x4_49_156_L` is
+  refused in milliseconds at 1.4 PiB where it used to run for thirty minutes and
+  say nothing.
 
 - **The SMS reader refuses what LinBox would read differently**, which is three
   corrections read off his sources rather than off our notes about them. Its
@@ -318,8 +337,6 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is *run* by the checks rather than read, and the promoted lines are asserted to
   still be the characters the tools print.
 
-### Changed
-
 - **The canonical route stopped scanning the pool once per candidate child, and
   stopped asking the parent test for a minimum it never wanted.** Measured at
   five shapes, seven to fourteen whole pool scans a node were 98% of a canonical
@@ -333,7 +350,6 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   to 11.4 s**, `<2,2,4>` at 10 from 0.500 s to 0.144 s, and `<3,3,3>` at 10 from
   1.33x faster than the plain route to **2.07x**. Every node count at every shape
   and level is unchanged, which is how it is known that only the clock moved.
-
 
 - **A budget that ran out no longer shares a colour with a refutation.** The
   console's cards were worded apart and painted alike, so `outcome.py` now
@@ -452,14 +468,36 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   run against each other on the same span at every odd characteristic the
   fixtures carry.
 
+### Fixed
+
+- Every `results.json` was publishing an absolute home path into a public
+  repository, the same defect the 2026-08-18 restructure fixed and the line that
+  generates them put back. Fixed at the source.
+
+- `index.html`'s sparsification chart read a field that the removed methods
+  produced, and would have drawn nothing the next time `results.json` was
+  regenerated.
+
+### Retracted
+
+- **`4x4x4_49_156_L` was published as having a regular column matroid and does
+  not.** The claim rested on 200 000 random basis determinants all in `{0, ±1}`,
+  which is not evidence: only about 0.8% of random 16-subsets are bases at all.
+  A decision procedure refuted it in under three milliseconds with a
+  sixteen-column minor of determinant −2, recomputed here in exact arithmetic.
+  What it cost is one sentence, that the linear programme's answer was minimal
+  *by Tillmann's theorem*; it is an upper bound.
+  `matrix_sparsification/what-was-corrected.md` has the rest.
+
+## [0.2.0] - 2026-08-20
+
+Two days on the leaf and on what runs it: the exhaustive search's leaf packed
+into machine words, a candidate pool it no longer has to hold, one consumer
+card measured against the path it would replace, and six fixtures aimed at
+numbers somebody has published.
+
 ### Added
 
-- **`fixtures/f5_3x3.tensor`**, polynomial multiplication of 3 coefficients by 3
-  over GF(5), and the third characteristic in that directory. It ships for a
-  test rather than for a number: the general-field leaf walks a subspace by its
-  base-`p` digits and every other fixture is over GF(2) or GF(3), so a walk right
-  at `p = 3` and wrong at `p = 5` had nothing to fail against. Its rank is 5,
-  which `decide-rank` closes in one node.
 - **Six order-3 fixtures over GF(2), each aimed at a number somebody has
   published**: `gf32_multiplication` and `gf64_multiplication`, extending the
   field-extension family past the three this repository settles itself;
@@ -474,29 +512,19 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   4 294 836 225 rank-one maps, in **1.019 s** against 1.12 hours for the same leaf
   on one core, with survivor sets compared map for map against the shipped leaf on
   thirteen questions.
-- **`--leaf-route auto|scan|walk`**, so the two ways a leaf can be answered can
-  be timed against each other on one question rather than on two. The rule that
-  chooses between them compares `p^dim` with the pool size, pricing a membership
-  test and a rank test the same, and nothing had ever checked that. Forced onto
-  each route in turn it is right on all four questions timed, including one where
-  it sends a 225-element pool to the subspace walk and the walk wins, so **the
-  cost-weighted rule this was meant to become is not made**:
-  [`exhaustive_search/which-leaf-route-is-cheaper.md`](exhaustive_search/which-leaf-route-is-cheaper.md).
-- **A check that the front page is the results files**,
-  [`reproduce/front_page.py`](reproduce/front_page.py), run in CI. `index.html`
-  cited `descent_search/results.json` for two charts and a table and read it
-  never; the charts fetch it now, and the table, which stays hand-typeset so the
-  evidence survives JavaScript being off, is refused by CI when it drifts.
+
 - **A device ranking**, [`run_limits/device.h`](run_limits/device.h), in the shape
   `integer_programme/solver_chain.h` already uses for solvers: the order is fixed,
   the availability is not, and an absent backend is a state reported rather than an
   error found downstream. `decide-rank` prints which device would answer.
   **No GPU backend is compiled in**, and it says so.
+
 - **A span held as its rank filtration**,
   [`descent_search/sorted_span.h`](descent_search/sorted_span.h). The leaf test and
   the minimum-weight cost both become dimensions of `R[1] ⊆ … ⊆ R[16]`, so a sort
   over `p^dim` becomes a counting pass over sixteen buckets and the state that
   survives is 24 KB at `<4,4,4>`.
+
 - **The literature the leaf test sits in**, which was cited nowhere: the Segre and
   bounded-rank line, the three MinRank modellings with their Hilbert series, Yang's
   fixed-parameter result, CUDA finite-field elimination, and Heule's SAT benchmark
@@ -508,19 +536,23 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   called `rank_one_basis_of` with two arguments defaulted, so every leaf there took
   the general Givaro path and no `--leaf-limit` reached it. **25.7x** on
   `matmul_3x3x3 --target 23 --node-limit 300`, at the same 300 nodes.
+
 - **A pool element is formed in bits where no table holds it.** It was rebuilt as a
   Givaro matrix and packed back one field element at a time; the outer product now
   goes straight into words. **5.87x** on the same question with the pool addressed,
   and `gpu_leaf` measures 940.2 ns an element against 129.1 at `<4,4,4>`.
+
 - **The quotient runs on a pool it cannot hold.** Its candidate list was a vector,
   its positions a table and its struck orbits a byte array, all sized by the pool
   and all now arithmetic or a predicate: **34.3 MB less** at `<3,3,3>` at identical
   node counts, and `--symmetry` is no longer refused where the grid does not fit.
+
 - **`[wang2026]` is now cited at the arXiv version its numbers come from**, v10,
   because that preprint's table grew across ten revisions rather than being
   corrected in place, and three of the four bounds quoted from it are absent from
   v1. A citation that names a document not containing the number is the one
   failure [`references.md`](references.md) exists to prevent.
+
 - **`rank(f2_5x5) >= 13` is this repository's own claim now**, not `[bdez2012]`'s.
   Refuting twelve products was recorded as never run and priced at seven hours; it
   is 146 402 553 nodes and ran, and the seven hours was an extrapolation from the
@@ -604,4 +636,6 @@ corrected, tested, and extended into four strands.
   loses on all seven fixtures. No answer either gave was ever wrong. Both sets of
   numbers stay, because they are the evidence for the removal.
 
+[0.3.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.3.0
+[0.2.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.2.0
 [0.1.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.1.0
