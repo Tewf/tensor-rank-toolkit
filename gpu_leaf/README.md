@@ -61,10 +61,10 @@ rather than against the 785 ns that would have flattered it, all of which is in
 
 | one RTX 4060 against | pool scan | subspace walk |
 |---|---|---|
-| the leaf as it shipped **that morning**, 1 core | 3962x | 461x |
+| the addressed leaf, as it shipped **that morning**, 1 core | 3962x | 461x |
 | the same, 12 threads | 480x | 68x |
-| **the leaf as it ships now**, 1 core | **544x** | **528x** |
-| **the leaf as it ships now**, 12 threads | **81x** | **70x** |
+| **the packed leaf**, 1 core | **544x** | **528x** |
+| **the packed leaf**, 12 threads | **81x** | **70x** |
 
 **It clears the 50x band on every comparison, including the hardest one.** The
 hardest is the last row: the whole CPU, twelve threads, on one card.
@@ -76,12 +76,22 @@ belonging to the representation. Hours later `d85fd32` put that arithmetic into
 `Gf2Leaf` itself, so those rows stopped being a control and became the
 comparison: **544x on one core, 81x on twelve.** Re-measured 2026-08-20 on
 `decide-rank --matmul 2 4 4 4 --target 47`, differencing two `--leaf-limit`
-values so the setup cancels, the shipped leaf is **120.3 ns an element** against
+values so the setup cancels, the packed leaf is **120.3 ns an element** against
 the 940.2 ns the top two rows are taken against. Those two now price a path
 nothing takes, and are kept because the 785 ns story above needs them.
 
-**One whole `⟨4,4,4⟩` leaf is 1.02 s on the card against 9.2 minutes of one
-core**, not the 67 minutes this said until the host caught up.
+**Every ratio in that table is against the packed leaf, and the leaf stopped
+being the packed leaf hours later**, when `is_rank_one` and the carried residual
+took a scan element to **3.3 ns** in the search and 1.16 ns in a harness. Against
+the card's 0.24 ns that is 5x to 14x rather than 544x, so **the verdict here is
+suspended, not retracted**, until `measure-leaf` re-takes it against the leaf
+that ships: [`what-the-card-did.md`](what-the-card-did.md) and
+[`../how-the-search-works/what-to-wire.md`](../how-the-search-works/what-to-wire.md).
+
+**One whole `⟨4,4,4⟩` leaf is 1.02 s on the card against 9.2 minutes of one core
+at the packed leaf's rate**, not the 67 minutes this said until the host caught
+up, and about 14 seconds at the rate the scan runs at now. Only the 1.02 s was
+timed; the other two are arithmetic on a rate.
 
 **It is compute bound, and the prior that said otherwise was wrong.**
 [`../positioning/what-a-gpu-would-take.md`](../positioning/what-a-gpu-would-take.md)
