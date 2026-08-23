@@ -1,10 +1,14 @@
-"""Every run this console has started, and the promise that none outlives it.
+"""Everything this console has started, and the promise that none outlives it.
 
 Separate from `runner.py` because that file is about one run and this one is
 about all of them. The promise is the whole reason it exists: a console that
 exits over the top of a running search leaves the orphan
 `run_limits/child_process.h` was written about, so shutting down goes through
 here and waits for each group to be gone.
+
+`service.py` holds two of these, one of runs and one of flows, because a flow
+starts runs and holds no process of its own. Neither is named here: what is
+kept is anything that can say whether it is still going and be told to stop.
 """
 import threading
 
@@ -29,7 +33,7 @@ class Registry:
             return self.runs.get(identifier)
 
     def stop_everything(self):
-        """Called when the server is shutting down. A run left behind here is
+        """Called when the server is shutting down. Anything left behind here is
         the leak `run_limits/child_process.h` was written about."""
         with self.lock:
             running = [run for run in self.runs.values() if run.is_running()]

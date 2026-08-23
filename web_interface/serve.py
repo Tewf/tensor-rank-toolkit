@@ -126,7 +126,7 @@ def main():
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        stopped = console.registry.stop_everything()
+        stopped = console.stop_everything()
         print("\nstopped " + str(stopped) + " run(s) still going, and left.")
     finally:
         server.server_close()

@@ -5,7 +5,7 @@
    the toolkit did not already need. They are loaded in any order and everything
    below runs from `DOMContentLoaded`, so no file has to be after another. */
 
-const state = {setup: null, tool: null, chosen: {}, mode: null,
+const state = {setup: null, tool: null, flow: null, chosen: {}, mode: null,
                fixture: null, notes: {}};
 
 const $ = (id) => document.getElementById(id);

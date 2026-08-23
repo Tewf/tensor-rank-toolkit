@@ -112,6 +112,12 @@ def make_handler(service, allowed_hosts):
                 return self.send(200, service.cards())
             if path.startswith("/api/runs/"):
                 return self.run_route(path)
+            if path.startswith("/api/flows/"):
+                identifier = path.strip("/").split("/")[2]
+                card = service.flow_card(identifier)
+                if card is None:
+                    return self.refuse(404, "no such flow: " + identifier)
+                return self.send(200, card)
             return self.refuse(404, "no such page: " + path)
 
         def do_POST(self):
@@ -123,6 +129,8 @@ def make_handler(service, allowed_hosts):
                     return self.send(200, service.preview(self.read_request()))
                 if path == "/api/runs":
                     return self.send(200, service.start(self.read_request()))
+                if path == "/api/flows":
+                    return self.send(200, service.start_flow(self.read_request()))
                 if path.startswith("/api/runs/") and path.endswith("/stop"):
                     identifier = path.split("/")[3]
                     card = service.stop(identifier)

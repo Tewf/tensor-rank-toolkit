@@ -8,18 +8,53 @@
 async function run() {
   $("run").disabled = true;
   try {
-    const started = await ask("POST", "/api/runs", request());
-    state.notes[started.id] = {field: readHeader($("map").value).field};
-    const card = el("section", {class: "result", id: "run-" + started.id});
-    const results = $("results");
-    if (results.querySelector(".empty")) results.textContent = "";
-    results.prepend(card);
-    follow(started.id, card);
+    if (state.flow) await runFlow();
+    else drawStarted((await ask("POST", "/api/runs", request())).id);
   } catch (why) {
     $("preview").textContent = String(why.message);
     $("preview").className = "command loose";
   }
   $("run").disabled = false;
+}
+
+/* A flow's steps are ordinary runs and get ordinary cards. The order is the
+   server's, in `flow_runner.py`, and this only asks which runs it has started
+   so far and draws the ones it has not drawn yet: a chain assembled here would
+   be a second implementation of that one, and the two would disagree. */
+async function runFlow() {
+  const started = await ask("POST", "/api/flows", request());
+  const drawn = new Set();
+  const tick = async () => {
+    const flow = await ask("GET", "/api/flows/" + started.id);
+    for (const identifier of flow.runs) {
+      if (drawn.has(identifier)) continue;
+      drawn.add(identifier);
+      drawStarted(identifier);
+    }
+    if (flow.running) setTimeout(tick, 500);
+    else if (flow.stopped_because) sayTheFlowStopped(flow);
+  };
+  await tick();
+}
+
+function drawStarted(identifier) {
+  // The field is read off the map in the box, for the note under any operators
+  // the run writes. It is this page's reading of the header and not a claim
+  // about the file, which is why `plinoptNote` shows it as the line to check.
+  state.notes[identifier] = {field: readHeader($("map").value).field};
+  const card = el("section", {class: "result", id: "run-" + identifier});
+  const results = $("results");
+  if (results.querySelector(".empty")) results.textContent = "";
+  results.prepend(card);
+  follow(identifier, card);
+}
+
+/* A flow that ended early says so above its steps, because the reason is about
+   the order and not about any one run: every card underneath is a run that
+   really ended the way it says, and the missing ones were never started. */
+function sayTheFlowStopped(flow) {
+  $("results").prepend(el("p", {class: "standing",
+    text: "The flow stopped there: " + flow.stopped_because}));
 }
 
 async function drawEarlierRuns() {

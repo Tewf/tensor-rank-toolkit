@@ -31,10 +31,46 @@ function renderTools() {
       holder.appendChild(button);
     }
   }
+  renderFlows(holder);
+}
+
+/* The flows, under the tools and named as what they are: more than one tool, in
+   the order a pipeline needs them. Choosing one is still choosing a question;
+   what it is not is a thirteenth tool, so it is grouped apart from the twelve
+   and `flows.py` rather than `catalogue.py` is where it is declared. */
+function renderFlows(holder) {
+  const offered = state.setup.flows || [];
+  if (!offered.length) return;
+  holder.appendChild(el("p", {class: "hint",
+    text: "on a map, one tool after another"}));
+  for (const flow of offered) {
+    const button = el("button", {class: "tool flow", type: "button",
+                                 "aria-pressed": String(state.flow === flow)}, [
+      el("span", {class: "name", text: flow.name}),
+      el("span", {class: "asks", text: flow.asks}),
+    ]);
+    button.onclick = () => chooseFlow(flow);
+    holder.appendChild(button);
+  }
+}
+
+function chooseFlow(flow) {
+  state.flow = flow;
+  state.tool = null;
+  state.chosen = {};
+  renderTools();
+  renderOptions();
+  offerFixturesFor(flow.input);
+  $("no-question").hidden = true;
+  $("options-panel").hidden = false;
+  $("run-panel").hidden = false;
+  $("answers").textContent = flow.answers;
+  preview();
 }
 
 function chooseTool(tool) {
   state.tool = tool;
+  state.flow = null;
   state.chosen = {};
   for (const option of tool.options) {
     // A tool with a clock of its own is given this console's clock, in its own
@@ -119,6 +155,16 @@ function symmetryControl(option, set) {
 function renderOptions() {
   const holder = $("options");
   holder.textContent = "";
+  if (state.flow) {
+    // A flow's flags belong to the flow: they are what makes its steps fit
+    // together, and a panel offering to retune one halfway through would be
+    // offering a different pipeline under the same name.
+    holder.appendChild(el("p", {class: "hint", text:
+      "The steps are declared with the flow, so there is nothing to tune here: " +
+      "each runs the flags flows.py names beside it. The wall clock below " +
+      "bounds every step of it."}));
+    return;
+  }
   for (const option of state.tool.options) {
     holder.appendChild(control(option));
     if (option.note) holder.appendChild(el("p", {class: "hint", text: option.note}));
@@ -132,22 +178,22 @@ function renderOptions() {
 /* ---- the command -------------------------------------------------------- */
 
 function request() {
-  return {
-    tool: state.tool.name,
-    options: state.chosen,
-    mode: state.mode,
+  const box = {
     name: state.fixture || "map",
     wall_clock_seconds: $("wall-clock").value,
     input: {text: $("map").value, name: state.fixture || "map",
             fixture: state.fixture},
   };
+  if (state.flow) return Object.assign({flow: state.flow.name}, box);
+  return Object.assign({tool: state.tool.name, options: state.chosen,
+                        mode: state.mode}, box);
 }
 
 let pending = null;
 function preview() {
   clearTimeout(pending);
   pending = setTimeout(async () => {
-    if (!state.tool) return;
+    if (!state.tool && !state.flow) return;
     try {
       const seen = await ask("POST", "/api/preview", request());
       $("preview").textContent = seen.command;
@@ -155,12 +201,14 @@ function preview() {
       $("run-note").textContent = seen.reader
         ? "read by the " + seen.reader + " reader" : "";
       warnings(seen.warnings || []);
+      whatFollows(seen.then || []);
     } catch (why) {
       $("preview").textContent = String(why.message);
       $("preview").className = "command loose";
       $("run").disabled = true;
       $("run-note").textContent = "";
       warnings([]);
+      whatFollows([]);
       return;
     }
     $("preview").className = "command";
@@ -174,4 +222,16 @@ function warnings(said) {
   holder.textContent = "";
   holder.hidden = !said.length;
   for (const line of said) holder.appendChild(el("p", {class: "warning", text: line}));
+}
+
+/* What runs after the line above, for a flow. The steps after the first read
+   files the first has not written yet, so this says the tool and what it will
+   read rather than a command, and the line each step really ran arrives on that
+   step's own card. A guessed path shown as a command would be the one claim
+   this interface makes and cannot keep. */
+function whatFollows(said) {
+  const holder = $("preview-then");
+  holder.textContent = "";
+  holder.hidden = !said.length;
+  for (const line of said) holder.appendChild(el("p", {class: "hint", text: line}));
 }

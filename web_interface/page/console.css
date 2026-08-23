@@ -51,6 +51,9 @@ button.go[disabled] { opacity: .5; cursor: default; }
 .tool .asks { display: block; font-size: .84rem; color: var(--muted); margin-top: .1rem; }
 .tool[aria-pressed="true"] { background: var(--sunken); }
 .tool[aria-pressed="true"] .name { font-weight: 700; }
+/* a flow is more than one tool in order, so its row is marked as a row of a
+   different kind rather than sitting in the list as a thirteenth tool */
+.tool.flow { border-left: 2px solid var(--teal); padding-left: .5rem; }
 
 .answers { font-size: .84rem; color: var(--muted); margin: 0 0 .7rem; }
 

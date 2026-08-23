@@ -16,6 +16,8 @@ import pathlib
 
 import catalogue
 import command_line
+import flow_runner
+import flows
 import limits
 import repository
 import registry
@@ -81,11 +83,15 @@ class Service:
         self.runs_root.mkdir(parents=True, exist_ok=True)
         self.wall_clock_seconds = wall_clock_seconds
         self.registry = registry.Registry()
+        # Kept apart from the runs, because a flow is not one of them: it starts
+        # runs and holds no process of its own.
+        self.flows = registry.Registry()
 
     def setup(self):
         """Everything the page needs to draw itself once."""
         return {
             "tools": catalogue.TOOLS,
+            "flows": flows.FLOWS,
             "examples": worked_examples.EXAMPLES,
             "fixtures": repository.fixtures(),
             "root": str(repository.ROOT),
@@ -100,9 +106,25 @@ class Service:
 
     def preview(self, request):
         """The line that pressing Run would produce, assembled by the same code."""
+        if request.get("flow"):
+            return self._flow_preview(request)
         plan = self._assemble(request, self.runs_root / NOT_YET, write=False)
         return {"command": plan["shown"], "reader": plan["reader"],
                 "warnings": self._warnings(request, plan["tool"])}
+
+    def _flow_preview(self, request):
+        """A flow's first line exactly, and a sentence for each step after it.
+
+        The steps after the first read files the first has not written yet, so a
+        line for them here would name a path that may never exist, which is the
+        one thing this interface does not do. What is shown instead is the tool
+        and what it will read, and the line each step really ran is on its own
+        card underneath, as every other line here is.
+        """
+        declaration = _flow_named(request)
+        seen = self.preview(_step_request(request, declaration["steps"][0]))
+        seen["then"] = [step["says"] for step in declaration["steps"][1:]]
+        return seen
 
     def _warnings(self, request, tool):
         """What is worth knowing before pressing Run, and nothing that is not.
@@ -143,24 +165,62 @@ class Service:
         tool = _named(request)
         directory = workspace.new_run_directory(self.runs_root, tool["name"])
         plan = self._assemble(request, directory, write=True)
-
-        run = self.registry.add(lambda identifier: runner.Run(
-            identifier, plan["tool"], plan["argv"], directory, plan["input_path"],
-            self._wall_clock(request), repository.ROOT, plan["result_name"],
-            plan["verdicts"]))
-        run.shown_command = plan["shown"]
-        run.reader = plan["reader"]
-        run.start()
+        run = self._begin(plan, directory, self._wall_clock(request))
         return {"id": run.identifier, "command": plan["shown"],
                 "reader": plan["reader"]}
 
+    def _begin(self, plan, directory, seconds):
+        run = self.registry.add(lambda identifier: runner.Run(
+            identifier, plan["tool"], plan["argv"], directory, plan["input_path"],
+            seconds, repository.ROOT, plan["result_name"], plan["verdicts"]))
+        run.shown_command = plan["shown"]
+        run.reader = plan["reader"]
+        run.start()
+        return run
+
+    # ---- more than one tool, in the order a pipeline needs them -------------
+
+    def start_flow(self, request):
+        """One flow, started at its first step. `flow_runner.py` starts the
+        rest, each an ordinary run appearing beside every other run."""
+        declaration = _flow_named(request)
+        flow = self.flows.add(lambda identifier: flow_runner.Flow(
+            identifier, declaration, self, request, self._wall_clock(request)))
+        flow.start()
+        return flow.card()
+
+    def flow_card(self, identifier):
+        flow = self.flows.get(identifier)
+        return None if flow is None else flow.card()
+
+    def start_step(self, request, step, input_path, seconds):
+        """One step of a flow, through the assembly every other run goes through.
+
+        `input_path` is a file an earlier step wrote, so it is a path this
+        console chose inside a run directory of its own making. It arrives as an
+        argument and never through the request, which is the same rule
+        `_place_output_paths` keeps for the files a tool is asked to write.
+        """
+        directory = workspace.new_run_directory(self.runs_root, step["tool"])
+        plan = self._assemble(_step_request(request, step), directory,
+                              write=True, on_file=input_path)
+        return self._begin(plan, directory, seconds)
+
+    def stop_everything(self):
+        """Nothing this console started outlives it. The flows go first, so that
+        one cannot start a further step after the runs have been counted."""
+        self.flows.stop_everything()
+        return self.registry.stop_everything()
+
     # ---- the one assembly ---------------------------------------------------
 
-    def _assemble(self, request, directory, write):
+    def _assemble(self, request, directory, write, on_file=None):
         tool = _named(request)
         binary = repository.binary(self.build, tool["binary"])
 
-        input_path, reader = self._input_for(tool, directory, request, write)
+        input_path, reader = (
+            (on_file, on_file.suffix) if on_file is not None
+            else self._input_for(tool, directory, request, write))
         stem = (input_path.stem if input_path is not None
                 else _clean(request.get("name") or tool["name"]))
 
@@ -310,6 +370,29 @@ def _named(request):
     if tool is None:
         raise command_line.Refused("no such tool: " + str(request.get("tool")))
     return tool
+
+
+def _flow_named(request):
+    """The flow the request asked for, refused the same way a tool is."""
+    flow = flows.BY_NAME.get(request.get("flow"))
+    if flow is None:
+        raise command_line.Refused("no such flow: " + str(request.get("flow")))
+    return flow
+
+
+def _step_request(request, step):
+    """One step of a flow as an ordinary request, so that the preview of a flow
+    and the run of it go through the one assembly rather than through two.
+
+    The flags are the step's own, from `flows.py`, and not the browser's: a flow
+    is a declared pipeline and a request that could retune a step halfway
+    through would be a different pipeline wearing its name.
+    """
+    asked = dict(request)
+    asked.pop("flow", None)          # this is one step of it, and not the flow
+    asked["tool"] = step["tool"]
+    asked["options"] = dict(step.get("options") or {})
+    return asked
 
 
 def _clean(name):
