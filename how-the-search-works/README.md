@@ -3,7 +3,8 @@
 `decide-rank` answers "is there an algorithm with exactly `k` products". It is
 `[bdez2012]` Algorithm 1 with `[covanov2019]`'s quotient, an addressed pool, and
 a bit-packed leaf. Five pieces are usually named together when this is discussed
-and **only two of them are wired into this command**, so the table says which.
+and **only two of them are wired into this command unconditionally**, so the
+table says which, and on what condition the third one is.
 
 | piece | in `decide-rank` | where it is |
 |---|---|---|
@@ -11,10 +12,10 @@ and **only two of them are wired into this command**, so the table says which.
 | **odometer / addressed pool** | yes, automatic | [`../descent_search/candidate_pool.h`](../descent_search/candidate_pool.h) |
 | **McKay canonical augmentation** | **no** | [`../oracle_guided_search/`](../oracle_guided_search/), reached by `enumerate-subspaces` and `factor-over-canonical-basis --route canonical` |
 | **`SortedSpan`** | **no**, and it belongs in the descent rather than here | [`../descent_search/sorted_span.h`](../descent_search/sorted_span.h) |
-| **GPU leaf** | **no**, a proof of concept wired to nothing | [`../gpu_leaf/`](../gpu_leaf/) |
+| **GPU leaf** | **only where `CUDAToolkit_FOUND`**: there `decide-rank` links the registration and `--device auto` sends a leaf past the 8 192 floor to the card; in a build without the toolkit the seam is null | [`../gpu_leaf/`](../gpu_leaf/) |
 
-Three of the five are not in the production path, and each is now a decision with
-a number behind it rather than a gap: [`what-to-wire.md`](what-to-wire.md). All
+Three of the five are outside the default build's production path, and each is
+now a decision with a number behind it rather than a gap: [`what-to-wire.md`](what-to-wire.md). All
 five composed into one algorithm, with the rule that picks a device:
 [`the-whole-algorithm.md`](the-whole-algorithm.md).
 

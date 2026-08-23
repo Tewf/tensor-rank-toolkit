@@ -6,10 +6,17 @@ said exactly what would decide it: a kernel over the pool index, regenerating
 each candidate from that index, timed against the leaf that already exists. This
 is that measurement, on an RTX 4060 Laptop, 24 SMs, compute capability 8.9.
 
-**It is a proof of concept and not an integration.** Nothing outside this
-directory calls it and neither search changed. The kernels are built only where
-the toolkit is found, so a machine without `nvcc` builds and tests exactly as
-before; the harness's C++ is compiled everywhere, which is a different matter and
+**It is a proof of concept, and it is wired behind `CUDAToolkit_FOUND`.** The
+kernels are built only where the toolkit is found. Where it is,
+[`register_the_card.cpp`](register_the_card.cpp) is linked into `decide-rank`,
+`minimise-rank`, `lower-the-bound`, `walk-scheme` and `show-limits`, and that
+link is the whole of the registration: `../exhaustive_search/gf2_leaf.cpp` asks
+`leaf_on_card()` and `run_limits::chosen_device()` at each leaf, so `--device
+auto` sends one past the measured floor to the card. Where it is not,
+`find_package` returns before any of that, the seam stays null and every run
+prints `device: cpu (no gpu backend compiled in)`, so a machine without `nvcc`
+builds and tests exactly as before; the harness's C++ is compiled everywhere,
+which is a different matter and
 [`../CMakeLists.txt`](../CMakeLists.txt) says why. What is wanted is a number a
 laboratory with real hardware can multiply, not a faster laptop.
 
