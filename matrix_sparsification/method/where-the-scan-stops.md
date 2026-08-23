@@ -62,7 +62,7 @@ The minimum-weight basis is also **not unique**, and which one comes back is
 decided by the order the subsets are walked in. That does not change the count,
 which is what this method promises. It does change what a downstream common
 subexpression pass makes of the result, measured in
-[`../in-front-of-plinopt.md`](../in-front-of-plinopt.md).
+[`../measured-with-other-tools.md`](../measured-with-other-tools.md).
 
 **Two accelerations that would have made this walk cheaper were priced and
 rejected**, because the linear programme made both pointless:

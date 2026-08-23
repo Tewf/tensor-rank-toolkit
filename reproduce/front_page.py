@@ -12,11 +12,11 @@ here, file to page below.
 
 The three tables are not the same kind of claim and the difference is worth
 keeping. The descent table's file is re-derived on every push. The
-sparsification table's `against_plinopt` block is carried, because its three
-operators are PLinOpt's own and ship nowhere here, so nothing re-derives it and
+sparsification table's `published_scheme_operators` block is carried, because its
+three operators ship nowhere here, so nothing re-derives it and
 `questions.CARRIED` says so on every run. Checking the page against it is still
-the whole of the point: nine numbers that lived only in HTML now live in one
-file, and the page is held to that file rather than to whoever typed it.
+the whole of the point: numbers that lived only in HTML now live in one file, and
+the page is held to that file rather than to whoever typed it.
 
 The exact-answer table is the one that had no check at all, and it cost two
 days: `f2_5x5` was settled at 13 on 2026-08-21 and the page went on printing
@@ -173,7 +173,7 @@ def sparsification_disagreements(page):
     measured and the totals are arithmetic on them. A total that stops adding up
     is then a failure here instead of a number nobody re-added.
     """
-    block = json.loads(SPARSIFICATION.read_text())["against_plinopt"]
+    block = json.loads(SPARSIFICATION.read_text())["published_scheme_operators"]
     published = {row["operator"]: row for row in block["operators"]}
     totals = {column: sum(row[column] for row in block["operators"]) for column in COLUMNS}
     found = []

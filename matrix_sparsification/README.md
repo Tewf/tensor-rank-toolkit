@@ -107,8 +107,9 @@ implemented is the cost model that says what such a decomposition would be
 worth, which is the half that was missing when the complexity of a sparser
 operator could not be stated at all.
 
-`[plinopt]`, the reference implementation, reaches sparsity by a different route
-entirely: sparse QLUP elimination and a bounded coefficient search. It is
-measured against in [`against-plinopt.md`](against-plinopt.md), and what the two
-reach *together* is [`in-front-of-plinopt.md`](in-front-of-plinopt.md), where
-minimising nonzeros turns out to be able to cost additions.
+`[plinopt]`, the near neighbour in this problem area, reaches sparsity by a
+different route entirely: sparse QLUP elimination and a bounded coefficient
+search. What its runs on these operators measured, and what the exact stage is
+worth handed to its subexpression pass, where minimising nonzeros turns out to be
+able to cost additions, are recorded in
+[`measured-with-other-tools.md`](measured-with-other-tools.md).

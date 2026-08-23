@@ -80,7 +80,7 @@ def claims():
     plain = asserted("the plain route pays 1 890 601 nodes for those 36")
     canonical = asserted("and the canonical route 83 for the 1")
     quotient = published(DESCENT, "quotient", "<2,2,2> refuting 6 products", "fewer_nodes_by")
-    grey = json.loads(SPARSIFICATION.read_text())["against_plinopt"]
+    grey = json.loads(SPARSIFICATION.read_text())["published_scheme_operators"]
     as_given, minimum = (totals_of(grey, column)
                          for column in ("as_given", "minimum"))
     return [(

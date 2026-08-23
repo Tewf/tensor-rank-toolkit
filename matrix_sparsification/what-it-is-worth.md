@@ -38,9 +38,9 @@ this page compared two of them until 2026-08-22.
 
 **This repository measures nnz, so it is in (a) and (b) and structurally cannot
 see (c)** on its own. What it can do is hand its answer to something that does,
-and [`in-front-of-plinopt.md`](in-front-of-plinopt.md) measures that: in front of
-`[plinopt]`'s subexpression pass the exact stage takes `Grey-221` from 81
-additions to 62, and two already-optimised schemes by 2% and 7%. That is (b)
+and [`measured-with-other-tools.md`](measured-with-other-tools.md) measures that:
+handed to `[plinopt]`'s subexpression pass the exact stage takes `Grey-221` from
+81 additions to 62, and two already-optimised schemes by 2% and 7%. That is (b)
 crossed with (c), a fourth thing again and not comparable to either record below.
 It also shows the two models pulling apart: on `3x3x3_23_58_L` six more zeros
 cost two additions. The gap is not small: `[plinopt]`'s own `3x3x3_23_55` operators carry
