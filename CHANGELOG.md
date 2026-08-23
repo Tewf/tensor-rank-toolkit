@@ -6,6 +6,37 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **The sparsification result is stated on its own terms, and stops being
+  framed as a contest.** The front page, both READMEs, `what-it-computes.md`,
+  the strand's positioning note and the article all presented `Grey-221` at 128
+  nonzeros as a win over another tool's 167. The margin was never the claim
+  that carries weight: **128 is the minimum over every invertible change of
+  basis**, proved by Rado-Edmonds, and it says the same thing with nothing to
+  beat. So the 167 column leaves `index.html`'s table and the article's Table 2,
+  both of which are now as given against minimum, and the article's four
+  qualifications become three, the one about two tools doing different jobs
+  having lost its subject.
+
+- **No measurement was deleted and no credit moved.** `against-plinopt.md` and
+  `in-front-of-plinopt.md` were two pages of one record, both titled as a
+  contest; they merge into
+  [`matrix_sparsification/measured-with-other-tools.md`](matrix_sparsification/measured-with-other-tools.md),
+  which keeps every number, the carried column, the transposition of `P`, the
+  equal effort given to each side and the reversal on one operator in nine.
+  `results.json` keeps all three columns, under a `published_scheme_operators`
+  block renamed from `against_plinopt` and still named in `questions.CARRIED`
+  with its price. `references.md`, the `NOTICE`, the vendored
+  `fixtures/plinopt/` operators and their CeCILL-B licence are untouched, and
+  the bibliography still cites PLinOpt where the article attributes model (c).
+
+- **The checkers moved with the pages that carry the numbers**, in the same
+  commits: `reproduce/front_page.py` now holds `index.html` to the two columns
+  it prints, and `reproduce/quoted_numbers.py` holds the article's table row to
+  the two totals it shows. Neither ever asserted a number on a page that had
+  stopped printing it.
+
 
 ## [0.4.1] - 2026-08-23
 
