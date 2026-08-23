@@ -43,8 +43,11 @@ ROW = re.compile(r'<tr data-fixture="([^"]+)">(.*?)</tr>', re.S)
 OPERATOR_ROW = re.compile(r'<tr data-operator="([^"]+)">(.*?)</tr>', re.S)
 MAP_ROW = re.compile(r'<tr data-map="([^"]+)">(.*?)</tr>', re.S)
 CELL = re.compile(r"<td[^>]*>(.*?)</td>", re.S)
-# The three columns of the sparsification table, in the order it prints them.
-COLUMNS = ("as_given", "plinopt", "minimum")
+# The columns of the sparsification table, in the order it prints them. The
+# results file holds a third, what a neighbouring tool reached on the same three
+# operators; the page prints the operator as given and the proved minimum, so
+# that column is recorded there and asserted nowhere here.
+COLUMNS = ("as_given", "minimum")
 # The exact-answer table prints one famous tensor beside the fixtures, and that
 # block names its rows in prose where the others name them by file. The mapping
 # has to live somewhere, and it lives here for the same reason
@@ -183,7 +186,8 @@ def sparsification_disagreements(page):
             continue
         cells = [numbers_in(cell) for cell in CELL.findall(body)][1:]
         if len(cells) != len(COLUMNS):
-            yield f"{name}: {len(cells)} columns after the operator, and the file has 3"
+            yield (f"{name}: {len(cells)} columns after the operator, and the page "
+                   f"prints {len(COLUMNS)}")
             continue
         for column, cell in zip(COLUMNS, cells):
             if int(cell) != expected[column]:
@@ -194,14 +198,13 @@ def sparsification_disagreements(page):
         if name not in found:
             yield f"{name}: {SPARSIFICATION.relative_to(ROOT)} publishes it and the page has no row for it"
 
-    # The sentence above the table quotes the same three totals, and a paragraph
-    # is as copied as a table cell. Read with the markup dropped, so rewording
-    # around the numbers is not a failure and changing one of them is.
+    # The sentence above the table quotes the same totals, and a paragraph is as
+    # copied as a table cell. Read with the markup dropped, so rewording around
+    # the numbers is not a failure and changing one of them is.
     prose = re.sub(r"<[^>]+>", "", page)
-    for expected in (f"{totals['as_given']} nonzeros to {totals['minimum']}",
-                     f"against {totals['plinopt']}"):
-        if expected not in prose:
-            yield f"the paragraph above the table no longer says \"{expected}\""
+    expected = f"{totals['as_given']} nonzeros to {totals['minimum']}"
+    if expected not in prose:
+        yield f"the paragraph above the table no longer says \"{expected}\""
 
 
 def disagreements():

@@ -115,7 +115,7 @@ def claims():
     ), (
         "what PLinOpt reaches on those three operators",
         f"against {plinopt}",
-        ["what-it-computes.md", "article/bilinear-rank.tex"],
+        ["article/bilinear-rank.tex"],
     ), (
         "the same three totals as the article's table row",
         f"& {as_given} & {plinopt} & {minimum} &",

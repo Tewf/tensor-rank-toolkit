@@ -97,22 +97,22 @@
 
   <p>Strassen's two encoding operators go from <strong>12 nonzeros to 10</strong>, and an alternative-basis operator from <strong>21 to 10</strong>, in milliseconds. Ten is not merely the best found: it is the <strong>least any change of basis can leave</strong>, because choosing the sparsest basis of a subspace is a matroid problem and the greedy returns a minimum-weight basis of any matroid.</p>
 
-  <p>On the operators of a published rank-23 <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme, that is <strong>221 nonzeros to 128</strong>, against <strong>167</strong> for <a href="https://github.com/jgdumas/plinopt">PLinOpt</a>, the reference implementation, whose search is bounded to four rows of support with eleven coefficients. Where the trade used to be speed it no longer is: the run costs about a third of a second, against roughly five hundred before the methods that could not say their answer was minimal were retired to a branch.</p>
+  <p>On the operators of a published rank-23 <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme, that is <strong>221 nonzeros to 128</strong>, and the 128 is the proved minimum there too, over every invertible change of basis. Where the trade used to be speed it no longer is: the run costs about a third of a second, against roughly five hundred before the methods that could not say their answer was minimal were retired to a branch.</p>
 
   <table>
-    <caption>Sparsifying one published <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme at rank 23. One core, fastest of three. Source: <code>matrix_sparsification/results.json</code>, whose <code>against_plinopt</code> block says which of these columns any run here re-derives, and the answer is none of them.</caption>
-    <thead><tr><th>Operator</th><th class="n">As given</th><th class="n">PLinOpt</th><th class="n">Minimum</th></tr></thead>
+    <caption>Sparsifying one published <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme at rank 23. One core, fastest of three. Source: <code>matrix_sparsification/results.json</code>, which carries both columns rather than re-deriving either, because the three operators ship nowhere here.</caption>
+    <thead><tr><th>Operator</th><th class="n">As given</th><th class="n">Minimum</th></tr></thead>
     <tbody>
-      <tr data-operator="L"><td><code>L</code> 23&times;9</td><td class="n">69</td><td class="n">59</td><td class="n"><strong>43</strong></td></tr>
-      <tr data-operator="R"><td><code>R</code> 23&times;9</td><td class="n">66</td><td class="n">53</td><td class="n"><strong>42</strong></td></tr>
-      <tr data-operator="P"><td><code>P</code> 9&times;23</td><td class="n">86</td><td class="n">55</td><td class="n"><strong>43</strong></td></tr>
-      <tr data-operator="total"><td>total</td><td class="n">221</td><td class="n">167</td><td class="n"><strong>128</strong></td></tr>
+      <tr data-operator="L"><td><code>L</code> 23&times;9</td><td class="n">69</td><td class="n"><strong>43</strong></td></tr>
+      <tr data-operator="R"><td><code>R</code> 23&times;9</td><td class="n">66</td><td class="n"><strong>42</strong></td></tr>
+      <tr data-operator="P"><td><code>P</code> 9&times;23</td><td class="n">86</td><td class="n"><strong>43</strong></td></tr>
+      <tr data-operator="total"><td>total</td><td class="n">221</td><td class="n"><strong>128</strong></td></tr>
     </tbody>
   </table>
 
   <p>Searching column supports stops finishing somewhere, and on a <span class="nowrap">&#10216;4,4,4&#10217;</span> operator it stops well before the answer: fourteen million subsets at weight six, four hundred and fifty-one million at weight eight. That one is answered by <strong>not searching</strong> &mdash; one linear programme per coordinate, in exact rationals, reaching a verified basis at <strong>100 nonzeros in a third of a second</strong>. It is an upper bound rather than a proof, and it reaches the proved minimum anyway on every operator where a proof exists, four to fifteen times faster than the search that proves it. Why it should is <a href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/matrix_sparsification/method/answering-without-searching.md">an open question</a>: the theorem that suggested it turns out not to apply to any operator measured.</p>
 
-  <p>And fewer nonzeros is not the same as fewer additions. Put this exact stage in front of PLinOpt's own common-subexpression pass and a raw scheme improves by 23%, two already-polished ones by 2% and 7%, and <strong>one operator gets worse</strong>. That is measured rather than expected, and it is the reason the two counts are reported separately.</p>
+  <p>And fewer nonzeros is not the same as fewer additions. Hand this exact stage's output to a common-subexpression pass and a raw scheme improves by 23%, two already-polished ones by 2% and 7%, and <strong>one operator gets worse</strong>. That is measured rather than expected, and it is the reason the two counts are reported separately.</p>
 
   <h2>One pipeline, not two halves</h2>
   <p>A decomposition is not the deliverable; the algorithm is, and an algorithm is three operators: <code>L</code> and <code>R</code> encoding the two operands, <code>P</code> combining the products. The rank search recovers them from the decomposition it finds and writes them out; the sparsification is what they are for.</p>

@@ -26,28 +26,24 @@ fixed**. They do not optimise rank. Strassen stays at seven multiplications and
 goes from 15 additions to 12; nothing in that is a rank result, and nothing in
 this strand moves a bound the rest of this file is about.
 
-## What this does that `[plinopt]` does not, and the reverse
+## What this strand does, and where it stops
 
-Written 2026-08-22 after three literature reads, because "we beat the reference
-implementation" is the kind of sentence that needs its scope pinned down.
+Written 2026-08-22 after three literature reads, because a sparsification count
+means nothing until the scope it is claimed in is pinned down.
 
-**They are not doing the same job.** `[plinopt]` is downstream of a
-decomposition: you hand it operators and it produces a straight-line program,
-with in-place accumulation, Tellegen transposition and compaction around it. This
-repository searches for the decomposition, and sparsifies as a second strand.
+**This is one stage and not a pipeline.** The repository searches for the
+decomposition and then minimises `nnz` over a change of basis, with the rank held
+fixed. It finds no common subexpressions, does no in-place accumulation, no
+Tellegen transposition and no compaction, and it emits no straight-line program.
+A tool that produces one is downstream of a decomposition and is a different job;
+the ones that do are in [`references.md`](../references.md).
 
-| | here | `[plinopt]` |
-|---|---|---|
-| sparsification | the **minimum** over every invertible `V`, proved | a search bounded to four rows of support with eleven coefficients |
-| `Grey-221`, three operators | **128** nonzeros | 167 |
-| over GF(2) and GF(3) | the matroid greedy over `q^k`, exact | `bin/sparsifier` returns the zero matrix and exits 0 |
-| common subexpressions | **nothing** | `bin/optimizer`, and it is the model the record chain uses |
-| in-place, Tellegen, compaction | nothing | all three |
-| the rank search itself | the other strand | not its job |
-
-The GF(2) row is the one that matters most for this repository, because every
-operator [the rank search](../descent_search/README.md) emits is over a finite
-field, and that is exactly where the reference implementation currently fails.
+**What this strand does promise is the minimum.** On `Grey-221`'s three operators
+the answer is **128** nonzeros, and 128 is the minimum over every invertible `V`
+rather than the best found, because Rado-Edmonds says so. It holds over the finite
+fields as well as over `Q`, the greedy running on `q^k`, which is the half that
+matters here: every operator [the rank search](../descent_search/README.md) emits
+is over a finite field.
 
 ## Is any of it new? Four candidates, and the algorithm is not one of them
 
