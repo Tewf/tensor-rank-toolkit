@@ -33,7 +33,7 @@ Ten strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
 | [satisfiability](satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
 | [symmetry](orbit_reduction/) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
 | [isomorph-free](oracle_guided_search/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
-| [sparsification](matrix_sparsification/) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis |
+| [sparsification](matrix_sparsification/) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 **The leaf is where an exhaustive search lives**, and neither of its two routes
 forms an element any more: the walk steps in reflected Gray order over GF(2) and

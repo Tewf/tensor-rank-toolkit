@@ -18,6 +18,16 @@ five took about 500 s against about a third of a second. Three have since moved
 to a branch: [`../dominated.md`](../dominated.md), which measures the gap the
 other way round, slowest operator against slowest, and so quotes 88x to 343x.
 
+**Every entry of that minimum is `0`, `+1` or `−1`.** Counted on the matrices the
+scan prints: 30 ones and 13 minus-ones on `L`, 31 and 11 on `R`, 29 and 14 on `P`,
+and nothing else anywhere. So `nns` is zero, `nnz + nns` is 128 as well, and the
+128 is the cost the articles minimise and not only the one this module does.
+**That is measured on the bases these runs return and not guaranteed by the
+method**, which minimises zeros and breaks ties by the order it walks supports in:
+another basis of the same weight could carry an entry that is neither, and on the
+alternative-basis fixture a since-retired method left all ten of its entries as
+ninths, twenty operations for ten nonzeros.
+
 No operator ever separated the two oracles from the exact method on *count* — not
 these three, not 400 random ones, not 203 built the way a real one is, a sparse
 basis hidden behind a change of basis. Only the row-basis heuristic was ever

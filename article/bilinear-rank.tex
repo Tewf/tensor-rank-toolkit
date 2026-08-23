@@ -579,7 +579,12 @@ the minimum Theorem~\ref{thm:sparseexact} returns, which is $221$ nonzeros taken
 to $128$. Nothing in the second column is a best-effort figure: it is the least
 any invertible $\Phi$ can leave, and the method reaches it over $\GF(2)$ and
 $\GF(3)$ as well as over $\mathbb{Q}$, which is what the operators the descent of
-Section~\ref{sec:descent} emits require.
+Section~\ref{sec:descent} emits require. Every entry of the three minimising
+matrices is $0$, $1$ or $-1$, so the count hides no multiplication: an entry
+outside $\{0,\pm 1\}$ would cost one on top of its addition, and there is none.
+That is a property of the bases returned here rather than of
+Theorem~\ref{thm:sparseexact}, which minimises zeros and breaks ties by the order
+it walks supports in.
 
 \begin{table}[ht]
 \centering
