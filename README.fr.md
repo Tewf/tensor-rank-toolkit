@@ -72,6 +72,19 @@ ne traite, et pourquoi treize plutôt que huit :
 Chaque option, sa valeur par défaut et la mesure qui l'a choisie :
 [`OPTIONS.md`](OPTIONS.md). Chaque article implémenté est nommé une seule fois,
 dans [`references.md`](references.md), et le code en cite la clé.
+
+## Deux branches
+
+`main` est ce qui a gagné. **`rejected-experiments` est ce qui a perdu, conservé
+entier** : la mesure qui a tranché chaque rejet et l'implémentation qu'elle a
+retirée, car un rejet dont on a effacé les preuves ne se distingue plus d'un
+caprice. On y trouve le parcours d'orbite que l'image canonique a remplacé, le
+quotient par défaut qu'une recherche qui aboutit paie 7,4x, les deux oracles
+exacts de creusement de `[beniamini2020]` avec l'heuristique de base de lignes,
+et `find-at-rank` avec sa descente. Rien n'y est cassé et rien n'y est maintenu.
+L'index de tout cela, avec le nombre qui a retiré chacun :
+[`retired/README.md`](https://github.com/Tewf/tensor-rank-toolkit/blob/rejected-experiments/retired/README.md).
+
 ## Compilation
 
 Il faut un compilateur C++20, CMake >= 3.22, **Givaro** et les en-tetes de

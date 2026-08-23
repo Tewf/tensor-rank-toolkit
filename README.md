@@ -99,6 +99,18 @@ from a browser instead, on Python 3's standard library and nothing else:
 [`web_interface/`](web_interface/). Every paper any of it implements is named
 once, in [`references.md`](references.md), by the key the code cites.
 
+## Two branches
+
+`main` is what won. **`rejected-experiments` is what lost, kept whole**: the
+measurement that decided each rejection and the implementation it retired,
+because a rejection whose evidence was deleted is indistinguishable from a whim.
+On it are the orbit walk the canonical image replaced, the quotient by default
+that a find pays 7.4x for, `[beniamini2020]`'s two exact sparsification oracles
+with the row-basis heuristic, and `find-at-rank` with its descending sweep.
+Nothing there is broken and nothing there is maintained. The index of all of it,
+with the number that retired each:
+[`retired/README.md`](https://github.com/Tewf/tensor-rank-toolkit/blob/rejected-experiments/retired/README.md).
+
 ## Building
 
 Needs a C++20 compiler, CMake ≥ 3.22, **Givaro** and **Boost's headers**
