@@ -100,13 +100,13 @@
   <p>On the operators of a published rank-23 <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme, that is <strong>221 nonzeros to 128</strong>, against <strong>167</strong> for <a href="https://github.com/jgdumas/plinopt">PLinOpt</a>, the reference implementation, whose search is bounded to four rows of support with eleven coefficients. Where the trade used to be speed it no longer is: the run costs about a third of a second, against roughly five hundred before the methods that could not say their answer was minimal were retired to a branch.</p>
 
   <table>
-    <caption>Sparsifying one published <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme at rank 23. One core, fastest of three.</caption>
+    <caption>Sparsifying one published <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme at rank 23. One core, fastest of three. Source: <code>matrix_sparsification/results.json</code>, whose <code>against_plinopt</code> block says which of these columns any run here re-derives, and the answer is none of them.</caption>
     <thead><tr><th>Operator</th><th class="n">As given</th><th class="n">PLinOpt</th><th class="n">Minimum</th></tr></thead>
     <tbody>
-      <tr><td><code>L</code> 23&times;9</td><td class="n">69</td><td class="n">59</td><td class="n"><strong>43</strong></td></tr>
-      <tr><td><code>R</code> 23&times;9</td><td class="n">66</td><td class="n">53</td><td class="n"><strong>42</strong></td></tr>
-      <tr><td><code>P</code> 9&times;23</td><td class="n">86</td><td class="n">55</td><td class="n"><strong>43</strong></td></tr>
-      <tr><td>total</td><td class="n">221</td><td class="n">167</td><td class="n"><strong>128</strong></td></tr>
+      <tr data-operator="L"><td><code>L</code> 23&times;9</td><td class="n">69</td><td class="n">59</td><td class="n"><strong>43</strong></td></tr>
+      <tr data-operator="R"><td><code>R</code> 23&times;9</td><td class="n">66</td><td class="n">53</td><td class="n"><strong>42</strong></td></tr>
+      <tr data-operator="P"><td><code>P</code> 9&times;23</td><td class="n">86</td><td class="n">55</td><td class="n"><strong>43</strong></td></tr>
+      <tr data-operator="total"><td>total</td><td class="n">221</td><td class="n">167</td><td class="n"><strong>128</strong></td></tr>
     </tbody>
   </table>
 
