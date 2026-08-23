@@ -19,9 +19,14 @@
 ///
 /// **What can be refreshed has been, and what cannot is said rather than left to
 /// look current.** The unpinned pair is retaken and both its ends are published:
-/// the tree is **0.029 s** (`descent_search/results.json`) against kissat's
-/// **0.338 s** (`satisfiability/results.json`), so the two are not *comparable*,
-/// which this comment used to say, and it is the tree that is ahead by 11.6x. It
+/// the tree is **0.0291 s** against kissat's **0.339 s**, both read out of the one
+/// row of `satisfiability/results.json` that carries the pair, so the two are not
+/// *comparable*, which this comment used to say, and it is the tree that is ahead
+/// by **11.7x**. Both ends come from that row rather than one from each file
+/// because the same question is timed in two of them, and a ratio assembled from
+/// two runs is not a ratio: this comment quoted the tree out of
+/// `descent_search/results.json` and kissat out of the file above, and read 11.6x
+/// where the pair reads 11.7x. It
 /// moved because the GF(2) bit-packed leaf and the reflected Gray walk landed on
 /// 2026-08-20 and the solver's second is another program's. **The pinned pair
 /// nothing re-measures**: no results file carries a pinned question, so both of

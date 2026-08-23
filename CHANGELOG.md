@@ -207,7 +207,7 @@ other.
   derived one rate across a table whose rows are three different eras, and now
   says which is which and that every projection in it is a ceiling.
   `satisfiability/measurements.md` called the tree and kissat *comparable* at
-  0.41 s against 0.31 s, and **the tree is now ahead by 11.6x**, which makes its
+  0.41 s against 0.31 s, and **the tree is now ahead by 11.7x**, which makes its
   standing claim stronger rather than weaker: the table holds a loss and a win
   where it held a tie and a win, so the crossover is inside it.
   `oracle_guided_search/tree_refutation.h` argues from what pinning is worth,
