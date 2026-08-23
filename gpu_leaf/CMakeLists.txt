@@ -23,6 +23,21 @@ if(NOT CUDAToolkit_FOUND)
   return()
 endif()
 
+# **Whether anybody chose an architecture, asked before CMake answers for them.**
+#
+# `enable_language(CUDA)` writes `CMAKE_CUDA_ARCHITECTURES` into the cache itself
+# whenever nobody set it, from nvcc's own default: "If the user did not set
+# CMAKE_CUDA_ARCHITECTURES, use the compiler's default" in
+# `CMakeDetermineCUDACompiler.cmake`. A cache variable is `DEFINED`, so a guard
+# asked after that point always answers yes, and the choice below was never made
+# once. This is the only moment the two cases can be told apart, so the answer is
+# taken here and read further down.
+if(DEFINED CMAKE_CUDA_ARCHITECTURES OR DEFINED ENV{CUDAARCHS})
+  set(gpu_leaf_architectures_chosen TRUE)
+else()
+  set(gpu_leaf_architectures_chosen FALSE)
+endif()
+
 enable_language(CUDA)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CUDA_STANDARD_REQUIRED ON)
@@ -64,9 +79,12 @@ target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive_search CUDA::cudart
 # is right everywhere. It needs CMake 3.24; below that `all-major` builds one
 # image per major architecture, which is larger and slower to compile but runs.
 # A packager cross-compiling for hardware that is not present sets
-# `CMAKE_CUDA_ARCHITECTURES` and is left alone: the property is only written
-# where nobody has chosen, so an explicit choice always wins over this guess.
-if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+# `CMAKE_CUDA_ARCHITECTURES`, or exports `CUDAARCHS`, and is left alone: the
+# property is only written where nobody has chosen, so an explicit choice always
+# wins over this guess. **Whether anybody chose is read from the flag captured
+# above `enable_language(CUDA)` and not from the variable**, which by this line
+# CMake has filled in from nvcc's default on every build that did not choose.
+if(NOT gpu_leaf_architectures_chosen)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
     set(gpu_leaf_architectures native)
   elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 3.23)
@@ -105,12 +123,19 @@ target_link_libraries(gpu_leaf_registration PRIVATE gpu_leaf_kernels run_limits 
 # should not have to ask. Where there is no toolkit this file has already
 # returned and all four are byte for byte what they were.
 #
-# Four and not one because there are two seams now. `decide-rank` is the one that
+# Four searches, because there are two seams now. `decide-rank` is the one that
 # reaches a leaf; the other three call `span_element_ranks`, directly or through
 # the descent they start with, so the span seam is offered a card exactly where
-# something asks it for ranks. Linking the registration into a command that never
-# ranks a span would cost a CUDA context and buy nothing.
-foreach(command decide-rank minimise-rank lower-the-bound walk-scheme)
+# something asks it for ranks.
+#
+# And `show-limits`, which ranks nothing and is here for the opposite reason.
+# Its whole job is to report what this machine has, and without the registration
+# it reported `gpu(absent)` on a machine holding an RTX 4060 in a build that had
+# just compiled the kernels. A tool whose only output is the answer to "what is
+# available" must not be the one tool that cannot see the card. The cost is a
+# `cudaGetDeviceCount`, which is a runtime query rather than a context, so the
+# rule the four searches follow does not apply to it.
+foreach(command decide-rank minimise-rank lower-the-bound walk-scheme show-limits)
   target_link_libraries(${command} PRIVATE gpu_leaf_registration gpu_leaf_kernels)
 endforeach()
 

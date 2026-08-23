@@ -83,3 +83,12 @@ add_test(NAME span_element_ranks COMMAND test_span_element_ranks ${PROJECT_SOURC
 add_executable(test_gf2_span_walk test_gf2_span_walk.cpp)
 target_link_libraries(test_gf2_span_walk PRIVATE descent_search formats testing project_warnings)
 add_test(NAME gf2_span_walk COMMAND test_gf2_span_walk ${PROJECT_SOURCE_DIR}/fixtures)
+
+# The five gates a card is offered a span through, on a machine with no card.
+# The CUDA backend is the only one that exists, so before this every gate in
+# `ranks_from_a_card` was dead code on any build without `nvcc`, CI included.
+# The fake reads its answer out of the packed span alone, which is what makes
+# this a check on the packing and the slice order rather than only on the branch.
+add_executable(test_span_ranks_seam test_span_ranks_seam.cpp)
+target_link_libraries(test_span_ranks_seam PRIVATE descent_search testing project_warnings)
+add_test(NAME span_ranks_seam COMMAND test_span_ranks_seam)
