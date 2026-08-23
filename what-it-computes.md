@@ -95,3 +95,28 @@ sharper count marked provisional, and *exact* only where the pencil is
 diagonalisable over the field. Twelve pencils settled by exhaustion, three of
 which the classical formula gets wrong, are tabulated in
 [`pencil_rank/README.md`](pencil_rank/README.md).
+
+**[The rank as a factorisation](canonical_factorisation/).** Take `B`, the
+canonical basis of the slice space — the `nm` matrices with a single 1 — and find
+the shortest `A` whose rows, read back through `B`, span a space containing the
+slices. `B` contributes nothing, and saying so is the useful part: every list of
+matrices is `A B` for some `A`, so the whole content is the constraint that
+**each row of `A` must read as a rank-one matrix**. With it the least number of
+rows is exactly the rank; without it the answer is `dim span(T)` and no search is
+needed. The definition is Brockett and Dobkin's `[brockett1978]` and Grigoriev's
+`[grigoriev1978]`, and **no novelty is claimed for it**.
+
+What the formulation earns is the answer rather than the search. It calls the
+same exhaustive search and does not beat it, but it returns `A` with the recovery
+`C`, and **one matrix product checks the pair** without trusting the run that
+produced it: GF(4) multiplication comes back as `E11`, `E22` and the all-ones
+matrix, which is Karatsuba written as a factorisation. `recovers_slices` is that
+check and consults nothing about how the answer was found, and the tests tamper
+with one entry of `A` and require the refusal, so the checker is known to be able
+to say no. The sweep is a floor, a ceiling, then a walk **upward that never
+bisects**, so every question below the answer is a refutation that was completed,
+which is what makes the first success minimal rather than merely successful.
+**That word is the caveat**: `minimal` goes false the moment `--ceiling` or any
+other budget runs out, and the row count is then an upper bound proving nothing
+about the rank. `--route sat` never forms the pool at all, so its space is
+polynomial in the shape ([`routes.md`](canonical_factorisation/routes.md)).
