@@ -36,6 +36,21 @@ ranks, each built from its own index, and three commands offering `--threads`
 stopped at its door. The one-worker path is byte for byte what it was, scratch
 buffer and all; the parallel path gives each item its own coefficients.
 
+**The plateau crossing keeps its ✖, and the audit's "worse than absent" is priced
+rather than repeated.** `--plateau 3` on `⟨2,2,2⟩` costs **20.67 s at one worker,
+20.85 s at four and 20.84 s at twelve**, identical counts throughout. The only
+loop that could take workers is one `minimum_weight_basis_with` per candidate per
+state, the same call `descent_search` already spreads, but that run is 200 003
+states at **103 µs each** and `parallel_for` creates and joins its workers on
+every call, **87 µs for seven of them** here. One call a state would add most of a
+state to every state. Spreading it wants a persistent pool, a primitive nothing
+else here needs and one that would move the cost profile every other strand was
+measured under, so what is written down instead is the limitation: at the flag in
+`minimise-rank --help`, in
+[`../../OPTIONS/searching-for-rank.md`](../../OPTIONS/searching-for-rank.md) and
+in the console's catalogue. The flag is not refused, because steps 1 to 3 above
+the crossing do read it.
+
 **And `parallel_for` now carries a worker's exception out.** This is the one that
 was a live production bug rather than a missed opportunity: an exception leaving a
 `std::thread`'s function is `std::terminate`, so **every `require_room` refusal

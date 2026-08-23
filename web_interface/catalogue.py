@@ -100,7 +100,10 @@ TOOLS = [
             {"flag": "--emit-operators", "kind": "emit_operators",
              "label": "write the operators (L, R, P as SMS)",
              "note": "Three .sms files in the format PLinOpt reads."},
-            {"flag": "--plateau", "kind": "count", "label": "equal-cost steps"},
+            {"flag": "--plateau", "kind": "count", "label": "equal-cost steps",
+             "note": "The crossing runs on one core whatever the thread count "
+                     "says, and the arithmetic is in "
+                     "run_limits/adapting-to-the-machine/what-was-closed.md."},
             {"flag": "--plateau-states", "kind": "count",
              "label": "states per plateau crossing", "budget": True,
              "note": "From plateau_state_budget. Never measured."},
