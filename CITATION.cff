@@ -13,7 +13,7 @@ abstract: >-
   is ever a float, because a search over ranks and over counts of nonzeros gives
   a different answer when it is nearly right.
 type: software
-version: 0.4.0
+version: 0.4.1
 date-released: "2026-08-23"
 license: MIT
 repository-code: "https://github.com/Tewf/tensor-rank-toolkit"

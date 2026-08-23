@@ -6,6 +6,15 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+
+## [0.4.1] - 2026-08-23
+
+A patch release for one reason: v0.4.0 was tagged an hour before the
+measurement that corrects its sharpest number, so the release naming the
+finished state did not contain the correction, and the outward surfaces quoting
+**2.30x** were quoting something no tag held. Everything below was on `main` and
+unreleased. Nothing here changes an interface, and no count moved.
+
 ### Changed
 
 - **The one timing this repository published as a ceiling is measured, and the
@@ -33,6 +42,40 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   not two digits, so it is **about 30x** now, and the per-node surcharge is
   **about 1.1x to 1.3x**. The node columns, which do not move, are what those
   pages argue from.
+
+### Fixed
+
+- **The front page said the rank of `f2_5x5` was open, two days after this
+  repository closed it.** It printed `>= 13`, "what is proved here is
+  `13 <= rank <= 14`" and "finding a thirteen is what would close it and has not
+  been run", while `the-research-front/`, `incumbent_search/`,
+  `what-it-computes.md` and the results file all said **rank = 13**, settled on
+  2026-08-21 by the exhaustion refuting 12 and `lower-the-bound` exhibiting a
+  13 in 80 nodes. The sentence is corrected where it originates, in the carried
+  `exact_search.bounded` block of `descent_search/results.json`, which now
+  carries `settled` beside the refutations it re-derives.
+
+  **`reproduce/front_page.py` was green through all of it because it never read
+  that table.** It reads it now, out of the three blocks that settle a map, and
+  reads the sentence under it. Two things learned in the wiring: `&ge; 13` is
+  indistinguishable from 13 once the entities are dropped, so an inequality in a
+  column headed "Exact answer" is now its own failure; and the "every published
+  row is on the page" direction the other two tables check would be wrong here,
+  because this table prints a selection.
+
+- **The same measured pair was published as two different ratios.** Refuting six
+  products on `⟨2,2,2⟩` read 11.7x in `satisfiability/measurements.md` and 11.6x
+  in `oracle_guided_search/tree_refutation.h`. The cause was not rounding: that
+  comment took the tree's second from `descent_search/results.json` and kissat's
+  from `satisfiability/results.json`, and the same question is timed in both, so
+  the ratio was assembled from two runs. Both ends now come from the one row
+  that carries the pair, which is **11.7x**, and that comment's `0.338 s` is the
+  `0.339 s` the file has held since the remeasurement.
+
+- **`OPTIONS/one-idea-several-spellings.md` opened on twelve tools** where every
+  other surface says thirteen. It is the page a reader consults when a flag
+  means two things on two commands, which is the wrong page to be one tool out
+  on.
 
 
 ## [0.4.0] - 2026-08-23
@@ -849,6 +892,7 @@ corrected, tested, and extended into four strands.
   loses on all seven fixtures. No answer either gave was ever wrong. Both sets of
   numbers stay, because they are the evidence for the removal.
 
+[0.4.1]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.4.1
 [0.4.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.4.0
 [0.3.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.3.0
 [0.2.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.2.0
