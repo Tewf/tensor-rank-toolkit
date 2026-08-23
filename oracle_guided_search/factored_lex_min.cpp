@@ -1,5 +1,7 @@
 #include "factored_lex_min.h"
 
+#include "axis_presentation.h"
+
 // Before any PermLib header: PermLib calls `boost::next` in three places and
 // includes nothing that declares it, and a qualified name inside a template is
 // looked up where the template is defined. `vendor/permlib/README.md` says so.
@@ -12,7 +14,6 @@
 #define BOOST_ALLOW_DEPRECATED_HEADERS
 
 #include <permlib/permlib_api.h>
-#include <permlib/search/classic/backtrack_search.h>
 
 #include <algorithm>
 #include <iterator>
@@ -25,32 +26,14 @@
 
 #include "memory_budget.h"
 
-// The fault that cost an afternoon, made impossible to repeat rather than fixed
-// once. PermLib's `dom_int` is `unsigned short` unless `PERMLIB_DOMAIN_INT` is
-// defined, and a domain past 65 535 then wraps and writes out of bounds. Losing
-// the define is easy: a new vendor drop, a second build system, somebody
-// compiling this file by hand. The failure it causes is not.
-//
-// The check lives here because this is the file that hands PermLib a domain.
-// Presenting on the axes rather than on the grid lowers the degree by orders of
-// magnitude and does **not** clear this ceiling: `⟨4,4,4⟩`'s two vector lists are
-// 65 535 each, so the axis domain is 131 070, still twice the default type's
-// reach.
-static_assert(sizeof(permlib::dom_int) >= 4,
-              "PermLib's point type is too narrow: define PERMLIB_DOMAIN_INT. "
-              "Without it a domain larger than 65 535 wraps and corrupts memory, "
-              "which is what `vendor/permlib/CMakeLists.txt` sets it for.");
-
 namespace bilinear_rank {
 
 namespace {
 
-using Perm = permlib::Permutation;
-using Transversal = permlib::TRANSVERSAL;
-using Group = permlib::PermutationGroup;
-using BaseChange =
-    permlib::ConjugatingBaseChange<Perm, Transversal,
-                                   permlib::RandomBaseTranspose<Perm, Transversal>>;
+using axes::BaseChange;
+using axes::Group;
+using axes::Perm;
+using axes::Transversal;
 
 /// One PermLib permutation of `L ⊔ R` from one factored generator: a left vector
 /// keeps its index, right vector `r` becomes the point `row_count + r`.
@@ -431,94 +414,7 @@ void LeastImageSearch::extend_base(permlib::dom_int point) {
     change_.change(group_, base_.begin(), base_.end());
 }
 
-/// What a backtrack search has to ask of a group element to name the setwise
-/// stabiliser of a set of **cells**, from a group presented on the axes.
-///
-/// `operator()` is the whole condition and it is asked about cells, so what comes
-/// back is `Stab_G(S)` exactly. `childRestriction` is the pruning, and there the
-/// coarse condition is not only allowed but wanted: an element carrying the cell
-/// set to itself certainly carries touched rows to touched rows and touched columns
-/// to touched columns, so refusing anything else refuses only branches that could
-/// not have succeeded. Being too permissive in a child restriction costs time;
-/// being too permissive in `operator()` would return a group larger than the
-/// stabiliser, which is the error nothing downstream catches.
-class GridStabiliserPredicate : public permlib::SubgroupPredicate<Perm> {
-   public:
-    GridStabiliserPredicate(std::size_t row_count, std::size_t column_count,
-                            std::vector<std::size_t> cells, std::vector<char> touched,
-                            unsigned int touched_count)
-        : row_count_(row_count),
-          column_count_(column_count),
-          cells_(std::move(cells)),
-          touched_(std::move(touched)),
-          touched_count_(touched_count) {}
-
-    bool operator()(const Perm& element) const override {
-        for (const std::size_t cell : cells_) {
-            const std::size_t row =
-                element / static_cast<permlib::dom_int>(cell / column_count_);
-            const std::size_t column =
-                (element /
-                 static_cast<permlib::dom_int>(row_count_ + cell % column_count_)) -
-                row_count_;
-            if (!std::binary_search(cells_.begin(), cells_.end(),
-                                    row * column_count_ + column)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    bool childRestriction(const Perm& element, unsigned int,
-                          unsigned long point) const override {
-        return touched_[element / static_cast<permlib::dom_int>(point)] != 0;
-    }
-
-    /// Once the images of the touched rows and columns are fixed, the image of
-    /// every cell of the set is fixed, so nothing deeper can change the verdict.
-    unsigned int limit() const override { return touched_count_; }
-
-   private:
-    std::size_t row_count_;
-    std::size_t column_count_;
-    std::vector<std::size_t> cells_;
-    std::vector<char> touched_;
-    unsigned int touched_count_;
-};
-
-/// `[permlib]`'s classic backtrack, with the predicate above rather than its own.
-///
-/// `BacktrackSearch::construct` is protected and the limit fields with it, which is
-/// why this exists at all: it is the three lines `SetStabilizerSearch::construct`
-/// runs before handing over, with the cell predicate in place of the point one.
-/// `breakAfterChildRestriction` is safe for the same reason it is safe there — the
-/// base is prefixed by the touched points, so `[permlib]`'s base order sorts them
-/// first and a level's images leave that prefix once and for good.
-class GridStabiliserSearch : public permlib::classic::BacktrackSearch<Group, Transversal> {
-   public:
-    explicit GridStabiliserSearch(const Group& group)
-        : permlib::classic::BacktrackSearch<Group, Transversal>(group, 0, true) {}
-
-    /// Takes ownership of `predicate`, as `[permlib]`'s own searches do.
-    void look_for(GridStabiliserPredicate* predicate) {
-        this->m_limitLevel = predicate->limit();
-        this->m_limitBase = this->m_limitLevel;
-        this->m_limitInitialized = true;
-        permlib::classic::BacktrackSearch<Group, Transversal>::construct(predicate, false);
-    }
-};
-
 }  // namespace
-
-struct FactoredGrid::Presentation {
-    std::size_t rows = 0;
-    std::size_t columns = 0;
-    std::vector<FactoredGenerator> generators;
-    /// On `rows + columns` points. Absent for the trivial group, which is not
-    /// presented at all: `least_image` then returns its input, which is the honest
-    /// degenerate case and what the grid presentation did.
-    boost::shared_ptr<Group> group;
-};
 
 FactoredGrid::FactoredGrid(std::size_t left_count, std::size_t right_count,
                            const std::vector<FactoredGenerator>& generators)
@@ -572,62 +468,6 @@ std::vector<std::size_t> FactoredGrid::least_image(const std::vector<std::size_t
     }
     LeastImageSearch search(presentation_->rows, presentation_->columns, *presentation_->group);
     return search.of(cells);
-}
-
-std::vector<FactoredGenerator> FactoredGrid::setwise_stabiliser(
-    const std::vector<std::size_t>& cells) const {
-    if (!presentation_->group) return {};
-    // Nothing to stabilise is everything stabilising it, which is what
-    // `[permlib]`'s own `setStabilizer` answers for an empty set. The generators
-    // given are handed back rather than a strong generating set for the same group:
-    // both generate `G`, and a caller that wants orbits does not care which.
-    if (cells.empty()) return presentation_->generators;
-
-    std::vector<std::size_t> sorted = cells;
-    std::sort(sorted.begin(), sorted.end());
-    sorted.erase(std::unique(sorted.begin(), sorted.end()), sorted.end());
-
-    const std::size_t rows = presentation_->rows;
-    const std::size_t columns = presentation_->columns;
-    std::vector<char> touched(rows + columns, 0);
-    std::vector<unsigned long> prefix;
-    for (const std::size_t cell : sorted) {
-        for (const std::size_t point : {cell / columns, rows + cell % columns}) {
-            if (touched[point]) continue;
-            touched[point] = 1;
-            prefix.push_back(point);
-        }
-    }
-
-    // Prefixing the base with the touched points is what makes the search's limit
-    // legitimate and its child restriction safe to break on, exactly as it is for
-    // `[permlib]`'s point-set stabiliser.
-    Group copy(*presentation_->group);
-    BaseChange change(copy);
-    change.change(copy, prefix.begin(), prefix.end());
-
-    GridStabiliserSearch search(copy);
-    search.look_for(new GridStabiliserPredicate(rows, columns, sorted, std::move(touched),
-                                                static_cast<unsigned int>(prefix.size())));
-
-    Group fixing(copy.n);
-    search.search(fixing);
-
-    std::vector<FactoredGenerator> generators;
-    for (const Perm::ptr& element : fixing.S) {
-        FactoredGenerator factored;
-        factored.left.resize(rows);
-        for (std::size_t row = 0; row < rows; ++row) {
-            factored.left[row] = *element / static_cast<permlib::dom_int>(row);
-        }
-        factored.right.resize(columns);
-        for (std::size_t column = 0; column < columns; ++column) {
-            factored.right[column] = static_cast<std::uint32_t>(
-                (*element / static_cast<permlib::dom_int>(rows + column)) - rows);
-        }
-        generators.push_back(std::move(factored));
-    }
-    return generators;
 }
 
 }  // namespace bilinear_rank
