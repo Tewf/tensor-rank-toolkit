@@ -91,6 +91,29 @@ struct IncumbentLimits {
     /// [`IncumbentReport::reached_below`](#) is that answer.
     std::size_t below = 0;
 
+    /// The most a single move may take off the cost. **Zero means the bound
+    /// stays as it was**, and any positive value tightens it.
+    ///
+    /// The standing bound is `cost(W) >= dim(W)`, so a strict descendant costs
+    /// at least `dim + 1`. That is nearly tight when the rank sits just above the
+    /// dimension and close to useless when it does not: at `<3,4,5>`, dimension
+    /// 15 against a naive 60, it first says anything forty-four levels down.
+    ///
+    /// A second inequality fixes that. If one move can remove at most `s`, then a
+    /// descendant `t` levels below satisfies both `cost >= dim + t` and
+    /// `cost >= c - s*t`, and the cheapest it can be is the least value of their
+    /// maximum. At that same root with `s = 1` the bound is **38** rather than 16.
+    ///
+    /// **`s` is measured, not proved, so the search checks it as it goes.** Every
+    /// child's drop is compared against this value and
+    /// [`IncumbentReport::drops_exceeded`](#) counts the violations. A run that
+    /// used the bound and saw one has cut a branch it had no right to cut, and the
+    /// command refuses to report its answer rather than quietly returning a worse
+    /// one. Measured at **1** on seven fixtures; `level_lowering_moves.h` derives
+    /// why a move is a level-lowering summand, which is consistent with 1 and is
+    /// not a proof that nothing else is reachable.
+    std::size_t cost_drop_bound = 0;
+
     /// Offer one move per orbit at each node instead of every move, under the
     /// group `search_from_above` is handed.
     ///
@@ -116,6 +139,22 @@ struct IncumbentReport {
     std::size_t largest_stabiliser = 0;  ///< and its greatest
     std::size_t improvements = 0;  ///< times the incumbent fell
     std::size_t bounded = 0;       ///< branches cut by `dim V + 1 >= best`
+    /// The largest amount any single move ever took off the cost, over every
+    /// child costed and not only those the beam entered.
+    ///
+    /// **This is the constant the cost-aware bound needs and does not have.** The
+    /// bound in `visit` rests on `cost(W) >= dim(W)`, which is weak exactly when
+    /// the rank sits far above the dimension: on `<3,4,5>` it first says anything
+    /// forty-four levels down. A second inequality, `cost(child) >= cost(parent)
+    /// - s`, would tighten it to `a + (c - a)/(1 + s)`, which is 27 rather than 16
+    /// at that root. `s` is currently a guess, `summand_rank`, and a bound built
+    /// on a guess cuts the answer. So it is measured before it is used.
+    std::size_t largest_drop = 0;
+
+    /// Times a child's drop exceeded `IncumbentLimits::cost_drop_bound`. Nonzero
+    /// after a run that used the bound means the bound was wrong on this map and
+    /// the answer must not be trusted.
+    std::size_t drops_exceeded = 0;
     std::size_t deepest = 0;       ///< adjunctions on the longest path entered
     std::size_t best = 0;          ///< the cheapest cost reached
     bool exhausted = true;         ///< false once the node budget stopped it

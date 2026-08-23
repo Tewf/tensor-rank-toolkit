@@ -49,6 +49,12 @@ void usage() {
                    "                        at 4 and doubles once when the tree exhausted\n"
                    "                        with the budget unspent and the answer above the\n"
                    "                        floor: what-width-buys.md is why once\n"
+                   "  --cost-drop s         the most one move may take off the cost, 0 by\n"
+                   "                        default which leaves the bound as it was. A positive\n"
+                   "                        s tightens it from dim+1 to the least value of\n"
+                   "                        max(dim+t, cost-s*t), which at <3,4,5> is 38 rather\n"
+                   "                        than 16. Measured at 1, not proved, so every child is\n"
+                   "                        checked against it and a violation refuses the answer\n"
                    "  --summand-rank r      the largest rank of a span element a move may\n"
                    "                        split, 3 by default. Raising it offers more\n"
                    "                        moves at (p^r - 1)p^(r-1)/(p-1) per element\n"
@@ -129,6 +135,8 @@ int run(int argc, char** argv) {
             } else {
                 limits.width = cli::parse_count("--width", asked);
             }
+        } else if (arguments.is("--cost-drop")) {
+            limits.cost_drop_bound = arguments.count();
         } else if (arguments.is("--summand-rank")) {
             limits.summand_rank = arguments.count();
         } else if (arguments.is("--whole-pool")) {
@@ -220,6 +228,8 @@ int run(int argc, char** argv) {
             report.largest_stabiliser =
                 std::max(report.largest_stabiliser, round_report.largest_stabiliser);
             report.improvements += round_report.improvements;
+        report.largest_drop = std::max(report.largest_drop, round_report.largest_drop);
+        report.drops_exceeded += round_report.drops_exceeded;
             report.bounded += round_report.bounded;
             report.deepest = std::max(report.deepest, round_report.deepest);
             report.exhausted = round_report.exhausted;
@@ -261,6 +271,21 @@ int run(int argc, char** argv) {
         run_rounds();
     }
 
+    // The bound checked its own assumption while it ran. If the assumption was
+    // false on this map then a branch was cut that could have held the answer,
+    // and the number below would be an upper bound arrived at unsoundly. Say so
+    // and refuse rather than print it: a wrong bound that looks like a result is
+    // the one outcome worse than no result.
+    if (limits.cost_drop_bound != 0 && report.drops_exceeded != 0) {
+        cli::note() << "--cost-drop " << limits.cost_drop_bound << " was violated "
+                    << report.drops_exceeded << " times, the largest drop seen being "
+                    << report.largest_drop
+                    << ". The bound cut branches it had no right to cut, so no count is"
+                       " reported. Re-run with --cost-drop " << report.largest_drop
+                    << " or without the flag";
+        return cli::exit_status(cli::ExitCode::Unverified);
+    }
+
     bilinear_rank::note_if_the_card_failed();
 
     bilinear_rank::Algorithm algorithm;
@@ -276,7 +301,8 @@ int run(int argc, char** argv) {
     cli::note() << report.nodes << " nodes, " << report.children << " children costed, "
                 << report.moves_offered << " moves offered, " << report.improvements
                 << " improvements, " << report.bounded << " branches bounded, depth "
-                << report.deepest << (report.exhausted ? ", tree exhausted" : ", budget spent");
+                << report.deepest << ", largest single-move drop " << report.largest_drop
+                << (report.exhausted ? ", tree exhausted" : ", budget spent");
 
     // Said in words rather than left to be inferred from the count, and said
     // both ways round: a run that did not reach `k` has proved nothing about
