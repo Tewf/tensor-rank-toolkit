@@ -6,7 +6,62 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+Nothing since 0.4.0.
+
+## [0.4.0] - 2026-08-23
+
+Seven branches came back and every number this repository publishes was measured
+again from a clean tree. Nothing here decides a rank that was not decidable
+before. What it adds is a second lever on the searches that had one, a way to see
+what a search walked rather than only how much of it there was, checks under four
+documents that nothing was checking, and a set of numbers that agree with each
+other.
+
 ### Added
+
+- **A cost-aware bound for the incumbent search, `--cost-drop s`, which refuses
+  its own answer rather than trusting the constant it rests on.** The standing
+  bound is `cost(W) >= dim(W)`, and the tree is deep exactly where cost dwarfs
+  dimension: at `⟨3,4,5⟩`, dimension 15 against a naive 60, it first says
+  anything forty-four levels down. If one move removes at most `s` then a
+  descendant `t` levels down also satisfies `cost >= c − s*t`, which takes that
+  root from 16 to **38**. **`s` is measured at 1 on seven fixtures and is not
+  proved**, so every child's drop is compared against it and a run that saw a
+  violation refuses to report its answer. `gf64_multiplication` produces one, at
+  a drop of 2, which is the reason the guard is not decoration.
+
+- **`--span-census`, which turns "would McKay canonical augmentation pay on this
+  search" from an opinion into a count.** A reduced row echelon form is already
+  the canonical name of a subspace, so counting how often one run reaches one
+  span by two orders of adjunction needs no group and no canonisation. Child
+  repeats run **0% to 28.3%** across five fixtures at a saving ratio of at most
+  1.39, and the cheapest instrument that could detect the duplication costs 34 to
+  40% of a child, so a parent test cannot pay for itself here. The one high
+  reading, 40.6% on `gf64_multiplication`, is round two re-walking round one,
+  which a parent test does not remove at all: two rounds are two trees with two
+  roots. [`incumbent_search/what-the-tree-repeats.md`](incumbent_search/what-the-tree-repeats.md).
+  `--orbit-moves` is what does remove most of it where a group exists, and it
+  removes it **by removing the tree rather than by deduplicating it**: 2 251
+  children to 304 on `matmul_2x2x2`, while what survives on `matmul_2x2x3` is
+  more duplicated than what it replaced.
+
+- **`decide-rank --trace FILE`: what the search walked, and not only how much of
+  it.** Every count this repository publishes was a total. The trace is JSON
+  Lines, one record per node opened, bounded, pruned or adopted, in the shared
+  vocabulary, and a check asserts that what comes out is a tree and that it
+  counts what the search counts. It **costs a null pointer test per node when it
+  is off**, which is every run that does not ask for it, and it needs
+  `--threads 1`: two workers interleave their nodes and what comes out of that is
+  not a tree.
+
+- **Why the incumbent search cannot be seeded from a published scheme, with the
+  measurement that refuses it.** A `k`-product scheme arrives with cost `k` and
+  dimension `k`, so `dim V + 1 >= best` fires before the first move is generated.
+  Measured on this repository's own 19-product `gf64_multiplication` scheme and
+  kept on `main` rather than on the archive branch, because a rejection whose
+  evidence is elsewhere is a rejection nobody can check:
+  [`incumbent_search/why-it-cannot-be-seeded.md`](incumbent_search/why-it-cannot-be-seeded.md).
+
 
 - **The browser console offers the flags its tools actually take.** Twenty-one
   had reached the binaries without ever reaching
@@ -49,6 +104,34 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   stops the flow rather than handing the next tool a file that is not there. It
   is also the seventh worked example.
 
+- **The console's 64 checks run in CI**, where they ran nowhere before, on
+  Python 3's standard library and nine seconds. It sits after the step that
+  re-derives the published counts, because unlike `front_page.py` and
+  `quoted_numbers.py` it needs the build.
+
+- **The sparsification result is in the article.** The exactness theorem, the
+  three operators of a published rank-23 `⟨3,3,3⟩` scheme at 221 nonzeros to 128
+  against `[plinopt]`'s 167, and the four qualifications a count like that
+  invites, including the one that goes the wrong way: minimising nonzeros can
+  cost additions.
+
+- **Two more checks over documents nothing was checking.**
+  [`reproduce/front_page.py`](reproduce/front_page.py) now holds `index.html`'s
+  sparsification table to `matrix_sparsification/results.json`, nine cells, three
+  totals against the column sums rather than against a fourth measurement, and
+  the sentence above the table.
+  [`reproduce/quoted_numbers.py`](reproduce/quoted_numbers.py) grew a second kind
+  of source: a results file asserts a constant at second hand, because
+  `measure.py --check` re-derives it on every push. Five claims over eleven
+  documents, and the eleventh is the article, whose Table 2 could drift silently
+  because a LaTeX tabular carries no prose to match.
+
+- **The tenth strand has a section, the folder tree has `search_plan/`, and the
+  French page has what it was never given**: the leaf paragraph, the section on
+  reading and writing the triples the field publishes, the browser console, and
+  the clangd flags. `what-it-computes.md` opened on "Ten strands" and carried
+  nine, and the one missing was the one `README.md` sends a reader there for.
+
 ### Changed
 
 - **Step 1's span walk holds a GF(2) matrix as bits in machine words**, which is
@@ -81,6 +164,109 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   One primitive was added under it, `gf2_rank` in
   [`linear_algebra/gf2_bits.h`](linear_algebra/gf2_bits.h): the leaf only ever
   needed to know whether a rank was one, and step 1 needs the number.
+
+- **Every published number was re-measured from a clean tree, and not one count
+  moved.** That is the protocol behaving rather than a result: counts are exact
+  arithmetic. The timings did move, in one direction and on the searches only.
+  The descent's step 3 fell **13x to 22x** across the four polynomial fixtures,
+  `⟨2,2,2⟩` refuting six products went from 0.41 s to **0.029 s**, and the flip
+  walk on `⟨3,3,3⟩` from 13.30 s to 11.44 s; the solver figures barely moved, as
+  another program's figures should not. What changed under them is the GF(2) leaf
+  and the reflected Gray walk of 2026-08-20, and the four results files now carry
+  the commit they were taken at, a clean tree, and three repeats.
+
+- **Three arguments were rewritten rather than renumbered**, because the new
+  figure changed what they say. `famous_tensors/where-the-exact-search-stops.md`
+  derived one rate across a table whose rows are three different eras, and now
+  says which is which and that every projection in it is a ceiling.
+  `satisfiability/measurements.md` called the tree and kissat *comparable* at
+  0.41 s against 0.31 s, and **the tree is now ahead by 11.6x**, which makes its
+  standing claim stronger rather than weaker: the table holds a loss and a win
+  where it held a tie and a win, so the crossover is inside it.
+  `oracle_guided_search/tree_refutation.h` argues from what pinning is worth,
+  which is one session against itself and unaffected, and now says which of its
+  four figures can be refreshed and which nothing re-measures.
+
+- **A ratio whose smaller end is under a millisecond is quoted as an order of
+  magnitude and not to two digits**, which [`MEASURING.md`](MEASURING.md) now
+  states as a rule. The thermal band is a percentage of the run and shrinks with
+  it; the fixed cost of starting a process does not. So the descent's step 3
+  costs **one to two orders of magnitude** more than the steps before it, in
+  nine documents and the article, where it read "36 to 189 times" and, in the
+  article, "58 and 184". The computed range is kept beside the claim. A hand run
+  moved one fixture's ratio from 189 to 85 with nothing changed in the code.
+
+- **The ratios quoted anywhere are the ones the results files publish.** The
+  orbit quotient's seconds are **29.6x** and its per-node surcharge 1.32x, in the
+  six documents that had 27.8x and 1.41x; the front page had 27.8x too, and a
+  22 779x that `quoted_numbers.py` refuses in the eight documents it does watch.
+  Both ends of the `--break-symmetry` ratio were retaken, which turned out to
+  cost eighty seconds: **24.81 s to 0.338 s, 73x**, where half of it had been
+  called unrefreshable.
+
+- **`plateau_state_budget` is measured, on the three surfaces that still called
+  it a guess**: the audit page, the console's flag note, and `minimise-rank`'s
+  own `--help`, which that note is transcribed from. `⟨2,2,2⟩` crosses to 7 at a
+  380-state budget and stays at the naive 8 at 370. **The default stays at
+  200 000 anyway**, because 380 is one shape's answer and `⟨2,2,3⟩` does not
+  cross at 2 000, so tuning down to it would be fitting a constant to a single
+  point.
+
+- **Two archive branches became one.** `dominated-methods` held the slow
+  sparsifiers and `rejected-experiments` held everything else that lost, which is
+  two branches doing one job. The sparsifiers are now
+  `retired/dominated_sparsifiers/` on `rejected-experiments`, which gained the
+  index this repository never had, and every pointer moved before the empty
+  branch went, including the two in C++ that a prose sweep had read past.
+
+- **OPTIONS.md's opening claim is true again.** It says it documents every flag
+  of every command with its default and the measurement behind that default, and
+  it was behind on fourteen: all of `lower-the-bound`'s recent ones and the
+  `auto` arm of `--width`, `decide-rank`'s `--device`, `--trace`, `--plan-out`
+  and `--plan-in`, `sparsify-operator --field`, and `--threads` and
+  `--max-memory` on two commands that had them and did not say so. Two rows also
+  stopped being true, `--width` and `--cost-drop` being measured since they were
+  last written up as not.
+
+- **The console's shared `--threads` note says what threads change at each tool.**
+  It warned that a tight node limit can turn exit 0 into exit 3, which is true of
+  `decide-rank`, which it was written for, and false of `walk-scheme` and
+  `enumerate-subspaces`, which have no budget to spend early against and no
+  witness to stop anybody with. Split the way the `--max-memory` note beside it
+  was split, for the reason that one records.
+
+- **The GPU span-ranks seam was measured and refused, and three fixes came out of
+  the attempt.** The seam is **0.02% of a node**, so the Amdahl ceiling on it is
+  1.0002x and structural; that number is the refusal. What stayed: the five gates
+  have a test that runs without a card, `CUDA_ARCHITECTURES native` actually
+  applies now instead of being written into the cache by `enable_language(CUDA)`
+  before the guard could see it, and `show-limits`, the one tool whose whole
+  output answers what this machine has, can finally see the card. The fast suite
+  was also run for the first time ever with the kernels compiled in, **76 of 76**,
+  against an RTX 4060 Laptop.
+
+- **`factored_lex_min` held two jobs and now holds one**, the canonical image,
+  with the setwise stabiliser in its own file beside it and the pool action table
+  pointing at the test that actually holds it. No behaviour change.
+
+### Fixed
+
+- **`measure.py` took its provenance once per file, inside the write loop**, so
+  every results file after the first recorded the tree as the previous file's
+  write had left it; and `tree_clean` came through a helper that folds empty
+  output into `None`, so a clean tree and a git that did not answer arrived
+  identically. **Every results file in this repository's history carries a
+  `tree_clean` that meant nothing.** The four current ones are the first with a
+  true one. Nothing downstream reads the field, so no published number depended
+  on it.
+
+- **A wall clock was standing in for a node count on one of the two front
+  pages.** `what-it-computes.md` priced the orbit quotient at 28x on a refutation,
+  which is a timing from before the leaf was rewritten twice, while `README.md`
+  had moved to the node count for exactly that reason. It is 39.2x, which
+  `measure.py --check` re-derives, with the 2.3x on a find beside it, because
+  giving only the larger number implies the quotient pays everywhere.
+
 
 ## [0.3.0] - 2026-08-23
 
@@ -636,6 +822,7 @@ corrected, tested, and extended into four strands.
   loses on all seven fixtures. No answer either gave was ever wrong. Both sets of
   numbers stay, because they are the evidence for the removal.
 
+[0.4.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.4.0
 [0.3.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.3.0
 [0.2.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.2.0
 [0.1.0]: https://github.com/Tewf/tensor-rank-toolkit/releases/tag/v0.1.0
