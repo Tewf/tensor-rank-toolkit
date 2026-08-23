@@ -1,4 +1,4 @@
-"""Six runs that fill the console in, for somebody who has read none of this.
+"""Seven starters that fill the console in, for somebody who has read none of this.
 
 The interface's first screen used to be an empty box and a list of tool names,
 which asks a newcomer to know both a map and a question before anything happens
@@ -6,9 +6,9 @@ at all. Each example below is a fixture, a tool and its flags, so the first thin
 a reader does is press one button and read a real answer.
 
 They are chosen to teach the distinction the toolkit is about rather than to show
-the interface off: **found**, **proved no** and **gave up** are three of the six,
-on the same map, one flag apart. Nothing else here makes that difference visible
-in twenty seconds.
+the interface off: **found**, **proved no** and **gave up** are three of the
+seven, on the same map, one flag apart. Nothing else here makes that difference
+visible in twenty seconds.
 
 Two rules they are held to, and `tests/check_web_interface.py` asserts both.
 Every one runs on a build with no solver on `PATH`, because a starter that needs
@@ -19,6 +19,11 @@ check rather than misleading the next reader.
 `expect` is the badge such a run ends with, which is the tool's own word for its
 exit code and not the interface's. It is never shown; it is what the check
 compares against.
+
+The last names a `flow` where the others name a `tool`, which is one of
+`flows.py` and runs more than one command. Its `expect` is that flow's own word
+and not a badge: `complete` says every step ended where its tool says it ends,
+and what each step decided is on that step's own card.
 """
 
 EXAMPLES = [
@@ -76,5 +81,14 @@ EXAMPLES = [
         "fixture": "f2_2x3.tensor",
         "options": {},
         "expect": "factored",
+    },
+    {
+        "title": "Fourteen products, and then fewer nonzeros in each",
+        "why": "README.md's pipeline in one press: the descent's operators "
+               "handed straight to the sparsifier, 31 nonzeros down to 27. Four "
+               "runs, four commands, and no claim about the rank in any of them.",
+        "flow": "decompose-then-sparsify",
+        "fixture": "f2_5x5.tensor",
+        "expect": "complete",
     },
 ]
