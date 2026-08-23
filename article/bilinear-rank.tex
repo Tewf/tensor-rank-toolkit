@@ -53,9 +53,8 @@ $1.5$~s. A second strand minimises the additions rather than the
 multiplications, and there the same Rado--Edmonds argument returns the minimum
 over every change of basis rather than a good answer: on the three operators of
 a published rank-23 $\langle 3,3,3\rangle$ scheme it takes $221$ nonzeros to
-$128$ against $167$ for the reference implementation, and we separate the three
-incomparable cost models in which such a count can be read, since on one
-operator in nine the fewer nonzeros cost additions. We also record three
+$128$, and we separate the three incomparable cost models in which such a count
+can be read, since on one operator in nine the fewer nonzeros cost additions. We also record three
 negative results, since each cost real time to establish.
 \end{abstract}
 
@@ -547,7 +546,7 @@ the greedy rather than only at the first, and it settles a worry rather than
 improving a bound. Reading an oracle as ``search the column subsets of one fixed
 size'' invites the fear that once some vectors are settled the lightest vector
 outside their span is heavier than the scan has reached, and is missed. It cannot
-be. On the three operators of Table~\ref{tab:plinopt}, where $N=23$ and $d=9$,
+be. On the three operators of Table~\ref{tab:grey221}, where $N=23$ and $d=9$,
 the ceiling is $15$ and the largest weights actually taken were $6$, $6$ and $7$.
 \end{remark}
 
@@ -574,70 +573,53 @@ matroid were regular, and it is not, a sixteen-column minor having determinant
 $-2$.
 \end{remark}
 
-\emph{Against the reference implementation.} PLinOpt \cite{plinopt} is the
-reference implementation in this problem area. It reaches sparsity by a
-different route, sparse QLUP elimination and a coefficient search bounded to
-four rows of support with a set of eleven coefficients, and it is a heuristic
-where Theorem~\ref{thm:sparseexact} is a minimum.
-Table~\ref{tab:plinopt} puts the two on the three operators of a published
-rank-23 $\langle 3,3,3\rangle$ scheme.
+\emph{On a published scheme.} Table~\ref{tab:grey221} gives the three operators
+of a published rank-23 $\langle 3,3,3\rangle$ scheme as they are published and at
+the minimum Theorem~\ref{thm:sparseexact} returns, which is $221$ nonzeros taken
+to $128$. Nothing in the second column is a best-effort figure: it is the least
+any invertible $\Phi$ can leave, and the method reaches it over $\GF(2)$ and
+$\GF(3)$ as well as over $\mathbb{Q}$, which is what the operators the descent of
+Section~\ref{sec:descent} emits require.
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{llrrrr}
+\begin{tabular}{llrrr}
 \toprule
-operator & shape & as given & \cite{plinopt} & minimum & seconds \\
+operator & shape & as given & minimum & seconds \\
 \midrule
-$L$   & $23\times 9$ & $69$  & $59$  & $\mathbf{43}$  & $0.338$ \\
-$R$   & $23\times 9$ & $66$  & $53$  & $\mathbf{42}$  & $0.327$ \\
-$P$   & $9\times 23$ & $86$  & $55$  & $\mathbf{43}$  & $0.434$ \\
+$L$   & $23\times 9$ & $69$  & $\mathbf{43}$  & $0.338$ \\
+$R$   & $23\times 9$ & $66$  & $\mathbf{42}$  & $0.327$ \\
+$P$   & $9\times 23$ & $86$  & $\mathbf{43}$  & $0.434$ \\
 \midrule
-total &              & $221$ & $167$ & $\mathbf{128}$ & \\
+total &              & $221$ & $\mathbf{128}$ & \\
 \bottomrule
 \end{tabular}
 \vspace{0.5em}
 \caption{Nonzeros in the three operators of \texttt{3x3x3\_23\_Grey-221}. The
 minimum column is the minimum over every invertible $\Phi$, and it is the
 minimum because Theorem~\ref{thm:sparseexact} says so and not because nothing
-better was found.}\label{tab:plinopt}
+better was found.}\label{tab:grey221}
 \end{table}
 
-Four things qualify that table, and each is the kind of qualification a count
+Three things qualify that table, and each is the kind of qualification a count
 invites.
 
-\emph{The two tools are not doing the same job.} PLinOpt is downstream of a
-decomposition: it is handed operators and produces a straight-line program, with
-in-place accumulation, Tellegen transposition and compaction around it. The work
-here searches for the decomposition and sparsifies as a second strand, and finds
-no common subexpressions at all. The table compares one column of that pipeline
-and not the pipeline.
+\emph{Both columns are carried and neither is re-derived here.} Those three
+operators are not among the fixtures shipped alongside this work, so no run of it
+produces either number: both were measured once, on one machine, and the results
+file that holds them names itself as carried on every pass. A carried number
+reported as a fresh one is the failure that machinery exists to prevent.
 
-\emph{The middle column is carried and not re-derived here.} Those three numbers
-were measured once, on one machine, with the reference sparsifier built from
-upstream and given its best settings first: raising its coefficient bound from
-the default of eleven to twenty and then to forty leaves it where the default
-does. That binary is not built in the checkout vendored alongside this work, so
-re-running the column means building the tool first. A carried number reported as
-a fresh one is the failure this sentence exists to prevent.
-
-\emph{$P$ has to be handed over transposed.} It is $9\times 23$ and computes $9$
-outputs from $23$ products, so the admissible change of basis acts on its rows
-and the object is its row space. Given the stored orientation the reference
-sparsifier reports $9$ nonzeros, having recombined the $23$ products, which no
-change of basis on the outputs may do; its own output flags the alternative
-reading. Transposed it gives the $55$ in the table. The mistake would have
-produced a false defeat rather than a false victory, which is the direction an
-author is least likely to check.
+\emph{$P$ is sparsified transposed.} It is $9\times 23$ and computes $9$ outputs
+from $23$ products, so the admissible change of basis acts on its rows and the
+object is its row space. Sparsified in its stored orientation it would be the
+$23$ products that were recombined, which no change of basis on the outputs may
+do, and the count returned would be a count about a different object.
 
 \emph{Sparsity is trivial to improve by returning a different matrix}, so each
 answer was re-checked outside the tool in exact rational arithmetic: rank $9$
 before, rank $9$ after, and rank $9$ with the two stacked, so the space returned
 is the space that was given.
-
-One row of the comparison goes the other way and is the one that matters most
-here. Over $\GF(2)$ and $\GF(3)$ the reference sparsifier returns the zero matrix
-and exits successfully, so on the finite fields where every operator the descent
-of Section~\ref{sec:descent} emits lives, there is no column to compare against.
 
 \emph{Fewer nonzeros is not fewer additions.} Nonzeros are a proxy for additions
 and the proxy is imperfect, so a count means nothing until the model it is

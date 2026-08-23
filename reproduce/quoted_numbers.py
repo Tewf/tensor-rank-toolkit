@@ -81,8 +81,8 @@ def claims():
     canonical = asserted("and the canonical route 83 for the 1")
     quotient = published(DESCENT, "quotient", "<2,2,2> refuting 6 products", "fewer_nodes_by")
     grey = json.loads(SPARSIFICATION.read_text())["against_plinopt"]
-    as_given, plinopt, minimum = (totals_of(grey, column)
-                                  for column in ("as_given", "plinopt", "minimum"))
+    as_given, minimum = (totals_of(grey, column)
+                         for column in ("as_given", "minimum"))
     return [(
         f"isomorph-free speedup, {plain} / {canonical} nodes",
         grouped(round(plain / canonical)),
@@ -113,12 +113,8 @@ def claims():
         f"{as_given} non-nuls à {minimum}",
         ["README.fr.md"],
     ), (
-        "what PLinOpt reaches on those three operators",
-        f"against {plinopt}",
-        ["article/bilinear-rank.tex"],
-    ), (
-        "the same three totals as the article's table row",
-        f"& {as_given} & {plinopt} & {minimum} &",
+        "the same two totals as the article's table row",
+        f"& {as_given} & {minimum} &",
         ["article/bilinear-rank.tex"],
     )]
 
@@ -135,8 +131,8 @@ def flattened(text):
     `\\mathbf{}` around one. Dropping all three is what lets one string cover
     the article and the Markdown that quotes it, and it is what makes the
     article's table reachable at all: a LaTeX table carries no prose sentence,
-    so the row itself has to be the string, and `& 221 & 167 & 128 &` is that
-    row once the money and the boldface are gone."""
+    so the row itself has to be the string, and `& 221 & 128 &` is that row once
+    the money and the boldface are gone."""
     plain = text.replace("×", "x").replace("$", "")
     plain = re.sub(r"\\mathbf\{([^}]*)\}", r"\1", plain)
     return " ".join(re.sub(r"[ \xa0,]", " ", plain).replace("*", "").split())
