@@ -8,6 +8,7 @@ can beat it. The comparison is still what the default output is for. Precedence 
 
 | Flag | Default | What chose the default |
 |---|---|---|
+| `--field p` | off, the question over `Q` | **An argument, and it changes the question rather than the method.** It reads the entries over GF(p) and answers there exactly, by the matroid greedy over the column space; every route below works over `Q`, which is a different and harder question. An operator the rank search emitted is over a finite field, so **this is the question such an operator is actually asking**, and it is the only route to the exact answer to it. It reads `.sms` only, and refuses another format by name rather than reading it as something else. **A minimum over GF(p) is not the minimum over `Q`**: the word `minimum` appears in the output either way, so the reading of a zero exit is written beside the flag rather than left to the badge. |
 | `--operations` | off | Argument: the greedy by rescaling minimises `nnz + nns` rather than `nnz`, which is a different question, and it costs about 600x what the answer costs. Asked for, never assumed. |
 | `--emit PATH` | off | Nothing to measure: writes that minimum as SMS, the way up the file came in, so another tool can read it. |
 | `--show` | off | Nothing to measure: prints the sparsified matrix as well as its count. |
