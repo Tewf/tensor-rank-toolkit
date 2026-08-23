@@ -28,9 +28,11 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   effort given to each side and the reversal on one operator in nine.
   `results.json` keeps all three columns, under a `published_scheme_operators`
   block renamed from `against_plinopt` and still named in `questions.CARRIED`
-  with its price. `references.md`, the `NOTICE`, the vendored
-  `fixtures/plinopt/` operators and their CeCILL-B licence are untouched, and
-  the bibliography still cites PLinOpt where the article attributes model (c).
+  with its price. The `NOTICE`, the vendored `fixtures/plinopt/` operators and
+  their CeCILL-B licence are untouched; `references.md` keeps the citation, the
+  authorship and the licence byte for byte and loses only the two clauses that
+  invited a comparison; and the bibliography still cites PLinOpt where the
+  article attributes model (c).
 
 - **The checkers moved with the pages that carry the numbers**, in the same
   commits: `reproduce/front_page.py` now holds `index.html` to the two columns

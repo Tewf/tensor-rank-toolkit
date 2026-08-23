@@ -1757,12 +1757,12 @@ Also found at run time. Its finite-field solver requires a CoCoALib build.
 **`plinopt`**: J-G. Dumas, B. Grenet, C. Pernet, A. Sedoglavic. *PLinOpt: C++
 Routines for Linear, Bilinear & Trilinear Straight-line Programs.*
 [github.com/jgdumas/plinopt](https://github.com/jgdumas/plinopt), CeCILL-B.
-The reference implementation for this problem area, and the one to check
-against: `bin/sparsifier`, `bin/factorizer`,
+The near neighbour in this problem area, whose binaries are
+`bin/sparsifier`, `bin/factorizer`,
 `bin/orbiter`, and for the exchange `bin/PMchecker`, `bin/MMchecker` and
 `bin/sms2pretty`. It reaches sparsity by a different route from `beniamini2020`;
 sparse QLUP elimination and bounded coefficient search rather than the Ω-valid
-oracles; so the two are worth comparing rather than one replacing the other.
+oracles.
 Not a dependency here: it needs LinBox, which this repository does not.
 Twelve of its `data/` operators are vendored under
 [`fixtures/plinopt/`](fixtures/plinopt/README.md) with its licence; what was read
