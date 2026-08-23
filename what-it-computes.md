@@ -79,9 +79,10 @@ are re-derived by `reproduce/measure.py --check`.
 **[Isomorph-free enumeration](oracle_guided_search/).**
 `enumerate-subspaces --canonical` is `[mckay1998]`'s canonical augmentation,
 which deduplicates with no memory at all. It returns ⟨2,2,2⟩'s 36 solution
-subspaces as the **1 orbit** they are, visiting **1982× fewer nodes**. Wall clock
-improves only 1.6×, because finding a canonical code by walking the whole group
-spends most of the saving on itself, and that is measured rather than glossed
+subspaces as the **1 orbit** they are, visiting **22 778× fewer nodes** and
+running **11.8× faster**. The group is not walked at all any more: an orbit is
+named by least image under a prescribed group, which is what carried the saving
+on the clock from under 2× to that, and it is measured rather than glossed
 ([`deduplication-cost.md`](oracle_guided_search/deduplication-cost.md)).
 
 **[Two slices, without a search](pencil_rank/).** A tensor with two slices is a
