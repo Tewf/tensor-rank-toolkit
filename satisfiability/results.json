@@ -6,7 +6,7 @@
   "machine": "Single core of a 12th Gen Intel i5-12450H at 2.2 GHz. Every timing is the fastest of three runs on an otherwise quiet machine, because the spread between runs is larger than several of the values. The run that wrote this file is named in `provenance`.",
   "timings": "Every `*_seconds` field is the run `provenance` names, and no `--check` reads one. They are rewritten only by a full `measure.py` run on a quiet machine, under the protocol in MEASURING.md; the counts beside them are re-derived on every push.",
   "solver": "kissat 4.0.4, and every `*_seconds` field is kissat unless its name says otherwise. Some of these were previously cryptominisat timings under a heading that said kissat, which is why the solver is now named per column: `*_under_cryptominisat` fields are the second opinion and the evidence for preferring kissat, kept rather than deleted because without them the preference has nothing behind it.",
-  "solver_choice": "Native XOR clauses are worth nothing on these instances, 1.559 s against 1.563 s on the same question. Raw strength is worth 134x on the dearest find here, GF(16) at 9 products: 0.270 s against 36.19 s. See `choices/`.",
+  "solver_choice": "Native XOR clauses are worth nothing on these instances, 1.559 s against 1.563 s on the same question. Raw strength is worth 126x on the dearest find here, GF(16) at 9 products: the 0.2875 s in the row below against 36.19 s. It read 134x from a 0.270 s taken on 2026-08-16, and the two kissat figures are one claim: a solver second is another program's and 6% apart is inside the 13% band MEASURING.md sets. The cryptominisat end is a carried second opinion and is not retaken. See `choices/`.",
   "methods": [
     "GF(2): Boolean variables per coordinate, Tseitin conjunctions in two stages, one parity constraint per tensor entry.",
     "GF(p) one-hot: p Booleans per unknown with exactly one true, and the field's multiplication and addition tables written out as implications.",
@@ -182,9 +182,9 @@
   "symmetry_breaking": {
     "note": "Ordering the terms is sound, since permuting a decomposition gives another decomposition, and it was checked against all six fixtures of known rank before being trusted. Off by default because an over-strong constraint would turn a satisfiable instance into UNSAT, which is a wrong lower bound.",
     "question": "matmul_2x2x2, rule out 6",
-    "without_seconds": 24.71,
-    "with_seconds": 0.311,
-    "worth": "79x, and both ends of that are finite measurements under the shipped solver.",
+    "without_seconds": 24.81,
+    "with_seconds": 0.3384,
+    "worth": "73x, and both ends are finite measurements under the shipped solver, taken on 2026-08-23. The with end is this file's own ruled_out_seconds for the same question rather than a second figure for one run; the without end is the only run anywhere here that turns symmetry breaking off, and it did not move, because it is kissat's second and kissat did not change. It read 79x while the with end was the 0.311 s of 2026-08-16.",
     "without_seconds_under_cryptominisat": null,
     "with_seconds_under_cryptominisat": 1.57,
     "cryptominisat_note": "No answer in 120 s without the ordering, 1.57 s with it, which is where the earlier `at least 76x` came from. The pair is kept because it is a lower bound on the same effect from the other solver, and labelled because the file used to present it as kissat's."

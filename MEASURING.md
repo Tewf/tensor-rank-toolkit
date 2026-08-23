@@ -34,7 +34,7 @@ measured here is not a speed-up, it is the fan.
 
 Ratios are quoted in this repository only where the two ends are far enough apart
 that the band cannot account for them, which is why the ones that appear are
-**29.6x**, **79x** and **134x** rather than 1.2x. Each of the three is a
+**29.6x**, **73x** and **126x** rather than 1.2x. Each of the three is a
 published pair rather than a remembered figure: the orbit quotient refuting six
 products on ⟨2,2,2⟩
 ([`orbit_reduction/what-the-quotient-costs.md`](orbit_reduction/what-the-quotient-costs.md)),
