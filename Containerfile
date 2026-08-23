@@ -77,7 +77,7 @@ COPY . /src
 #
 # There is no CUDA in this image and none is wanted. gpu_leaf/ is built only
 # where CMake finds nvcc, so the configure below skips it and the suite that runs
-# is the 59 tests a machine without a card has. That is the point of the image:
+# is the 95 tests a machine without a card has. That is the point of the image:
 # it is the reproduction that does not depend on the hardware the numbers in
 # gpu_leaf/what-the-card-did.md were taken on. Those are reproduced by the
 # hardware or not at all, which MEASURING.md states rather than hides.
