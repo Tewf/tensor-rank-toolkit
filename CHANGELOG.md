@@ -22,9 +22,10 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **No measurement was deleted and no credit moved.** `against-plinopt.md` and
   `in-front-of-plinopt.md` were two pages of one record, both titled as a
   contest; they merge into
-  [`matrix_sparsification/measured-with-other-tools.md`](matrix_sparsification/measured-with-other-tools.md),
-  which keeps every number, the carried column, the transposition of `P`, the
-  equal effort given to each side and the reversal on one operator in nine.
+  [`matrix_sparsification/measured-with-other-tools/`](matrix_sparsification/measured-with-other-tools/README.md),
+  a folder of three pages under the markdown ceiling with a linking README, which
+  keeps every number, the carried column, the transposition of `P`, the equal
+  effort given to each side and the reversal on one operator in nine.
   `results.json` keeps all three columns, under a `published_scheme_operators`
   block renamed from `against_plinopt` and still named in `questions.CARRIED`
   with its price. `references.md`, the `NOTICE`, the vendored

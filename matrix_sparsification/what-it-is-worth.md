@@ -38,7 +38,8 @@ this page compared two of them until 2026-08-22.
 
 **This repository measures nnz, so it is in (a) and (b) and structurally cannot
 see (c)** on its own. What it can do is hand its answer to something that does,
-and [`measured-with-other-tools.md`](measured-with-other-tools.md) measures that:
+and [`measured-with-other-tools/before-a-subexpression-pass.md`](measured-with-other-tools/before-a-subexpression-pass.md)
+measures that:
 handed to `[plinopt]`'s subexpression pass the exact stage takes `Grey-221` from
 81 additions to 62, and two already-optimised schemes by 2% and 7%. That is (b)
 crossed with (c), a fourth thing again and not comparable to either record below.

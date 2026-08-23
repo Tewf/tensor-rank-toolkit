@@ -112,4 +112,4 @@ different route entirely: sparse QLUP elimination and a bounded coefficient
 search. What its runs on these operators measured, and what the exact stage is
 worth handed to its subexpression pass, where minimising nonzeros turns out to be
 able to cost additions, are recorded in
-[`measured-with-other-tools.md`](measured-with-other-tools.md).
+[`measured-with-other-tools/`](measured-with-other-tools/README.md).

@@ -70,7 +70,7 @@ What is *not* found in the literature, in descending order of confidence:
    heuristic. That the bound is characteristic-free is written down nowhere.
 4. **A measurement rather than a method**: that minimising nonzeros can *cost*
    additions once common subexpressions are on the table, which
-   [`../matrix_sparsification/measured-with-other-tools.md`](../matrix_sparsification/measured-with-other-tools.md)
+   [`../matrix_sparsification/measured-with-other-tools/before-a-subexpression-pass.md`](../matrix_sparsification/measured-with-other-tools/before-a-subexpression-pass.md)
    shows going the wrong way on one operator of three schemes.
 
 **Read all four narrowly.** They rest on searches that found nothing, which is
