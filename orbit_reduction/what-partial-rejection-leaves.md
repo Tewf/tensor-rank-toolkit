@@ -40,7 +40,7 @@ the quotient exists for: it walks the whole tree, so every orbit not collapsed i
 a subtree entered. What the cheap rule has to buy that back with is the per-node
 surcharge of being exact, and
 [`what-the-quotient-costs.md`](what-the-quotient-costs.md) already measured that
-at **1.10x to 1.41x a node**. Removing all of it saves under a third of a node
+at **1.12x to 1.32x a node**. Removing all of it saves under a third of a node
 against paying five to eighteen times as many nodes. The trade is not close, and
 no new timing is needed to say so.
 

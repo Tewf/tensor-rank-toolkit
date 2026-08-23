@@ -33,8 +33,26 @@ distinguishable, and **must not be reported as a ratio**. A speed-up of 1.1x
 measured here is not a speed-up, it is the fan.
 
 Ratios are quoted in this repository only where the two ends are far enough apart
-that the band cannot account for them, which is why the ones that appear are 28x,
-79x and 134x rather than 1.2x.
+that the band cannot account for them, which is why the ones that appear are
+**29.6x**, **79x** and **134x** rather than 1.2x. Each of the three is a
+published pair rather than a remembered figure: the orbit quotient refuting six
+products on ⟨2,2,2⟩
+([`orbit_reduction/what-the-quotient-costs.md`](orbit_reduction/what-the-quotient-costs.md)),
+what ordering the terms is worth to a solver, and what one solver is worth
+against another on GF(16) at nine
+([`satisfiability/results.json`](satisfiability/results.json)).
+
+**A ratio whose smaller end is under a millisecond is quoted as an order of
+magnitude and not to two digits.** The band above is a percentage of the run, so
+it shrinks with it, but the floor under a wall clock does not: process start,
+the first page faults and reading the file are the same absolute cost whether
+the search then takes a millisecond or a minute, and at the bottom of the range
+they are most of what was timed. The searches got fast enough on 2026-08-23 for
+that to start mattering — the descent's first two steps are now 0.9 ms to 23.8 ms
+across the four polynomial fixtures — so where a denominator is that small the
+claim is written as the order of magnitude it is evidence of. `36 to 189 times`
+became `one to two orders of magnitude` for exactly this reason, after a hand run
+moved one fixture's ratio from 189 to 85 without anything changing in the code.
 
 ## Defaults a published number depends on
 

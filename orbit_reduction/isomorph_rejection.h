@@ -35,7 +35,7 @@
 ///
 /// **Counted here, and it does not pay**: 5.10x and 17.96x the nodes on the two
 /// refutations measured, against a per-node surcharge for exactness that was
-/// already only 1.10x to 1.41x. The table, and why the satisfiable questions look
+/// already only 1.12x to 1.32x. The table, and why the satisfiable questions look
 /// deceptively cheap, is in
 /// [`what-partial-rejection-leaves.md`](what-partial-rejection-leaves.md). So
 /// `Full` stays the default, and this switch exists to make that a measurement

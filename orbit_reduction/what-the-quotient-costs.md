@@ -11,8 +11,17 @@ against `-s matmul 2 2 2`:
 
 | question | plain | quotiented | nodes removed | seconds |
 |---|---|---|---|---|
-| refuting k = 6 | 25 399 | **648** | 39.2x | 0.0362 to 0.00130, **27.8x** |
-| finding k = 7 | 7 436 | **3 167** | 2.35x | 0.0214 to 0.00998, **2.14x** |
+| refuting k = 6 | 25 399 | **648** | 39.2x | 0.02923 to 0.000986, **29.6x** |
+| finding k = 7 | 7 436 | **3 167** | 2.35x | 0.012591 to 0.005998, **2.10x** |
+
+The seconds are the ones `descent_search/results.json` published on 2026-08-23,
+regenerated from a clean tree; they were 0.0362 and 0.0214 before the GF(2) leaf
+and the reflected Gray walk landed, and the two ratios were 27.8x and 2.14x.
+**Nothing in the node columns moved and nothing was expected to.** Read the
+quotiented second at k = 6 as an order of magnitude rather than as three digits:
+under a millisecond it is measuring the process as much as the search,
+[`../MEASURING.md`](../MEASURING.md) says why, and the node column is the one
+this page argues from for that reason.
 
 The refutation loses far more of its tree than the satisfiable question does,
 and that is structural rather than lucky: a refutation visits every node, so
@@ -22,8 +31,8 @@ stops at the first witness and may well have stopped early anyway.
 ## The surcharge, which is now small
 
 A quotiented node runs `least_in_orbit` and a plain node does not. That
-surcharge is the gap between the two rightmost columns: **1.41x** a node at
-k = 6, **1.10x** at k = 7. Time therefore tracks nodes almost exactly, and the
+surcharge is the gap between the two rightmost columns: **1.32x** a node at
+k = 6, **1.12x** at k = 7. Time therefore tracks nodes almost exactly, and the
 node table above is very nearly the whole story. It is also why paying fewer
 nodes matters more here than paying less per node, which is the finding of
 [`what-partial-rejection-leaves.md`](what-partial-rejection-leaves.md).
