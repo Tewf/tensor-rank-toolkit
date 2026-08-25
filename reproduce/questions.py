@@ -275,7 +275,7 @@ def sparsification_of(build, name, repeats=REPEATS):
         counts[key] = int(found.group(1))
     counts["simplex_seconds"] = simplex_seconds
 
-    shape = re.search(r"as given: \d+ nonzeros, (\d+x\d+)", text)
+    shape = re.search(r"as given: \d+ nonzeros, \d+ operations, (\d+x\d+)", text)
     return {"name": name,
             "shape": shape.group(1) if shape else None,
             "command": shown(command),

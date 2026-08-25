@@ -53,7 +53,8 @@ void usage() {
                    "                  nor +-1 costs a multiplication as well as an addition.\n"
                    "                  A different question, and it costs about 600x more\n"
                    "                  than the answer above, so it is asked for and not\n"
-                   "                  assumed\n"
+                   "                  assumed. The flag adds that route, not the operations\n"
+                   "                  column, which every line carries either way\n"
                    "  --emit PATH     write that minimum as an SMS file, so it can be handed to\n"
                    "                  another tool. Written the way the file came in, so it\n"
                    "                  drops in where the original did: a decoding operator\n"
@@ -70,6 +71,15 @@ void usage() {
 
 /// Report a result only once it is known to be the same operator. Sparsity is
 /// trivial to improve by returning something else entirely.
+///
+/// **Both counts, always, because one of them decides nothing.** The routes here
+/// reach the same nonzero count on every fixture shipped, so that column
+/// separates them not at all: on the alternative-basis operator every route
+/// reaches ten, and they are not the same ten. What separates them is
+/// `nnz + nns`, the cost the articles minimise, where an entry that is neither
+/// `0` nor `±1` costs a multiplication as well as an addition — ten ninths are
+/// twenty operations and ten signs are ten. Printing zeros alone showed the
+/// routes tying and hid the only result `--operations` exists to produce.
 template <class AnyField>
 void report(const AnyField& field, const std::string& method,
             const linear_algebra::MatrixOver<AnyField>& original,
@@ -79,7 +89,8 @@ void report(const AnyField& field, const std::string& method,
         linear_algebra::same_row_space(field, linear_algebra::transpose<AnyField>(original),
                                        linear_algebra::transpose<AnyField>(sparsified));
     cli::result() << "  " << method << ": " << linear_algebra::nonzero_count(field, sparsified)
-                  << " nonzeros, " << seconds << " s"
+                  << " nonzeros, " << linear_algebra::operation_count(field, sparsified)
+                  << " operations, " << seconds << " s"
                   << (equivalent ? "" : "   *** NOT THE SAME OPERATOR ***") << "\n";
     if (show_matrix) cli::result() << linear_algebra::to_string(sparsified);
 }
@@ -154,6 +165,7 @@ int run(int argc, char** argv) {
 
         cli::result() << path << "\n  as given: "
                       << linear_algebra::nonzero_count(finite, given) << " nonzeros, "
+                      << linear_algebra::operation_count(finite, given) << " operations, "
                       << given.rows() << "x" << given.columns() << ", over GF(" << modulus << ")\n";
         if (decoding) {
             cli::note() << "wider than tall, so this is a decoding operator: its basis change "
@@ -216,6 +228,7 @@ int run(int argc, char** argv) {
 
     cli::result() << path << "\n  as given: "
                   << linear_algebra::nonzero_count(field, operator_matrix) << " nonzeros, "
+                  << linear_algebra::operation_count(field, operator_matrix) << " operations, "
                   << operator_matrix.rows() << "x" << operator_matrix.columns() << "\n";
     if (decoding) {
         cli::note() << "wider than tall, so this is a decoding operator: its basis change acts "

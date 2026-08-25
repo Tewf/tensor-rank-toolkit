@@ -19,6 +19,13 @@ work="${TMPDIR:-/tmp}/sparsify-orientation.$$"
 mkdir -p "$work"
 trap 'rm -rf "$work"' EXIT
 
+# The nonzero count of every route, named rather than counted to. This read
+# `awk '{print $(NF-3)}'` until the result line grew an operations count between
+# the nonzeros and the seconds: that moves the field this wants without moving
+# the field it reads, so the check would have gone on passing while comparing
+# operations to operations. A pattern naming `nonzeros` cannot drift that way.
+route_counts() { grep -v 'as given' | sed -n 's/^.*: \([0-9][0-9]*\) nonzeros.*$/\1/p'; }
+
 status=0
 for name in strassen_u strassen_v strassen_w alternative_basis_u; do
     tall="$fixtures/$name.matrix"
@@ -41,8 +48,8 @@ for name in strassen_u strassen_v strassen_w alternative_basis_u; do
         }
       }' "$tall" > "$work/$name.t.matrix"
 
-    best_tall=$("$tool" "$tall" | awk '/nonzeros/ && !/as given/ {print $(NF-3)}' | sort -n | head -1)
-    best_wide=$("$tool" "$work/$name.t.matrix" | awk '/nonzeros/ && !/as given/ {print $(NF-3)}' | sort -n | head -1)
+    best_tall=$("$tool" "$tall" | route_counts | sort -n | head -1)
+    best_wide=$("$tool" "$work/$name.t.matrix" | route_counts | sort -n | head -1)
 
     if [ "$best_tall" = "$best_wide" ] && [ -n "$best_tall" ]; then
         echo "  ok    $name reaches $best_tall either way up"
