@@ -34,7 +34,18 @@ struct SolveOptions {
     bool break_symmetry = false;
     /// Pin a solver instead of taking the best fit. Stronger than `solver_order`
     /// and not a reordering of it: a named solver is used or the run has none.
+    /// A name is looked for on `PATH`; a path is the binary itself. A solver
+    /// that can only find, `yalsat`, `probSAT` or `multilinear-sat`, is pinned
+    /// this way and never reached by the order, since its no is the third
+    /// answer: [`local_search_solver.h`](local_search_solver.h).
     std::string solver;
+
+    /// Where a solver that can only find starts. A stochastic local search is a
+    /// Las Vegas algorithm, right whenever it answers and random in how long it
+    /// takes, so one seed is one draw from a distribution and a cost from it is
+    /// the distribution, not the draw. Every other solver ignores it. The
+    /// commands fill this from `local_search_seed` in `tunables.conf`.
+    std::size_t seed = 1;
 
     /// Which solvers to try, best first, of those on `PATH`. Empty takes
     /// `default_solver_order` in [`solver_process.h`](solver_process.h), which

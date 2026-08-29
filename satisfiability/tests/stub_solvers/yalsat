@@ -1,0 +1,16 @@
+#!/bin/sh
+# A solver that can only find, standing in for one so that the class can be
+# tested on a machine with none installed. It is named yalsat because the class
+# is assigned by name, and it claims the one thing such a solver must never be
+# believed on: a refutation. The real yalsat does print this line when unit
+# propagation alone closes a formula, so the claim is not far-fetched.
+#
+# It copies the formula it was handed to $STUB_SOLVER_COPY when that is set, so
+# a test can read what the module actually wrote, which is how the plain-CNF
+# forcing is asserted rather than described. yalsat is run as `yalsat <file>
+# <seed>`, so the formula is the first argument.
+if [ -n "${STUB_SOLVER_COPY:-}" ]; then
+    cp "$1" "$STUB_SOLVER_COPY"
+fi
+echo "s UNSATISFIABLE"
+exit 20

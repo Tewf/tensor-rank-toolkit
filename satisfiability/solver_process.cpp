@@ -14,6 +14,7 @@
 
 #include "child_process.h"
 #include "interrupt_cleanup.h"
+#include "local_search_solver.h"
 
 namespace satisfiability {
 
@@ -146,10 +147,20 @@ SatSolver find_sat_solver(bool prefer_xor, const std::string& named,
         solver.path = path;
         solver.native_xor = (name == "cryptominisat");
         solver.writes_proofs = (name == "kissat");
+        solver.finds_only = finds_only_by_name(name);
         return solver;
     };
 
-    if (!named.empty()) return describe(named, on_path(named));
+    if (!named.empty()) {
+        // A name with a slash in it is a path. The local search solvers are
+        // built into a tree rather than installed, so `PATH` names none of
+        // them, and the class still follows the binary's name.
+        if (named.find('/') == std::string::npos) return describe(named, on_path(named));
+        const std::filesystem::path binary(named);
+        std::error_code ignored;
+        const bool usable = std::filesystem::is_regular_file(binary, ignored);
+        return describe(binary.filename().string(), usable ? named : "");
+    }
 
     // `prefer_xor` is kept because the encoding still has to know whether to
     // write `x` lines, but it no longer decides which solver runs: the order
@@ -169,12 +180,20 @@ std::string find_proof_checker() { return on_path("drat-trim"); }
 
 SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver,
                 std::size_t memory_megabytes, std::size_t timeout_seconds,
-                const std::string& proof_path, Tuning tuning) {
+                const std::string& proof_path, Tuning tuning, std::size_t seed) {
     SolverRun run;
     if (!solver.found) return run;
     run.solver_found = true;
     run.solver_name = solver.name;
 
+    // A solver that can only find has no refutation for a proof to be of, which
+    // is a different refusal from the one below: not that it cannot write the
+    // file, but that it never has the verdict the file would certify.
+    if (!proof_path.empty() && solver.finds_only) {
+        throw std::invalid_argument(
+            solver.name + " can only find: it never refutes, so there is no refutation for "
+            "--proof to write. Ask kissat for the lower bound");
+    }
     // A proof nobody wrote is worse than no proof asked for: the run answers no,
     // `proof_bytes` stays 0, and the caller reports a refusal that reads as
     // checked because a proof was requested. Only kissat takes a proof file here,
@@ -203,16 +222,25 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
         if (tuning == Tuning::Unsatisfiable) configuration = "--unsat";
     }
 
+    const std::vector<std::string> command =
+        solver.finds_only
+            ? local_search_command(solver.name, solver.path, file.string(), seed, timeout_seconds)
+            : solver_command(solver.path, file.string(), proof_path, configuration);
+
     const auto started = std::chrono::steady_clock::now();
-    const std::string output =
-        run_capped(solver_command(solver.path, file.string(), proof_path, configuration),
-                   memory_megabytes, timeout_seconds);
+    const std::string output = run_capped(command, memory_megabytes, timeout_seconds);
     run.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
     std::istringstream lines(output);
     run.model = linear_algebra::read_dimacs_model(lines);
     run.answered = run.model.answered;
     run.satisfiable = run.model.satisfiable;
+
+    // A solver that can only find has said nothing when it says no. yalsat
+    // prints `s UNSATISFIABLE` when unit propagation alone closes a formula, and
+    // that may well be right; it is still not this class's to assert, because
+    // the class exists so that its no is never read as a bound.
+    if (solver.finds_only && run.answered && !run.satisfiable) run.answered = false;
 
     std::error_code ignored;
     if (!proof_path.empty() && run.answered && !run.satisfiable) {

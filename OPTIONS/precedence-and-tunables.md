@@ -52,6 +52,7 @@ different numbers in one run.
 | `plateau_state_budget` | `minimise-rank` | `--plateau-states` |
 | `sat_memory_megabytes` | `decide-rank-by-sat`, `deflate-strictly` | `--max-memory` |
 | `sat_timeout_seconds` | `decide-rank-by-sat`, `deflate-strictly` | `--timeout`, `--candidate-timeout` |
+| `local_search_seed` | `decide-rank-by-sat`, when `--solver` names a solver that can only find | `--seed` |
 | `ilp_time_limit_seconds` | `curve-bounds` | `--solver-timeout` |
 | `sat_solver_order` | `decide-rank-by-sat`, `deflate-strictly` | `--solver` |
 | `ilp_backend_order` | `curve-bounds` | none; `--route built-in` sidesteps it, `--solvers` prints it |

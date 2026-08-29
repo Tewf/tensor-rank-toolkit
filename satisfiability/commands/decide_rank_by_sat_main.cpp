@@ -54,7 +54,12 @@ void usage() {
                    "                      the closed-form ones of <n,m,k> and nothing else\n"
                    "  --backend cnf|smt   cnf encodes the field into clauses (default); smt\n"
                    "                      hands GF(p) to cvc5's theory of finite fields\n"
-                   "  --solver <name>     pin a SAT solver instead of taking the best fit\n"
+                   "  --solver <name>     pin a SAT solver instead of taking the best fit; a\n"
+                   "                      path pins a binary that is not on PATH. yalsat,\n"
+                   "                      probSAT and multilinear-sat can only find: their no\n"
+                   "                      is the third answer, never a bound\n"
+                   "  --seed N            where a solver that can only find starts, from\n"
+                   "                      local_search_seed in tunables.conf when not given\n"
                    "  --tune sat|unsat    kissat's own configurations, for a question whose\n"
                    "                      answer you expect. No default until measured\n"
                    "  --proof <path>      write a DRAT refutation when the answer is no,\n"
@@ -191,6 +196,7 @@ int run(int argc, char** argv) {
     approach.memory_megabytes = tunables.sat_memory_megabytes;
     approach.timeout_seconds = tunables.sat_timeout_seconds;
     approach.solver_order = tunables.sat_solver_order;
+    approach.seed = tunables.local_search_seed;
     cli::Symmetry symmetry;
     long long target = -1;
     long long from = -1;
@@ -221,6 +227,8 @@ int run(int argc, char** argv) {
             approach.use_field_theory = (arguments.text() == "smt");
         } else if (arguments.is("--solver")) {
             approach.solver = arguments.text();
+        } else if (arguments.is("--seed")) {
+            approach.seed = arguments.count();
         } else if (arguments.is("--tune")) {
             const std::string wanted = arguments.text();
             if (wanted == "sat") {

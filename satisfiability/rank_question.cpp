@@ -131,8 +131,14 @@ Answer answer_from(const linear_algebra::Tensor& tensor, const Forms& forms,
         find_sat_solver(!approach.plain_cnf && !formula.parities.empty(), approach.solver,
                         approach.solver_order);
     const auto run = run_solver(formula, solver, approach.memory_megabytes, approach.timeout_seconds,
-                           approach.proof_path, approach.tuning);
+                           approach.proof_path, approach.tuning, approach.seed);
     if (!run.solver_found) {
+        // A pinned solver that is missing is named, since "install kissat" is the
+        // wrong advice to someone who asked for yalsat by path.
+        if (!approach.solver.empty()) {
+            throw std::runtime_error("no solver called " + approach.solver +
+                                     ": not on PATH, and not a file at that path");
+        }
         throw std::runtime_error(
             "no SAT solver on PATH. Install kissat or cryptominisat, or write the question out");
     }

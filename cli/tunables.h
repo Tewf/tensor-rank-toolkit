@@ -97,6 +97,14 @@ struct Tunables {
     std::size_t sat_memory_megabytes = bilinear_rank::suggested_memory_budget() >> 20;
     std::size_t sat_timeout_seconds = 300;
 
+    /// Where a solver that can only find starts, when `--solver` names one
+    /// (`satisfiability/local_search_solver.h`). One seed is one draw from a
+    /// Las Vegas distribution, so a published number carries its seed, and the
+    /// default is a fixed number rather than the clock so that a run
+    /// reproduces. Fills `SolveOptions::seed`
+    /// (`satisfiability/rank_question.h`), from `decide-rank-by-sat --seed`.
+    std::size_t local_search_seed = 1;
+
     /// What an outside integer programme solver may take, per programme. Fills
     /// `optimisation::set_solver_time_limit`
     /// (`integer_programme/solver_chain.h`), from `curve-bounds
@@ -146,6 +154,7 @@ inline const std::vector<std::pair<std::string, std::size_t Tunables::*>>& count
         {"plateau_state_budget", &Tunables::plateau_state_budget},
         {"sat_memory_megabytes", &Tunables::sat_memory_megabytes},
         {"sat_timeout_seconds", &Tunables::sat_timeout_seconds},
+        {"local_search_seed", &Tunables::local_search_seed},
         {"ilp_time_limit_seconds", &Tunables::ilp_time_limit_seconds},
         {"device_launch_floor", &Tunables::device_launch_floor},
     };

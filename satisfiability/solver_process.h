@@ -41,6 +41,14 @@
 /// raw strength on unsatisfiable instances is worth five times, and the
 /// expensive questions here are exactly the ones that answer no. Numbers in
 /// [`method/`](method/README.md).
+///
+/// **A fourth kind is named rather than looked for.** A solver that can only
+/// find, a stochastic local search, is pinned with `--solver`, by name or by a
+/// path, and `default_solver_order` never reaches it: a sweep's refusals are
+/// where its cost is, and a finds-only solver has none to give. Which names are
+/// one, and what each is worth against kissat on the same file:
+/// [`local_search_solver.h`](local_search_solver.h) and
+/// [`las-vegas/`](las-vegas/README.md).
 namespace satisfiability {
 
 /// A solver found on `PATH`, and whether it understands XOR clauses directly.
@@ -55,6 +63,12 @@ struct SatSolver {
     /// refusal reported with `--proof` given and no proof written is the false
     /// confidence the flag exists to remove.
     bool writes_proofs = false;
+    /// Whether this solver answers yes or nothing. A stochastic local search
+    /// has no refutation in it, so a run of one without a model is the third
+    /// answer and never a no, whatever it printed: `run_solver` discards a
+    /// `s UNSATISFIABLE` from it rather than passing it on as a bound. Assigned
+    /// by name in [`local_search_solver.h`](local_search_solver.h).
+    bool finds_only = false;
 };
 
 /// The order the solvers are looked for in, when a caller names none.
@@ -65,8 +79,9 @@ const std::vector<std::string>& default_solver_order();
 
 /// Look for a SAT solver. `prefer_xor` asks for one that takes parity
 /// constraints natively, which is only worth it on GF(2); `named` pins a
-/// choice instead of taking the preference; `order` is which to try first, of
-/// those on `PATH`.
+/// choice instead of taking the preference, by a name on `PATH` or by a path to
+/// the binary, since the local search solvers are built into a tree rather than
+/// installed; `order` is which to try first, of those on `PATH`.
 ///
 /// `order` is an argument rather than read from `tunables.conf` here, because a
 /// library that opens a config file binds every caller to a working directory.
@@ -133,9 +148,13 @@ struct SolverRun {
 /// nothing here becomes a default without a measurement behind it.
 enum class Tuning { None, Satisfiable, Unsatisfiable };
 
+/// `seed` is where a solver that can only find starts, and nothing else reads
+/// it: kissat's runs are the same with or without it. One seed is one draw
+/// from a Las Vegas distribution, so a published number carries its seed.
 SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver,
                 std::size_t memory_megabytes = 2048, std::size_t timeout_seconds = 300,
-                const std::string& proof_path = "", Tuning tuning = Tuning::None);
+                const std::string& proof_path = "", Tuning tuning = Tuning::None,
+                std::size_t seed = 1);
 
 /// The same for an SMT problem in the theory of finite fields.
 SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem,

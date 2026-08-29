@@ -47,6 +47,10 @@ expect 5 "$fixtures/no_such_file.tensor"
 # seconds cannot settle twelve products for F2 5x5, and saying so is the point.
 expect 3 "$fixtures/f2_5x5.tensor" --target 12 --timeout 5
 
+# A solver that can only find, as a stub that claims a refutation: its no must
+# leave as 3 and never as 1, or the class means nothing at the exit.
+expect 3 "$fixtures/f2_2x2.tensor" --target 2 --solver "$(dirname "$0")/stub_solvers/yalsat"
+
 command=$binaries/exhaustive_search/decide-rank
 echo "decide-rank"
 expect 2

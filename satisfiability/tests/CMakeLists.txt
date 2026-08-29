@@ -14,6 +14,14 @@ add_executable(test_field_theory_encoding test_field_theory_encoding.cpp)
 target_link_libraries(test_field_theory_encoding PRIVATE satisfiability project_warnings testing)
 add_test(NAME field_theory_encoding COMMAND test_field_theory_encoding)
 
+# A solver that can only find, asserted against a stub named for one so that a
+# machine with none installed still checks the class; each real one on PATH is
+# then asked the smallest fixture end to end.
+add_executable(test_finds_only test_finds_only.cpp)
+target_link_libraries(test_finds_only PRIVATE satisfiability project_warnings testing)
+add_test(NAME finds_only COMMAND test_finds_only ${CMAKE_CURRENT_SOURCE_DIR}/stub_solvers
+                                                 ${PROJECT_SOURCE_DIR}/fixtures)
+
 add_executable(test_end_to_end test_end_to_end.cpp)
 target_link_libraries(test_end_to_end PRIVATE satisfiability project_warnings testing)
 add_test(NAME end_to_end COMMAND test_end_to_end ${PROJECT_SOURCE_DIR}/fixtures)
