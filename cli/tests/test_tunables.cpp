@@ -47,7 +47,13 @@ void check_the_defaults_are_the_documented_numbers() {
     check::equal("ilp node limit", static_cast<long long>(values.ilp_node_limit), 200'000);
     check::equal("plateau state budget", static_cast<long long>(values.plateau_state_budget),
                  200'000);
-    check::equal("sat memory", static_cast<long long>(values.sat_memory_megabytes), 2048);
+    // An eighth of the machine, which `tunables.h` documents as 2048 on the
+    // 16 GB laptop the number was measured on. Compared against the reading
+    // rather than the laptop, because this test failed the day the machine
+    // gained memory while every command was still bounded exactly as documented.
+    check::equal("sat memory is an eighth of the machine",
+                 static_cast<long long>(values.sat_memory_megabytes),
+                 static_cast<long long>(bilinear_rank::suggested_memory_budget() >> 20));
     check::equal("sat timeout", static_cast<long long>(values.sat_timeout_seconds), 300);
     check::equal("ilp time limit", static_cast<long long>(values.ilp_time_limit_seconds), 300);
     check::text("kissat is asked first", values.sat_solver_order.front(), "kissat");
