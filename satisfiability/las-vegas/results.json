@@ -1,0 +1,3590 @@
+{
+  "task": "What a solver that can only find, a stochastic local search, costs on the GF(2) encodings against kissat on the same file.",
+  "reading": "A finds-only solver never refutes: its 'unknown' is the third answer and never a no. Its cost is a distribution over seeds, reported as every seed, the count finished within the cap, and the median where more than half finished. kissat is the fastest of three deterministic runs.",
+  "fixtures": [
+    {
+      "fixture": "f2_2x2",
+      "target": 3,
+      "what_the_target_is": "rank",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0022,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0019,
+          "median_seconds": 0.002
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0022,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.002,
+          "median_seconds": 0.002
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0006,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0012,
+          "median_seconds": 0.0011
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 39.5181,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 18.0497,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 26.64,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 28.0693,
+          "median_seconds": 26.64
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0036,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "f2_2x2",
+      "target": 3,
+      "what_the_target_is": "rank",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0072,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0038,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0135,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0135,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.008,
+          "median_seconds": 0.0072
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0038,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0038,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0136,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.007,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0064,
+          "median_seconds": 0.0038
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0036,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0023,
+          "median_seconds": 0.002
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0038,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0055,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0157,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0069,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "w_state",
+      "target": 3,
+      "what_the_target_is": "rank",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0011,
+          "median_seconds": 0.0011
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.002,
+          "median_seconds": 0.002
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0012,
+          "median_seconds": 0.0012
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.1293,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.7299,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.1039,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.321,
+          "median_seconds": 0.1293
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.002,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "w_state",
+      "target": 3,
+      "what_the_target_is": "rank",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.002,
+          "median_seconds": 0.002
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.002,
+          "median_seconds": 0.002
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0011,
+          "median_seconds": 0.0011
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 3.2927,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 4.2447,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.2066,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 2.5813,
+          "median_seconds": 3.2927
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0036,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "gf4_multiplication",
+      "target": 3,
+      "what_the_target_is": "rank",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0013,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0013,
+          "median_seconds": 0.0012
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.002,
+          "median_seconds": 0.002
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0007,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.001,
+          "median_seconds": 0.0011
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 3.2651,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 1.9807,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.7985,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 2.0148,
+          "median_seconds": 1.9807
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0037,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "gf4_multiplication",
+      "target": 3,
+      "what_the_target_is": "rank",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0022,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0024,
+          "median_seconds": 0.0021
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0134,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0053,
+          "median_seconds": 0.0037
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0012,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0011,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0011,
+          "median_seconds": 0.0011
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 24.5333,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 6.8369,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 21.132,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 17.5007,
+          "median_seconds": 21.132
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.002,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "gf8_multiplication",
+      "target": 6,
+      "what_the_target_is": "rank",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0522,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.4637,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.7729,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.6178,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.2064,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.4226,
+          "median_seconds": 0.4637
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0265,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.1035,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0265,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0421,
+          "median_seconds": 0.0265
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.85,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.5409,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.481,
+          "median_seconds": 0.5409
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0487,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0351,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0429,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0135,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "gf8_multiplication",
+      "target": 6,
+      "what_the_target_is": "rank",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.3602,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.9779,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 1.235,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 2.0838,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 1.5697,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 1.2453,
+          "median_seconds": 1.235
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0136,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.078,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.7726,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.1548,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 2.9315,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.7901,
+          "median_seconds": 0.1548
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 1.0549,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.232,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.7193,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.6687,
+          "median_seconds": 0.7193
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0357,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0439,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0328,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0521,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "f2_2x3",
+      "target": 5,
+      "what_the_target_is": "rank",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0263,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0777,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0523,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0265,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.047,
+          "median_seconds": 0.0521
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.6699,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.002,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.1359,
+          "median_seconds": 0.0021
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0021,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0038,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0071,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0043,
+          "median_seconds": 0.0038
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0124,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0404,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0226,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.007,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "f2_2x3",
+      "target": 5,
+      "what_the_target_is": "rank",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0777,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0522,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0522,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0573,
+          "median_seconds": 0.0522
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0263,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "found",
+              "seconds": 0.0778,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.2577,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0835,
+          "median_seconds": 0.0521
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "found",
+              "seconds": 0.0037,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "found",
+              "seconds": 0.007,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "found",
+              "seconds": 0.0521,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 3,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.0209,
+          "median_seconds": 0.007
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0216,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0392,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0259,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.0135,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "matmul_2x2x2",
+      "target": 7,
+      "what_the_target_is": "rank, Strassen",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.27,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2615,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2599,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2818,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "found",
+              "seconds": 0.1293,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 1,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": 0.1293,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2631,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2782,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2562,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2783,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.2683,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2352,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2602,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2564,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0367,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0581,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0423,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.1291,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "matmul_2x2x2",
+      "target": 7,
+      "what_the_target_is": "rank, Strassen",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3348,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3543,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3587,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2707,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3481,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2799,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3052,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3309,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2886,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3205,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3266,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3243,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3518,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0375,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.0447,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0304,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "found",
+          "seconds": 0.2068,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "cyclic_f2_7",
+      "target": 13,
+      "what_the_target_is": "rank, established here on both sides",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2584,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2976,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.262,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2752,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.2755,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2535,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2575,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2541,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.257,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.2746,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.244,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2559,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2624,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2669,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.1304,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.085,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "unknown",
+          "seconds": 60.2661,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "cyclic_f2_7",
+      "target": 13,
+      "what_the_target_is": "rank, established here on both sides",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2859,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2663,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2608,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2718,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3366,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3356,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3129,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3399,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.3527,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3483,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3562,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3518,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3199,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3346,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3458,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3466,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "unknown",
+          "seconds": 60.3516,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "f2_5x5",
+      "target": 14,
+      "what_the_target_is": "an upper bound the heuristic reaches; the rank is 13",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3464,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3455,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3431,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2771,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3096,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3181,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2937,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2721,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.322,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3421,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2427,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3557,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3413,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3525,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.1731,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.0754,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "unknown",
+          "seconds": 60.3411,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "f2_5x5",
+      "target": 14,
+      "what_the_target_is": "an upper bound the heuristic reaches; the rank is 13",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3488,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3985,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3903,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.3001,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3656,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3865,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.412,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.4054,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.3768,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3895,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3535,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3831,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2955,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.0453,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.412,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.1753,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "unknown",
+          "seconds": 60.3318,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    },
+    {
+      "fixture": "matmul_3x3x3",
+      "target": 23,
+      "what_the_target_is": "Laderman, the best known; what Heule's instances ask",
+      "break_symmetry": false,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.4159,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3381,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3044,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.4148,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3825,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3945,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.372,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.4045,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.3883,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.3592,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.3502,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.3428,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.346,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2391,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2455,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2453,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "unknown",
+          "seconds": 60.2287,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+        }
+      }
+    },
+    {
+      "fixture": "matmul_3x3x3",
+      "target": 23,
+      "what_the_target_is": "Laderman, the best known; what Heule's instances ask",
+      "break_symmetry": true,
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2621,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2688,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2382,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.2877,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 4 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.2638,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/yalsat/yalsat --seed 5 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.285,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 1 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.288,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 2 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.3219,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 3 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 4,
+              "verdict": "unknown",
+              "seconds": 60.3111,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 4 --timeout 60 --break-symmetry"
+            },
+            {
+              "seed": 5,
+              "verdict": "unknown",
+              "seconds": 60.2522,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver build/third_party/xnfsat/xnfsat --seed 5 --timeout 60 --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 5,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2388,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2554,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2473,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "verdict": "unknown",
+              "seconds": 60.2769,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 2,
+              "verdict": "unknown",
+              "seconds": 60.2765,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 2 --timeout 60 --plain-cnf --break-symmetry"
+            },
+            {
+              "seed": 3,
+              "verdict": "unknown",
+              "seconds": 60.2418,
+              "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat --seed 3 --timeout 60 --plain-cnf --break-symmetry"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 3,
+          "cap_seconds": 60,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "verdict": "unknown",
+          "seconds": 60.2332,
+          "fastest_of": 3,
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+        }
+      }
+    }
+  ],
+  "provenance": {
+    "commit": "b13f4f0f4b749b90292b7239570f143d62bec3b3",
+    "tree_clean": false,
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "reports no version; found on ~/.local/bin",
+      "cbc": "Version: 2.10.11",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "build",
+    "repeats": 3,
+    "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    },
+    "solvers_run_directly": {
+      "yalsat": "build/third_party/yalsat/yalsat",
+      "xnfsat": "build/third_party/xnfsat/xnfsat",
+      "probSAT": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT",
+      "multilinear-sat": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat"
+    },
+    "typed_by_hand": "The two sweep blocks below and the `conditions` in them were written by hand after the runs, from the command lines that launched them and from sensor readings taken during them. The driver stamps them itself since commit after b13f4f0; the runs that produced this file predate that and stamped one flat block per invocation, which the second invocation overwrote."
+  },
+  "challenges": [
+    {
+      "instance": "MM-23-2-2-2-2-3.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.024,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-3.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.021,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-3.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.018,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-3.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.03,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-3.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.015,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-2-3.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-2-A.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.023,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 2.391,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-A.xnf 1"
+            }
+          ],
+          "finished_within_cap": 1,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": 2.391,
+          "median_seconds": 2.391
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.032,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-2-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-2-B.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.025,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-B.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.018,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.033,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.014,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-2-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-2-C.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-C.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-C.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-C.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 5.93,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-C.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.016,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-2-C.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-2-D.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.016,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-D.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 0.827,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-D.xnf 1"
+            }
+          ],
+          "finished_within_cap": 1,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": 0.827,
+          "median_seconds": 0.827
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.018,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-D.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.034,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-D.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.016,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-2-D.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-2-M.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-M.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.021,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-M.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-M.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 5.927,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-M.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.018,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-2-M.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-3-4.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.021,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-3-4.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.021,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-3-4.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-3-4.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.037,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-3-4.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.016,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-3-4.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-4-A.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-A.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-4-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.036,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-4-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.016,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-4-A.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-2-2-2-4-B.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.019,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.02,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-B.xnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.025,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-4-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.036,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-4-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.018,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-2-2-2-4-B.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    },
+    {
+      "instance": "MM-23-4-4-4-4-1.cnf",
+      "solvers": {
+        "yalsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 0.763,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-4-4-4-4-1.cnf 1"
+            }
+          ],
+          "finished_within_cap": 1,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": 0.763,
+          "median_seconds": 0.763
+        },
+        "xnfsat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 0.027,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-4-4-4-4-1.xnf 1"
+            }
+          ],
+          "finished_within_cap": 1,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": 0.027,
+          "median_seconds": 0.027
+        },
+        "probSAT": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.016,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-4-4-4-4-1.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "multilinear-sat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.034,
+              "verdict": "unknown",
+              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-4-4-4-4-1.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        },
+        "kissat": {
+          "seeds": [
+            {
+              "seed": 1,
+              "seconds": 6.015,
+              "verdict": "unknown",
+              "command": "~/.local/bin/kissat MM-23-4-4-4-4-1.cnf 1"
+            }
+          ],
+          "finished_within_cap": 0,
+          "of": 1,
+          "cap_seconds": 5,
+          "mean_seconds_of_finished": null,
+          "median_seconds": null,
+          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+        }
+      }
+    }
+  ],
+  "fixtures_provenance": {
+    "jobs": 3,
+    "solvers": [
+      "kissat",
+      "multilinear-sat",
+      "probSAT",
+      "xnfsat",
+      "yalsat"
+    ],
+    "commit": "b13f4f0f4b749b90292b7239570f143d62bec3b3",
+    "finished": "2026-08-29 11:08",
+    "seeds": 5,
+    "control_seeds": 3,
+    "cap_seconds": 60,
+    "rerun_of": null,
+    "conditions": "Three solver processes at once on a 12-thread i5-12450H; CPU package between 84 and 95 C, touching the 95 C throttle point twice; clock 2.3 GHz on average when read; for part of the sweep another session's model runner at about half a core. So a second here is an order of magnitude, never a two-digit ratio.",
+    "not_taken": "kissat is unknown at the 60 s cap on cyclic_f2_7 at 13, f2_5x5 at 14 and matmul_3x3x3 at 23, both orderings. A rerun of those six cells at a 300 s cap was queued and killed with the challenge sweep before it ran; the cells stand at 60 s."
+  },
+  "challenges_provenance": {
+    "jobs": 1,
+    "solvers": [
+      "kissat",
+      "multilinear-sat",
+      "probSAT",
+      "xnfsat",
+      "yalsat"
+    ],
+    "commit": "b13f4f0f4b749b90292b7239570f143d62bec3b3",
+    "finished": "2026-08-29 11:19",
+    "seeds": 1,
+    "control_seeds": 1,
+    "cap_seconds": 5,
+    "cnf2xnf": "build/third_party/cnf2xnf/cnf2xnf",
+    "what_this_is": "A five-second, one-seed smoke of the driver on the ten challenge-1 instances, run by hand to check the command before the full sweep. It is not the reproduction of Nawrocki et al.'s Table 1 and must not be read as one.",
+    "the_full_run": "Five seeds for xnfsat and yalsat, one for the controls and kissat, 300 s cap, three jobs: started 11:19, stopped by hand at 12:16 on its third instance of ten (MM-23-2-2-2-2-B) after the chassis reached 96 C three times, with the two 300 s control rows per instance most of the load. Its partial results were not written; the command to run it unattended is in how-it-was-measured.md."
+  }
+}
