@@ -24,6 +24,7 @@ decide-rank-by-sat fixtures/matmul_2x2x2.tensor               # rank exactly 7
 decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7    # one question
 decide-rank-by-sat fixtures/f2_5x5.tensor --from 9 --to 14    # sweep for the rank
 decide-rank-by-sat fixtures/f3_3x6.tensor --target 10 --emit-cnf out.cnf
+decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --emit-xnf out.xnf  # parities as x lines
 ```
 
 Needs a solver on `PATH`, or `--emit-cnf` and your own. `kissat` is tried first
@@ -77,6 +78,15 @@ not reproduce the tensor.
 What each claim rests on, and which are checked rather than argued:
 [`correctness.md`](correctness.md). How the rank is located between the free
 bounds, and the four searches measured to decide it: [`search/`](search/README.md).
+
+A fourth kind of solver can only answer yes: a stochastic local search, which
+is what `[heule2019]` used to find new `⟨3,3,3⟩` schemes and what the
+bibliography said this module had never been measured against. `--solver
+yalsat`, `xnfsat`, `probSAT` or `multilinear-sat` pins one, by name or by path;
+its "no" is the third answer by construction and `--proof` is refused, and
+xnfsat alone is handed the parities as `x` lines, which `--emit-xnf` writes for
+anyone. What each costs against kissat on the same file, on the fixtures and on
+Heule's own instances: [`las-vegas/`](las-vegas/README.md).
 
 Symmetry breaking ships off by default, because an over-strong constraint would
 turn a satisfiable instance into UNSAT and a wrong "no" is a wrong lower bound.

@@ -6,6 +6,56 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **A class of solvers that can only find, and the first measurement against
+  the standard the bibliography named.** `references.md` had said since the
+  split that `[heule2019]`'s local search route was what `satisfiability/`
+  should be tested against and never was. `SatSolver::finds_only` now admits a
+  stochastic local search by name, `yalsat`, `xnfsat`, `probSAT` or
+  `multilinear-sat`, pinned with `--solver` by name or by path; its "no" is the
+  third answer by construction, `--proof` is refused, and a `s UNSATISFIABLE`
+  it prints is discarded, so a sweep under one can raise an upper bound and
+  never move a lower one. One tunable, `local_search_seed`, flag `--seed`.
+  `--emit-xnf` writes the parities as `x` lines, the XNF of `[nawrocki2021]`,
+  which is the file xnfsat reads and the one `--emit-cnf` already wrote under
+  the wrong name unless `--plain-cnf` was given; the two are refused together.
+  Tested against a stub that claims a refutation, under two names, and end to
+  end against each real solver on `PATH`.
+
+- **The measurement, in
+  [`satisfiability/las-vegas/`](satisfiability/las-vegas/README.md)**, with the
+  literature it rests on and the baseline it names: xnfSAT, yalsat with native
+  XOR, the record on Heule's challenge-1 instances. On this module's own
+  encodings the walks find every small control on every seed in under a second
+  and nothing at all at 60 s on the four fixtures the brief named, Strassen
+  included, where kissat takes 0.13 s; one seed in twenty-six found Strassen.
+  On Heule's own instances the same xnfsat finds three of ten within five
+  seconds on one seed where kissat finds none, a smoke of the driver and not
+  the paper's table, since the full run was stopped for heat and is left as
+  a command to run at night. The reading is that on Brent equations the
+  ingredient that pays is the parity kept inside the flip loop, and that even
+  with it the difference between Heule's instances and this module's formula is
+  the formula, their hardcoded pairings, not the solver. Every run is in
+  `results.json` with its seed and command; the departures from the protocol,
+  three jobs at once and a chassis at its throttle point, are stamped there and
+  said in prose.
+
+- **Two facts a run had to establish about the solvers built for this.**
+  xnfsat ships with its witness off, so a bare run answers yes with no model
+  and the decomposition check throws; it runs under `--witness=1`. The
+  continuous solver's CPU backend is OpenMP over its batch and took twelve
+  threads a process on a chassis whose rule is four; it runs through `env
+  OMP_NUM_THREADS=1`, in the argument vector where the recorded command shows
+  it.
+
+### Fixed
+
+- **`ctest` was red on `tunables` on any machine that is not the 16 GB laptop.**
+  The test asserted `sat_memory_megabytes == 2048` while the default is an
+  eighth of the machine; on 32 GB that is 4096, with every command bounded
+  exactly as documented. It now compares against the same machine reading.
+
 ### Changed
 
 - **The sparsification result is stated on its own terms, and stops being
