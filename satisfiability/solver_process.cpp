@@ -145,7 +145,7 @@ SatSolver find_sat_solver(bool prefer_xor, const std::string& named,
         solver.found = !path.empty();
         solver.name = name;
         solver.path = path;
-        solver.native_xor = (name == "cryptominisat");
+        solver.native_xor = (name == "cryptominisat") || reads_xor_lines_by_name(name);
         solver.writes_proofs = (name == "kissat");
         solver.finds_only = finds_only_by_name(name);
         return solver;

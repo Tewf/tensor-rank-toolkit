@@ -42,6 +42,9 @@ void usage() {
                    "  can decompose into is the rank, since every smaller one was refused.\n"
                    "\n"
                    "  --emit-cnf <path>   write the question and stop, for any solver\n"
+                   "  --emit-xnf <path>   the same with each parity as one x line: the XNF\n"
+                   "                      that xnfsat, cnf2xnf and cryptominisat read. Refused\n"
+                   "                      with --plain-cnf, which asks for the other file\n"
                    "  --plain-cnf         expand parities into clauses\n"
                    "  --break-symmetry    quotient by term order, and by operand scaling over\n"
                    "                      GF(p). Sound, off by default, and worth at least 76x\n"
@@ -56,8 +59,9 @@ void usage() {
                    "                      hands GF(p) to cvc5's theory of finite fields\n"
                    "  --solver <name>     pin a SAT solver instead of taking the best fit; a\n"
                    "                      path pins a binary that is not on PATH. yalsat,\n"
-                   "                      probSAT and multilinear-sat can only find: their no\n"
-                   "                      is the third answer, never a bound\n"
+                   "                      xnfsat, probSAT and multilinear-sat can only find:\n"
+                   "                      their no is the third answer, never a bound. xnfsat\n"
+                   "                      is handed the parities as x lines, the others never\n"
                    "  --seed N            where a solver that can only find starts, from\n"
                    "                      local_search_seed in tunables.conf when not given\n"
                    "  --tune sat|unsat    kissat's own configurations, for a question whose\n"
@@ -203,6 +207,11 @@ int run(int argc, char** argv) {
     long long to = -1;
     long long given_ceiling = -1;
     std::string emit_to;
+    // `--emit-xnf` is `--emit-cnf` with the parities kept, which is what
+    // `--emit-cnf` already writes unless `--plain-cnf` is given. The separate
+    // flag exists so that the file a reader asked for by its format cannot be
+    // turned into the other one by a flag further along the line.
+    bool emit_parities_as_lines = false;
 
     // Walked by `cli/arguments.h` rather than by hand. Five of these are numeric
     // and every one of them used to leave as 5 saying `stoll`, which names the
@@ -223,6 +232,9 @@ int run(int argc, char** argv) {
             to = arguments.whole_number();
         } else if (arguments.is("--emit-cnf")) {
             emit_to = arguments.text();
+        } else if (arguments.is("--emit-xnf")) {
+            emit_to = arguments.text();
+            emit_parities_as_lines = true;
         } else if (arguments.is("--backend")) {
             approach.use_field_theory = (arguments.text() == "smt");
         } else if (arguments.is("--solver")) {
@@ -273,6 +285,12 @@ int run(int argc, char** argv) {
     // No file named, and nothing here reads a tensor on stdin.
     if (arguments.reads_stdin()) {
         usage();
+        return cli::exit_status(cli::ExitCode::Usage);
+    }
+    if (emit_parities_as_lines && approach.plain_cnf) {
+        cli::note() << "decide-rank-by-sat: --emit-xnf keeps each parity as one x line and "
+                       "--plain-cnf expands it into clauses.\nThey ask for two different "
+                       "files; give one of them";
         return cli::exit_status(cli::ExitCode::Usage);
     }
     const std::string path = arguments.filename();

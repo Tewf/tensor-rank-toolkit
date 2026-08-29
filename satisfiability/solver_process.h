@@ -67,7 +67,9 @@ struct SatSolver {
     /// has no refutation in it, so a run of one without a model is the third
     /// answer and never a no, whatever it printed: `run_solver` discards a
     /// `s UNSATISFIABLE` from it rather than passing it on as a bound. Assigned
-    /// by name in [`local_search_solver.h`](local_search_solver.h).
+    /// by name in [`local_search_solver.h`](local_search_solver.h), which also
+    /// says which of them reads `x` lines: xnfsat does, and `native_xor` is
+    /// then true for it exactly as for cryptominisat.
     bool finds_only = false;
 };
 

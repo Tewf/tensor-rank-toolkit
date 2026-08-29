@@ -356,8 +356,16 @@ std::string write_question(const linear_algebra::Tensor& tensor, std::size_t pro
 
     const bool native = !approach.plain_cnf;
     linear_algebra::write_dimacs(out, formula, native);
-    return std::to_string(formula.total_variable_count(native)) + " variables, " +
-           std::to_string(formula.total_clause_count(native)) + " clauses";
+    std::string sizes = std::to_string(formula.total_variable_count(native)) + " variables, " +
+                        std::to_string(formula.total_clause_count(native)) + " clauses";
+    // Said because the two files look alike from the header: an `x` line is
+    // one parity to xnfsat and cryptominisat and a syntax error to everything
+    // else, and the count is what a reader compares against `cnf2xnf`.
+    if (native && !formula.parities.empty()) {
+        sizes += ", of which " + std::to_string(formula.parities.size()) +
+                 " are parities written as x lines";
+    }
+    return sizes;
 }
 
 }  // namespace satisfiability
