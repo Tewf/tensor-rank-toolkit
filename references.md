@@ -627,7 +627,21 @@ The SAT encoding of tensor decomposition over `Z/2Z`, and the method that
 actually produced new schemes at that size.
 
 **`heule2019`**: M. J. H. Heule, M. Kauers, M. Seidl. *Local search for fast
-matrix multiplication.* SAT 2019, [arXiv:1903.11391](https://arxiv.org/abs/1903.11391).
+matrix multiplication.* SAT 2019, LNCS 11628, 155-163,
+[arXiv:1903.11391](https://arxiv.org/abs/1903.11391). **Read in full on
+2026-08-29.** "Local search" there is the stochastic local search solver
+**yalsat** (`[biere2018]`) run on the CNF, in both of their methods: random
+pairings of the type-3 terms under *streamlining* constraints, which are
+guiding clauses not implied by the formula, and a neighbourhood search that
+fixes two thirds of a known scheme's 621 base variables and re-solves the rest
+with yalsat again. §3: "we used the local search SAT solver yalsat as this
+solver performed best on instances from this application. We also tried solving
+these instances using CDCL solvers, but the performance was disappointing",
+which they put down to an average backtrack level above 100. The abstract's
+last sentence is the claim this repository's
+[`satisfiability/las-vegas/`](satisfiability/las-vegas/README.md) tests on its
+own encodings: "Local search SAT solvers outperform CDCL solvers consistently in
+this application."
 
 **`matrixchallenges`**: M. J. H. Heule. *Challenging SAT benchmarks for matrix
 multiplication.*
@@ -636,17 +650,64 @@ The instances behind `[heule2019]`, which the front page names as the article
 the details are in. Four challenges at `⟨3,3,3⟩`: ten satisfiable formulas for
 local search without streamlining constraints, ten for proving subproblems at 23
 multiplications unsatisfiable, one blocking type-3 terms from the last summand,
-and one asking for 22.
+and one asking for 22. The front page's own calibration of challenge 1: "Five
+of these formulas can be solved using yalsat in a few minutes. All of these
+formulas appear hard for CDCL solvers (and many local search solvers)." Each is
+`p cnf 26541 117207` give or take a dozen clauses. **Licence: not found.** There
+is no `LICENSE` file at commit `150b2e2` and the GitHub licence endpoint
+returns 404, so the instances are downloaded to an ignored path for a run and
+never committed here.
 
 **This is the standard [`satisfiability/`](satisfiability/README.md) should be
-tested against, and it has not been.**
-[`satisfiability/measurements.md`](satisfiability/measurements.md) times this
+tested against, and on 2026-08-29 it was**, in
+[`satisfiability/las-vegas/`](satisfiability/las-vegas/README.md): yalsat,
+probSAT and a local continuous solver on this repository's encodings against
+kissat on the same file, and the same solvers on the ten challenge-1
+instances. Until then
+[`satisfiability/measurements.md`](satisfiability/measurements.md) timed this
 repository's encoders on this repository's own fixtures against this
 repository's own exhaustive search, which is a consistency check between two
-things written here and not a comparison with anyone. A published benchmark
+things written here and not a comparison with anyone; a published benchmark
 suite, whose instances someone else generated and whose difficulty someone else
-calibrated, is the missing half of that. **Read from the front page only**: no
-instance was downloaded, none was run, and the front page states no licence.
+calibrated, is the other half.
+
+**`biere2018`**: A. Biere. *CaDiCaL, Lingeling, Plingeling, Treengeling and
+YalSAT Entering the SAT Competition 2018.* Proc. of SAT Competition 2018, Solver
+and Benchmark Descriptions, University of Helsinki, Department of Computer
+Science Series of Publications B, vol. B-2018-1, 13-14. The reference `[heule2019]`
+gives for yalsat, "yet another local search SAT solver", MIT, at
+[github.com/arminbiere/yalsat](https://github.com/arminbiere/yalsat). Built here
+from source at commit `a0fd39f` (version 1.0.1, 2024-07-21) into the ignored
+`build/third_party/`, because it is the baseline and the front page's "few
+minutes" is a figure for it.
+
+**`balint2012`**: A. Balint, U. Schöning. *Choosing Probability Distributions
+for Stochastic Local Search and the Role of Make versus Break.* SAT 2012, LNCS
+7317, 16-29, DOI 10.1007/978-3-642-31612-8_3. probSAT, the second finds-only
+solver run here: a WalkSAT-family solver whose only heuristic is a probability
+distribution over the break count. yalsat ships a `--probsat` mode that
+simulates it.
+
+**`jia2004`**: H. Jia, C. Moore, B. Selman. *From Spin Glasses to Hard
+Satisfiable Formulas.* SAT 2004, LNCS 3542, 199-210,
+[arXiv:cond-mat/0408190](https://arxiv.org/abs/cond-mat/0408190). Where the
+field records that satisfiable formulas built from parity constraints, a
+spin-glass in disguise, defeat WalkSAT-type local search while remaining easy
+for Gaussian elimination. A GF(2) tensor equation is a parity, so this is the
+prior against the Las Vegas route on this repository's encodings.
+
+**`haanpaa2006`**: H. Haanpää, M. Järvisalo, P. Kaski, I. Niemelä. *Hard
+Satisfiable Clause Sets for Benchmarking Equivalence Reasoning Techniques.*
+Journal on Satisfiability, Boolean Modeling and Computation **2** (2006),
+DOI 10.3233/sat190015. The same failure mode as a benchmark family: regular
+XOR-SAT instances, satisfiable by construction, hard for solvers without
+equivalence reasoning, local search included.
+
+**`riccitersenghi2010`**: F. Ricci-Tersenghi. *Being Glassy Without Being Hard
+to Solve.* Science **330** (2010), 1639-1640, DOI 10.1126/science.1189804. The
+statistical-physics statement of the same fact: XORSAT is glassy for any local
+dynamics, which is why a walk stalls, and polynomial for elimination, which is
+why a complete solver with equivalence reasoning does not.
 
 **`ozdemir2023`**: A. Ozdemir, G. Kremer, C. Tinelli, C. Barrett.
 *Satisfiability Modulo Finite Fields.* CAV 2023,
