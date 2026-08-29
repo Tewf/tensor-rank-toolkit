@@ -671,6 +671,44 @@ things written here and not a comparison with anyone; a published benchmark
 suite, whose instances someone else generated and whose difficulty someone else
 calibrated, is the other half.
 
+**`nawrocki2021`**: W. Nawrocki, Z. Liu, A. Fröhlich, M. J. H. Heule, A. Biere.
+*XOR Local Search for Boolean Brent Equations.* SAT 2021, LNCS 12831, 417-435,
+DOI 10.1007/978-3-030-80223-3_29. **The record on `[matrixchallenges]`
+challenge 1, and the baseline [`satisfiability/las-vegas/`](satisfiability/las-vegas/README.md)
+names.** xnfSAT is yalsat with the parities kept as parities inside the flip
+loop, an XOR weight and a break count extended over XORs; the input is XNF, a
+DIMACS file whose `x` lines are parities, and `cnf2xnf` recovers those from a
+CNF at 0.3 s per formula with no loss. Table 1, 192 runs per instance at a
+1000 s cap on a Xeon E5-2690: the extracted XNF beats every one of eight CNF
+encodings on every instance, 100% of runs in 0.1 s against 76.6% in 67.4 s on
+`4-4-4-4-1`, and 2.1% against 0% on the hardest, `2-2-2-4-A`. Among the CNF
+encodings performance rises with the cutting number up to 6 and **the linear
+3-cut is the worst**, which is the expansion `--plain-cnf` writes. The all-false
+initial assignment "performed much better than random initialization". Their
+measure, the fraction of runs solved within the cap and the mean time at a fixed
+`r`, is the one the route reports. Code: the solver at
+[github.com/Vtec234/xnfsat](https://github.com/Vtec234/xnfsat), whose `LICENSE`
+is the MIT text over five names though GitHub reports "other", built here at
+commit `85a0613`; the extractor at
+[github.com/arminbiere/cnf2xnf](https://github.com/arminbiere/cnf2xnf), MIT,
+at `00006cf`. Both into the ignored `build/third_party/`, pinned in its
+`versions.txt`. Verified 2026-08-29 by the parallel review at
+`multilinear-sat/literature/fft-walksat-las-vegas/` (Crossref, and the PDF
+read), whose keys `nawrocki2021xnf`, `vtec234_xnfsat` and `arminbiere_cnf2xnf`
+this entry copies.
+
+**`palladinos2026`**: N. Palladinos. *SAT Certificates for the
+Matrix-Multiplication Challenges over F2: All Ten Expected-UNSAT Instances Are
+Satisfiable, and a Type-3-Free Rank-23 Scheme.*
+[arXiv:2607.29291](https://arxiv.org/abs/2607.29291), 2026, single-author
+preprint, not peer reviewed. An audit of `[matrixchallenges]`: the ten
+challenge-2 formulas, which the front page expects unsatisfiable, are
+satisfiable, because their hardcoded pairings are positive unit clauses that
+require an incidence without forbidding the others. So challenge 2 is not an
+UNSAT set and nothing here uses it as one. Verified 2026-08-29 by the same
+parallel review, key `palladinos2026certificates`, abstract fetched from the
+arXiv API.
+
 **`biere2018`**: A. Biere. *CaDiCaL, Lingeling, Plingeling, Treengeling and
 YalSAT Entering the SAT Competition 2018.* Proc. of SAT Competition 2018, Solver
 and Benchmark Descriptions, University of Helsinki, Department of Computer
