@@ -79,6 +79,13 @@ int main() {
     const auto quiet = linear_algebra::read_dimacs_model(silent);
     check::equal("no verdict is not unsatisfiable", quiet.answered ? 1 : 0, 0);
 
+    // An s line that is not a verdict is not an answer: kissat's alarm handler
+    // prints `s UNKNOWN` on the way out, and reading it as one turned a timeout
+    // into a refutation (cyclic_f2_7 "refuted" at exactly its cap, 2026-09-01).
+    std::istringstream interrupted("s UNKNOWN\nc interrupted\n");
+    const auto gave_up = linear_algebra::read_dimacs_model(interrupted);
+    check::equal("an s UNKNOWN is not an answer", gave_up.answered ? 1 : 0, 0);
+
     std::istringstream refused("s UNSATISFIABLE\n");
     const auto no = linear_algebra::read_dimacs_model(refused);
     check::equal("unsatisfiable is answered", no.answered ? 1 : 0, 1);
