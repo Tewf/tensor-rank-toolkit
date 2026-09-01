@@ -158,7 +158,7 @@ struct IncumbentReport {
     std::size_t drops_exceeded = 0;
     std::size_t deepest = 0;       ///< adjunctions on the longest path entered
     std::size_t best = 0;          ///< the cheapest cost reached
-    bool exhausted = true;         ///< false once the node budget stopped it
+    bool tree_fully_walked = true;         ///< false once the node budget stopped it
 
     /// True once `IncumbentLimits::below` was met, which is what stopped the
     /// run. False after a `--below` run means the tree or the budget ran out

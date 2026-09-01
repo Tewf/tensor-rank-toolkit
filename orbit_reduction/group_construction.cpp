@@ -188,8 +188,8 @@ std::vector<Automorphism> all_automorphisms(const Field& field, std::size_t rows
     const std::vector<Matrix> lefts = general_linear_group(field, rows);
     const std::vector<Matrix> rights = general_linear_group(field, columns);
 
-    require_room("every automorphism of that shape", lefts.size() * rights.size(),
-                 bytes_per_matrix(rows * rows) + bytes_per_matrix(columns * columns));
+    run_limits::require_room("every automorphism of that shape", lefts.size() * rights.size(),
+                 run_limits::bytes_per_matrix(rows * rows) + run_limits::bytes_per_matrix(columns * columns));
 
     std::vector<Automorphism> group;
     group.reserve(lefts.size() * rights.size());
@@ -207,9 +207,9 @@ std::vector<Automorphism> matrix_multiplication_symmetries(const Field& field, s
     const std::vector<Matrix> on_columns = general_linear_group(field, columns);
 
     const std::size_t count = on_rows.size() * on_inner.size() * on_columns.size();
-    require_room("the symmetries of that matrix product", count,
-                 bytes_per_matrix(rows * inner * rows * inner) +
-                     bytes_per_matrix(inner * columns * inner * columns));
+    run_limits::require_room("the symmetries of that matrix product", count,
+                 run_limits::bytes_per_matrix(rows * inner * rows * inner) +
+                     run_limits::bytes_per_matrix(inner * columns * inner * columns));
 
     std::vector<Automorphism> group;
     group.reserve(count);

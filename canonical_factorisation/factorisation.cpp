@@ -180,7 +180,7 @@ Factorisation by_satisfiability(const ModularField& field,
     factorisation.pool_size =
         pool_size_for(field, slices.front().rows(), slices.front().columns());
 
-    linear_algebra::Tensor tensor;
+    formats::Tensor tensor;
     tensor.characteristic = static_cast<int64_t>(field.residu());
     tensor.slices = slices;
 
@@ -291,7 +291,7 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
     factorisation.route = route;
     factorisation.group_size = group.size();
 
-    linear_algebra::Tensor as_tensor;
+    formats::Tensor as_tensor;
     as_tensor.characteristic = static_cast<int64_t>(field.residu());
     as_tensor.slices = slices;
 
@@ -328,7 +328,7 @@ Factorisation factor_over_canonical_basis(const ModularField& field,
         }
 
         if (!found) {
-            if (!budget.exhausted) every_refusal_complete = false;
+            if (!budget.tree_fully_walked) every_refusal_complete = false;
             continue;
         }
 

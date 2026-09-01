@@ -126,7 +126,7 @@ struct CubeReport {
 /// `r = 23` that formula is tens of thousands of clauses and there are thirteen
 /// cubes, so the saving is real. It is encoding time only and buys nothing in the
 /// solver, which is where the cost actually is.
-Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
+Answer decide_rank(const formats::Tensor& tensor, std::size_t products,
                    const SolveOptions& approach, CubeReport* report = nullptr);
 
 /// What a search established, and whether it is a determination.
@@ -171,7 +171,7 @@ struct RankBounds {
 /// about three percent.
 ///
 /// The upper bound is still wanted, as somewhere to stop.
-RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
+RankBounds find_rank(const formats::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, std::size_t ceiling);
 
 /// A ceiling somebody has already reached, and the decomposition that reached it.
@@ -213,14 +213,14 @@ struct AchievedCeiling {
 /// unanswered does: the bracket then reported is `[lower, ceiling.products]`,
 /// which is the achieved bound rather than whatever number was being walked
 /// towards.
-RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
+RankBounds find_rank(const formats::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, const AchievedCeiling& ceiling);
 
 /// Write the question to a file and stop, for a solver of your own.
 ///
 /// Returns what was written, as "N variables, M clauses" or the SMT-LIB
 /// equivalent, because the sizes are the interesting part of not solving it.
-std::string write_question(const linear_algebra::Tensor& tensor, std::size_t products,
+std::string write_question(const formats::Tensor& tensor, std::size_t products,
                            const SolveOptions& approach, const std::string& path);
 
 }  // namespace satisfiability

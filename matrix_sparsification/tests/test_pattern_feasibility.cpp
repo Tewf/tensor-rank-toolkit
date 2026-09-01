@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
     const std::string fixtures = argc > 1 ? argv[1] : "fixtures";
     const Field field;
     const Matrix operator_ =
-        linear_algebra::read_rational_matrix_file(fixtures + "/dumas_counterexample_l.matrix");
+        formats::read_rational_matrix_file(fixtures + "/dumas_counterexample_l.matrix");
 
     check_polynomial_arithmetic(field);
     check_worksheet(field, operator_);

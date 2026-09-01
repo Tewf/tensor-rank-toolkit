@@ -2,7 +2,7 @@
 
 #include <limits>
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
@@ -103,4 +103,4 @@ std::vector<Number> original_point(const StandardForm& form, const std::vector<N
     return point;
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

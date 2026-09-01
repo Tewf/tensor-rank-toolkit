@@ -55,7 +55,7 @@ std::vector<std::vector<std::size_t>> combinations(std::size_t total, std::size_
     std::vector<std::vector<std::size_t>> result;
     if (size > total) return result;
 
-    bilinear_rank::require_room(
+    run_limits::require_room(
         "the " + std::to_string(size) + "-subsets of " + std::to_string(total) + " columns",
         subset_count(total, size), sizeof(std::vector<std::size_t>) + sizeof(std::size_t) * size);
     result.reserve(subset_count(total, size));

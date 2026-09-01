@@ -2,7 +2,7 @@
 
 #include "whole_numbers.h"
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
@@ -61,4 +61,4 @@ bool improves(Sense sense, const Number& candidate, const Number& incumbent) {
     return sense == Sense::Minimise ? candidate < incumbent : candidate > incumbent;
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

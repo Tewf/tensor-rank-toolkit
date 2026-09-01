@@ -153,7 +153,7 @@ int run(int argc, char** argv) {
             request.threads = arguments.count();
             given.threads = true;
         } else if (arguments.is("--max-memory")) {
-            bilinear_rank::set_memory_budget(arguments.memory_size());
+            run_limits::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--node-limit")) {
             node_limit = arguments.count();
         } else if (arguments.is("--leaf-limit")) {
@@ -216,7 +216,7 @@ int run(int argc, char** argv) {
     }
     const std::string path = arguments.filename();
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+    const formats::Tensor tensor = formats::read_tensor_file(path);
     const bilinear_rank::Field field(tensor.characteristic);
 
     // Cheap next to a search, and it settles every k below it. The sweep starts
@@ -319,13 +319,13 @@ int run(int argc, char** argv) {
     machine.pool_size = addressed.size();
 
     machine.target = target >= 0 ? static_cast<std::size_t>(target) : 0;
-    machine.memory_budget = bilinear_rank::memory_budget();
+    machine.memory_budget = run_limits::memory_budget();
     machine.binary_leaf = binary_leaf;
 
     // `--threads 0` means every core, and the plan reports the count that was
     // resolved rather than the nought that asked for it.
-    bilinear_rank::set_worker_count(request.threads);
-    request.threads = bilinear_rank::worker_count();
+    run_limits::set_worker_count(request.threads);
+    request.threads = run_limits::worker_count();
 
     bilinear_rank::SearchPlan plan =
         plan_in.empty()
@@ -350,7 +350,7 @@ int run(int argc, char** argv) {
 
     // Applied here, all seven at once, which is the point of the struct: a
     // setting written where its flag is read is a decision nothing can report.
-    bilinear_rank::set_worker_count(plan.threads);
+    run_limits::set_worker_count(plan.threads);
     bilinear_rank::set_leaf_route(plan.leaf_route);
     bilinear_rank::set_orbit_test(plan.orbit_test);
     {
@@ -383,9 +383,9 @@ int run(int argc, char** argv) {
     // a tree is worse than no trace, because it looks like one.
     std::unique_ptr<bilinear_rank::SearchTrace> trace;
     if (!trace_out.empty()) {
-        if (bilinear_rank::worker_count() > 1) {
+        if (run_limits::worker_count() > 1) {
             throw cli::ArgumentError("--trace needs one worker; --threads " +
-                                     std::to_string(bilinear_rank::worker_count()) +
+                                     std::to_string(run_limits::worker_count()) +
                                      " interleaves the nodes of subtrees, and what comes out "
                                      "is not a tree");
         }
@@ -486,7 +486,7 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Yes);
     }
 
-    if (!budget.exhausted) {
+    if (!budget.tree_fully_walked) {
         const bool leaf = budget.leaf_abandoned.load();
         cli::result() << "  GAVE UP: the " << (leaf ? "leaf" : "node")
                       << " limit was reached, so nothing is decided.\n"

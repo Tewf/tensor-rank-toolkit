@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
     // walk that happened to be right at p = 3 and wrong at p = 5 would have had
     // nothing to fail against.
     for (const char* name : {"f3_3x6", "pencil_split_f3_3", "f5_3x3"}) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + name + ".tensor");
         const Field field(tensor.characteristic);
         const std::size_t rows = tensor.rows();
         const std::size_t columns = tensor.columns();

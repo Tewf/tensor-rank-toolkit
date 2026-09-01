@@ -81,7 +81,7 @@ rather than against the solvers: [`the-file-format.md`](the-file-format.md).
 
 ## Verified here
 
-`test_optimisation` runs one battery through every installed backend and the
+`test_integer_programme` runs one battery through every installed backend and the
 built-in, and they must agree. On this machine that is CBC 2.10.11, GLPK 5.0 and
 lp_solve 5.5. **The Gurobi recipe follows its documented `ResultFile` output and
 is unverified**, there being no licence here to test it against.

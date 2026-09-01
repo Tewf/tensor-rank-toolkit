@@ -2,7 +2,7 @@
 
 namespace satisfiability {
 
-void order_lexicographically(linear_algebra::Cnf& formula, const std::vector<int>& earlier,
+void order_lexicographically(formats::Cnf& formula, const std::vector<int>& earlier,
                              const std::vector<int>& later) {
     // `equal` tracks "the two agree everywhere so far". While it holds, the
     // earlier term may not carry a 1 where the later one carries a 0.
@@ -25,7 +25,7 @@ void order_lexicographically(linear_algebra::Cnf& formula, const std::vector<int
     }
 }
 
-void normalise_first_nonzero(linear_algebra::Cnf& formula,
+void normalise_first_nonzero(formats::Cnf& formula,
                              const std::vector<std::vector<int>>& groups) {
     if (groups.empty()) return;
     const std::size_t characteristic = groups.front().size();

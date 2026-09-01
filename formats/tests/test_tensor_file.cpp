@@ -20,7 +20,7 @@ namespace {
 bool refused(const std::string& text) {
     std::istringstream input(text);
     try {
-        linear_algebra::read_tensor(input);
+        formats::read_tensor(input);
     } catch (const std::runtime_error&) {
         return true;
     }
@@ -34,8 +34,8 @@ bool refused(const std::string& text) {
 /// writer that transposed a slice or swapped the shape fields would produce
 /// something the reader either refuses or reads back changed. A cube of zeroes
 /// and ones would survive both mistakes.
-linear_algebra::Tensor sample_tensor() {
-    linear_algebra::Tensor tensor;
+formats::Tensor sample_tensor() {
+    formats::Tensor tensor;
     tensor.characteristic = 5;
     for (std::size_t index = 0; index < 3; ++index) {
         linear_algebra::ModularMatrix slice(2, 3);
@@ -50,8 +50,8 @@ linear_algebra::Tensor sample_tensor() {
 }
 
 /// How many entries the two tensors disagree on, shapes included.
-long long entry_differences(const linear_algebra::Tensor& left,
-                            const linear_algebra::Tensor& right) {
+long long entry_differences(const formats::Tensor& left,
+                            const formats::Tensor& right) {
     if (left.slices.size() != right.slices.size() || left.rows() != right.rows() ||
         left.columns() != right.columns()) {
         return -1;
@@ -79,7 +79,7 @@ int main() {
         "shape 2 1 2\n"
         "1 0\n"
         "0 2\n");
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor(good);
+    const formats::Tensor tensor = formats::read_tensor(good);
     check::equal("the characteristic is read", tensor.characteristic, 3);
     check::equal("both slices are read", static_cast<long long>(tensor.slices.size()), 2);
     check::equal("and the entries with them", static_cast<long long>(tensor.slices[1](0, 1)), 2);
@@ -100,11 +100,11 @@ int main() {
     // The round trip. Every check above compares the reader against a string
     // typed here, which says nothing about what the repository itself writes;
     // this is the only one where both halves of the format have to agree.
-    const linear_algebra::Tensor written = sample_tensor();
+    const formats::Tensor written = sample_tensor();
     std::ostringstream text;
-    linear_algebra::write_tensor(text, written, "a round trip\nover two comment lines");
+    formats::write_tensor(text, written, "a round trip\nover two comment lines");
     std::istringstream reread(text.str());
-    const linear_algebra::Tensor read_back = linear_algebra::read_tensor(reread);
+    const formats::Tensor read_back = formats::read_tensor(reread);
 
     check::equal("the characteristic comes back", read_back.characteristic,
                  written.characteristic);

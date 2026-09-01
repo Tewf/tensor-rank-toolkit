@@ -184,7 +184,7 @@ void compare_under_a_budget(const std::string& what, const Gf2Leaf<Addressed>& l
         const bool agreed = same(walked, rebuilt)
                             && for_walk.leaf_abandoned.load() == expected
                             && for_rebuild.leaf_abandoned.load() == expected
-                            && for_walk.exhausted.load() == for_rebuild.exhausted.load();
+                            && for_walk.tree_fully_walked.load() == for_rebuild.tree_fully_walked.load();
         tally.saw(agreed, static_cast<long long>(walked.size()),
                   what + " under a leaf limit of " + std::to_string(limit));
     }
@@ -201,8 +201,8 @@ int main(int argc, char** argv) {
 
     // 4x4, 5x5 and 9x9, which are the widths this repository searches at.
     for (const char* name : {"gf16_multiplication", "f2_5x5", "matmul_3x3x3"}) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + name + ".tensor");
         const Field field(tensor.characteristic);
         const std::size_t rows = tensor.rows();
         const std::size_t columns = tensor.columns();
@@ -216,9 +216,9 @@ int main(int argc, char** argv) {
 
         // No table: a walked subspace reads the pool for nothing but its shape,
         // so building one would price a route neither routine takes.
-        bilinear_rank::set_memory_budget(1);
+        run_limits::set_memory_budget(1);
         const Gf2Leaf<Addressed> leaf(field, pool, rows, columns);
-        bilinear_rank::set_memory_budget(std::size_t(2) << 30);
+        run_limits::set_memory_budget(std::size_t(2) << 30);
 
         Tally over_the_whole_subspace;
         for (const auto& span : spans) {

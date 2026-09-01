@@ -15,7 +15,7 @@ namespace matrix_sparsification {
 
 namespace {
 
-using optimisation::Number;
+using integer_programme::Number;
 
 /// A basis of `{y : rows · y = 0}`, the null space, which is what the programme
 /// constrains against.
@@ -44,11 +44,11 @@ std::vector<std::vector<Element>> annihilator_of(const Field& field, const Matri
 /// non-negative pair and the objective is the sum of both halves; at an optimum
 /// at most one of each pair is nonzero, so their difference is the vector and
 /// the objective is its weight in the `ℓ1` sense.
-optimisation::IntegerProgramme programme_for(
+integer_programme::IntegerProgramme programme_for(
     const Field& field, const std::vector<std::vector<Element>>& annihilator,
     std::size_t width, std::size_t pinned) {
-    optimisation::IntegerProgramme model;
-    model.sense = optimisation::Sense::Minimise;
+    integer_programme::IntegerProgramme model;
+    model.sense = integer_programme::Sense::Minimise;
     model.variables.resize(2 * width);
     model.objective.assign(2 * width, Number(1));
     for (std::size_t index = 0; index < 2 * width; ++index) {
@@ -61,8 +61,8 @@ optimisation::IntegerProgramme programme_for(
         model.variables[index].bounded_above = false;
     }
     for (const std::vector<Element>& row : annihilator) {
-        optimisation::Constraint constraint;
-        constraint.relation = optimisation::Relation::Equal;
+        integer_programme::Constraint constraint;
+        constraint.relation = integer_programme::Relation::Equal;
         constraint.bound = Number(0);
         for (std::size_t column = 0; column < width; ++column) {
             if (field.isZero(row[column])) continue;
@@ -73,8 +73,8 @@ optimisation::IntegerProgramme programme_for(
         }
         if (!constraint.terms.empty()) model.constraints.push_back(std::move(constraint));
     }
-    optimisation::Constraint pin;
-    pin.relation = optimisation::Relation::Equal;
+    integer_programme::Constraint pin;
+    pin.relation = integer_programme::Relation::Equal;
     pin.bound = Number(1);
     pin.terms.push_back({pinned, Number(1)});
     pin.terms.push_back({pinned + width, Number(-1)});
@@ -99,11 +99,11 @@ LightestVectors lightest_vectors_by_simplex(const Field& field, const Matrix& ro
 
     std::vector<std::pair<std::size_t, std::vector<Element>>> found;
     for (std::size_t pinned = 0; pinned < width; ++pinned) {
-        const optimisation::StandardForm form =
-            optimisation::standard_form_of(programme_for(field, annihilator, width, pinned));
-        const optimisation::LinearOptimum optimum = optimisation::solve_relaxation(form);
-        if (optimum.status != optimisation::Status::Optimal) continue;  // that coordinate carries none
-        const std::vector<Number> point = optimisation::original_point(form, optimum.values);
+        const integer_programme::StandardForm form =
+            integer_programme::standard_form_of(programme_for(field, annihilator, width, pinned));
+        const integer_programme::LinearOptimum optimum = integer_programme::solve_relaxation(form);
+        if (optimum.status != integer_programme::Status::Optimal) continue;  // that coordinate carries none
+        const std::vector<Number> point = integer_programme::original_point(form, optimum.values);
         std::vector<Element> vector(width, Element());
         std::size_t weight = 0;
         for (std::size_t column = 0; column < width; ++column) {

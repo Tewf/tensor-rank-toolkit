@@ -24,7 +24,7 @@
 /// So the size is computed first and compared against a budget, and a run that
 /// does not fit says so and stops. A refusal naming the number is a result; an
 /// out-of-memory kill is not.
-namespace bilinear_rank {
+namespace run_limits {
 
 /// The ceiling on a single bulk allocation. **An eighth of what the machine
 /// has** by default ([`machine.h`](machine.h)), which is the two gibibytes this
@@ -46,4 +46,4 @@ std::size_t bytes_per_matrix(std::size_t entries);
 /// overflows on the way to reporting a number that would have.
 void require_room(const std::string& what, std::size_t count, std::size_t bytes_each);
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

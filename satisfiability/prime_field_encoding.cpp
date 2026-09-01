@@ -15,7 +15,7 @@ namespace {
 /// At-least-one is a clause; at-most-one is every pair. Quadratic, and at the
 /// primes in play that is three clauses, so a ladder encoding would be more
 /// machinery than it saves.
-std::vector<int> one_hot(linear_algebra::Cnf& formula, std::size_t size) {
+std::vector<int> one_hot(formats::Cnf& formula, std::size_t size) {
     std::vector<int> group;
     group.reserve(size);
     for (std::size_t value = 0; value < size; ++value) group.push_back(formula.new_variable());
@@ -34,7 +34,7 @@ std::vector<int> one_hot(linear_algebra::Cnf& formula, std::size_t size) {
 /// `linear_combination(x, y)` is the field's own answer, so the same eight lines serve
 /// multiplication and addition and there is one place for either to be wrong.
 template <class Operation>
-std::vector<int> combined(linear_algebra::Cnf& formula, std::size_t characteristic,
+std::vector<int> combined(formats::Cnf& formula, std::size_t characteristic,
                           const std::vector<int>& first, const std::vector<int>& second,
                           Operation linear_combination) {
     const std::vector<int> result = one_hot(formula, characteristic);
@@ -48,7 +48,7 @@ std::vector<int> combined(linear_algebra::Cnf& formula, std::size_t characterist
 }
 
 /// The one-hot group of the constant zero.
-std::vector<int> constant_zero(linear_algebra::Cnf& formula, std::size_t characteristic) {
+std::vector<int> constant_zero(formats::Cnf& formula, std::size_t characteristic) {
     const std::vector<int> group = one_hot(formula, characteristic);
     formula.add_clause({group[0]});
     return group;
@@ -91,7 +91,7 @@ std::vector<int> PrimeFieldEncoding::output_group(std::size_t term, std::size_t 
     return slice_of(output, term * slices + slice, characteristic);
 }
 
-PrimeFieldEncoding encode_prime_rank_at_most(const linear_algebra::Tensor& tensor,
+PrimeFieldEncoding encode_prime_rank_at_most(const formats::Tensor& tensor,
                                              std::size_t products, bool break_symmetry) {
     const std::size_t characteristic = static_cast<std::size_t>(tensor.characteristic);
     if (!linear_algebra::is_prime(tensor.characteristic)) {
@@ -118,7 +118,7 @@ PrimeFieldEncoding encode_prime_rank_at_most(const linear_algebra::Tensor& tenso
                                     std::to_string(variable_budget()) + " variables");
     }
 
-    linear_algebra::Cnf& formula = encoding.formula;
+    formats::Cnf& formula = encoding.formula;
     const auto times = [characteristic](std::size_t a, std::size_t b) {
         return (a * b) % characteristic;
     };

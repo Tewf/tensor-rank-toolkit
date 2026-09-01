@@ -92,7 +92,7 @@ struct EnumerationReport {
 /// asks only whether the level is empty, and finishing a level it has already
 /// answered is work spent on a question nobody asked.
 ///
-/// **`worker_count()` above one spreads the walk's subtrees over cores, and changes
+/// **`run_limits::worker_count()` above one spreads the walk's subtrees over cores, and changes
 /// no count.** This is the one search here where that is a fact rather
 /// than a hope: it counts instead of stopping, so there is no witness to race to
 /// and no shared budget to spend against, and every subtree is visited whatever
@@ -110,7 +110,7 @@ struct EnumerationReport {
 /// is worth in wall clock, and where it stops paying:
 /// [`enumerating-on-every-core.md`](enumerating-on-every-core.md).
 EnumerationReport enumerate_solution_subspaces(const Field& field,
-                                               const linear_algebra::Tensor& tensor,
+                                               const formats::Tensor& tensor,
                                                const std::vector<Matrix>& pool,
                                                const std::vector<Automorphism>& group,
                                                std::size_t target, bool canonical,

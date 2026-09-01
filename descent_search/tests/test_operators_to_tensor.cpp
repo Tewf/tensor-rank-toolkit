@@ -34,9 +34,9 @@ using bilinear_rank::Matrix;
 std::vector<Matrix> map_of(const std::string& fixtures, const std::string& stem,
                            const Field& field) {
     const std::string at = fixtures + "/plinopt/" + stem;
-    const Algorithm algorithm{linear_algebra::read_sms_file(at + "_L.sms", field),
-                              linear_algebra::read_sms_file(at + "_R.sms", field),
-                              linear_algebra::read_sms_file(at + "_P.sms", field)};
+    const Algorithm algorithm{formats::read_sms_file(at + "_L.sms", field),
+                              formats::read_sms_file(at + "_R.sms", field),
+                              formats::read_sms_file(at + "_P.sms", field)};
     return bilinear_rank::map_computed_by(field, algorithm);
 }
 
@@ -65,8 +65,8 @@ int main(int argc, char** argv) {
     // Strassen's 7 products, published in his data/, rebuild the <2,2,2> matrix
     // multiplication tensor this repository generates from its definition.
     const std::vector<Matrix> strassen = map_of(fixtures, "2x2x2_7_Strassen", gf2);
-    const linear_algebra::Tensor matmul =
-        linear_algebra::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
+    const formats::Tensor matmul =
+        formats::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
     check::equal("Strassen's operators rebuild matmul_2x2x2, slice count",
                  static_cast<long long>(strassen.size()),
                  static_cast<long long>(matmul.slices.size()));
@@ -76,8 +76,8 @@ int main(int argc, char** argv) {
     // And Karatsuba's 3, a polynomial multiplication rather than a matrix one,
     // typed `M` rather than `R`, rebuild f2_2x2.
     const std::vector<Matrix> karatsuba = map_of(fixtures, "1o1o2_3_Karatsuba", gf2);
-    const linear_algebra::Tensor polynomial =
-        linear_algebra::read_tensor_file(fixtures + "/f2_2x2.tensor");
+    const formats::Tensor polynomial =
+        formats::read_tensor_file(fixtures + "/f2_2x2.tensor");
     check::equal("Karatsuba's operators rebuild f2_2x2, entry for entry",
                  differences(karatsuba, polynomial.slices), 0);
 

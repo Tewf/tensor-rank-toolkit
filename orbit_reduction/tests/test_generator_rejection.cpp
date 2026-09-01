@@ -65,7 +65,7 @@ struct Run {
 Run quotiented(const Field& field, const std::vector<Matrix>& slices,
                const std::vector<Matrix>& pool, const std::vector<Automorphism>& group,
                std::size_t target, OrbitTest test) {
-    bilinear_rank::set_worker_count(1);
+    run_limits::set_worker_count(1);
     bilinear_rank::set_orbit_test(test);
 
     bilinear_rank::SearchBudget budget{4'000'000};
@@ -77,7 +77,7 @@ Run quotiented(const Field& field, const std::vector<Matrix>& slices,
     Run run;
     run.nodes = static_cast<long long>(budget.nodes_visited.load());
     run.verdict = found ? Verdict::Found
-                        : (budget.exhausted ? Verdict::Refuted : Verdict::Undecided);
+                        : (budget.tree_fully_walked ? Verdict::Refuted : Verdict::Undecided);
     return run;
 }
 
@@ -205,8 +205,8 @@ int main(int argc, char** argv) {
     // order as much as of the rule and
     // `../what-the-quotient-costs.md` says so.
     for (const Question& question : kQuestions) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + question.fixture + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + question.fixture + ".tensor");
         const Field field(tensor.characteristic);
         const std::vector<Matrix> pool =
             bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
@@ -230,8 +230,8 @@ int main(int argc, char** argv) {
     // Orbit coverage on `⟨2,2,2⟩`, whose group is the largest here and whose
     // generators are the six the search is actually handed.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/matmul_2x2x2.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/matmul_2x2x2.tensor");
         const Field field(tensor.characteristic);
         const std::size_t rows = tensor.rows();
         const std::size_t columns = tensor.columns();

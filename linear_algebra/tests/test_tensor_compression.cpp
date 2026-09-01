@@ -205,8 +205,8 @@ int main(int argc, char** argv) {
 
     std::size_t not_concise = 0;
     for (const char* name : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(fixtures + "/" + std::string(name) + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(fixtures + "/" + std::string(name) + ".tensor");
         const ModularField field(tensor.characteristic);
         if (!check_round_trip(field, tensor.slices, name)) ++not_concise;
     }
@@ -220,10 +220,10 @@ int main(int argc, char** argv) {
     // of the core is known rather than inferred.
     {
         const ModularField field(2);
-        const linear_algebra::Tensor padded =
-            linear_algebra::read_tensor_file(fixtures + "/nonconcise_matmul_2x2x2.tensor");
-        const linear_algebra::Tensor product =
-            linear_algebra::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
+        const formats::Tensor padded =
+            formats::read_tensor_file(fixtures + "/nonconcise_matmul_2x2x2.tensor");
+        const formats::Tensor product =
+            formats::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
 
         check::equal("the padded tensor is not concise",
                      linear_algebra::is_concise(field, padded.slices) ? 1 : 0, 0);

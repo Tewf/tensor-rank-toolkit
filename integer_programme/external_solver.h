@@ -21,8 +21,8 @@
 /// Verified against the installed binaries on this machine: lp_solve 5.5, CBC
 /// 2.10.11, GLPK 5.0. The Gurobi recipe follows its documented `ResultFile`
 /// output and is unverified, there being no licence here to test it with.
-namespace optimisation {
+namespace integer_programme {
 
 Solution run_backend(Backend backend, const IntegerProgramme& programme);
 
-}  // namespace optimisation
+}  // namespace integer_programme

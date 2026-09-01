@@ -142,8 +142,8 @@ int main(int argc, char** argv) {
     for (const char* name : {"f2_2x2", "f2_2x3", "f2_5x5", "f2_3x8", "f2_4x7", "f3_3x6",
                              "cyclic_f2_5", "gf4_multiplication", "gf8_multiplication",
                              "matmul_2x2x2", "matmul_2x2x3", "w_state"}) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + std::string(name) + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + std::string(name) + ".tensor");
         const ModularField field(tensor.characteristic);
         check_bound_is_under(field, tensor.slices,
                              linear_algebra::multiplication_count(field, tensor.slices), name);

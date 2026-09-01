@@ -27,14 +27,13 @@ namespace bilinear_rank {
 /// How much of the tree a search was allowed, and how much it used.
 ///
 /// Without this an infeasible question is indistinguishable from a slow
-/// machine. On a negative answer `exhausted` **true** means "no solution",
-/// because the tree really was walked to its end; **false** means "gave up",
-/// because the node limit stopped it first. Those are very different claims, and
-/// taking the second for the first publishes a lower bound nobody proved.
-///
-/// The word points the other way in `integer_programme/branch_and_bound.cpp`, where
-/// `Status::Exhausted` is the budget running out. Same name, opposite sense, and
-/// no relation: that one is a different struct in a different namespace.
+/// machine. On a negative answer `tree_fully_walked` **true** means "no
+/// solution", because the tree really was walked to its end; **false** means
+/// "gave up", because the node limit stopped it first. Those are very different
+/// claims, and taking the second for the first publishes a lower bound nobody
+/// proved. The name says which side of `integer_programme`'s `Status::Exhausted`
+/// it is not: that one is the budget running out, this one is the walk
+/// finishing. (The field was `exhausted` until the two words collided.)
 struct SearchBudget {
     explicit SearchBudget(std::size_t limit = 5'000'000,
                           std::size_t leaf_limit = 100'000'000)
@@ -42,7 +41,7 @@ struct SearchBudget {
 
     std::size_t node_limit;
     std::atomic<std::size_t> nodes_visited{0};
-    std::atomic<bool> exhausted{true};  // false once either limit is hit
+    std::atomic<bool> tree_fully_walked{true};  // false once either limit is hit
 
     /// What one leaf may examine before the search abandons it.
     ///
@@ -64,7 +63,7 @@ struct SearchBudget {
     std::size_t leaf_element_limit;
 
     /// Which of the two limits withdrew the answer, for the report only. Both
-    /// clear `exhausted` and a run that gives up needs to say which to raise,
+    /// clear `tree_fully_walked` and a run that gives up needs to say which to raise,
     /// because raising the other one changes nothing and looks like the tool
     /// ignoring the flag.
     std::atomic<bool> leaf_abandoned{false};
@@ -84,7 +83,7 @@ struct SearchBudget {
         std::size_t seen = nodes_visited.load(std::memory_order_relaxed);
         do {
             if (seen >= node_limit) {
-                exhausted.store(false, std::memory_order_relaxed);
+                tree_fully_walked.store(false, std::memory_order_relaxed);
                 return false;
             }
         } while (!nodes_visited.compare_exchange_weak(seen, seen + 1, std::memory_order_relaxed));
@@ -96,12 +95,12 @@ struct SearchBudget {
     /// Marks the answer inconclusive when it may not, which is the whole of what
     /// makes this sound: an abandoned leaf hands back fewer maps than the target
     /// and so reads to its caller as "no rank-one basis here", which would be a
-    /// refutation nobody proved. `exhausted` false turns the run's verdict into
+    /// refutation nobody proved. `tree_fully_walked` false turns the run's verdict into
     /// GAVE UP, so the only thing an abandoned leaf can do is withdraw a NO.
     bool may_examine(std::size_t examined) {
         if (examined < leaf_element_limit) return true;
         leaf_abandoned.store(true, std::memory_order_relaxed);
-        exhausted.store(false, std::memory_order_relaxed);
+        tree_fully_walked.store(false, std::memory_order_relaxed);
         return false;
     }
 };

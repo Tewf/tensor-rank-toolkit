@@ -61,7 +61,7 @@ struct StrictSettings {
     std::size_t candidate_seconds = 300;
     Refuter refuter = Refuter::Solver;
     /// Nodes the tree route may visit before giving up. Exhausting it is an
-    /// `Unknown`, never a refutation, exactly as `SearchBudget::exhausted` says.
+    /// `Unknown`, never a refutation, exactly as `SearchBudget::tree_fully_walked` says.
     std::size_t node_limit = 5'000'000;
     /// Ask the candidates on several cores. They share nothing, so this changes
     /// wall time and no verdict. Bounded: five candidates at 30 s is 44 s wall
@@ -81,7 +81,7 @@ struct CandidateVerdict {
     satisfiability::Verdict verdict = satisfiability::Verdict::Unknown;
     double seconds = 0;
     /// Tree route only, and the number that says whether a `No` is a refutation or
-    /// a budget: `exhausted` false means the limit was hit and the verdict is
+    /// a budget: `tree_fully_walked` false means the limit was hit and the verdict is
     /// `Unknown`.
     std::size_t nodes = 0;
 };
@@ -110,7 +110,7 @@ struct StrictStep {
 ///
 /// Stops at the first acceptance. Throws `cli::CheckFailed` if an accepted
 /// decomposition does not rebuild the map.
-StrictStep strict_step(const linear_algebra::Tensor& tensor, std::size_t products,
+StrictStep strict_step(const formats::Tensor& tensor, std::size_t products,
                        const StrictSettings& settings);
 
 }  // namespace bilinear_rank

@@ -19,7 +19,7 @@ namespace satisfiability {
 namespace {
 
 /// Refuse the combinations that do not mean anything, by name.
-void check_applicable(const linear_algebra::Tensor& tensor, const SolveOptions& approach) {
+void check_applicable(const formats::Tensor& tensor, const SolveOptions& approach) {
     if (approach.break_symmetry && approach.use_field_theory) {
         throw std::invalid_argument("the field theory encoding has no ordering constraint");
     }
@@ -62,7 +62,7 @@ void check_applicable(const linear_algebra::Tensor& tensor, const SolveOptions& 
     }
 }
 
-Answer from_field_theory(const linear_algebra::Tensor& tensor, std::size_t products,
+Answer from_field_theory(const formats::Tensor& tensor, std::size_t products,
                          const SolveOptions& approach) {
     const auto encoding = encode_field_rank_at_most(tensor, products);
     const auto run =
@@ -97,7 +97,7 @@ struct Forms {
     BinaryEncoding boolean_form;
     PrimeFieldEncoding prime_form;
 
-    const linear_algebra::Cnf& formula() const {
+    const formats::Cnf& formula() const {
         return binary ? boolean_form.formula : prime_form.formula;
     }
 };
@@ -105,7 +105,7 @@ struct Forms {
 /// `pinned` says something else has already fixed term 0, which is what a cube
 /// does. Read from the same place the unit clauses come from, so the flag and the
 /// cube cannot disagree.
-Forms build_forms(const linear_algebra::Tensor& tensor, std::size_t products,
+Forms build_forms(const formats::Tensor& tensor, std::size_t products,
                   const SolveOptions& approach, bool pinned) {
     Forms forms;
     forms.binary = tensor.characteristic == 2;
@@ -121,10 +121,10 @@ Forms build_forms(const linear_algebra::Tensor& tensor, std::size_t products,
 /// The CNF route, over either field. The two encodings differ in type but not
 /// in what happens to them, so the shape below is written once per stage rather
 /// than once per field.
-Answer answer_from(const linear_algebra::Tensor& tensor, const Forms& forms,
+Answer answer_from(const formats::Tensor& tensor, const Forms& forms,
                    const SolveOptions& approach, const std::vector<int>& cube) {
     const bool binary = forms.binary;
-    linear_algebra::Cnf formula = forms.formula();
+    formats::Cnf formula = forms.formula();
     for (int literal : cube) formula.add_clause({literal});
 
     const SatSolver solver =
@@ -166,7 +166,7 @@ Answer answer_from(const linear_algebra::Tensor& tensor, const Forms& forms,
     return answer;
 }
 
-Answer from_clauses(const linear_algebra::Tensor& tensor, std::size_t products,
+Answer from_clauses(const formats::Tensor& tensor, std::size_t products,
                     const SolveOptions& approach) {
     const Forms forms =
         build_forms(tensor, products, approach, !approach.cube_literals.empty());
@@ -175,7 +175,7 @@ Answer from_clauses(const linear_algebra::Tensor& tensor, std::size_t products,
 
 }  // namespace
 
-Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
+Answer decide_rank(const formats::Tensor& tensor, std::size_t products,
                    const SolveOptions& approach, CubeReport* report) {
     check_applicable(tensor, approach);
     if (approach.use_field_theory) return from_field_theory(tensor, products, approach);
@@ -200,8 +200,8 @@ Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
     // 170 MB per solver at twelve workers against a measured peak of 6 MB on
     // `⟨2,2,2⟩` and 65 MB on a `⟨3,3,3⟩` cube.
     SolveOptions shared = approach;
-    const std::size_t workers = bilinear_rank::worker_count() < approach.cubes.size()
-                                   ? bilinear_rank::worker_count()
+    const std::size_t workers = run_limits::worker_count() < approach.cubes.size()
+                                   ? run_limits::worker_count()
                                    : approach.cubes.size();
     if (workers > 1) shared.memory_megabytes = approach.memory_megabytes / workers;
 
@@ -219,7 +219,7 @@ Answer decide_rank(const linear_algebra::Tensor& tensor, std::size_t products,
     std::vector<Answer> pieces(approach.cubes.size());
     std::vector<char> answered(approach.cubes.size(), 0);
     std::atomic<bool> found(false);
-    bilinear_rank::parallel_for(approach.cubes.size(), [&](std::size_t index) {
+    run_limits::parallel_for(approach.cubes.size(), [&](std::size_t index) {
         if (found.load(std::memory_order_relaxed)) return;
         pieces[index] = answer_from(tensor, forms, shared, approach.cubes[index]);
         answered[index] = 1;
@@ -258,7 +258,7 @@ namespace {
 /// walk stops one short of it. Refusing everything below an achieved bound is
 /// then a determination on its own: `lower` arrives at `upper` with the
 /// decomposition already there.
-bool narrow(const linear_algebra::Tensor& tensor, const SolveOptions& approach, std::size_t budget,
+bool narrow(const formats::Tensor& tensor, const SolveOptions& approach, std::size_t budget,
             bool achieved, RankBounds& bounds) {
     SolveOptions limited = approach;
     limited.timeout_seconds = budget;
@@ -283,12 +283,12 @@ bool narrow(const linear_algebra::Tensor& tensor, const SolveOptions& approach, 
 
 }  // namespace
 
-RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
+RankBounds find_rank(const formats::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, std::size_t ceiling) {
     return find_rank(tensor, approach, floor, AchievedCeiling{ceiling, {}});
 }
 
-RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& approach,
+RankBounds find_rank(const formats::Tensor& tensor, const SolveOptions& approach,
                      std::size_t floor, const AchievedCeiling& ceiling) {
     RankBounds bounds;
     bounds.lower = floor;
@@ -322,7 +322,7 @@ RankBounds find_rank(const linear_algebra::Tensor& tensor, const SolveOptions& a
     return bounds;
 }
 
-std::string write_question(const linear_algebra::Tensor& tensor, std::size_t products,
+std::string write_question(const formats::Tensor& tensor, std::size_t products,
                            const SolveOptions& approach, const std::string& path) {
     check_applicable(tensor, approach);
     // A cube split is one question per cube and this writes one file. Dropping
@@ -338,18 +338,18 @@ std::string write_question(const linear_algebra::Tensor& tensor, std::size_t pro
 
     if (approach.use_field_theory) {
         const auto encoding = encode_field_rank_at_most(tensor, products);
-        linear_algebra::write_smtlib(out, encoding.problem);
+        formats::write_smtlib(out, encoding.problem);
         return std::to_string(encoding.problem.constants.size()) + " constants, " +
                std::to_string(encoding.problem.assertions.size()) + " assertions";
     }
 
     const bool binary = tensor.characteristic == 2;
-    const linear_algebra::Cnf formula =
+    const formats::Cnf formula =
         binary ? encode_binary_rank_at_most(tensor, products, approach.break_symmetry).formula
                : encode_prime_rank_at_most(tensor, products, approach.break_symmetry).formula;
 
     const bool native = !approach.plain_cnf;
-    linear_algebra::write_dimacs(out, formula, native);
+    formats::write_dimacs(out, formula, native);
     return std::to_string(formula.total_variable_count(native)) + " variables, " +
            std::to_string(formula.total_clause_count(native)) + " clauses";
 }

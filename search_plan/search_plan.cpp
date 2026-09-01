@@ -30,7 +30,7 @@ std::string as_bytes(double count) {
 }
 
 void choose_the_pool(const Machine& machine, SearchPlan& plan) {
-    const std::size_t each = bytes_per_matrix(machine.rows * machine.columns);
+    const std::size_t each = run_limits::bytes_per_matrix(machine.rows * machine.columns);
     const bool fits =
         machine.pool_size != 0 && each <= machine.memory_budget / machine.pool_size;
     plan.pool = fits ? Pool::Materialised : Pool::Addressed;

@@ -18,11 +18,11 @@
 #include "machine.h"
 
 int main() {
-    using bilinear_rank::core_count;
-    using bilinear_rank::memory_scale_bytes;
-    using bilinear_rank::physical_memory_bytes;
-    using bilinear_rank::suggested_memory_budget;
-    using bilinear_rank::suggested_memory_budget_for;
+    using run_limits::core_count;
+    using run_limits::memory_scale_bytes;
+    using run_limits::physical_memory_bytes;
+    using run_limits::suggested_memory_budget;
+    using run_limits::suggested_memory_budget_for;
 
     const long long gibibyte = 1LL << 30;
     const long long mebibyte = 1LL << 20;

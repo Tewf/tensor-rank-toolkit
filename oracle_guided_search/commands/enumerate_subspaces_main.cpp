@@ -61,7 +61,7 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--plain")) {
             plain = true;
         } else if (arguments.is("--threads")) {
-            bilinear_rank::set_worker_count(arguments.count());
+            run_limits::set_worker_count(arguments.count());
         } else if (arguments.is("--canonical")) {
             canonical = true;
         } else if (arguments.is("--symmetry", "-s")) {
@@ -76,7 +76,7 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Usage);
     }
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
+    const formats::Tensor tensor = formats::read_tensor_file(arguments.filename());
 
     if (!plain && !canonical) {
         plain = true;

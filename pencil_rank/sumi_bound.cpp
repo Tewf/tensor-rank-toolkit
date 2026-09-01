@@ -22,7 +22,7 @@ namespace {
 /// `--max-memory` moves it where the machine has the room.
 Polynomial split_completely(const ModularField& field) {
     const std::size_t characteristic = static_cast<std::size_t>(field.residu());
-    bilinear_rank::require_room("the polynomial x^" + std::to_string(characteristic) + " - x",
+    run_limits::require_room("the polynomial x^" + std::to_string(characteristic) + " - x",
                                 characteristic + 1, sizeof(int64_t));
     Polynomial result(characteristic + 1, 0);
     result[characteristic] = 1;

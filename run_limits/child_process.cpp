@@ -8,7 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 
-namespace bilinear_rank {
+namespace run_limits {
 
 bool run_to_completion(const std::vector<std::string>& command,
                        const std::filesystem::path& log, const ChildLimits& limits) {
@@ -93,4 +93,4 @@ bool run_to_completion(const std::vector<std::string>& command,
     return true;
 }
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

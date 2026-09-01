@@ -33,7 +33,7 @@ namespace satisfiability {
 /// The formula, and which variable stands for what, so that a solver's answer
 /// can be turned back into matrices rather than admired as a truth assignment.
 struct BinaryEncoding {
-    linear_algebra::Cnf formula;
+    formats::Cnf formula;
 
     std::size_t products = 0;
     std::size_t rows = 0;
@@ -81,7 +81,7 @@ struct BinaryEncoding {
 /// Stated here rather than assumed, because an invariant recorded on one side
 /// only is a silent dependency, and this one fails by producing a wrong answer
 /// instead of an error.
-BinaryEncoding encode_binary_rank_at_most(const linear_algebra::Tensor& tensor, std::size_t products,
+BinaryEncoding encode_binary_rank_at_most(const formats::Tensor& tensor, std::size_t products,
                                    bool break_symmetry = false, bool first_term_pinned = false);
 
 /// The ceiling on product variables in one encoding. Ten million is a file of a

@@ -129,9 +129,9 @@ void print_table() {
 /// moved it would make the one place a caller looks the one place that lies.
 void print_backends() {
     cli::result() << "integer programming backends, in preference order:\n";
-    for (const optimisation::Backend backend : optimisation::ranked_backends()) {
-        cli::result() << "  " << (optimisation::is_available(backend) ? "present" : "absent ")
-                      << "  " << optimisation::name_of(backend) << "\n";
+    for (const integer_programme::Backend backend : integer_programme::ranked_backends()) {
+        cli::result() << "  " << (integer_programme::is_available(backend) ? "present" : "absent ")
+                      << "  " << integer_programme::name_of(backend) << "\n";
     }
     cli::result() << "\nThe first present backend answers; the built-in is always present and is"
                      " the\nonly one whose answer needs no checking, so it is also the only one"
@@ -153,9 +153,9 @@ int run(int argc, char** argv) {
     // the built-in is reached last whatever the order says.
     const cli::Tunables& tunables = cli::tunables();
     curve_bounds::set_solver_node_limit(tunables.ilp_node_limit);
-    optimisation::set_solver_time_limit(static_cast<unsigned>(tunables.ilp_time_limit_seconds));
+    integer_programme::set_solver_time_limit(static_cast<unsigned>(tunables.ilp_time_limit_seconds));
     std::string unrecognised;
-    if (!optimisation::set_backend_order(tunables.ilp_backend_order, unrecognised)) {
+    if (!integer_programme::set_backend_order(tunables.ilp_backend_order, unrecognised)) {
         throw cli::ArgumentError("tunables.conf ilp_backend_order: no backend is called '" +
                                  unrecognised + "'");
     }
@@ -183,11 +183,11 @@ int run(int argc, char** argv) {
             // The frontier `plan_for` builds is quadratic in `--degree`, so the
             // one flag that could refuse it is this one, and the refusal
             // `require_room` writes names it by name.
-            bilinear_rank::set_memory_budget(arguments.memory_size());
+            run_limits::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--node-limit")) {
             curve_bounds::set_solver_node_limit(arguments.count());
         } else if (arguments.is("--solver-timeout")) {
-            optimisation::set_solver_time_limit(static_cast<unsigned>(arguments.count()));
+            integer_programme::set_solver_time_limit(static_cast<unsigned>(arguments.count()));
         } else if (arguments.is("--route")) {
             const std::string wanted = arguments.text();
             if (wanted == "chain") {

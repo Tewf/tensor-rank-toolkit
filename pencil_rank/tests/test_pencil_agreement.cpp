@@ -30,7 +30,7 @@ namespace {
 /// next k up would turn giving up into an answer, which is the mistake
 /// `cli/exit_code.h` exists to keep out of this repository.
 long long fewest_products_by_search(const bilinear_rank::Field& field,
-                                    const linear_algebra::Tensor& tensor, std::size_t ceiling) {
+                                    const formats::Tensor& tensor, std::size_t ceiling) {
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
 
@@ -41,7 +41,7 @@ long long fewest_products_by_search(const bilinear_rank::Field& field,
                                            products)) {
             return static_cast<long long>(target);
         }
-        if (!budget.exhausted) return 0;
+        if (!budget.tree_fully_walked) return 0;
     }
     return 0;
 }
@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
     for (const char* name : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + name + ".tensor");
         const bilinear_rank::Field field(tensor.characteristic);
 
         const pencil_rank::PencilRank reported = pencil_rank::pencil_rank_of(field, tensor.slices);

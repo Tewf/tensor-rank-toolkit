@@ -135,8 +135,8 @@ void check_fixtures(const std::string& directory) {
     };
 
     for (const Expectation& expectation : kExpectations) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + expectation.name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + expectation.name + ".tensor");
         const Field field(tensor.characteristic);
 
         bilinear_rank::Algorithm naive;

@@ -63,7 +63,7 @@
 /// file, because the objective the caller is told is recomputed from the model.
 /// The one lossy place left is a bound that is neither whole nor on a whole
 /// variable, and `satisfies` is what catches the consequence.
-namespace optimisation {
+namespace integer_programme {
 
 std::string mps_of(const IntegerProgramme& programme);
 
@@ -71,4 +71,4 @@ std::string mps_of(const IntegerProgramme& programme);
 /// can find it again.
 std::string column_name(std::size_t index);
 
-}  // namespace optimisation
+}  // namespace integer_programme

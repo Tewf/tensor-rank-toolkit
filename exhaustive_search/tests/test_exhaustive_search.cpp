@@ -22,8 +22,8 @@ namespace {
 /// is not conditioned on any heuristic.
 void check_fewest_products(const std::string& directory, const std::string& name,
                         long long expected_products) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(directory + "/" + name + ".tensor");
     const bilinear_rank::Field field(tensor.characteristic);
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
@@ -34,7 +34,7 @@ void check_fewest_products(const std::string& directory, const std::string& name
         bilinear_rank::fewest_products_by_sweep(field, tensor.slices, pool, budget, products);
 
     std::cout << name << ": pool " << pool.size() << ", " << budget.nodes_visited << " nodes"
-              << (budget.exhausted ? "" : " (BUDGET SPENT)") << "\n";
+              << (budget.tree_fully_walked ? "" : " (BUDGET SPENT)") << "\n";
 
     if (!found) {
         std::cout << "  FAIL  " << name << ": no decomposition found at all\n";
@@ -64,12 +64,12 @@ void check_fewest_products(const std::string& directory, const std::string& name
 /// A "no" that ran to exhaustion is a fact about the map rather than about the
 /// searcher, and it is the only lower bound this work has. The `12 <= rank` the
 /// README quotes for F2 5x5 rests entirely on these, so they are re-run rather
-/// than remembered, and `exhausted` is checked alongside, because a search
+/// than remembered, and `tree_fully_walked` is checked alongside, because a search
 /// that gave up would report the same "no".
 void check_no_algorithm_with(const std::string& directory, const std::string& name,
                              std::size_t products_wanted) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(directory + "/" + name + ".tensor");
     const bilinear_rank::Field field(tensor.characteristic);
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
@@ -82,7 +82,7 @@ void check_no_algorithm_with(const std::string& directory, const std::string& na
     const std::string what = name + " has no " + std::to_string(products_wanted) + "-product algorithm";
     std::cout << what << ": " << budget.nodes_visited << " nodes\n";
     check::equal(what, found ? 1 : 0, 0);
-    check::equal(what + ", exhaustively", budget.exhausted ? 1 : 0, 1);
+    check::equal(what + ", exhaustively", budget.tree_fully_walked ? 1 : 0, 1);
 }
 
 }  // namespace
@@ -121,15 +121,15 @@ int main(int argc, char** argv) {
 
     // A search that gives up must say so rather than report "no solution".
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/f2_5x5.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/f2_5x5.tensor");
         const bilinear_rank::Field field(tensor.characteristic);
         const std::vector<bilinear_rank::Matrix> pool =
             bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
         bilinear_rank::SearchBudget budget{/*node_limit=*/2000};
         std::vector<bilinear_rank::Matrix> products;
         bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, 13, budget, products);
-        check::equal("a spent budget reports itself", budget.exhausted ? 1 : 0, 0);
+        check::equal("a spent budget reports itself", budget.tree_fully_walked ? 1 : 0, 0);
     }
 
     // The same, for the other limit, and the reason it exists: the node limit
@@ -138,10 +138,10 @@ int main(int argc, char** argv) {
     // one element must abandon that leaf, and abandoning it must withdraw the
     // answer rather than report "no solution": returning fewer maps than the
     // target reads to the caller exactly as a refutation would, and the only
-    // thing keeping the two apart is `exhausted`.
+    // thing keeping the two apart is `tree_fully_walked`.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/f2_5x5.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/f2_5x5.tensor");
         const bilinear_rank::Field field(tensor.characteristic);
         const std::vector<bilinear_rank::Matrix> pool =
             bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
@@ -152,14 +152,14 @@ int main(int argc, char** argv) {
             bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, 11, budget, products);
         check::equal("a leaf given one element finds nothing", found ? 1 : 0, 0);
         check::equal("and says the leaf limit stopped it", budget.leaf_abandoned ? 1 : 0, 1);
-        check::equal("so the run is undecided, not a refutation", budget.exhausted ? 1 : 0, 0);
+        check::equal("so the run is undecided, not a refutation", budget.tree_fully_walked ? 1 : 0, 0);
 
         // And the guard is off the moment the leaf can afford itself: 11 is
         // refuted on this fixture, and that answer has to survive the change.
         bilinear_rank::SearchBudget whole{/*node_limit=*/1'000'000, /*leaf_limit=*/1'000'000};
         std::vector<bilinear_rank::Matrix> none;
         bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, 11, whole, none);
-        check::equal("an affordable leaf still refutes", whole.exhausted ? 1 : 0, 1);
+        check::equal("an affordable leaf still refutes", whole.tree_fully_walked ? 1 : 0, 1);
         check::equal("and reports no leaf abandoned", whole.leaf_abandoned ? 1 : 0, 0);
     }
 
@@ -176,8 +176,8 @@ int main(int argc, char** argv) {
     // The root is a leaf exactly when the target equals the span's dimension,
     // which is the question "is this tensor's rank its own span dimension".
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/w_state.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/w_state.tensor");
         const bilinear_rank::Field field(tensor.characteristic);
         const std::vector<bilinear_rank::Matrix> pool =
             bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
@@ -186,14 +186,14 @@ int main(int argc, char** argv) {
 
         std::vector<int> abandoned;
         for (std::size_t workers : {std::size_t(1), std::size_t(4)}) {
-            bilinear_rank::set_worker_count(workers);
+            run_limits::set_worker_count(workers);
             bilinear_rank::SearchBudget budget{/*node_limit=*/1'000'000, /*leaf_limit=*/4};
             std::vector<bilinear_rank::Matrix> products;
             bilinear_rank::expand_subspace(field, tensor.slices, pool, 0, at_the_root, budget,
                                            products);
             abandoned.push_back(budget.leaf_abandoned ? 1 : 0);
         }
-        bilinear_rank::set_worker_count(1);  // process-wide: leave it as it was
+        run_limits::set_worker_count(1);  // process-wide: leave it as it was
 
         check::equal("the root really is a leaf here", at_the_root, std::size_t(2));
         check::equal("one thread takes the cheap leaf route", abandoned[0], 0);
@@ -219,8 +219,8 @@ int main(int argc, char** argv) {
         };
 
         for (const Question& question : questions) {
-            const linear_algebra::Tensor tensor =
-                linear_algebra::read_tensor_file(directory + "/" + question.fixture + ".tensor");
+            const formats::Tensor tensor =
+                formats::read_tensor_file(directory + "/" + question.fixture + ".tensor");
             const bilinear_rank::Field field(tensor.characteristic);
             const std::vector<bilinear_rank::Matrix> pool =
                 bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());

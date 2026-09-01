@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string>
 
-namespace linear_algebra {
+namespace formats {
 
 namespace {
 
@@ -108,4 +108,4 @@ Model read_dimacs_model(std::istream& input) {
     return model;
 }
 
-}  // namespace linear_algebra
+}  // namespace formats

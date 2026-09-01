@@ -29,7 +29,7 @@
 namespace satisfiability {
 
 struct FieldTheoryEncoding {
-    linear_algebra::SmtProblem problem;
+    formats::SmtProblem problem;
 
     std::size_t characteristic = 0;
     std::size_t products = 0;
@@ -47,7 +47,7 @@ struct FieldTheoryEncoding {
 ///
 /// Works for any prime including 2, where it is a third opinion on a question
 /// the Boolean encoding already answers cheaply.
-FieldTheoryEncoding encode_field_rank_at_most(const linear_algebra::Tensor& tensor,
+FieldTheoryEncoding encode_field_rank_at_most(const formats::Tensor& tensor,
                                               std::size_t products);
 
 }  // namespace satisfiability

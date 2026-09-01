@@ -111,7 +111,7 @@ struct Ascent {
             return;
         }
         if (report.nodes >= limits.node_limit) {
-            report.exhausted = false;
+            report.tree_fully_walked = false;
             return;
         }
         ++report.nodes;
@@ -177,7 +177,7 @@ struct Ascent {
         report.children += surviving.size();
 
         std::vector<Child> children(surviving.size());
-        parallel_for(surviving.size(), [&](std::size_t slot) {
+        run_limits::parallel_for(surviving.size(), [&](std::size_t slot) {
             // The cost comes back with the basis. It is the sum of the ranks the
             // greedy picked, which it knew before it had a basis to hand over;
             // ranking those matrices again here was one Gaussian elimination per
@@ -222,7 +222,7 @@ struct Ascent {
             limits.width == 0 ? children.size() : std::min(limits.width, children.size());
         for (std::size_t index = 0; index < entered; ++index) {
             visit(children[index].basis, children[index].cost, depth + 1);
-            if (!report.exhausted || report.reached_below) return;
+            if (!report.tree_fully_walked || report.reached_below) return;
         }
     }
 };

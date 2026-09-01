@@ -47,8 +47,8 @@ std::vector<std::size_t> by_rebuilding_each_element(const Field& field,
 }
 
 void the_two_orders_agree(const std::string& name) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(fixtures + "/" + name + ".tensor");
     const Field field(tensor.characteristic);
     const std::vector<Matrix> basis = bilinear_rank::minimum_weight_basis(field, tensor.slices);
 
@@ -73,8 +73,8 @@ void the_two_orders_agree(const std::string& name) {
 
 /// The degenerate shapes, where an off-by-one in the walk's start would hide.
 void the_edges_hold(const std::string& name) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(fixtures + "/" + name + ".tensor");
     const Field field(tensor.characteristic);
 
     // No slices: one element, the empty combination, and the walk takes no step.

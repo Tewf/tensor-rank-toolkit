@@ -91,9 +91,9 @@ void check_representatives_partition_the_pool(const bilinear_rank::Field& field,
     check::equal(what + " orbits cover the pool", static_cast<long long>(uncovered), 0);
 }
 
-linear_algebra::Tensor matrix_multiplication(std::size_t rows, std::size_t inner,
+formats::Tensor matrix_multiplication(std::size_t rows, std::size_t inner,
                                              std::size_t columns) {
-    linear_algebra::Tensor tensor;
+    formats::Tensor tensor;
     tensor.characteristic = 2;
     tensor.slices = bilinear_rank::matrix_multiplication_tensor(rows, inner, columns);
     return tensor;
@@ -142,7 +142,7 @@ const char* spelled(Verdict verdict) {
 /// Solve one formula, with `cube` asserted as unit clauses when it is not empty.
 Verdict solve_with(const satisfiability::SatSolver& solver,
                    const satisfiability::BinaryEncoding& encoding, const std::vector<int>& cube) {
-    linear_algebra::Cnf formula = encoding.formula;
+    formats::Cnf formula = encoding.formula;
     for (const int literal : cube) formula.add_clause({literal});
 
     const satisfiability::SolverRun run = satisfiability::run_solver(formula, solver, 2048, 120);
@@ -184,7 +184,7 @@ void check_cubes_do_not_change_the_answer(const satisfiability::SatSolver& solve
                                           std::size_t inner, std::size_t columns,
                                           std::size_t products, bool break_symmetry,
                                           Verdict expected) {
-    const linear_algebra::Tensor tensor = matrix_multiplication(rows, inner, columns);
+    const formats::Tensor tensor = matrix_multiplication(rows, inner, columns);
     const satisfiability::BinaryEncoding whole_form =
         satisfiability::encode_binary_rank_at_most(tensor, products, break_symmetry, false);
     const satisfiability::BinaryEncoding cube_form =

@@ -8,7 +8,7 @@
 
 #include "machine.h"
 
-namespace bilinear_rank {
+namespace run_limits {
 
 namespace {
 
@@ -74,4 +74,4 @@ void parallel_for(std::size_t count, const std::function<void(std::size_t)>& bod
     if (failure) std::rethrow_exception(failure);
 }
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

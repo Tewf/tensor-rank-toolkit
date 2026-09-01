@@ -78,19 +78,19 @@ int main(int argc, char** argv) {
     std::cout << "# show-limits: what a run is bounded by here\n\n";
 
     std::cout << "machine, as the kernel reports it\n";
-    row("cores", std::to_string(bilinear_rank::core_count()), "hardware_concurrency()");
-    const std::size_t physical = bilinear_rank::physical_memory_bytes();
+    row("cores", std::to_string(run_limits::core_count()), "hardware_concurrency()");
+    const std::size_t physical = run_limits::physical_memory_bytes();
     row("physical memory", physical == 0 ? "unknown" : readable_bytes(physical),
         physical == 0 ? "no /proc/meminfo and no sysconf: defaults fall back" : "MemTotal");
-    row("memory scale", bilinear_rank::memory_scale_bytes() == 0
+    row("memory scale", run_limits::memory_scale_bytes() == 0
                             ? "unknown"
-                            : readable_bytes(bilinear_rank::memory_scale_bytes()),
+                            : readable_bytes(run_limits::memory_scale_bytes()),
         "rounded up to a power of two");
 
     std::cout << "\nderived from it, and what moves each\n";
-    row("allocation ceiling", readable_bytes(bilinear_rank::memory_budget()),
+    row("allocation ceiling", readable_bytes(run_limits::memory_budget()),
         "an eighth of the scale; --max-memory");
-    row("workers", std::to_string(bilinear_rank::worker_count()),
+    row("workers", std::to_string(run_limits::worker_count()),
         "one until asked; --threads N, 0 for every core");
     std::string devices;
     for (const run_limits::Device device : run_limits::ranked_devices()) {

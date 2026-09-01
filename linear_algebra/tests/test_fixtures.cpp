@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
         const std::string name = expected.name;
         std::cout << name << "\n";
 
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const formats::Tensor tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
         check::equal(name + " characteristic", tensor.characteristic, expected.characteristic);
         check::equal(name + " slices", static_cast<long long>(tensor.slices.size()), expected.slices);
         check::equal(name + " rows", static_cast<long long>(tensor.rows()), expected.rows);

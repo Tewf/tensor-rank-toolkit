@@ -438,7 +438,7 @@ FactoredGrid::FactoredGrid(std::size_t left_count, std::size_t right_count,
             "; the canonical form is refused rather than given a wrapped index");
     }
     // Priced before it is taken, like every other bulk allocation here.
-    require_room("the group presented on " + std::to_string(degree) + " axis points", degree,
+    run_limits::require_room("the group presented on " + std::to_string(degree) + " axis points", degree,
                  kBytesPerAxisPoint);
 
     std::list<Perm::ptr> permutations;

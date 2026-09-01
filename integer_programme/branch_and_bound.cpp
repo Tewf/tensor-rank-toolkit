@@ -4,7 +4,7 @@
 #include "standard_form.h"
 #include "whole_numbers.h"
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
@@ -91,4 +91,4 @@ Solution branch_and_bound(const IntegerProgramme& programme, std::size_t node_li
     return solution;
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

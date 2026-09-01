@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     const std::string name = argv[2];
     const long long expected = std::stoll(argv[3]);
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+    const formats::Tensor tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
     const linear_algebra::ModularField field(tensor.characteristic);
 
     const auto started = std::chrono::steady_clock::now();

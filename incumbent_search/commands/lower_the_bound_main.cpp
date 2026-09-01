@@ -179,13 +179,13 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--rounds")) {
             rounds = arguments.count();
         } else if (arguments.is("--threads")) {
-            bilinear_rank::set_worker_count(arguments.count());
+            run_limits::set_worker_count(arguments.count());
         } else if (arguments.is("--max-memory")) {
             // Every `require_room` this command reaches was pinned at the
             // compiled 2 GiB, while the refusal it prints ends "Raise it with
             // --max-memory if the machine has the room" — naming a flag this
             // command did not have. It has it now.
-            bilinear_rank::set_memory_budget(arguments.memory_size());
+            run_limits::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--general-span")) {
             // Step 1's span walk in field elements rather than in bits.
             // `gf2_span_walk_applies` is asked once per call, inside
@@ -202,7 +202,7 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Usage);
     }
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
+    const formats::Tensor tensor = formats::read_tensor_file(arguments.filename());
     const bilinear_rank::Field field(tensor.characteristic);
 
     // The **ambient** group, which each node narrows to its own stabiliser.
@@ -271,7 +271,7 @@ int run(int argc, char** argv) {
         report.drops_exceeded += round_report.drops_exceeded;
             report.bounded += round_report.bounded;
             report.deepest = std::max(report.deepest, round_report.deepest);
-            report.exhausted = round_report.exhausted;
+            report.tree_fully_walked = round_report.tree_fully_walked;
             report.best = round_report.best;
             report.reached_below = round_report.reached_below;
             if (round_report.best >= reached) break;
@@ -299,7 +299,7 @@ int run(int argc, char** argv) {
     // than climbing. It is not free — `gf32_multiplication` is 368 nodes and
     // seconds at 4 against 1 873 nodes and 466 s at 8 — which is why it is a flag
     // and not the default.
-    if (widen && report.exhausted && !report.reached_below &&
+    if (widen && report.tree_fully_walked && !report.reached_below &&
         report.nodes * 2 < limits.node_limit &&
         report.best > bilinear_rank::flattening_floor(field, tensor.slices)) {
         limits.width *= 2;
@@ -341,7 +341,7 @@ int run(int argc, char** argv) {
                 << report.moves_offered << " moves offered, " << report.improvements
                 << " improvements, " << report.bounded << " branches bounded, depth "
                 << report.deepest << ", largest single-move drop " << report.largest_drop
-                << (report.exhausted ? ", tree exhausted" : ", budget spent");
+                << (report.tree_fully_walked ? ", tree exhausted" : ", budget spent");
 
     // What the tree repeated, which is the whole evidence about whether an
     // isomorph rejection scheme could pay on this search. Printed as a rate as
@@ -380,7 +380,7 @@ int run(int argc, char** argv) {
                         << algorithm.product_count() << " products";
         } else {
             cli::note() << "--below " << limits.below << ": not reached"
-                        << (report.exhausted ? ", the tree above the root ran out"
+                        << (report.tree_fully_walked ? ", the tree above the root ran out"
                                              : ", the node budget ran out")
                         << ". That is not a lower bound: this search only ever finds, and "
                            "the branches it cut were cut by " << limits.below
@@ -395,11 +395,11 @@ int run(int argc, char** argv) {
         const std::string origin = "Encoding operator recovered by lower-the-bound, " +
                                    std::to_string(algorithm.product_count()) + " products, over GF(" +
                                    std::to_string(tensor.characteristic) + ").";
-        linear_algebra::write_sms_file(operator_stem + "_L.sms", origin + " Left operand.",
+        formats::write_sms_file(operator_stem + "_L.sms", origin + " Left operand.",
                                        algorithm.left);
-        linear_algebra::write_sms_file(operator_stem + "_R.sms", origin + " Right operand.",
+        formats::write_sms_file(operator_stem + "_R.sms", origin + " Right operand.",
                                        algorithm.right);
-        linear_algebra::write_sms_file(operator_stem + "_P.sms",
+        formats::write_sms_file(operator_stem + "_P.sms",
                                        origin + " Combines the products into the outputs.",
                                        algorithm.decode);
         cli::note() << "wrote " << operator_stem << "_{L,R,P}.sms";

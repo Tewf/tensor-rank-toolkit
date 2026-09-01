@@ -62,7 +62,7 @@ linear_algebra::MatrixOver<Field> sparsest_basis_over_a_finite_field(
     const std::size_t modulus = static_cast<std::size_t>(field.residu());
     std::size_t count = 1;
     for (std::size_t taken = 0; taken < width; ++taken) {
-        bilinear_rank::require_room("the operator's column space", count,
+        run_limits::require_room("the operator's column space", count,
                                     rows * sizeof(typename Field::Element));
         count *= modulus;
     }

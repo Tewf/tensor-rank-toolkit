@@ -36,7 +36,7 @@ std::vector<Matrix> candidates_of(const Field& field, const std::vector<std::siz
 /// tree route built 4x4 representatives for a tensor of 4x6 slices and died in
 /// the allocator: `free(): invalid pointer`, exit 134, which is not in
 /// `cli/exit_code.h`'s vocabulary at all.
-void require_shape_or_nothing(const linear_algebra::Tensor& tensor,
+void require_shape_or_nothing(const formats::Tensor& tensor,
                               const std::vector<std::size_t>& shape) {
     if (shape.size() != 3) return;
     const Field field(tensor.characteristic);
@@ -44,7 +44,7 @@ void require_shape_or_nothing(const linear_algebra::Tensor& tensor,
     (void)field;
 }
 
-void verify_or_throw(const Field& field, const linear_algebra::Tensor& tensor, StrictStep& step) {
+void verify_or_throw(const Field& field, const formats::Tensor& tensor, StrictStep& step) {
     std::vector<Matrix> kept;
     for (const Matrix& term : step.decomposition) {
         if (linear_algebra::nonzero_count(field, term) > 0) kept.push_back(term);
@@ -58,7 +58,7 @@ void verify_or_throw(const Field& field, const linear_algebra::Tensor& tensor, S
 
 /// The solver route. One `decide_rank` call over every cube, with the large budget,
 /// waiting for unsatisfiable on each.
-StrictStep by_solver(const linear_algebra::Tensor& tensor, std::size_t products,
+StrictStep by_solver(const formats::Tensor& tensor, std::size_t products,
                      const StrictSettings& settings) {
     require_shape_or_nothing(tensor, settings.matmul_shape);
     StrictStep step;
@@ -95,7 +95,7 @@ StrictStep by_solver(const linear_algebra::Tensor& tensor, std::size_t products,
 }
 
 /// The tree route, candidate by candidate.
-StrictStep by_tree(const linear_algebra::Tensor& tensor, std::size_t products,
+StrictStep by_tree(const formats::Tensor& tensor, std::size_t products,
                    const StrictSettings& settings) {
     const Field field(tensor.characteristic);
     require_shape_or_nothing(tensor, settings.matmul_shape);
@@ -140,7 +140,7 @@ StrictStep by_tree(const linear_algebra::Tensor& tensor, std::size_t products,
     };
 
     if (settings.parallel_candidates) {
-        parallel_for(candidates.size(), ask);
+        run_limits::parallel_for(candidates.size(), ask);
     } else {
         // Sequential stops at the first acceptance, which the parallel form cannot
         // and does not: it prices every candidate, which is what a table wants.
@@ -175,7 +175,7 @@ StrictStep by_tree(const linear_algebra::Tensor& tensor, std::size_t products,
 
 }  // namespace
 
-StrictStep strict_step(const linear_algebra::Tensor& tensor, std::size_t products,
+StrictStep strict_step(const formats::Tensor& tensor, std::size_t products,
                        const StrictSettings& settings) {
     const cli::Clock::time_point started = cli::Clock::now();
     StrictStep step = settings.refuter == Refuter::QuotientedTree

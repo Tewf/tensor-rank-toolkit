@@ -10,7 +10,7 @@
 /// onto the integer it was a rendering of. Givaro divides towards zero, so the
 /// naive version is wrong for every negative value and right for every test
 /// anyone writes first.
-namespace optimisation {
+namespace integer_programme {
 
 inline bool is_whole(const Number& value) { return value.deno() == 1; }
 
@@ -30,4 +30,4 @@ inline Givaro::Integer nearest_whole(const Number& value) {
     return floor_of(value + Number(1, 2));
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

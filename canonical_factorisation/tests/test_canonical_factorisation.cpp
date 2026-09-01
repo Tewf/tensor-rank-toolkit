@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
     for (const Fixture& fixture : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + fixture.name + ".tensor");
         const linear_algebra::ModularField field(tensor.characteristic);
         const std::string label = fixture.name;
 
@@ -82,8 +82,8 @@ int main(int argc, char** argv) {
     // never run reported as agreeing is the worst outcome available here.
     if (satisfiability::find_sat_solver(false).found) {
         for (const Fixture& fixture : kFixtures) {
-            const linear_algebra::Tensor tensor =
-                linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+            const formats::Tensor tensor =
+                formats::read_tensor_file(directory + "/" + fixture.name + ".tensor");
             const linear_algebra::ModularField field(tensor.characteristic);
 
             canonical_factorisation::FactorisationSettings by_solver;
@@ -106,8 +106,8 @@ int main(int argc, char** argv) {
     // A factorisation that is tampered with must be refused. Without this the
     // check above only proves the checker says yes to something.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/f2_2x2.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/f2_2x2.tensor");
         const linear_algebra::ModularField field(tensor.characteristic);
         canonical_factorisation::Factorisation factorisation =
             canonical_factorisation::factor_over_canonical_basis(

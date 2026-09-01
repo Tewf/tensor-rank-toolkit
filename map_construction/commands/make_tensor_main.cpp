@@ -68,7 +68,7 @@ std::vector<char*> without_the_budget(int argc, char** argv) {
             continue;
         }
         if (argument + 1 == argc) throw cli::ArgumentError("--max-memory needs a value");
-        bilinear_rank::set_memory_budget(cli::parse_memory_size("--max-memory", argv[argument + 1]));
+        run_limits::set_memory_budget(cli::parse_memory_size("--max-memory", argv[argument + 1]));
         ++argument;
     }
     return rest;
@@ -144,7 +144,7 @@ int run(int whole_argc, char** whole_argv) {
         return cli::exit_status(cli::ExitCode::Error);
     }
 
-    linear_algebra::Tensor tensor;
+    formats::Tensor tensor;
     tensor.characteristic = characteristic;
     tensor.slices = std::move(slices);
 
@@ -155,7 +155,7 @@ int run(int whole_argc, char** whole_argv) {
         description + "\nNaive cost " +
         std::to_string(linear_algebra::multiplication_count(field, tensor.slices)) +
         " multiplications, written by make-tensor.";
-    linear_algebra::write_tensor(cli::result(), tensor, comment);
+    formats::write_tensor(cli::result(), tensor, comment);
     return cli::exit_status(cli::ExitCode::Yes);
 }
 

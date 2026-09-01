@@ -19,7 +19,7 @@ std::vector<Automorphism> ambient_or_empty(const Field& field,
     }
 }
 
-CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& tensor,
+CandidateVerdict tree_verdict(const Field& field, const formats::Tensor& tensor,
                               std::size_t products, const Matrix& candidate,
                               const std::vector<Matrix>& pool,
                               const std::vector<Automorphism>& ambient, std::size_t node_limit,
@@ -50,12 +50,12 @@ CandidateVerdict tree_verdict(const Field& field, const linear_algebra::Tensor& 
         decomposition = std::move(found);
         return verdict;
     }
-    // `SearchBudget::exhausted` starts true and is set false when the node limit is
+    // `SearchBudget::tree_fully_walked` starts true and is set false when the node limit is
     // hit, so true means the tree was walked out and a negative answer is a
     // refutation, while false means it gave up. The field name reads the other way
     // round and the prose beside it in `exhaustive_search.h` has the two swapped;
     // the code is what is followed here.
-    verdict.verdict = budget.exhausted.load() ? satisfiability::Verdict::No
+    verdict.verdict = budget.tree_fully_walked.load() ? satisfiability::Verdict::No
                                               : satisfiability::Verdict::Unknown;
     return verdict;
 }

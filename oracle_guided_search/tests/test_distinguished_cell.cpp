@@ -98,7 +98,7 @@ std::vector<std::size_t> random_set(std::mt19937& source, std::size_t pool_size,
 /// and owes nothing to where the subset came from.
 Sweep sweep(const std::string& file, const Shape& shape, std::size_t depth,
             std::size_t random_sets, std::mt19937& source) {
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(file);
+    const formats::Tensor tensor = formats::read_tensor_file(file);
     const bilinear_rank::Field field(tensor.characteristic);
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());

@@ -117,8 +117,8 @@ std::vector<Matrix> some_candidates(const Field& field, const std::vector<Matrix
 }
 
 void the_two_representations_agree(const std::string& name) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(fixtures + "/" + name + ".tensor");
     const Field field(tensor.characteristic);
     const std::vector<Matrix> candidates = some_candidates(field, tensor.slices);
 
@@ -151,8 +151,8 @@ void the_two_representations_agree(const std::string& name) {
 
 /// The fields the packed walk must never answer for, and does not.
 void the_general_field_is_untouched(const std::string& name) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(fixtures + "/" + name + ".tensor");
     const Field field(tensor.characteristic);
     const std::vector<Matrix> candidates = some_candidates(field, tensor.slices);
 

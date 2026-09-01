@@ -100,7 +100,7 @@ bool expand_subspace_impl(const Field& field, ReducedBasis span,
                                  scratch, binary, found, products, where.child(here.id(), index))) {
             return true;
         }
-        if (!budget.exhausted) return false;  // gave up rather than ruled out
+        if (!budget.tree_fully_walked) return false;  // gave up rather than ruled out
     }
     return false;
 }
@@ -131,7 +131,7 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
     }
     const Gf2Leaf<Candidates>* leaf = binary ? &binary.value() : nullptr;
 
-    if (worker_count() <= 1) {
+    if (run_limits::worker_count() <= 1) {
         std::vector<Element> scratch;
         return expand_subspace_impl(field, root, width, pool, from, target, budget, scratch, leaf,
                                     nullptr, products, TraceNode{trace, 0, 0, 0});
@@ -171,9 +171,9 @@ bool expand_subspace_over(const Field& field, const std::vector<Matrix>& subspac
 
     std::atomic<bool> found(false);
     std::mutex handover;
-    parallel_for(pool.size() - from, [&](std::size_t offset) {
+    run_limits::parallel_for(pool.size() - from, [&](std::size_t offset) {
         if (found.load(std::memory_order_relaxed)) return;
-        if (!budget.exhausted.load(std::memory_order_relaxed)) return;
+        if (!budget.tree_fully_walked.load(std::memory_order_relaxed)) return;
 
         const std::size_t index = from + offset;
         std::vector<Element> scratch;

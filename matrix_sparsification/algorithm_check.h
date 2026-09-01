@@ -21,6 +21,13 @@ namespace matrix_sparsification {
 
 /// The operators of an `<n, m, k; t>` algorithm: `U` is `t x nm`, `V` is
 /// `t x mk`, `W` is `t x nk`, all indexed row-major over the operands.
+///
+/// [`bilinear_rank::Algorithm`](../descent_search/algorithm_recovery.h) is the
+/// same object over a modular field with **`W` transposed**: its `decode` is
+/// outputs x products where this `decoding` is products x outputs, each
+/// following its own source's convention. They stay two types because merging
+/// them would either transpose a cited definition or leave a member comment
+/// that lies for one of the two.
 struct BilinearAlgorithm {
     Matrix left_encoding;
     Matrix right_encoding;

@@ -9,7 +9,7 @@
 // renderer is what stops the two formats drifting apart entry by entry.
 #include "dense_matrix_file.h"
 
-namespace linear_algebra {
+namespace formats {
 
 namespace {
 
@@ -59,7 +59,7 @@ Tensor read_tensor(std::istream& input) {
     // so `field 4` was read in and left for a backend to notice. Two of the three
     // do notice; the SMT route did not, and a query in a theory of prime fields
     // is not refused for being about a ring.
-    if (!is_prime(tensor.characteristic)) {
+    if (!linear_algebra::is_prime(tensor.characteristic)) {
         throw std::runtime_error("field " + std::to_string(tensor.characteristic) +
                                  ": the characteristic must be a prime. GF(2^k) is written as a "
                                  "bigger tensor over GF(2), which is what the gf4, gf8 and gf16 "
@@ -73,7 +73,7 @@ Tensor read_tensor(std::istream& input) {
 
     tensor.slices.reserve(slice_count);
     for (std::size_t index = 0; index < slice_count; ++index) {
-        ModularMatrix slice(rows, columns);
+        linear_algebra::ModularMatrix slice(rows, columns);
         for (std::size_t row = 0; row < rows; ++row) {
             std::istringstream entries(expect_line(input, "a matrix row"));
             for (std::size_t column = 0; column < columns; ++column) {
@@ -103,9 +103,9 @@ void write_tensor(std::ostream& output, const Tensor& tensor, const std::string&
     // A blank line before every slice, the first one included. It is what the
     // fixtures carry, and the reader skips blank lines anyway, so this is for
     // whoever opens the file rather than for anything that parses it.
-    for (const ModularMatrix& slice : tensor.slices) {
+    for (const linear_algebra::ModularMatrix& slice : tensor.slices) {
         output << "\n" << to_string(slice);
     }
 }
 
-}  // namespace linear_algebra
+}  // namespace formats

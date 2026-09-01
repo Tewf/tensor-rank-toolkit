@@ -22,7 +22,7 @@
 /// turn a proof into an undecided. The heuristic still adopts the same candidates in the same order.
 /// Which decomposition a successful search hands back also differs, since
 /// threads race to find one, and any of them computes the map.
-namespace bilinear_rank {
+namespace run_limits {
 
 /// Workers a search may use. One by default; `set_worker_count(0)` asks for as
 /// many as the machine has.
@@ -43,4 +43,4 @@ void set_worker_count(std::size_t workers);
 /// failure here into the one abrupt one, and only above `--threads 1`.
 void parallel_for(std::size_t count, const std::function<void(std::size_t)>& body);
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

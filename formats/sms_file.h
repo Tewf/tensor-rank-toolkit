@@ -6,7 +6,7 @@
 
 #include "field.h"
 
-namespace linear_algebra {
+namespace formats {
 
 /// SMS: the sparse format LinBox and Givaro read and write, and the one the
 /// original spoke.
@@ -39,15 +39,15 @@ namespace linear_algebra {
 /// and external solvers all speak this format. What was measured
 /// travelling each way, and the four ways to get a failure that is not about SMS,
 /// is [`interchange/`](interchange/README.md).
-RationalMatrix read_sms(std::istream& input);
+linear_algebra::RationalMatrix read_sms(std::istream& input);
 
-RationalMatrix read_sms_file(const std::string& path);
+linear_algebra::RationalMatrix read_sms_file(const std::string& path);
 
 /// The same file over GF(p), which is where an operator has to land before
 /// anything here can compute with it.
 ///
 /// The field is a parameter because the file does not carry it: this is the
-/// reading half of `write_sms(std::ostream&, const ModularMatrix&)`, which had
+/// reading half of `write_sms(std::ostream&, const linear_algebra::ModularMatrix&)`, which had
 /// none, and it is how a published algorithm becomes a tensor in
 /// [`operators_to_tensor_main.cpp`](../descent_search/commands/operators_to_tensor_main.cpp).
 ///
@@ -55,16 +55,16 @@ RationalMatrix read_sms_file(const std::string& path);
 /// full of ninths and mod 2 a ninth is 1. A denominator that vanishes is refused:
 /// `4/9` modulo 3 has no residue to stand for, and returning anything would be
 /// answering a different question.
-ModularMatrix read_sms(std::istream& input, const ModularField& field);
+linear_algebra::ModularMatrix read_sms(std::istream& input, const linear_algebra::ModularField& field);
 
-ModularMatrix read_sms_file(const std::string& path, const ModularField& field);
+linear_algebra::ModularMatrix read_sms_file(const std::string& path, const linear_algebra::ModularField& field);
 
 /// Rationals and integers alike are cardinality zero, so the type is `R`.
-void write_sms(std::ostream& output, const RationalMatrix& matrix);
+void write_sms(std::ostream& output, const linear_algebra::RationalMatrix& matrix);
 
 /// Over GF(p) the type is `M`. The residue is written as it is held, in
 /// `[0, p)`, which is what LinBox's own writer emits.
-void write_sms(std::ostream& output, const ModularMatrix& matrix);
+void write_sms(std::ostream& output, const linear_algebra::ModularMatrix& matrix);
 
 /// Write one operator, with `comment` as a leading `#` line.
 ///
@@ -72,6 +72,6 @@ void write_sms(std::ostream& output, const ModularMatrix& matrix);
 /// and the tools on both sides skip it, so it costs nothing and a file that has
 /// travelled still says where it came from.
 void write_sms_file(const std::string& path, const std::string& comment,
-                    const ModularMatrix& matrix);
+                    const linear_algebra::ModularMatrix& matrix);
 
-}  // namespace linear_algebra
+}  // namespace formats

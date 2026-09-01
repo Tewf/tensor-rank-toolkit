@@ -105,8 +105,8 @@ struct SolverRun {
     /// lower bound.
     bool answered = false;
     bool satisfiable = false;
-    linear_algebra::Model model;
-    linear_algebra::SmtModel field_model;
+    formats::Model model;
+    formats::SmtModel field_model;
     double seconds = 0;
 };
 
@@ -133,12 +133,12 @@ struct SolverRun {
 /// nothing here becomes a default without a measurement behind it.
 enum class Tuning { None, Satisfiable, Unsatisfiable };
 
-SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver,
+SolverRun run_solver(const formats::Cnf& formula, const SatSolver& solver,
                 std::size_t memory_megabytes = 2048, std::size_t timeout_seconds = 300,
                 const std::string& proof_path = "", Tuning tuning = Tuning::None);
 
 /// The same for an SMT problem in the theory of finite fields.
-SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem,
+SolverRun run_smt_solver(const formats::SmtProblem& problem,
                          std::size_t memory_megabytes = 2048,
                          std::size_t timeout_seconds = 300);
 

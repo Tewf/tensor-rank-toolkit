@@ -96,9 +96,9 @@ class ScratchFile {
 std::string run_capped(const std::vector<std::string>& command, std::size_t megabytes,
                        std::size_t seconds) {
     const ScratchFile log(scratch_file(".log"));
-    const bool started = bilinear_rank::run_to_completion(
+    const bool started = run_limits::run_to_completion(
         command, log.path(),
-        bilinear_rank::ChildLimits{static_cast<double>(seconds), megabytes, false});
+        run_limits::ChildLimits{static_cast<double>(seconds), megabytes, false});
 
     std::string captured;
     if (started) {
@@ -167,7 +167,7 @@ std::string find_smt_solver() { return on_path("cvc5"); }
 
 std::string find_proof_checker() { return on_path("drat-trim"); }
 
-SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver,
+SolverRun run_solver(const formats::Cnf& formula, const SatSolver& solver,
                 std::size_t memory_megabytes, std::size_t timeout_seconds,
                 const std::string& proof_path, Tuning tuning) {
     SolverRun run;
@@ -189,7 +189,7 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
     const ScratchFile file(scratch_file(".cnf"));
     {
         std::ofstream out(file.path());
-        linear_algebra::write_dimacs(out, formula, solver.native_xor);
+        formats::write_dimacs(out, formula, solver.native_xor);
     }
 
     // Only kissat has these, and passing them to anything else makes it print
@@ -210,7 +210,7 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
     run.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
     std::istringstream lines(output);
-    run.model = linear_algebra::read_dimacs_model(lines);
+    run.model = formats::read_dimacs_model(lines);
     run.answered = run.model.answered;
     run.satisfiable = run.model.satisfiable;
 
@@ -233,7 +233,7 @@ SolverRun run_solver(const linear_algebra::Cnf& formula, const SatSolver& solver
     return run;
 }
 
-SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t memory_megabytes,
+SolverRun run_smt_solver(const formats::SmtProblem& problem, std::size_t memory_megabytes,
                          std::size_t timeout_seconds) {
     SolverRun run;
     const std::string solver = find_smt_solver();
@@ -244,7 +244,7 @@ SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t 
     const ScratchFile file(scratch_file(".smt2"));
     {
         std::ofstream out(file.path());
-        linear_algebra::write_smtlib(out, problem);
+        formats::write_smtlib(out, problem);
     }
 
     const auto started = std::chrono::steady_clock::now();
@@ -253,7 +253,7 @@ SolverRun run_smt_solver(const linear_algebra::SmtProblem& problem, std::size_t 
     run.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
 
     std::istringstream lines(output);
-    run.field_model = linear_algebra::read_smtlib_model(lines);
+    run.field_model = formats::read_smtlib_model(lines);
     run.answered = run.field_model.answered;
     run.satisfiable = run.field_model.satisfiable;
     return run;

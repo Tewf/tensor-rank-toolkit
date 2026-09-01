@@ -8,7 +8,7 @@
 #include <unistd.h>
 #endif
 
-namespace bilinear_rank {
+namespace run_limits {
 
 namespace {
 
@@ -79,4 +79,4 @@ std::size_t suggested_memory_budget_for(std::size_t scale_bytes) {
 
 std::size_t suggested_memory_budget() { return suggested_memory_budget_for(memory_scale_bytes()); }
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

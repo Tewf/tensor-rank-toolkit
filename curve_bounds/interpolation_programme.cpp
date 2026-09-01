@@ -72,8 +72,8 @@ SupplyPlan plan_for(const PointSupply& supply, std::size_t degree_budget) {
     const std::string frontier = "the interpolation frontier at degree " +
                                  std::to_string(degree_budget);
     const std::size_t cell = sizeof(std::size_t) + sizeof(Step);
-    bilinear_rank::require_room(frontier, degree_budget + 1, cell);
-    bilinear_rank::require_room(frontier, usable + 1, (degree_budget + 1) * cell);
+    run_limits::require_room(frontier, degree_budget + 1, cell);
+    run_limits::require_room(frontier, usable + 1, (degree_budget + 1) * cell);
 
     // by_points[p][g]: cost of using exactly p points consuming exactly g.
     std::vector<std::vector<std::size_t>> by_points(usable + 1,

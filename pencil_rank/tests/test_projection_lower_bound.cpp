@@ -43,8 +43,8 @@ int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
     for (const Fixture& fixture : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + fixture.name + ".tensor");
         const linear_algebra::ModularField field(tensor.characteristic);
         const std::string label = fixture.name;
         const long long floor = static_cast<long long>(projection_floor(field, tensor.slices));
@@ -64,8 +64,8 @@ int main(int argc, char** argv) {
     // Fewer than three slices leaves the projection nothing to remove, and the
     // answer must be "undecided" rather than a bound of 1.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/w_state.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/w_state.tensor");
         const linear_algebra::ModularField field(tensor.characteristic);
         check::equal("two slices: refutes nothing",
                      pencil_rank::projections_refute(field, tensor.slices, 1) ? 1 : 0, 0);

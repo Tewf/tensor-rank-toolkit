@@ -60,7 +60,7 @@ enum class SolverChoice {
 /// The whole decision space is at most 25 variables and at most `supply.size() + 1`
 /// rows, because the table caps at degree 10 and multiplicity 10 and prices only
 /// 25 of those hundred cells.
-optimisation::IntegerProgramme interpolation_programme_of(const std::vector<PointSupply>& supply,
+integer_programme::IntegerProgramme interpolation_programme_of(const std::vector<PointSupply>& supply,
                                                           std::size_t divisor_degree);
 
 /// Minimise through a solver, falling back to the dynamic programme.

@@ -61,7 +61,7 @@ void check_hardness_direction(const Field& field) {
 /// and an exact rank comes out, with the decomposition checked against it.
 void check_membership_direction(const Field& field, const std::string& fixtures,
                                 const std::string& name, long long known_rank, bool with_proof) {
-    const auto tensor = linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const auto tensor = formats::read_tensor_file(fixtures + "/" + name + ".tensor");
 
     const std::size_t floor = linear_algebra::flattening_lower_bound(field, tensor.slices);
     const std::size_t ceiling =
@@ -106,7 +106,7 @@ void check_membership_direction(const Field& field, const std::string& fixtures,
 /// run asks none at all.
 void check_achieved_ceiling(const Field& field, const std::string& fixtures,
                             const std::string& name, long long known_rank) {
-    const auto tensor = linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const auto tensor = formats::read_tensor_file(fixtures + "/" + name + ".tensor");
     const std::size_t floor = linear_algebra::flattening_lower_bound(field, tensor.slices);
 
     satisfiability::SolveOptions approach;

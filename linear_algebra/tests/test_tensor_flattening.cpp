@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     for (const Known& known : kKnown) {
         const auto tensor =
-            linear_algebra::read_tensor_file(fixtures + "/" + std::string(known.name) + ".tensor");
+            formats::read_tensor_file(fixtures + "/" + std::string(known.name) + ".tensor");
         const ModularField field(tensor.characteristic);
 
         const std::size_t bound = linear_algebra::flattening_lower_bound(field, tensor.slices);
@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     // need to be and nothing would say so.
     for (const Known& known : kKnown) {
         const auto tensor =
-            linear_algebra::read_tensor_file(fixtures + "/" + std::string(known.name) + ".tensor");
+            formats::read_tensor_file(fixtures + "/" + std::string(known.name) + ".tensor");
         const ModularField field(tensor.characteristic);
         check::equal(std::string(known.name) + " is concise",
                      linear_algebra::is_concise(field, tensor.slices) ? 1 : 0, 1);
@@ -68,8 +68,8 @@ int main(int argc, char** argv) {
     // zero row makes the first flattening rank deficient.
     {
         const ModularField field(2);
-        const auto original = linear_algebra::read_tensor_file(fixtures + "/f2_2x2.tensor");
-        linear_algebra::Tensor padded;
+        const auto original = formats::read_tensor_file(fixtures + "/f2_2x2.tensor");
+        formats::Tensor padded;
         padded.characteristic = 2;
         for (const auto& slice : original.slices) {
             linear_algebra::ModularMatrix grown(slice.rows() + 1, slice.columns());

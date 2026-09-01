@@ -86,7 +86,7 @@ int run(int argc, char** argv) {
             settings.approach.memory_megabytes = arguments.memory_size() / (1024 * 1024);
         } else if (arguments.is("--parallel")) {
             settings.parallel_candidates = true;
-            bilinear_rank::set_worker_count(0);
+            run_limits::set_worker_count(0);
         } else if (arguments.is("--break-symmetry")) {
             settings.approach.break_symmetry = true;
         } else if (arguments.is("--solver")) {
@@ -104,7 +104,7 @@ int run(int argc, char** argv) {
     }
     settings.matmul_shape = symmetry.shape;
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
+    const formats::Tensor tensor = formats::read_tensor_file(arguments.filename());
 
     const bilinear_rank::StrictStep step =
         bilinear_rank::strict_step(tensor, static_cast<std::size_t>(target), settings);

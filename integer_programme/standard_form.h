@@ -18,7 +18,7 @@
 /// That is the wasteful choice and the deliberate one: branch and bound adds
 /// bounds at every node, and a bound that is just another row is a bound the
 /// solver below cannot get subtly wrong.
-namespace optimisation {
+namespace integer_programme {
 
 struct StandardForm {
     std::vector<std::vector<Number>> rows;  // A, each of `columns` entries
@@ -42,4 +42,4 @@ StandardForm standard_form_of(const IntegerProgramme& programme);
 /// The point in the original variables that a standard-form point stands for.
 std::vector<Number> original_point(const StandardForm& form, const std::vector<Number>& values);
 
-}  // namespace optimisation
+}  // namespace integer_programme

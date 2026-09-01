@@ -109,7 +109,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
                               depth + 1, budget, scratch, found_elsewhere, binary,
                               products, where.child(here.id(), chosen))) {
             found = true;
-        } else if (!budget.exhausted) {
+        } else if (!budget.tree_fully_walked) {
             break;  // gave up rather than ruled out
         }
     }
@@ -222,7 +222,7 @@ bool expand_in_parallel(const Field& field, Branch root, const Candidates& pool,
     std::size_t taken = 0;
 
     std::vector<Element> prefix_scratch;
-    while (taken < frontier.size() && frontier.size() - taken < worker_count()) {
+    while (taken < frontier.size() && frontier.size() - taken < run_limits::worker_count()) {
         const Branch node = std::move(frontier[taken]);
         ++taken;
         if (expand_one(field, node, pool, action, target, budget, prefix_scratch, frontier,
@@ -234,9 +234,9 @@ bool expand_in_parallel(const Field& field, Branch root, const Candidates& pool,
 
     std::atomic<bool> found(false);
     std::mutex handover;
-    parallel_for(frontier.size() - taken, [&](std::size_t offset) {
+    run_limits::parallel_for(frontier.size() - taken, [&](std::size_t offset) {
         if (found.load(std::memory_order_relaxed)) return;
-        if (!budget.exhausted.load(std::memory_order_relaxed)) return;
+        if (!budget.tree_fully_walked.load(std::memory_order_relaxed)) return;
 
         const Branch& node = frontier[taken + offset];
 
@@ -284,7 +284,7 @@ bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& s
     const Gf2Leaf<Candidates>* binary = packed ? &packed.value() : nullptr;
 
     const ReducedBasis root = linear_algebra::span_of(field, subspace);
-    if (spread_over_cores && worker_count() > 1) {
+    if (spread_over_cores && run_limits::worker_count() > 1) {
         // Above one worker the subtrees interleave and what comes out is not a
         // tree. `decide-rank --trace` refuses the combination before reaching
         // here, so this is the second line of the same defence.

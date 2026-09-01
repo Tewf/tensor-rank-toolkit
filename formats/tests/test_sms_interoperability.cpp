@@ -35,15 +35,15 @@ namespace {
 using linear_algebra::ModularMatrix;
 using linear_algebra::RationalMatrix;
 
-std::string written(const RationalMatrix& matrix) {
+std::string written(const linear_algebra::RationalMatrix& matrix) {
     std::ostringstream out;
-    linear_algebra::write_sms(out, matrix);
+    formats::write_sms(out, matrix);
     return out.str();
 }
 
-std::string written(const ModularMatrix& matrix) {
+std::string written(const linear_algebra::ModularMatrix& matrix) {
     std::ostringstream out;
-    linear_algebra::write_sms(out, matrix);
+    formats::write_sms(out, matrix);
     return out.str();
 }
 
@@ -63,7 +63,7 @@ long long as_integer(const Givaro::Integer& value) {
 std::string refusal(const std::string& text) {
     std::istringstream input(text);
     try {
-        linear_algebra::read_sms(input);
+        formats::read_sms(input);
     } catch (const std::exception& problem) {
         return problem.what();
     }
@@ -74,7 +74,7 @@ std::string refusal_over(int64_t characteristic, const std::string& text) {
     const linear_algebra::ModularField field(characteristic);
     std::istringstream input(text);
     try {
-        linear_algebra::read_sms(input, field);
+        formats::read_sms(input, field);
     } catch (const std::exception& problem) {
         return problem.what();
     }
@@ -92,13 +92,13 @@ long long nonzeros_in(const std::string& text);
 long long first_entry(const std::string& text) {
     std::istringstream input(text);
     try {
-        return as_integer(linear_algebra::read_sms(input)(0, 0).nume());
+        return as_integer(formats::read_sms(input)(0, 0).nume());
     } catch (const std::exception&) {
         return -1;
     }
 }
 
-long long nonzero_count(const RationalMatrix& matrix) {
+long long nonzero_count(const linear_algebra::RationalMatrix& matrix) {
     const linear_algebra::RationalField field;
     long long counted = 0;
     for (std::size_t row = 0; row < matrix.rows(); ++row) {
@@ -112,7 +112,7 @@ long long nonzero_count(const RationalMatrix& matrix) {
 long long nonzeros_in(const std::string& text) {
     std::istringstream input(text);
     try {
-        return nonzero_count(linear_algebra::read_sms(input));
+        return nonzero_count(formats::read_sms(input));
     } catch (const std::exception&) {
         return -1;
     }
@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
     const std::string plinopt = fixtures + "/plinopt/";
 
     // Integers with an `R` header, the case the writer used to get backwards.
-    const RationalMatrix winograd = linear_algebra::read_sms_file(plinopt + "2x2x2_7_Winograd_L.sms");
+    const linear_algebra::RationalMatrix winograd = formats::read_sms_file(plinopt + "2x2x2_7_Winograd_L.sms");
     check::equal("Winograd L rows", static_cast<long long>(winograd.rows()), 7);
     check::equal("Winograd L columns", static_cast<long long>(winograd.columns()), 4);
     check::equal("Winograd L nonzeros", nonzero_count(winograd), 14);
@@ -133,8 +133,8 @@ int main(int argc, char** argv) {
     // Rationals, and triples that arrive as 1 1, 1 3, 1 2, 1 4. hpac.imag.fr
     // asks for lexicographic order and this file does not obey; LinBox reads it
     // anyway, so nothing here may depend on the order.
-    const RationalMatrix small_rational =
-        linear_algebra::read_sms_file(plinopt + "2x2x2_7_DPS-smallrat-12.2034_L.sms");
+    const linear_algebra::RationalMatrix small_rational =
+        formats::read_sms_file(plinopt + "2x2x2_7_DPS-smallrat-12.2034_L.sms");
     check::equal("DPS smallrat rows", static_cast<long long>(small_rational.rows()), 7);
     check::equal("DPS smallrat columns", static_cast<long long>(small_rational.columns()), 4);
     check::equal("DPS smallrat entry 1,1 numerator",
@@ -145,8 +145,8 @@ int main(int argc, char** argv) {
                  as_integer(small_rational(0, 1).nume()), -8);
 
     // A finite field, where the letter really is `M`.
-    const RationalMatrix karatsuba =
-        linear_algebra::read_sms_file(plinopt + "1o1o2_3_Karatsuba_L.sms");
+    const linear_algebra::RationalMatrix karatsuba =
+        formats::read_sms_file(plinopt + "1o1o2_3_Karatsuba_L.sms");
     check::equal("Karatsuba L rows", static_cast<long long>(karatsuba.rows()), 3);
     check::equal("Karatsuba L nonzeros", nonzero_count(karatsuba), 4);
 
@@ -157,7 +157,7 @@ int main(int argc, char** argv) {
     check::equal("rationals with fractions are written R",
                  first_line(written(small_rational)) == "7 4 R", 1);
 
-    ModularMatrix over_gf2(3, 2);
+    linear_algebra::ModularMatrix over_gf2(3, 2);
     over_gf2(0, 0) = 1;
     over_gf2(1, 0) = 1;
     over_gf2(1, 1) = 1;
@@ -165,9 +165,9 @@ int main(int argc, char** argv) {
     check::equal("GF(p) is written M", first_line(written(over_gf2)) == "3 2 M", 1);
 
     // A round trip changes nothing, comments and ordering aside.
-    const RationalMatrix reread = [&] {
+    const linear_algebra::RationalMatrix reread = [&] {
         std::istringstream input(written(small_rational));
-        return linear_algebra::read_sms(input);
+        return formats::read_sms(input);
     }();
     check::equal("round trip keeps the shape",
                  static_cast<long long>(reread.rows() * reread.columns()), 28);
@@ -203,13 +203,13 @@ int main(int argc, char** argv) {
     check::equal("a file of several matrices yields the first and none of the second",
                  nonzeros_in("2 2 R\n1 1 1\n0 0 0\n\n# the second\n2 2 R\n2 2 9\n0 0 0\n"), 1);
 
-    // The reading half of `write_sms(ostream, ModularMatrix)`, which had none.
+    // The reading half of `write_sms(ostream, linear_algebra::ModularMatrix)`, which had none.
     // SMS carries no field, so the field is a parameter, exactly as PLinOpt
     // takes it on the command line with `-q`.
     {
         const linear_algebra::ModularField gf7(7);
         std::istringstream input("2 2 R\n1 1 4/9\n2 2 -8\n0 0 0\n");
-        const ModularMatrix reduced = linear_algebra::read_sms(input, gf7);
+        const linear_algebra::ModularMatrix reduced = formats::read_sms(input, gf7);
         check::equal("4/9 modulo 7 is 2", reduced(0, 0), 2);
         check::equal("-8 modulo 7 is 6", reduced(1, 1), 6);
     }
@@ -228,11 +228,11 @@ int main(int argc, char** argv) {
     // the header. PLinOpt's tools skipped the block without a word, and nothing
     // on this side checked that they could.
     {
-        ModularMatrix operand(2, 3);
+        linear_algebra::ModularMatrix operand(2, 3);
         operand(0, 1) = 1;
         operand(1, 2) = 1;
         const std::string path = "sms_provenance_round_trip.sms";
-        linear_algebra::write_sms_file(path, "Recovered from a fixture\nby minimise-rank.",
+        formats::write_sms_file(path, "Recovered from a fixture\nby minimise-rank.",
                                        operand);
 
         std::ifstream back(path);
@@ -242,7 +242,7 @@ int main(int argc, char** argv) {
         check::equal("every provenance line is commented",
                      first.starts_with("# ") && second.starts_with("# "), 1);
 
-        const RationalMatrix commented = linear_algebra::read_sms_file(path);
+        const linear_algebra::RationalMatrix commented = formats::read_sms_file(path);
         check::equal("a commented file reads back to the same shape",
                      static_cast<long long>(commented.rows() * commented.columns()), 6);
         check::equal("a commented file keeps its nonzeros", nonzero_count(commented), 2);

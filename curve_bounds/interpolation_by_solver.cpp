@@ -12,7 +12,7 @@ namespace curve_bounds {
 
 namespace {
 
-using optimisation::Number;
+using integer_programme::Number;
 
 std::size_t& node_limit_storage() {
     static std::size_t nodes = 200'000;
@@ -50,10 +50,10 @@ std::vector<Column> columns_of(const std::vector<PointSupply>& supply,
 std::size_t solver_node_limit() { return node_limit_storage(); }
 void set_solver_node_limit(std::size_t nodes) { node_limit_storage() = nodes; }
 
-optimisation::IntegerProgramme interpolation_programme_of(const std::vector<PointSupply>& supply,
+integer_programme::IntegerProgramme interpolation_programme_of(const std::vector<PointSupply>& supply,
                                                           std::size_t divisor_degree) {
-    optimisation::IntegerProgramme programme;
-    programme.sense = optimisation::Sense::Minimise;
+    integer_programme::IntegerProgramme programme;
+    programme.sense = integer_programme::Sense::Minimise;
 
     const std::vector<Column> columns = columns_of(supply, divisor_degree);
     for (const Column& column : columns) {
@@ -63,7 +63,7 @@ optimisation::IntegerProgramme interpolation_programme_of(const std::vector<Poin
         // this multiplicity. Both bounds are stated because an integer variable
         // with no upper bound is binary to CBC and to GLPK.
         const std::size_t affordable = divisor_degree / (column.multiplicity * one.degree);
-        optimisation::Variable variable;
+        integer_programme::Variable variable;
         variable.name = "d" + std::to_string(one.degree) + "u" +
                         std::to_string(column.multiplicity) + "s" + std::to_string(column.entry);
         variable.integral = true;
@@ -79,14 +79,14 @@ optimisation::IntegerProgramme interpolation_programme_of(const std::vector<Poin
     // minimising over smaller divisors too would answer "one rational point,
     // cost 1", which bounds nothing. The roadmap fixes deg G first and then asks
     // for the best divisor of that degree.
-    std::vector<optimisation::Coefficient> degree_row;
+    std::vector<integer_programme::Coefficient> degree_row;
     for (std::size_t index = 0; index < columns.size(); ++index) {
         const std::size_t weight = columns[index].multiplicity * supply[columns[index].entry].degree;
         degree_row.push_back(
-            optimisation::Coefficient{index, Number(static_cast<long>(weight))});
+            integer_programme::Coefficient{index, Number(static_cast<long>(weight))});
     }
-    programme.constraints.push_back(optimisation::Constraint{
-        "degG", degree_row, optimisation::Relation::Equal,
+    programme.constraints.push_back(integer_programme::Constraint{
+        "degG", degree_row, integer_programme::Relation::Equal,
         Number(static_cast<long>(divisor_degree))});
 
     // One row per supply entry: `available` counts distinct points, so raising a
@@ -95,14 +95,14 @@ optimisation::IntegerProgramme interpolation_programme_of(const std::vector<Poin
     // per degree.
     for (std::size_t entry = 0; entry < supply.size(); ++entry) {
         if (supply[entry].degree == 0 || supply[entry].available == 0) continue;
-        std::vector<optimisation::Coefficient> row;
+        std::vector<integer_programme::Coefficient> row;
         for (std::size_t index = 0; index < columns.size(); ++index) {
             if (columns[index].entry != entry) continue;
-            row.push_back(optimisation::Coefficient{index, Number(1)});
+            row.push_back(integer_programme::Coefficient{index, Number(1)});
         }
         if (row.empty()) continue;
-        programme.constraints.push_back(optimisation::Constraint{
-            "points" + std::to_string(entry), row, optimisation::Relation::LessOrEqual,
+        programme.constraints.push_back(integer_programme::Constraint{
+            "points" + std::to_string(entry), row, integer_programme::Relation::LessOrEqual,
             Number(static_cast<long>(supply[entry].available))});
     }
     return programme;
@@ -114,21 +114,21 @@ BoundResult minimise_interpolation_bound_by_solver(const std::vector<PointSupply
     // The degenerate cases the model cannot state: a programme with no columns is
     // not infeasible, it is a question about nothing, and degree 0 is the one the
     // dynamic programme already refuses.
-    const optimisation::IntegerProgramme model =
+    const integer_programme::IntegerProgramme model =
         interpolation_programme_of(supply, divisor_degree);
     if (divisor_degree == 0 || model.variables.empty()) {
         return minimise_interpolation_bound(supply, divisor_degree);
     }
 
-    const optimisation::Solution answer =
+    const integer_programme::Solution answer =
         choice == SolverChoice::BuiltInOnly
-            ? optimisation::branch_and_bound(model, solver_node_limit())
-            : optimisation::solve(model, solver_node_limit());
+            ? integer_programme::branch_and_bound(model, solver_node_limit())
+            : integer_programme::solve(model, solver_node_limit());
 
     // Believed, and it matches the dynamic programme's `solved == false`. Only the
     // built-in ever says it: `solve()` treats an outside solver's infeasibility as
     // one more decline and carries on, so an Infeasible reaching here is exact.
-    if (answer.status == optimisation::Status::Infeasible) {
+    if (answer.status == integer_programme::Status::Infeasible) {
         BoundResult refused;
         refused.solved_by = answer.solved_by.empty() ? "built-in" : answer.solved_by;
         refused.optimum_proved = true;
@@ -142,7 +142,7 @@ BoundResult minimise_interpolation_bound_by_solver(const std::vector<PointSupply
     // A short `values` is treated the same way. No backend should report Optimal
     // without a point, and reading past the end to find out would be the wrong
     // way to learn that one did.
-    if (answer.status != optimisation::Status::Optimal ||
+    if (answer.status != integer_programme::Status::Optimal ||
         answer.values.size() < model.variables.size()) {
         BoundResult fallen_back = minimise_interpolation_bound(supply, divisor_degree);
         fallen_back.solved_by = "dynamic programme, after " +
@@ -164,7 +164,7 @@ BoundResult minimise_interpolation_bound_by_solver(const std::vector<PointSupply
 
     const std::vector<Column> columns = columns_of(supply, divisor_degree);
     for (std::size_t index = 0; index < columns.size(); ++index) {
-        const long count = static_cast<long>(optimisation::nearest_whole(answer.values[index]));
+        const long count = static_cast<long>(integer_programme::nearest_whole(answer.values[index]));
         if (count <= 0) continue;
         programme.chosen.push_back(Selection{supply[columns[index].entry].degree,
                                              columns[index].multiplicity,

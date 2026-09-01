@@ -18,12 +18,12 @@ int main(int argc, char** argv) {
 
     for (const char* name : {"strassen_u", "strassen_v", "alternative_basis_u"}) {
         const linear_algebra::RationalMatrix original =
-            linear_algebra::read_rational_matrix_file(directory + "/" + name + ".matrix");
+            formats::read_rational_matrix_file(directory + "/" + name + ".matrix");
 
         std::ostringstream written;
-        linear_algebra::write_sms(written, original);
+        formats::write_sms(written, original);
         std::istringstream reading(written.str());
-        const linear_algebra::RationalMatrix returned = linear_algebra::read_sms(reading);
+        const linear_algebra::RationalMatrix returned = formats::read_sms(reading);
 
         check::equal(std::string(name) + " rows", static_cast<long long>(returned.rows()),
                      static_cast<long long>(original.rows()));
@@ -46,12 +46,12 @@ int main(int argc, char** argv) {
     // Strassen's operator is integers and PLinOpt ships it as `7 4 R`.
     {
         std::ostringstream integers;
-        linear_algebra::write_sms(
-            integers, linear_algebra::read_rational_matrix_file(directory + "/strassen_u.matrix"));
+        formats::write_sms(
+            integers, formats::read_rational_matrix_file(directory + "/strassen_u.matrix"));
         check::equal("integer operator tagged R", integers.str().substr(0, 6) == "7 4 R\n" ? 1 : 0,
                      1);
         std::ostringstream fractions;
-        linear_algebra::write_sms(fractions, linear_algebra::read_rational_matrix_file(
+        formats::write_sms(fractions, formats::read_rational_matrix_file(
                                                  directory + "/alternative_basis_u.matrix"));
         check::equal("rational operator tagged R",
                      fractions.str().substr(0, 6) == "7 4 R\n" ? 1 : 0, 1);

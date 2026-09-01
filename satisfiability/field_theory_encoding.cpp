@@ -35,7 +35,7 @@ std::string FieldTheoryEncoding::output_name(std::size_t term, std::size_t slice
     return "c_" + std::to_string(term) + "_" + std::to_string(slice);
 }
 
-FieldTheoryEncoding encode_field_rank_at_most(const linear_algebra::Tensor& tensor,
+FieldTheoryEncoding encode_field_rank_at_most(const formats::Tensor& tensor,
                                               std::size_t products) {
     // cvc5's `QF_FF` is a decision procedure for *prime* fields, so a composite
     // characteristic would be handed a query it does not model and whatever came
@@ -69,7 +69,7 @@ FieldTheoryEncoding encode_field_rank_at_most(const linear_algebra::Tensor& tens
         }
     }
 
-    const std::string zero = linear_algebra::SmtProblem::literal(0);
+    const std::string zero = formats::SmtProblem::literal(0);
     for (std::size_t row = 0; row < encoding.rows; ++row) {
         for (std::size_t column = 0; column < encoding.columns; ++column) {
             for (std::size_t slice = 0; slice < encoding.slices; ++slice) {
@@ -88,7 +88,7 @@ FieldTheoryEncoding encode_field_rank_at_most(const linear_algebra::Tensor& tens
                     reduced(tensor.slices[slice](row, column), tensor.characteristic);
                 encoding.problem.assertions.push_back("(= " + folded("ff.add", summands, zero) +
                                                       " " +
-                                                      linear_algebra::SmtProblem::literal(wanted) +
+                                                      formats::SmtProblem::literal(wanted) +
                                                       ")");
             }
         }

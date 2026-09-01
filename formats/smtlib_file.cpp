@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-namespace linear_algebra {
+namespace formats {
 
 std::string SmtProblem::literal(std::size_t value) {
     return "(as ff" + std::to_string(value) + " F)";
@@ -77,4 +77,4 @@ SmtModel read_smtlib_model(std::istream& input) {
     return model;
 }
 
-}  // namespace linear_algebra
+}  // namespace formats

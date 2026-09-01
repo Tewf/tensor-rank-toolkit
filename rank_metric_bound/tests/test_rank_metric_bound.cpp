@@ -104,8 +104,8 @@ using linear_algebra::ModularMatrix;
 /// A two-slice tensor whose slices are equal, so `v -> v ·_2 T` has a kernel and
 /// the slice space is smaller than its axis. Its rank is 1, and a bound that
 /// counted the axis instead of the space would say 2.
-linear_algebra::Tensor repeated_slice_tensor() {
-    linear_algebra::Tensor tensor;
+formats::Tensor repeated_slice_tensor() {
+    formats::Tensor tensor;
     tensor.characteristic = 2;
     for (std::size_t slice = 0; slice < 2; ++slice) {
         ModularMatrix matrix(2, 2);
@@ -152,8 +152,8 @@ int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
     for (const Fixture& fixture : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + fixture.name + ".tensor");
         const ModularField field(tensor.characteristic);
         const std::string label = fixture.name;
         const auto characteristic = static_cast<std::size_t>(tensor.characteristic);
@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
     // A slice space smaller than its axis: both bounds read the space, not the
     // axis, so a tensor that is not concise is bounded at its true rank of 1.
     {
-        const linear_algebra::Tensor tensor = repeated_slice_tensor();
+        const formats::Tensor tensor = repeated_slice_tensor();
         const ModularField field(tensor.characteristic);
         check::equal("a repeated slice bounds at one",
                      static_cast<long long>(
@@ -226,8 +226,8 @@ int main(int argc, char** argv) {
     // No budget means every axis is skipped, which must weaken the answer to
     // zero rather than enumerate anything or report a bound it did not compute.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/matmul_2x2x2.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/matmul_2x2x2.tensor");
         const ModularField field(tensor.characteristic);
         check::equal("no table budget skips every axis",
                      static_cast<long long>(

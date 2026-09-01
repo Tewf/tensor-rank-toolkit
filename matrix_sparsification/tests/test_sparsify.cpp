@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
     for (const Expectation& expected : kExpectations) {
         const std::string name = expected.name;
         const matrix_sparsification::Matrix original =
-            linear_algebra::read_rational_matrix_file(directory + "/" + name + ".matrix");
+            formats::read_rational_matrix_file(directory + "/" + name + ".matrix");
         const matrix_sparsification::Matrix transposed = linear_algebra::transpose<matrix_sparsification::Field>(original);
 
         check::equal(name + " as given",

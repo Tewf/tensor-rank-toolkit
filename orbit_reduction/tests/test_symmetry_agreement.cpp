@@ -50,7 +50,7 @@ Verdict plain(const Field& field, const std::vector<Matrix>& slices,
     if (bilinear_rank::expand_subspace(field, slices, pool, 0, target, budget, products)) {
         return Verdict::Found;
     }
-    return budget.exhausted ? Verdict::Refuted : Verdict::Undecided;
+    return budget.tree_fully_walked ? Verdict::Refuted : Verdict::Undecided;
 }
 
 /// A quotiented run's verdict and what it cost, because the two behave
@@ -79,7 +79,7 @@ Run quotiented_addressed(const Field& field, const std::vector<Matrix>& slices,
     Run run;
     run.nodes = static_cast<long long>(budget.nodes_visited.load());
     run.verdict = found ? Verdict::Found
-                        : (budget.exhausted ? Verdict::Refuted : Verdict::Undecided);
+                        : (budget.tree_fully_walked ? Verdict::Refuted : Verdict::Undecided);
     return run;
 }
 
@@ -91,15 +91,15 @@ Run quotiented_on(std::size_t workers, const Field& field, const std::vector<Mat
 
     bilinear_rank::SearchBudget budget{2'000'000};
     std::vector<Matrix> products;
-    bilinear_rank::set_worker_count(workers);
+    run_limits::set_worker_count(workers);
     const bool found = bilinear_rank::expand_subspace_up_to_symmetry(field, slices, pool, group,
                                                                     target, budget, products);
-    bilinear_rank::set_worker_count(1);
+    run_limits::set_worker_count(1);
 
     Run run;
     run.nodes = static_cast<long long>(budget.nodes_visited.load());
     run.verdict = found ? Verdict::Found
-                        : (budget.exhausted ? Verdict::Refuted : Verdict::Undecided);
+                        : (budget.tree_fully_walked ? Verdict::Refuted : Verdict::Undecided);
     return run;
 }
 
@@ -133,8 +133,8 @@ int main(int argc, char** argv) {
     const std::string directory = argv[1];
 
     for (const Question& question : kQuestions) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + question.fixture + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + question.fixture + ".tensor");
         const Field field(tensor.characteristic);
         const std::vector<Matrix> pool =
             bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());
@@ -197,8 +197,8 @@ int main(int argc, char** argv) {
     // therefore a memory-safety property and not a usability one, which is why it
     // is asserted rather than left to the tools.
     {
-        const linear_algebra::Tensor wrong =
-            linear_algebra::read_tensor_file(directory + "/matmul_2x2x3.tensor");
+        const formats::Tensor wrong =
+            formats::read_tensor_file(directory + "/matmul_2x2x3.tensor");
         bool refused = false;
         try {
             bilinear_rank::require_matmul_shape(wrong.slices, 2, 2, 2);
@@ -207,8 +207,8 @@ int main(int argc, char** argv) {
         }
         check::equal("a shape that is not the tensor's is refused", refused ? 1 : 0, 1);
 
-        const linear_algebra::Tensor right =
-            linear_algebra::read_tensor_file(directory + "/matmul_2x2x2.tensor");
+        const formats::Tensor right =
+            formats::read_tensor_file(directory + "/matmul_2x2x2.tensor");
         bool accepted = true;
         try {
             bilinear_rank::require_matmul_shape(right.slices, 2, 2, 2);

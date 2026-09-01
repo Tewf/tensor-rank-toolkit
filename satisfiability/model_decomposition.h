@@ -26,21 +26,21 @@ namespace satisfiability {
 /// Each is the outer product `a⁽ˡ⁾ ⊗ b⁽ˡ⁾`, which is what the rest of this
 /// repository calls one multiplication. Empty when the model is unsatisfiable.
 std::vector<Matrix> decomposition_from_model(const Field& field, const BinaryEncoding& encoding,
-                                             const linear_algebra::Model& model);
+                                             const formats::Model& model);
 std::vector<Matrix> decomposition_from_model(const Field& field,
                                              const PrimeFieldEncoding& encoding,
-                                             const linear_algebra::Model& model);
+                                             const formats::Model& model);
 std::vector<Matrix> decomposition_from_model(const Field& field,
                                              const FieldTheoryEncoding& encoding,
-                                             const linear_algebra::SmtModel& model);
+                                             const formats::SmtModel& model);
 
 /// Whether those matrices, weighted as the model says, really are the tensor.
-bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor,
-                        const BinaryEncoding& encoding, const linear_algebra::Model& model);
-bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor,
-                        const PrimeFieldEncoding& encoding, const linear_algebra::Model& model);
-bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor,
+bool model_reconstructs(const Field& field, const formats::Tensor& tensor,
+                        const BinaryEncoding& encoding, const formats::Model& model);
+bool model_reconstructs(const Field& field, const formats::Tensor& tensor,
+                        const PrimeFieldEncoding& encoding, const formats::Model& model);
+bool model_reconstructs(const Field& field, const formats::Tensor& tensor,
                         const FieldTheoryEncoding& encoding,
-                        const linear_algebra::SmtModel& model);
+                        const formats::SmtModel& model);
 
 }  // namespace satisfiability

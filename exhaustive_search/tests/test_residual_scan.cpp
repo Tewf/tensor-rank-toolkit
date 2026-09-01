@@ -154,7 +154,7 @@ void compare_under_a_budget(const std::string& what, const Gf2Leaf<Candidates>& 
         const bool agreed = same(residual, direct)
                             && for_residual.leaf_abandoned.load() == expected
                             && for_direct.leaf_abandoned.load() == expected
-                            && for_residual.exhausted.load() == for_direct.exhausted.load();
+                            && for_residual.tree_fully_walked.load() == for_direct.tree_fully_walked.load();
         tally.saw(agreed, what + " under a leaf limit of " + std::to_string(limit));
     }
 }
@@ -170,8 +170,8 @@ int main(int argc, char** argv) {
 
     // 4x4, 5x5 and 9x9, which are the widths this repository searches at.
     for (const char* name : {"gf16_multiplication", "f2_5x5", "matmul_3x3x3"}) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + name + ".tensor");
         const Field field(tensor.characteristic);
         const std::size_t rows = tensor.rows();
         const std::size_t columns = tensor.columns();
@@ -185,7 +185,7 @@ int main(int argc, char** argv) {
 
         // With room for the table, which is how every published run here is
         // configured and the route a survivor is handed back through.
-        bilinear_rank::set_memory_budget(std::size_t(2) << 30);
+        run_limits::set_memory_budget(std::size_t(2) << 30);
         const Gf2Leaf<Addressed> tabled(field, pool, rows, columns);
         check::equal(label + ": the pool is the grid, so the scan carries a residual",
                      tabled.carries_a_residual() ? 1 : 0, 1);
@@ -207,9 +207,9 @@ int main(int argc, char** argv) {
 
         // And with none, where every element is packed on demand. The same
         // switch the real run makes at a shape whose table would not fit.
-        bilinear_rank::set_memory_budget(1);
+        run_limits::set_memory_budget(1);
         const Gf2Leaf<Addressed> onthefly(field, pool, rows, columns);
-        bilinear_rank::set_memory_budget(std::size_t(2) << 30);
+        run_limits::set_memory_budget(std::size_t(2) << 30);
         check::equal(label + ": and carries one with no table either",
                      onthefly.carries_a_residual() ? 1 : 0, 1);
 

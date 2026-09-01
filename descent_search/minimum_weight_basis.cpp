@@ -313,7 +313,7 @@ std::vector<Matrix> basis_walked_over(const Field& field, const std::vector<Matr
     // still. Nothing is reserved against it, because the ceiling below leaves a
     // fraction of the span standing and the reserve would be the largest
     // allocation in the function for room it never fills.
-    require_room("the span of " + std::to_string(slices.size()) + " slices",
+    run_limits::require_room("the span of " + std::to_string(slices.size()) + " slices",
                  combinations - 1, sizeof(Candidate));
 
     std::vector<Candidate> candidates;
@@ -395,7 +395,7 @@ std::vector<Matrix> basis_walked_over(const Field& field, const std::vector<Matr
 std::vector<std::size_t> span_element_ranks(const Field& field,
                                             const std::vector<Matrix>& slices) {
     const std::size_t combinations = span_size(field, slices.size());
-    require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
+    run_limits::require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
                  combinations, sizeof(std::size_t));
 
     std::vector<std::size_t> ranks(combinations);

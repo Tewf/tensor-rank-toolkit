@@ -30,9 +30,9 @@
 
 namespace {
 
-using bilinear_rank::parallel_for;
-using bilinear_rank::set_worker_count;
-using bilinear_rank::worker_count;
+using run_limits::parallel_for;
+using run_limits::set_worker_count;
+using run_limits::worker_count;
 
 /// Every index exactly once, whatever the worker count.
 long long visits_that_were_not_one(std::size_t count, std::size_t workers) {

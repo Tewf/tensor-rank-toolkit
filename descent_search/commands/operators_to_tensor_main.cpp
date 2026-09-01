@@ -40,9 +40,9 @@ void usage() {
 /// `sum_r P[i][r] * L[r] (x) R[r]`. That is PLinOpt's convention as well as this
 /// repository's, which is asserted rather than assumed in
 /// `formats/tests/test_operators_to_tensor.cpp`.
-linear_algebra::Tensor map_of(const bilinear_rank::Field& field, int64_t characteristic,
+formats::Tensor map_of(const bilinear_rank::Field& field, int64_t characteristic,
                               const bilinear_rank::Algorithm& algorithm) {
-    linear_algebra::Tensor tensor;
+    formats::Tensor tensor;
     tensor.characteristic = characteristic;
     tensor.slices = bilinear_rank::map_computed_by(field, algorithm);
     return tensor;
@@ -96,17 +96,17 @@ int run(int argc, char** argv) {
     }
 
     const bilinear_rank::Field field(characteristic);
-    const bilinear_rank::Algorithm algorithm{linear_algebra::read_sms_file(files[0], field),
-                                             linear_algebra::read_sms_file(files[1], field),
-                                             linear_algebra::read_sms_file(files[2], field)};
+    const bilinear_rank::Algorithm algorithm{formats::read_sms_file(files[0], field),
+                                             formats::read_sms_file(files[1], field),
+                                             formats::read_sms_file(files[2], field)};
     require_shapes_meet(algorithm);
 
-    const linear_algebra::Tensor tensor = map_of(field, characteristic, algorithm);
+    const formats::Tensor tensor = map_of(field, characteristic, algorithm);
     cli::note() << "read " << algorithm.product_count() << " products over GF(" << characteristic
                 << "): L is " << algorithm.left.rows() << "x" << algorithm.left.columns()
                 << ", R is " << algorithm.right.rows() << "x" << algorithm.right.columns()
                 << ", P is " << algorithm.decode.rows() << "x" << algorithm.decode.columns();
-    linear_algebra::write_tensor(cli::result(), tensor,
+    formats::write_tensor(cli::result(), tensor,
                                  "The map computed by " + files[0] + ", " + files[1] + " and " +
                                      files[2] + ",\nread by operators-to-tensor over GF(" +
                                      std::to_string(characteristic) + ") from " +

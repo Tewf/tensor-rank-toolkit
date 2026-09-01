@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
                 return cli::exit_status(cli::ExitCode::Usage);
             }
             if (arguments.is("--max-memory")) {
-                bilinear_rank::set_memory_budget(arguments.memory_size());
+                run_limits::set_memory_budget(arguments.memory_size());
                 continue;
             }
             arguments.refuse();
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
         }
         const std::string path = arguments.filename();
 
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+        const formats::Tensor tensor = formats::read_tensor_file(path);
         if (tensor.slices.size() > 2) {
             cli::note() << "decide-rank-by-pencil: " << tensor.slices.size()
                         << " slices, and this decides pencils. Use decide-rank.";

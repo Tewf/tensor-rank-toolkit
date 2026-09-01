@@ -22,8 +22,8 @@
 
 namespace {
 
-using linear_algebra::Cnf;
-using linear_algebra::Model;
+using formats::Cnf;
+using formats::Model;
 using satisfiability::Field;
 using satisfiability::Matrix;
 using satisfiability::PrimeFieldEncoding;
@@ -42,10 +42,10 @@ void Element_add(const Field& field, satisfiability::Element& target, std::size_
     field.addin(target, addend);
 }
 
-linear_algebra::Tensor tensor_from(const Field& field, std::size_t characteristic,
+formats::Tensor tensor_from(const Field& field, std::size_t characteristic,
                                    const std::vector<Term>& terms, std::size_t rows,
                                    std::size_t columns, std::size_t slices) {
-    linear_algebra::Tensor tensor;
+    formats::Tensor tensor;
     tensor.characteristic = static_cast<int64_t>(characteristic);
     tensor.slices.assign(slices, Matrix(rows, columns));
 

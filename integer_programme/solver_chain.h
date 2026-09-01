@@ -24,7 +24,7 @@
 /// answer and carries on down the chain. That makes proving infeasibility as
 /// slow as the exact solver, on purpose: a false `Infeasible` is the one answer
 /// here that nothing downstream would catch.
-namespace optimisation {
+namespace integer_programme {
 
 /// Best first. Gurobi leads where a licence exists, and the built-in trails
 /// because it is the slowest and the only one that never needs checking.
@@ -82,4 +82,4 @@ Solution solve(const IntegerProgramme& programme, std::size_t node_limit);
 /// One named backend, installed or not. `Exhausted` when it is not.
 Solution solve_with(Backend backend, const IntegerProgramme& programme, std::size_t node_limit);
 
-}  // namespace optimisation
+}  // namespace integer_programme

@@ -56,7 +56,7 @@ void usage() {
 /// then stops on a plateau it cannot cross, and the walk is the only thing here
 /// that moves sideways, so neither reaches what the pair reaches.
 std::vector<bilinear_rank::Matrix> heuristic_scheme(const bilinear_rank::Field& field,
-                                                   const linear_algebra::Tensor& tensor) {
+                                                   const formats::Tensor& tensor) {
     const std::vector<bilinear_rank::Matrix> current =
         bilinear_rank::descend_from_own_basis(field, tensor.slices);
     // Addressed, not built. This is one forward scan that keeps no index once it
@@ -99,9 +99,9 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--seeds")) {
             seeds = arguments.count();
         } else if (arguments.is("--threads")) {
-            bilinear_rank::set_worker_count(arguments.count());
+            run_limits::set_worker_count(arguments.count());
         } else if (arguments.is("--max-memory")) {
-            bilinear_rank::set_memory_budget(arguments.memory_size());
+            run_limits::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--from")) {
             from = arguments.whole_number();
         } else {
@@ -115,7 +115,7 @@ int run(int argc, char** argv) {
     }
     const std::string path = arguments.filename();
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+    const formats::Tensor tensor = formats::read_tensor_file(path);
     const bilinear_rank::Field field(tensor.characteristic);
 
     bilinear_rank::Algorithm naive;
@@ -178,7 +178,7 @@ int run(int argc, char** argv) {
         double seconds = 0.0;
     };
     std::vector<Walked> walks(seeds);
-    bilinear_rank::parallel_for(seeds, [&](std::size_t offset) {
+    run_limits::parallel_for(seeds, [&](std::size_t offset) {
         const cli::Clock::time_point walk_started = cli::Clock::now();
         walks[offset].scheme = bilinear_rank::random_flip_walk(field, start, flips, offset + 1,
                                                               &walks[offset].report);
@@ -208,7 +208,7 @@ int run(int argc, char** argv) {
     // following `decide-rank-by-pencil`. With workers the per-seed figures above
     // no longer sum to this, which is the reason it is printed at all: the number
     // the write-ups quote for a walk is this one.
-    cli::note() << cli::elapsed_seconds(started) << " s, " << bilinear_rank::worker_count()
+    cli::note() << cli::elapsed_seconds(started) << " s, " << run_limits::worker_count()
                 << " worker(s)";
     bilinear_rank::note_if_the_card_failed();
     return cli::exit_status(cli::ExitCode::Yes);

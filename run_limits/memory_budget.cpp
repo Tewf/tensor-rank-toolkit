@@ -4,7 +4,7 @@
 
 #include "machine.h"
 
-namespace bilinear_rank {
+namespace run_limits {
 
 namespace {
 
@@ -61,4 +61,4 @@ void require_room(const std::string& what, std::size_t count, std::size_t bytes_
                              " budget. Raise it with --max-memory if the machine has the room.");
 }
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

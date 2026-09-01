@@ -44,14 +44,14 @@ Counts counts_of(const bilinear_rank::EnumerationReport& pass) {
 /// One pass at `workers` workers, leaving the count back at one afterwards so a
 /// later check cannot inherit it.
 Counts enumerate_with(std::size_t workers, const bilinear_rank::Field& field,
-                      const linear_algebra::Tensor& tensor,
+                      const formats::Tensor& tensor,
                       const std::vector<bilinear_rank::Matrix>& pool,
                       const std::vector<bilinear_rank::Automorphism>& group, std::size_t target,
                       bool canonical) {
-    bilinear_rank::set_worker_count(workers);
+    run_limits::set_worker_count(workers);
     const Counts counts = counts_of(
         bilinear_rank::enumerate_solution_subspaces(field, tensor, pool, group, target, canonical));
-    bilinear_rank::set_worker_count(1);
+    run_limits::set_worker_count(1);
     return counts;
 }
 
@@ -73,8 +73,8 @@ void same_counts(const std::string& what, const Counts& actual, const Counts& ex
 /// uniqueness theorem for `⟨2,2,2⟩` recovered from the tensor.
 int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
-    const linear_algebra::Tensor strassen =
-        linear_algebra::read_tensor_file(directory + "/matmul_2x2x2.tensor");
+    const formats::Tensor strassen =
+        formats::read_tensor_file(directory + "/matmul_2x2x2.tensor");
     const bilinear_rank::Field field(strassen.characteristic);
 
     const std::vector<bilinear_rank::Matrix> pool =

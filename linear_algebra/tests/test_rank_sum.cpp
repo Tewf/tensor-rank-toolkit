@@ -134,8 +134,8 @@ Bounds bounds_of(const ModularField& field, const std::vector<ModularMatrix>& sl
 }
 
 /// The tensor of a single rank-one map, whose every contraction rank is 0 or 1.
-linear_algebra::Tensor rank_one_tensor() {
-    linear_algebra::Tensor tensor;
+formats::Tensor rank_one_tensor() {
+    formats::Tensor tensor;
     tensor.characteristic = 2;
     // T(row, column, slice) = u[row] v[column] w[slice], with u = v = w = (1,1).
     for (std::size_t slice = 0; slice < 2; ++slice) {
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
     bool total_ever_wins = false;
 
     for (const Fixture& fixture : kFixtures) {
-        const auto tensor = linear_algebra::read_tensor_file(fixtures + "/" +
+        const auto tensor = formats::read_tensor_file(fixtures + "/" +
                                                             std::string(fixture.name) + ".tensor");
         const ModularField field(tensor.characteristic);
         const std::string name = fixture.name;
@@ -206,7 +206,7 @@ int main(int argc, char** argv) {
     // short enough to enumerate twice. This is what would catch a wrong canonical
     // representative or a line walked the wrong number of times.
     for (const Fixture& fixture : kFixtures) {
-        const auto tensor = linear_algebra::read_tensor_file(fixtures + "/" +
+        const auto tensor = formats::read_tensor_file(fixtures + "/" +
                                                             std::string(fixture.name) + ".tensor");
         const ModularField field(tensor.characteristic);
         const auto characteristic = static_cast<std::size_t>(tensor.characteristic);
@@ -239,7 +239,7 @@ int main(int argc, char** argv) {
     // with no table budget at all the answer falls back to zero rather than
     // hanging or lying.
     {
-        const auto tensor = linear_algebra::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
+        const auto tensor = formats::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
         const ModularField field(tensor.characteristic);
         check::equal("no table budget skips every axis",
                      static_cast<long long>(

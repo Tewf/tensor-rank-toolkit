@@ -34,7 +34,7 @@ namespace satisfiability {
 ///
 /// Clauses are padded to three literals first, since the construction reads
 /// exactly three and padding by repetition changes nothing about satisfaction.
-linear_algebra::Tensor formula_to_tensor(const Field& field, const Formula& formula);
+formats::Tensor formula_to_tensor(const Field& field, const Formula& formula);
 
 /// `4n + 2m`, the rank the tensor has exactly when the formula is satisfiable.
 std::size_t target_rank(const Formula& formula);

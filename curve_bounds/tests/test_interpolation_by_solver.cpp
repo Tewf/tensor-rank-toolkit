@@ -41,29 +41,29 @@ std::string named(const std::vector<PointSupply>& supply, std::size_t degree) {
 /// hide.
 void check_the_model_states_the_same_question() {
     const std::vector<PointSupply> supply{{1, 3}, {2, 2}};
-    const optimisation::IntegerProgramme model =
+    const integer_programme::IntegerProgramme model =
         curve_bounds::interpolation_programme_of(supply, 6);
 
     check::equal("the objective is minimised",
-                 model.sense == optimisation::Sense::Minimise ? 1 : 0, 1);
+                 model.sense == integer_programme::Sense::Minimise ? 1 : 0, 1);
 
     // One equality on the total degree, and never an inequality: a `<=` would
     // always answer "take one rational point, cost 1", a bound on nothing.
     std::size_t equalities = 0;
     std::size_t capacities = 0;
-    for (const optimisation::Constraint& row : model.constraints) {
-        if (row.relation == optimisation::Relation::Equal) ++equalities;
-        if (row.relation == optimisation::Relation::LessOrEqual) ++capacities;
+    for (const integer_programme::Constraint& row : model.constraints) {
+        if (row.relation == integer_programme::Relation::Equal) ++equalities;
+        if (row.relation == integer_programme::Relation::LessOrEqual) ++capacities;
     }
     check::equal("exactly one row fixes the degree", static_cast<long long>(equalities), 1);
     check::equal("one capacity row per supply entry", static_cast<long long>(capacities), 2);
     check::equal("the degree row is an equality on deg G",
-                 model.constraints.front().relation == optimisation::Relation::Equal ? 1 : 0, 1);
+                 model.constraints.front().relation == integer_programme::Relation::Equal ? 1 : 0, 1);
 
     // Every variable is a count: whole, non-negative, and bounded above, because
     // an integer variable with no stated upper bound is binary to CBC and to GLPK.
     bool all_counts = !model.variables.empty();
-    for (const optimisation::Variable& variable : model.variables) {
+    for (const integer_programme::Variable& variable : model.variables) {
         if (!variable.integral || !variable.bounded_below || !variable.bounded_above) {
             all_counts = false;
         }
@@ -77,8 +77,8 @@ void check_the_model_states_the_same_question() {
     check::equal("unpriced multiplicities are absent, not free",
                  static_cast<long long>(model.variables.size()), 9);
     bool priced_only = true;
-    for (const optimisation::Number& price : model.objective) {
-        if (price == optimisation::Number(0)) priced_only = false;
+    for (const integer_programme::Number& price : model.objective) {
+        if (price == integer_programme::Number(0)) priced_only = false;
     }
     check::equal("no column costs nothing", priced_only ? 1 : 0, 1);
 }

@@ -14,14 +14,14 @@
 
 namespace {
 
-using optimisation::Constraint;
-using optimisation::IntegerProgramme;
-using optimisation::Number;
-using optimisation::Relation;
-using optimisation::Sense;
-using optimisation::Solution;
-using optimisation::Status;
-using optimisation::Variable;
+using integer_programme::Constraint;
+using integer_programme::IntegerProgramme;
+using integer_programme::Number;
+using integer_programme::Relation;
+using integer_programme::Sense;
+using integer_programme::Solution;
+using integer_programme::Status;
+using integer_programme::Variable;
 
 constexpr std::size_t kNodeLimit = 20000;
 
@@ -44,7 +44,7 @@ Variable whole_between(int lower, int upper) {
 Constraint row(std::vector<int> coefficients, Relation relation, Number bound) {
     std::vector<Number> dense;
     for (const int entry : coefficients) dense.push_back(Number(entry));
-    return optimisation::constraint_of(dense, relation, bound);
+    return integer_programme::constraint_of(dense, relation, bound);
 }
 
 std::vector<Number> objective_of(std::vector<int> coefficients) {
@@ -106,11 +106,11 @@ std::vector<Case> whole_cases() {
 
 void check_built_in() {
     for (const Case& example : whole_cases()) {
-        const Solution answer = optimisation::branch_and_bound(example.programme, kNodeLimit);
+        const Solution answer = integer_programme::branch_and_bound(example.programme, kNodeLimit);
         check::equal("built-in solves " + example.name,
                      answer.status == Status::Optimal ? as_integer(answer.objective.nume()) : -999,
                      example.optimum);
-        if (!optimisation::satisfies(example.programme, answer.values)) {
+        if (!integer_programme::satisfies(example.programme, answer.values)) {
             std::cout << "  FAIL  built-in point for " << example.name << " is not feasible\n";
             ++check::failure_count;
         }
@@ -125,10 +125,10 @@ void check_relaxation() {
     continuous.objective = objective_of({1, 1});
     continuous.constraints = {row({3, 2}, Relation::GreaterOrEqual, Number(7))};
 
-    const optimisation::StandardForm form = optimisation::standard_form_of(continuous);
-    const optimisation::LinearOptimum optimum = optimisation::solve_relaxation(form);
+    const integer_programme::StandardForm form = integer_programme::standard_form_of(continuous);
+    const integer_programme::LinearOptimum optimum = integer_programme::solve_relaxation(form);
     const Number value =
-        optimisation::objective_at(continuous, optimisation::original_point(form, optimum.values));
+        integer_programme::objective_at(continuous, integer_programme::original_point(form, optimum.values));
     check::equal("relaxation numerator", as_integer(value.nume()), 7);
     check::equal("relaxation denominator", as_integer(value.deno()), 3);
 }
@@ -140,7 +140,7 @@ void check_refusals() {
     impossible.constraints = {row({1}, Relation::GreaterOrEqual, Number(3)),
                               row({1}, Relation::LessOrEqual, Number(2))};
     check::equal("infeasible is reported",
-                 optimisation::branch_and_bound(impossible, kNodeLimit).status == Status::Infeasible,
+                 integer_programme::branch_and_bound(impossible, kNodeLimit).status == Status::Infeasible,
                  1);
 
     IntegerProgramme endless;
@@ -149,7 +149,7 @@ void check_refusals() {
     endless.variables = {upwards};
     endless.objective = objective_of({-1});
     check::equal("unbounded is reported",
-                 optimisation::branch_and_bound(endless, kNodeLimit).status == Status::Unbounded, 1);
+                 integer_programme::branch_and_bound(endless, kNodeLimit).status == Status::Unbounded, 1);
 
     IntegerProgramme rounding;
     rounding.sense = Sense::Maximise;
@@ -157,24 +157,24 @@ void check_refusals() {
     rounding.variables = {capped};
     rounding.objective = objective_of({1});
     rounding.constraints = {row({2}, Relation::LessOrEqual, Number(7))};
-    const Solution answer = optimisation::branch_and_bound(rounding, kNodeLimit);
+    const Solution answer = integer_programme::branch_and_bound(rounding, kNodeLimit);
     check::equal("maximise under 7/2", as_integer(answer.objective.nume()), 3);
 
     check::equal("a fraction is not a whole answer",
-                 optimisation::satisfies(rounding, {Number(7, 2)}), 0);
+                 integer_programme::satisfies(rounding, {Number(7, 2)}), 0);
 }
 
 /// Every solver this machine has, against the same battery. The point is not
 /// that they are fast, it is that the chain returns the same answer whichever
 /// one of them happens to be installed.
 void check_agreement() {
-    for (const optimisation::Backend backend : optimisation::available_backends()) {
-        const std::string who = optimisation::name_of(backend);
+    for (const integer_programme::Backend backend : integer_programme::available_backends()) {
+        const std::string who = integer_programme::name_of(backend);
         for (const Case& example : whole_cases()) {
             const Solution answer =
-                optimisation::solve_with(backend, example.programme, kNodeLimit);
+                integer_programme::solve_with(backend, example.programme, kNodeLimit);
             const bool usable =
-                answer.status == Status::Optimal && optimisation::satisfies(example.programme, answer.values);
+                answer.status == Status::Optimal && integer_programme::satisfies(example.programme, answer.values);
             check::equal(who + " on " + example.name,
                          usable ? as_integer(answer.objective.nume()) : -999, example.optimum);
         }
@@ -182,24 +182,24 @@ void check_agreement() {
 }
 
 void check_chain() {
-    const std::vector<optimisation::Backend> present = optimisation::available_backends();
+    const std::vector<integer_programme::Backend> present = integer_programme::available_backends();
     std::cout << "  note  backends present:";
-    for (const optimisation::Backend backend : present) {
-        std::cout << " " << optimisation::name_of(backend);
+    for (const integer_programme::Backend backend : present) {
+        std::cout << " " << integer_programme::name_of(backend);
     }
     std::cout << "\n";
     check::equal("the built-in is always available",
-                 optimisation::is_available(optimisation::Backend::BuiltIn), 1);
+                 integer_programme::is_available(integer_programme::Backend::BuiltIn), 1);
     check::equal("the chain never runs out", present.empty() ? 0 : 1, 1);
 
     for (const Case& example : whole_cases()) {
-        const Solution answer = optimisation::solve(example.programme, kNodeLimit);
+        const Solution answer = integer_programme::solve(example.programme, kNodeLimit);
         check::equal("chain on " + example.name, as_integer(answer.objective.nume()),
                      example.optimum);
     }
 
     bool recognised = false;
-    optimisation::backend_named("nonesuch", recognised);
+    integer_programme::backend_named("nonesuch", recognised);
     check::equal("an unknown solver name is refused", recognised, 0);
 }
 
@@ -210,7 +210,7 @@ void check_written_model() {
     programme.objective = objective_of({1});
     programme.constraints = {row({1}, Relation::GreaterOrEqual, Number(2))};
     std::vector<std::string> written;
-    std::istringstream stream(optimisation::mps_of(programme));
+    std::istringstream stream(integer_programme::mps_of(programme));
     for (std::string line; std::getline(stream, line);) written.push_back(line);
 
     const auto line_holding = [&](const std::string& text) {
@@ -244,5 +244,5 @@ int main() {
     check_written_model();
     check_agreement();
     check_chain();
-    return check::report("optimisation");
+    return check::report("integer_programme");
 }

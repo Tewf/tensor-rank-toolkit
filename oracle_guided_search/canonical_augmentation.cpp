@@ -26,7 +26,7 @@ namespace {
 /// One walk of the tree.
 struct Walk {
     const Field* field = nullptr;
-    const linear_algebra::Tensor* tensor = nullptr;
+    const formats::Tensor* tensor = nullptr;
     const std::vector<Matrix>* pool = nullptr;
     const std::vector<Automorphism>* group = nullptr;
     /// Built once for the whole walk. Presenting the group costs more than one
@@ -263,7 +263,7 @@ void descend_in_parallel(Walk& walk, const std::vector<Matrix>& root) {
     // plus the worker count rather than by the widest level of the tree.
     std::vector<Branch> frontier(1);
     std::size_t taken = 0;
-    while (taken < frontier.size() && frontier.size() - taken < worker_count()) {
+    while (taken < frontier.size() && frontier.size() - taken < run_limits::worker_count()) {
         const Branch node = std::move(frontier[taken]);
         ++taken;
         expand_one(walk, root, node, frontier);
@@ -279,7 +279,7 @@ void descend_in_parallel(Walk& walk, const std::vector<Matrix>& root) {
 
     std::exception_ptr failure;
     std::mutex handover;
-    parallel_for(branches.size(), [&](std::size_t offset) {
+    run_limits::parallel_for(branches.size(), [&](std::size_t offset) {
         try {
             const Branch& node = frontier[taken + offset];
             std::vector<Matrix> subspace = root;
@@ -298,7 +298,7 @@ void descend_in_parallel(Walk& walk, const std::vector<Matrix>& root) {
 }  // namespace
 
 EnumerationReport enumerate_solution_subspaces(const Field& field,
-                                               const linear_algebra::Tensor& tensor,
+                                               const formats::Tensor& tensor,
                                                const std::vector<Matrix>& pool,
                                                const std::vector<Automorphism>& group,
                                                std::size_t target, bool canonical,
@@ -329,7 +329,7 @@ EnumerationReport enumerate_solution_subspaces(const Field& field,
         // `stop_at_first` is the one route where they would: it abandons a walk
         // the moment a solution appears, so which subtrees were in flight decides
         // its totals, and that is a race rather than a count.
-        if (worker_count() > 1 && !stop_at_first) {
+        if (run_limits::worker_count() > 1 && !stop_at_first) {
             descend_in_parallel(walk, tensor.slices);
         } else {
             descend(walk, tensor.slices, walk.base, 0);

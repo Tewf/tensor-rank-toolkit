@@ -74,9 +74,9 @@ std::vector<Automorphism> group_closure(const Field& field,
             Automorphism reached = compose(field, group[frontier], generator);
             if (!seen.insert(fingerprint(reached)).second) continue;
 
-            require_room("the group being closed", group.size() + 1,
-                         bytes_per_matrix(reached.left.entry_count()) +
-                             bytes_per_matrix(reached.right.entry_count()));
+            run_limits::require_room("the group being closed", group.size() + 1,
+                         run_limits::bytes_per_matrix(reached.left.entry_count()) +
+                             run_limits::bytes_per_matrix(reached.right.entry_count()));
             group.push_back(std::move(reached));
         }
     }
@@ -124,7 +124,7 @@ std::vector<std::vector<std::uint32_t>> permutation_action_on(const Field& field
         index_of.emplace(std::string(start, pool[index].entry_count() * sizeof(Element)), index);
     }
 
-    require_room("the group's action on the pool", group.size() * pool.size(),
+    run_limits::require_room("the group's action on the pool", group.size() * pool.size(),
                  sizeof(std::uint32_t));
 
     std::vector<std::vector<std::uint32_t>> permutations;

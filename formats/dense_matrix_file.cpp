@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace linear_algebra {
+namespace formats {
 
 namespace {
 
@@ -45,7 +45,7 @@ Givaro::Rational parse_rational(const std::string& text) {
 
 }  // namespace
 
-RationalMatrix read_rational_matrix(std::istream& input) {
+linear_algebra::RationalMatrix read_rational_matrix(std::istream& input) {
     std::string line;
     if (!next_meaningful_line(input, line)) throw std::runtime_error("matrix file is empty");
 
@@ -57,7 +57,7 @@ RationalMatrix read_rational_matrix(std::istream& input) {
         throw std::runtime_error("expected 'shape <rows> <columns>', found: " + line);
     }
 
-    RationalMatrix matrix(rows, columns);
+    linear_algebra::RationalMatrix matrix(rows, columns);
     for (std::size_t row = 0; row < rows; ++row) {
         if (!next_meaningful_line(input, line)) {
             throw std::runtime_error("matrix file ended at row " + std::to_string(row));
@@ -74,13 +74,13 @@ RationalMatrix read_rational_matrix(std::istream& input) {
     return matrix;
 }
 
-RationalMatrix read_rational_matrix_file(const std::string& path) {
+linear_algebra::RationalMatrix read_rational_matrix_file(const std::string& path) {
     std::ifstream input(path);
     if (!input) throw std::runtime_error("cannot open matrix file: " + path);
     return read_rational_matrix(input);
 }
 
-std::string to_string(const ModularMatrix& matrix) {
+std::string to_string(const linear_algebra::ModularMatrix& matrix) {
     std::ostringstream text;
     for (std::size_t row = 0; row < matrix.rows(); ++row) {
         for (std::size_t column = 0; column < matrix.columns(); ++column) {
@@ -92,7 +92,7 @@ std::string to_string(const ModularMatrix& matrix) {
 }
 
 void write_matrix_file(const std::string& path, const std::string& comment,
-                       const ModularMatrix& matrix) {
+                       const linear_algebra::ModularMatrix& matrix) {
     std::ofstream output(path);
     if (!output) throw std::runtime_error("cannot write matrix file: " + path);
     std::istringstream lines(comment);
@@ -102,7 +102,7 @@ void write_matrix_file(const std::string& path, const std::string& comment,
     output << to_string(matrix);
 }
 
-std::string to_string(const RationalMatrix& matrix) {
+std::string to_string(const linear_algebra::RationalMatrix& matrix) {
     std::ostringstream text;
     for (std::size_t row = 0; row < matrix.rows(); ++row) {
         for (std::size_t column = 0; column < matrix.columns(); ++column) {
@@ -119,4 +119,4 @@ std::string to_string(const RationalMatrix& matrix) {
     return text.str();
 }
 
-}  // namespace linear_algebra
+}  // namespace formats

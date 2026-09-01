@@ -18,7 +18,7 @@
 /// stopwatch to the machine would make every run's defaults depend on what else
 /// was running, which is the opposite of reproducible. These are counts the
 /// kernel already knows.
-namespace bilinear_rank {
+namespace run_limits {
 
 /// Physical memory in bytes, or **0 when it cannot be read**. Callers must
 /// handle the zero rather than dividing by it: a container with a hidden
@@ -53,4 +53,4 @@ std::size_t suggested_memory_budget_for(std::size_t scale_bytes);
 /// number, so an unreadable `/proc` changes nothing rather than something.
 std::size_t suggested_memory_budget();
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

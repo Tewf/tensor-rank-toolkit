@@ -92,7 +92,7 @@ void report(const AnyField& field, const std::string& method,
                   << " nonzeros, " << linear_algebra::operation_count(field, sparsified)
                   << " operations, " << seconds << " s"
                   << (equivalent ? "" : "   *** NOT THE SAME OPERATOR ***") << "\n";
-    if (show_matrix) cli::result() << linear_algebra::to_string(sparsified);
+    if (show_matrix) cli::result() << formats::to_string(sparsified);
 }
 
 /// The tool proper. main only turns a thrown refusal into a line.
@@ -128,7 +128,7 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--field")) {
             modulus = arguments.count();
         } else if (arguments.is("--max-memory")) {
-            bilinear_rank::set_memory_budget(arguments.memory_size());
+            run_limits::set_memory_budget(arguments.memory_size());
         } else {
             arguments.refuse();
         }
@@ -158,7 +158,7 @@ int run(int argc, char** argv) {
             return cli::exit_status(cli::ExitCode::Usage);
         }
         const linear_algebra::ModularField finite(static_cast<int64_t>(modulus));
-        const linear_algebra::ModularMatrix given = linear_algebra::read_sms_file(path, finite);
+        const linear_algebra::ModularMatrix given = formats::read_sms_file(path, finite);
         const bool decoding = given.rows() < given.columns();
         const linear_algebra::ModularMatrix working =
             decoding ? linear_algebra::transpose<linear_algebra::ModularField>(given) : given;
@@ -181,7 +181,7 @@ int run(int argc, char** argv) {
             if (!output) throw std::runtime_error("cannot write " + emit_to);
             output << "# minimum-weight basis of " << path << ", by the matroid greedy over GF("
                    << modulus << ")\n";
-            linear_algebra::write_sms(
+            formats::write_sms(
                 output, decoding ? linear_algebra::transpose<linear_algebra::ModularField>(answer)
                                  : answer);
             cli::note() << "written to " << emit_to;
@@ -196,8 +196,8 @@ int run(int argc, char** argv) {
     // failures listed in ../../formats/interchange/ and is
     // waiting on the CLI work.
     const Matrix operator_matrix =
-        is_sms ? linear_algebra::read_sms_file(path)
-               : linear_algebra::read_rational_matrix_file(path);
+        is_sms ? formats::read_sms_file(path)
+               : formats::read_rational_matrix_file(path);
     // **A wide operator is a decoding operator, and its basis change is on the
     // other side.** Every method here answers "find invertible `V` minimising
     // `nnz(U V)`", which changes the basis of the space `U`'s columns live in.
@@ -283,7 +283,7 @@ int run(int argc, char** argv) {
         // transposed map, which is a different straight-line program and a
         // different addition count, and the tool that reads this next has no way
         // to know it was handed the wrong one.
-        linear_algebra::write_sms(output, decoding ? minimal : answer);
+        formats::write_sms(output, decoding ? minimal : answer);
         cli::note() << "written to " << emit_to;
     }
     if (!with_operations) return cli::exit_status(cli::ExitCode::Yes);

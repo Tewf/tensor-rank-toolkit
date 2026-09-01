@@ -42,7 +42,7 @@ void usage() {
 /// routes on the levels below the rank is the only comparison that reaches a shape
 /// whose rank neither of them can settle. This used to print after the
 /// found-a-factorisation gate, so a refutation reported one sentence and no number.
-void write_sweep(const std::string& path, const linear_algebra::Tensor& tensor,
+void write_sweep(const std::string& path, const formats::Tensor& tensor,
                  const canonical_factorisation::Factorisation& factorisation) {
     cli::result() << "tensor: " << path << ", GF(" << tensor.characteristic << "), "
                   << tensor.slices.size() << " slices of " << tensor.rows() << "x"
@@ -109,9 +109,9 @@ int main(int argc, char** argv) {
                 // process and the canonical route recurses through a shared
                 // parent test, so neither reads this and both say so rather than
                 // appearing to accept it.
-                bilinear_rank::set_worker_count(arguments.count());
+                run_limits::set_worker_count(arguments.count());
             } else if (arguments.is("--max-memory")) {
-                bilinear_rank::set_memory_budget(arguments.memory_size());
+                run_limits::set_memory_budget(arguments.memory_size());
             } else if (arguments.is("--route")) {
                 const std::string named = arguments.text();
                 if (named == "auto") {
@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
         }
         const std::string path = arguments.filename();
 
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+        const formats::Tensor tensor = formats::read_tensor_file(path);
         const linear_algebra::ModularField field(tensor.characteristic);
 
         const cli::Clock::time_point started = cli::Clock::now();

@@ -19,7 +19,7 @@
 /// reads 3.34 s clean. `satisfiability` still used that abandoned pattern, through
 /// `popen("sh -c 'ulimit -v N; exec timeout T ...'")`, and one leaked solver per
 /// worker is what a parallel cube split would have multiplied.
-namespace bilinear_rank {
+namespace run_limits {
 
 /// What one child may take, and where its output goes.
 ///
@@ -65,4 +65,4 @@ struct ChildLimits {
 bool run_to_completion(const std::vector<std::string>& command,
                        const std::filesystem::path& log, const ChildLimits& limits);
 
-}  // namespace bilinear_rank
+}  // namespace run_limits

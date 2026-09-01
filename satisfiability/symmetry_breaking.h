@@ -33,7 +33,7 @@ namespace satisfiability {
 /// Sound for the ordering symmetry because permuting the terms of a
 /// decomposition gives another decomposition, so if any ordering satisfies the
 /// formula then the sorted one does.
-void order_lexicographically(linear_algebra::Cnf& formula, const std::vector<int>& earlier,
+void order_lexicographically(formats::Cnf& formula, const std::vector<int>& earlier,
                              const std::vector<int>& later);
 
 /// Constrain a vector of one-hot groups so that its first nonzero entry is 1.
@@ -45,7 +45,7 @@ void order_lexicographically(linear_algebra::Cnf& formula, const std::vector<int
 /// term is the zero tensor, which a decomposition is allowed to contain.
 ///
 /// `groups[i][v]` is the variable saying entry `i` holds field value `v`.
-void normalise_first_nonzero(linear_algebra::Cnf& formula,
+void normalise_first_nonzero(formats::Cnf& formula,
                              const std::vector<std::vector<int>>& groups);
 
 }  // namespace satisfiability

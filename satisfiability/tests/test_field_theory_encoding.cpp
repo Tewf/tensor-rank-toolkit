@@ -20,8 +20,8 @@ namespace {
 using satisfiability::Field;
 using satisfiability::Matrix;
 
-linear_algebra::Tensor small_ternary(const Field& field) {
-    linear_algebra::Tensor tensor;
+formats::Tensor small_ternary(const Field& field) {
+    formats::Tensor tensor;
     tensor.characteristic = 3;
     tensor.slices.assign(2, Matrix(2, 2));
     field.init(tensor.slices[0](0, 0), 1);
@@ -31,7 +31,7 @@ linear_algebra::Tensor small_ternary(const Field& field) {
 
 std::string written(const satisfiability::FieldTheoryEncoding& encoding) {
     std::ostringstream out;
-    linear_algebra::write_smtlib(out, encoding.problem);
+    formats::write_smtlib(out, encoding.problem);
     return out.str();
 }
 
@@ -78,7 +78,7 @@ int main() {
     check::equal("a nonzero entry is asserted against its own literal",
                  text.find("(as ff2 F)") != std::string::npos ? 1 : 0, 1);
     check::equal("field literals are written as the theory writes them",
-                 linear_algebra::SmtProblem::literal(2) == "(as ff2 F)" ? 1 : 0, 1);
+                 formats::SmtProblem::literal(2) == "(as ff2 F)" ? 1 : 0, 1);
 
     // Reading a model back, in the syntax cvc5 prints.
     std::istringstream answer(
@@ -88,17 +88,17 @@ int main() {
         "(define-fun b_0_0 () (_ FiniteField 3) #f1m3)\n"
         "(define-fun c_0_0 () (_ FiniteField 3) #f1m3)\n"
         ")\n");
-    const auto model = linear_algebra::read_smtlib_model(answer);
+    const auto model = formats::read_smtlib_model(answer);
     check::equal("sat is read", model.satisfiable ? 1 : 0, 1);
     check::equal("a value is read", static_cast<long long>(model.values.at("a_0_0")), 1);
 
     std::istringstream refused("unsat\n");
-    const auto no = linear_algebra::read_smtlib_model(refused);
+    const auto no = formats::read_smtlib_model(refused);
     check::equal("unsat is answered", no.answered ? 1 : 0, 1);
     check::equal("unsat is not satisfiable", no.satisfiable ? 1 : 0, 0);
 
     std::istringstream silent("(error \"killed\")\n");
-    const auto quiet = linear_algebra::read_smtlib_model(silent);
+    const auto quiet = formats::read_smtlib_model(silent);
     check::equal("no verdict is not unsat", quiet.answered ? 1 : 0, 0);
 
     // The one refusal this backend cannot do without. `QF_FF` decides prime

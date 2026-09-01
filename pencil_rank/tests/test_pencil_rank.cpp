@@ -40,8 +40,8 @@ int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
     for (const Fixture& fixture : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + fixture.name + ".tensor");
         const pencil_rank::ModularField field(tensor.characteristic);
         const std::string label = fixture.name;
 
@@ -91,8 +91,8 @@ int main(int argc, char** argv) {
     // zero has to agree with that rather than need a case of its own. The
     // identity is diagonalisable, so this one is exact.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/pencil_nilpotent_f2_3.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/pencil_nilpotent_f2_3.tensor");
         const pencil_rank::ModularField field(tensor.characteristic);
         const std::vector<linear_algebra::ModularMatrix> identity_only{tensor.slices[0]};
         const pencil_rank::PencilRank one_slice = pencil_rank::pencil_rank_of(field, identity_only);

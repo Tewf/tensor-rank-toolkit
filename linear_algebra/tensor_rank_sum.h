@@ -175,12 +175,12 @@ std::vector<std::size_t> contraction_ranks(const Field& field,
         ranks[index] = rank(field, contraction(field, slices, axis, coefficients));
     };
 
-    if (bilinear_rank::worker_count() <= 1) {
+    if (run_limits::worker_count() <= 1) {
         std::vector<typename Field::Element> coefficients(length);
         for (std::size_t index = 0; index < ranks.size(); ++index) rank_at(index, coefficients);
         return ranks;
     }
-    bilinear_rank::parallel_for(ranks.size(), [&](std::size_t index) {
+    run_limits::parallel_for(ranks.size(), [&](std::size_t index) {
         std::vector<typename Field::Element> coefficients(length);
         rank_at(index, coefficients);
     });

@@ -40,7 +40,7 @@ bool fewest_products_by_sweep(const Field& field, const std::vector<Matrix>& bas
 
     for (std::size_t target = lowest; target <= highest; ++target) {
         if (expand_subspace(field, base, pool, 0, target, budget, products)) return true;
-        if (!budget.exhausted) return false;
+        if (!budget.tree_fully_walked) return false;
     }
     return false;
 }

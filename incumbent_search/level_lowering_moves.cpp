@@ -32,13 +32,13 @@ std::vector<std::vector<int64_t>> every_vector(const Field& field, std::size_t l
     std::size_t count = 1;
     for (std::size_t position = 0; position < length; ++position) {
         if (count > how_many / characteristic) {
-            require_room("the vectors of GF(" + std::to_string(characteristic) + ")^" +
+            run_limits::require_room("the vectors of GF(" + std::to_string(characteristic) + ")^" +
                              std::to_string(length) + " a level-lowering summand needs",
                          how_many, sizeof(int64_t) * length);
         }
         count *= characteristic;
     }
-    require_room("the vectors of GF(" + std::to_string(characteristic) + ")^" +
+    run_limits::require_room("the vectors of GF(" + std::to_string(characteristic) + ")^" +
                      std::to_string(length) + " a level-lowering summand needs",
                  count, sizeof(std::vector<int64_t>) + sizeof(int64_t) * length);
 

@@ -45,7 +45,7 @@ using linear_algebra::ModularMatrix;
 /// pool map per level in index order, and assert the bound is the maximum of the
 /// dimension and the root's value at every one of them.
 void follow_a_branch(const std::string& directory, const char* name, std::size_t levels) {
-    const auto tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+    const auto tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
     const ModularField field(tensor.characteristic);
     const std::size_t rows = tensor.slices.front().rows();
     const std::size_t columns = tensor.slices.front().columns();

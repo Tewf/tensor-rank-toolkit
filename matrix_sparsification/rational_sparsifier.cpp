@@ -98,7 +98,7 @@ Matrix sparsest_basis_over_the_rationals(const Field& field, const Matrix& rows)
     // itself that operator ran for thirty minutes and said nothing, and the
     // refusal now names the number and where to go instead.
     const std::size_t ceiling = width - dimension + 1;
-    bilinear_rank::require_room(
+    run_limits::require_room(
         "the column supports this scan may walk (see "
         "matrix_sparsification/method/answering-without-searching.md for the "
         "route that does not walk them)",

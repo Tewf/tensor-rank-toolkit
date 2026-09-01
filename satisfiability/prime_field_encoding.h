@@ -38,7 +38,7 @@
 namespace satisfiability {
 
 struct PrimeFieldEncoding {
-    linear_algebra::Cnf formula;
+    formats::Cnf formula;
 
     std::size_t characteristic = 0;
     std::size_t products = 0;
@@ -70,7 +70,7 @@ struct PrimeFieldEncoding {
 /// ordered, and the operand vectors are normalised so their first nonzero entry
 /// is 1, which is the scaling freedom GF(2) does not have. Off by default, for
 /// the reason [`symmetry_breaking.h`](symmetry_breaking.h) gives.
-PrimeFieldEncoding encode_prime_rank_at_most(const linear_algebra::Tensor& tensor,
+PrimeFieldEncoding encode_prime_rank_at_most(const formats::Tensor& tensor,
                                              std::size_t products,
                                              bool break_symmetry = false);
 

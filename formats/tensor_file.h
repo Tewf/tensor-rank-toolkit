@@ -8,14 +8,14 @@
 
 #include "field.h"
 
-namespace linear_algebra {
+namespace formats {
 
 /// A bilinear map, as the list of matrices of the forms producing each output
 /// coordinate. Slice i of the polynomial multiplication tensor is the form
 /// producing coefficient c_i.
 struct Tensor {
     int64_t characteristic = 0;
-    std::vector<ModularMatrix> slices;
+    std::vector<linear_algebra::ModularMatrix> slices;
 
     std::size_t rows() const { return slices.empty() ? 0 : slices.front().rows(); }
     std::size_t columns() const { return slices.empty() ? 0 : slices.front().columns(); }
@@ -25,7 +25,7 @@ struct Tensor {
 /// slices as dense rows. Blank lines and `#` comments are ignored.
 ///
 /// `p` must be prime, and that is checked here rather than left to whichever
-/// backend the tensor reaches: see `is_prime` in [`field.h`](../linear_algebra/field.h)
+/// backend the tensor reaches: see `linear_algebra::is_prime` in [`field.h`](../linear_algebra/field.h)
 /// for why nothing downstream models a composite.
 ///
 /// Throws std::runtime_error on anything it does not understand, rather than
@@ -50,4 +50,4 @@ Tensor read_tensor_file(const std::string& path);
 void write_tensor(std::ostream& output, const Tensor& tensor,
                   const std::string& comment = "");
 
-}  // namespace linear_algebra
+}  // namespace formats

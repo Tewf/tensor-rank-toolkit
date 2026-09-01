@@ -5,7 +5,7 @@
 #include <ostream>
 #include <vector>
 
-namespace linear_algebra {
+namespace formats {
 
 /// A formula in conjunctive normal form, and the DIMACS files it is written to
 /// and its answer read back from.
@@ -71,4 +71,4 @@ struct Model {
 /// unsatisfiable, because that would turn a run that gave up into a proof.
 Model read_dimacs_model(std::istream& input);
 
-}  // namespace linear_algebra
+}  // namespace formats

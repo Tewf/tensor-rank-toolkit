@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace linear_algebra {
+namespace formats {
 
 /// SMT-LIB in the theory of finite fields, which cvc5 decides natively.
 ///
@@ -50,4 +50,4 @@ struct SmtModel {
 
 SmtModel read_smtlib_model(std::istream& input);
 
-}  // namespace linear_algebra
+}  // namespace formats

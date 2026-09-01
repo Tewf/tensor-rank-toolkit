@@ -10,7 +10,7 @@
 #include "branch_and_bound.h"
 #include "external_solver.h"
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
@@ -141,4 +141,4 @@ Solution solve(const IntegerProgramme& programme, std::size_t node_limit) {
     return branch_and_bound(programme, node_limit);
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

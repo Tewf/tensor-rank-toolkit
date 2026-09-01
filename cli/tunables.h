@@ -94,11 +94,11 @@ struct Tunables {
     /// (`satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
     /// --max-memory` and `--timeout`, and from the same two flags on
     /// `deflate-strictly`.
-    std::size_t sat_memory_megabytes = bilinear_rank::suggested_memory_budget() >> 20;
+    std::size_t sat_memory_megabytes = run_limits::suggested_memory_budget() >> 20;
     std::size_t sat_timeout_seconds = 300;
 
     /// What an outside integer programme solver may take, per programme. Fills
-    /// `optimisation::set_solver_time_limit`
+    /// `integer_programme::set_solver_time_limit`
     /// (`integer_programme/solver_chain.h`), from `curve-bounds
     /// --solver-timeout`. It does not reach the built-in, which has no clock.
     std::size_t ilp_time_limit_seconds = 300;
@@ -122,7 +122,7 @@ struct Tunables {
     /// Which integer programme backend is asked first, of those on `PATH`. The
     /// built-in trails because it is the slowest, and it is also the only one
     /// whose `infeasible` is believed without being checked against the model.
-    /// Fills `optimisation::set_backend_order`
+    /// Fills `integer_programme::set_backend_order`
     /// (`integer_programme/solver_chain.h`), from `curve-bounds`, whose
     /// `--solvers` prints the order that would actually run.
     std::vector<std::string> ilp_backend_order{"gurobi", "cbc", "glpk", "lp_solve", "built-in"};
@@ -163,7 +163,7 @@ inline const std::vector<std::pair<std::string, std::size_t Tunables::*>>& count
 /// run inside every command's start-up.
 inline const std::vector<std::pair<std::string, std::size_t (*)()>>& machine_read_tunables() {
     static const std::vector<std::pair<std::string, std::size_t (*)()>> table{
-        {"sat_memory_megabytes", [] { return bilinear_rank::suggested_memory_budget() >> 20; }},
+        {"sat_memory_megabytes", [] { return run_limits::suggested_memory_budget() >> 20; }},
     };
     return table;
 }

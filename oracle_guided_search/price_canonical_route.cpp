@@ -148,7 +148,7 @@ int run(int argc, char** argv) {
         return cli::exit_status(cli::ExitCode::Usage);
     }
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(arguments.filename());
+    const formats::Tensor tensor = formats::read_tensor_file(arguments.filename());
     const bilinear_rank::Field field(tensor.characteristic);
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());

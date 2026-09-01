@@ -66,9 +66,9 @@ std::vector<Matrix> all_rank_one_maps(const Field& field, std::size_t rows, std:
     // slices of 4x4 matrix multiplication, which is 8.2 TiB. The pool object
     // above costs the two vector lists and is what a caller reaches for when
     // this refuses.
-    require_room("the pool of rank-one " + std::to_string(rows) + "x" + std::to_string(columns) +
+    run_limits::require_room("the pool of rank-one " + std::to_string(rows) + "x" + std::to_string(columns) +
                      " maps",
-                 pool.size(), bytes_per_matrix(rows * columns));
+                 pool.size(), run_limits::bytes_per_matrix(rows * columns));
 
     std::vector<Matrix> maps;
     maps.reserve(pool.size());

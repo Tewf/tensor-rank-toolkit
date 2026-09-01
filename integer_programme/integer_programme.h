@@ -18,7 +18,7 @@
 /// Everything is exact rationals, for the reason the rest of the repository is:
 /// the quantities being minimised are counts, and a count that is nearly right
 /// is a different count.
-namespace optimisation {
+namespace integer_programme {
 
 using Number = linear_algebra::RationalField::Element;
 
@@ -95,4 +95,4 @@ Number objective_at(const IntegerProgramme& programme, const std::vector<Number>
 /// Is `candidate` the better of the two values, in this programme's direction?
 bool improves(Sense sense, const Number& candidate, const Number& incumbent);
 
-}  // namespace optimisation
+}  // namespace integer_programme

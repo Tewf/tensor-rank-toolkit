@@ -1,6 +1,6 @@
 #include "simplex.h"
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
@@ -145,4 +145,4 @@ LinearOptimum solve_relaxation(const StandardForm& form) {
     return {Status::Optimal, std::move(values)};
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

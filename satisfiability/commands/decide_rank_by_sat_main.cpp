@@ -101,7 +101,7 @@ struct Progress {
 };
 
 /// Ask one `k` and say what came back. True when the sweep should stop.
-bool report(const linear_algebra::Tensor& tensor, std::size_t products,
+bool report(const formats::Tensor& tensor, std::size_t products,
             const satisfiability::SolveOptions& approach, const std::string& emit_to,
             Progress& progress) {
     if (!emit_to.empty()) {
@@ -147,7 +147,7 @@ bool report(const linear_algebra::Tensor& tensor, std::size_t products,
 /// the whole sweep, and it is asserted in `test_binary_encoding.cpp` rather than
 /// left as a reading of the loop, because a change of allocation order would
 /// silently pin the wrong variables.
-bool build_orbit_cubes(const linear_algebra::Tensor& tensor, const cli::Symmetry& symmetry,
+bool build_orbit_cubes(const formats::Tensor& tensor, const cli::Symmetry& symmetry,
                        std::size_t first_products, satisfiability::SolveOptions& approach) {
     if (symmetry.kind == cli::SymmetryKind::None) return true;
 
@@ -244,10 +244,10 @@ int run(int argc, char** argv) {
             // `satisfiability/rank_question.cpp` has run them through
             // `parallel_for` since they existed — with the 3.42x it measured
             // written in the comment beside it. Nothing on this command line
-            // could reach that call, so `worker_count()` was 1 for every run of
+            // could reach that call, so `run_limits::worker_count()` was 1 for every run of
             // this tool and the whole split ran one cube at a time. This is the
             // flag it was waiting for.
-            bilinear_rank::set_worker_count(arguments.count());
+            run_limits::set_worker_count(arguments.count());
         } else if (arguments.is("--timeout")) {
             approach.timeout_seconds = arguments.count();
         } else if (arguments.is("--max-memory")) {
@@ -278,7 +278,7 @@ int run(int argc, char** argv) {
     // The mechanism is `cli/interrupt_cleanup.h`, and the whole fix is
     // `cli::remove_when_interrupted(file.string())` beside each `scratch_file`
     // call, in the file that knows the name.
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+    const formats::Tensor tensor = formats::read_tensor_file(path);
     cli::result() << path << ": " << tensor.slices.size() << " slices of " << tensor.rows() << "x"
                   << tensor.columns() << " over GF(" << tensor.characteristic << ")\n";
 

@@ -46,7 +46,7 @@ namespace bilinear_rank {
 /// - **`pool` must be closed under `group`**, which `all_rank_one_maps` is.
 ///   `permutation_action_on` throws if an image leaves it.
 ///
-/// **`worker_count()` above one spreads the subtrees over cores, and the split
+/// **`run_limits::worker_count()` above one spreads the subtrees over cores, and the split
 /// leaves both preconditions alone.** The group is filtered by `stabiliser_of`
 /// once, before any worker exists, and the permutation action is read-only from
 /// then on, so the one way this search can report a false `NO` is not something a
@@ -64,7 +64,7 @@ namespace bilinear_rank {
 /// being here. So the frontier is widened a node at a time until it is at least as
 /// wide as the worker count.
 ///
-/// `spread_over_cores` off keeps this on one core whatever `worker_count()` says,
+/// `spread_over_cores` off keeps this on one core whatever `run_limits::worker_count()` says,
 /// for a caller that is **already** spreading work over them. `deflate-strictly
 /// --parallel` asks every candidate at once and each candidate calls this, so
 /// without the switch twelve workers would each start eleven more. The outer level

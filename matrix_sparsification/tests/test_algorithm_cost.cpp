@@ -43,10 +43,10 @@ int main(int argc, char** argv) {
 
     BilinearAlgorithm strassen;
     strassen.left_encoding =
-        linear_algebra::read_rational_matrix_file(fixtures + "/strassen_u.matrix");
+        formats::read_rational_matrix_file(fixtures + "/strassen_u.matrix");
     strassen.right_encoding =
-        linear_algebra::read_rational_matrix_file(fixtures + "/strassen_v.matrix");
-    strassen.decoding = linear_algebra::read_rational_matrix_file(fixtures + "/strassen_w.matrix");
+        formats::read_rational_matrix_file(fixtures + "/strassen_v.matrix");
+    strassen.decoding = formats::read_rational_matrix_file(fixtures + "/strassen_w.matrix");
 
     check::equal("the three operators are Strassen's algorithm",
                  matrix_sparsification::computes_matrix_product(field, strassen, 2, 2, 2) ? 1 : 0,

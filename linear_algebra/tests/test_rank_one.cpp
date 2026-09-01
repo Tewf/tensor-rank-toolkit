@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
     const std::string directory = argv[1];
 
     for (const char* name : {"f2_5x5", "f2_3x8", "f2_4x7", "f3_3x6"}) {
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(directory + "/" + std::string(name) +
+        const formats::Tensor tensor = formats::read_tensor_file(directory + "/" + std::string(name) +
                                                              ".tensor");
         const linear_algebra::ModularField field(tensor.characteristic);
         for (std::size_t index = 0; index < tensor.slices.size(); ++index) {

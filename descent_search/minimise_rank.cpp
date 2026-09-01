@@ -36,13 +36,13 @@ template <typename Candidates>
 void prefetch(const Field& field, const std::vector<Matrix>& slices,
               const std::vector<std::size_t>& known, const Candidates& candidates,
               const std::vector<std::size_t>& queue, std::size_t from, Trials& trials) {
-    const std::size_t ahead = worker_count() * 4;
+    const std::size_t ahead = run_limits::worker_count() * 4;
 
     std::vector<std::size_t> wanted;
     for (std::size_t step = from; step < queue.size() && wanted.size() < ahead; ++step) {
         if (!trials.ready[queue[step]]) wanted.push_back(queue[step]);
     }
-    parallel_for(wanted.size(), [&](std::size_t slot) {
+    run_limits::parallel_for(wanted.size(), [&](std::size_t slot) {
         const std::size_t candidate = wanted[slot];
         trials.basis[candidate] = minimum_weight_basis_with(field, slices, candidates[candidate], known);
         trials.ready[candidate] = 1;
@@ -58,7 +58,7 @@ const std::vector<Matrix>& trial_for(const Field& field, const std::vector<Matri
                                      const std::vector<std::size_t>& queue, std::size_t step,
                                      Trials& trials) {
     const std::size_t candidate = queue[step];
-    if (!trials.ready[candidate] && worker_count() > 1) {
+    if (!trials.ready[candidate] && run_limits::worker_count() > 1) {
         prefetch(field, slices, known, candidates, queue, step, trials);
     }
     if (!trials.ready[candidate]) {

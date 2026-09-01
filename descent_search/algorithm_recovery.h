@@ -21,6 +21,12 @@ namespace bilinear_rank {
 /// `left` and `right` are precisely what
 /// [matrix_sparsification](../matrix_sparsification/) makes sparse: nonzeros in
 /// them are the additions the multiplication count does not see.
+///
+/// [`matrix_sparsification::BilinearAlgorithm`](../matrix_sparsification/algorithm_check.h)
+/// is the same object over the rationals with `decode` **transposed** (its
+/// `decoding` is products x outputs, `[beniamini2019, Def. 2.8]`'s `W`): two
+/// types on purpose, because each follows its own source's convention and a
+/// merge would silently transpose one of them.
 struct Algorithm {
     Matrix left;    // products x n, encoding the left operand
     Matrix right;   // products x m, encoding the right operand

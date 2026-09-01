@@ -12,7 +12,7 @@ namespace {
 std::size_t budget = 10'000'000;
 
 /// `result ↔ left ∧ right`, in the three clauses that says.
-void equate_to_conjunction(linear_algebra::Cnf& formula, int result, int left, int right) {
+void equate_to_conjunction(formats::Cnf& formula, int result, int left, int right) {
     formula.add_clause({-result, left});
     formula.add_clause({-result, right});
     formula.add_clause({result, -left, -right});
@@ -38,7 +38,7 @@ std::vector<int> term_variables(const BinaryEncoding& encoding, std::size_t term
 std::size_t variable_budget() { return budget; }
 void set_variable_budget(std::size_t variables) { budget = variables; }
 
-BinaryEncoding encode_binary_rank_at_most(const linear_algebra::Tensor& tensor, std::size_t products,
+BinaryEncoding encode_binary_rank_at_most(const formats::Tensor& tensor, std::size_t products,
                                    bool break_symmetry, bool first_term_pinned) {
     if (tensor.characteristic != 2) {
         throw std::invalid_argument(
@@ -63,7 +63,7 @@ BinaryEncoding encode_binary_rank_at_most(const linear_algebra::Tensor& tensor, 
             std::to_string(budget));
     }
 
-    linear_algebra::Cnf& formula = encoding.formula;
+    formats::Cnf& formula = encoding.formula;
     for (std::size_t term = 0; term < products; ++term) {
         for (std::size_t index = 0; index < encoding.rows; ++index) {
             encoding.left.push_back(formula.new_variable());

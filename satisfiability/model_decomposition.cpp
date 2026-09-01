@@ -4,20 +4,20 @@ namespace satisfiability {
 
 namespace {
 
-bool holds(const linear_algebra::Model& model, int variable) {
+bool holds(const formats::Model& model, int variable) {
     const std::size_t index = static_cast<std::size_t>(variable);
     return index < model.values.size() && model.values[index];
 }
 
 /// The field value a one-hot group is carrying, or zero if none of it is set.
-std::size_t value_in(const linear_algebra::Model& model, const std::vector<int>& group) {
+std::size_t value_in(const formats::Model& model, const std::vector<int>& group) {
     for (std::size_t value = 0; value < group.size(); ++value) {
         if (holds(model, group[value])) return value;
     }
     return 0;
 }
 
-std::size_t value_of(const linear_algebra::SmtModel& model, const std::string& name) {
+std::size_t value_of(const formats::SmtModel& model, const std::string& name) {
     const auto found = model.values.find(name);
     return found == model.values.end() ? 0 : found->second;
 }
@@ -26,7 +26,7 @@ std::size_t value_of(const linear_algebra::SmtModel& model, const std::string& n
 /// and compare against the slice. The three encodings differ only in how a
 /// weight is read, so that is the one thing passed in.
 template <class Weight>
-bool rebuilds(const Field& field, const linear_algebra::Tensor& tensor,
+bool rebuilds(const Field& field, const formats::Tensor& tensor,
               const std::vector<Matrix>& terms, std::size_t slices, Weight weight_of) {
     for (std::size_t slice = 0; slice < slices; ++slice) {
         Matrix rebuilt(tensor.rows(), tensor.columns());
@@ -52,7 +52,7 @@ bool rebuilds(const Field& field, const linear_algebra::Tensor& tensor,
 }  // namespace
 
 std::vector<Matrix> decomposition_from_model(const Field& field, const BinaryEncoding& encoding,
-                                             const linear_algebra::Model& model) {
+                                             const formats::Model& model) {
     if (!model.satisfiable) return {};
 
     std::vector<Matrix> terms;
@@ -73,7 +73,7 @@ std::vector<Matrix> decomposition_from_model(const Field& field, const BinaryEnc
 
 std::vector<Matrix> decomposition_from_model(const Field& field,
                                              const PrimeFieldEncoding& encoding,
-                                             const linear_algebra::Model& model) {
+                                             const formats::Model& model) {
     if (!model.satisfiable) return {};
 
     std::vector<Matrix> terms;
@@ -95,7 +95,7 @@ std::vector<Matrix> decomposition_from_model(const Field& field,
 
 std::vector<Matrix> decomposition_from_model(const Field& field,
                                              const FieldTheoryEncoding& encoding,
-                                             const linear_algebra::SmtModel& model) {
+                                             const formats::SmtModel& model) {
     if (!model.satisfiable) return {};
 
     std::vector<Matrix> terms;
@@ -117,8 +117,8 @@ std::vector<Matrix> decomposition_from_model(const Field& field,
     return terms;
 }
 
-bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor,
-                        const BinaryEncoding& encoding, const linear_algebra::Model& model) {
+bool model_reconstructs(const Field& field, const formats::Tensor& tensor,
+                        const BinaryEncoding& encoding, const formats::Model& model) {
     if (!model.satisfiable) return false;
     return rebuilds(field, tensor, decomposition_from_model(field, encoding, model),
                     encoding.slices, [&](std::size_t term, std::size_t slice) -> std::size_t {
@@ -127,8 +127,8 @@ bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor
                     });
 }
 
-bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor,
-                        const PrimeFieldEncoding& encoding, const linear_algebra::Model& model) {
+bool model_reconstructs(const Field& field, const formats::Tensor& tensor,
+                        const PrimeFieldEncoding& encoding, const formats::Model& model) {
     if (!model.satisfiable) return false;
     return rebuilds(field, tensor, decomposition_from_model(field, encoding, model),
                     encoding.slices, [&](std::size_t term, std::size_t slice) {
@@ -136,9 +136,9 @@ bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor
                     });
 }
 
-bool model_reconstructs(const Field& field, const linear_algebra::Tensor& tensor,
+bool model_reconstructs(const Field& field, const formats::Tensor& tensor,
                         const FieldTheoryEncoding& encoding,
-                        const linear_algebra::SmtModel& model) {
+                        const formats::SmtModel& model) {
     if (!model.satisfiable) return false;
     return rebuilds(field, tensor, decomposition_from_model(field, encoding, model),
                     encoding.slices, [&](std::size_t term, std::size_t slice) {

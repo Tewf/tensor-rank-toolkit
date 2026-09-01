@@ -52,7 +52,7 @@ void check_children(const bilinear_rank::Field& field,
 /// the three depths a node of the enumeration sits at before the counts stop being
 /// walkable in a default-suite test.
 void check_tensor(const std::string& path, std::size_t subspaces, Tally& tally) {
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+    const formats::Tensor tensor = formats::read_tensor_file(path);
     const bilinear_rank::Field field(tensor.characteristic);
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());

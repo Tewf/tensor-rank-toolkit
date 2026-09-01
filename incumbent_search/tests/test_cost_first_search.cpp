@@ -35,8 +35,8 @@ using bilinear_rank::Matrix;
 std::string fixtures;
 
 std::vector<Matrix> slices_of(const std::string& name, int64_t& characteristic) {
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(fixtures + "/" + name + ".tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(fixtures + "/" + name + ".tensor");
     characteristic = tensor.characteristic;
     return tensor.slices;
 }

@@ -23,8 +23,8 @@
 
 namespace {
 
-using linear_algebra::Cnf;
-using linear_algebra::Model;
+using formats::Cnf;
+using formats::Model;
 using satisfiability::BinaryEncoding;
 using satisfiability::Field;
 using satisfiability::Matrix;
@@ -36,9 +36,9 @@ struct Term {
     std::vector<bool> output;
 };
 
-linear_algebra::Tensor tensor_from(const Field& field, const std::vector<Term>& terms,
+formats::Tensor tensor_from(const Field& field, const std::vector<Term>& terms,
                                    std::size_t rows, std::size_t columns, std::size_t slices) {
-    linear_algebra::Tensor tensor;
+    formats::Tensor tensor;
     tensor.characteristic = 2;
     tensor.slices.assign(slices, Matrix(rows, columns));
 
@@ -141,7 +141,7 @@ std::vector<Term> karatsuba_terms() {
 /// only clauses in this encoding that mention two different terms at once are
 /// the ordering ones, so "no clause mentions term 0 beside another term" is
 /// exactly "term 0 is unordered".
-void check_a_cube_leaves_term_zero_unordered(const linear_algebra::Tensor& tensor) {
+void check_a_cube_leaves_term_zero_unordered(const formats::Tensor& tensor) {
     const auto ordered = satisfiability::encode_binary_rank_at_most(tensor, 3, true, false);
     const auto pinned = satisfiability::encode_binary_rank_at_most(tensor, 3, true, true);
 
@@ -184,7 +184,7 @@ void check_a_cube_leaves_term_zero_unordered(const linear_algebra::Tensor& tenso
 /// `products` is. True because each term's variables are allocated before the
 /// next term's. Asserted here so that reordering that loop fails a test instead
 /// of pinning the wrong variables in silence.
-void check_term_zero_numbering_does_not_move(const linear_algebra::Tensor& tensor) {
+void check_term_zero_numbering_does_not_move(const formats::Tensor& tensor) {
     const auto one = satisfiability::encode_binary_rank_at_most(tensor, 1);
     const auto many = satisfiability::encode_binary_rank_at_most(tensor, 5);
 
@@ -237,7 +237,7 @@ int main() {
                  violations(other.formula, same) > 0 ? 1 : 0, 1);
 
     // The expansion of parities into ordinary clauses must agree with them.
-    const Cnf expanded = linear_algebra::with_parities_expanded(encoding.formula);
+    const Cnf expanded = formats::with_parities_expanded(encoding.formula);
     check::equal("expansion leaves no parities",
                  static_cast<long long>(expanded.parities.size()), 0);
     Model widened = model;

@@ -72,8 +72,8 @@ int main(int argc, char** argv) {
         {"f2_5x5", 16}, {"f2_3x8", 19}, {"f2_4x7", 19}, {"f3_3x6", 12}};
 
     for (const auto& [name, products] : fixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + std::string(name) + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + std::string(name) + ".tensor");
         const bilinear_rank::Field field(tensor.characteristic);
         check_round_trip(field, tensor.slices, name, products);
     }

@@ -5,7 +5,7 @@
 
 #include "whole_numbers.h"
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
@@ -185,4 +185,4 @@ std::string mps_of(const IntegerProgramme& programme) {
     return out.str();
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

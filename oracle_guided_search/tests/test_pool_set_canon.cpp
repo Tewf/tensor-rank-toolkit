@@ -47,8 +47,8 @@ std::vector<std::size_t> partition_of(const std::vector<Key>& keys) {
 int main(int argc, char** argv) {
     const std::string directory = argc > 1 ? argv[1] : "fixtures";
 
-    const linear_algebra::Tensor tensor =
-        linear_algebra::read_tensor_file(directory + "/matmul_2x2x2.tensor");
+    const formats::Tensor tensor =
+        formats::read_tensor_file(directory + "/matmul_2x2x2.tensor");
     const bilinear_rank::Field field(tensor.characteristic);
     const std::vector<bilinear_rank::Matrix> pool =
         bilinear_rank::all_rank_one_maps(field, tensor.rows(), tensor.columns());

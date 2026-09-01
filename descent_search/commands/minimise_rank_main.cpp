@@ -108,9 +108,9 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--symmetry", "-s")) {
             symmetry = arguments.parsed_by(cli::parse_symmetry);
         } else if (arguments.is("--threads")) {
-            bilinear_rank::set_worker_count(arguments.count());
+            run_limits::set_worker_count(arguments.count());
         } else if (arguments.is("--max-memory")) {
-            bilinear_rank::set_memory_budget(arguments.memory_size());
+            run_limits::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--emit-operators")) {
             operator_prefix = arguments.text();
         } else {
@@ -124,7 +124,7 @@ int run(int argc, char** argv) {
     }
     const std::string path = arguments.filename();
 
-    const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(path);
+    const formats::Tensor tensor = formats::read_tensor_file(path);
     const bilinear_rank::Field field(tensor.characteristic);
     const auto started = cli::Clock::now();
 
@@ -255,11 +255,11 @@ int run(int argc, char** argv) {
                                    "\nby minimise-rank, " +
                                    std::to_string(algorithm.product_count()) + " products, over GF(" +
                                    std::to_string(tensor.characteristic) + ").";
-        linear_algebra::write_sms_file(operator_prefix + "_L.sms",
+        formats::write_sms_file(operator_prefix + "_L.sms",
                                        origin + " Left operand.", algorithm.left);
-        linear_algebra::write_sms_file(operator_prefix + "_R.sms",
+        formats::write_sms_file(operator_prefix + "_R.sms",
                                        origin + " Right operand.", algorithm.right);
-        linear_algebra::write_sms_file(operator_prefix + "_P.sms",
+        formats::write_sms_file(operator_prefix + "_P.sms",
                                        origin + " Combines the products into the outputs.",
                                        algorithm.decode);
         cli::note() << "wrote " << operator_prefix << "_{L,R,P}.sms";

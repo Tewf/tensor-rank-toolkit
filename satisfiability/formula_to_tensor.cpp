@@ -92,8 +92,8 @@ std::size_t target_rank(const Formula& formula) {
     return 4 * formula.variable_count + 2 * formula.clause_count();
 }
 
-linear_algebra::Tensor formula_to_tensor(const Field& field, const Formula& formula) {
-    linear_algebra::Tensor tensor;
+formats::Tensor formula_to_tensor(const Field& field, const Formula& formula) {
+    formats::Tensor tensor;
     tensor.characteristic = static_cast<int64_t>(field.characteristic());
 
     for (std::size_t variable = 0; variable < formula.variable_count; ++variable) {

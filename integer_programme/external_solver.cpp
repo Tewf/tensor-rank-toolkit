@@ -21,13 +21,13 @@
 #include "mps_format.h"
 #include "whole_numbers.h"
 
-namespace optimisation {
+namespace integer_programme {
 
 namespace {
 
 std::filesystem::path scratch_path(const char* suffix) {
     return std::filesystem::temp_directory_path() /
-           ("optimisation-" + std::to_string(::getpid()) + suffix);
+           ("integer-programme-" + std::to_string(::getpid()) + suffix);
 }
 
 std::vector<std::string> lines_of(const std::filesystem::path& path) {
@@ -178,8 +178,8 @@ Solution run_backend(Backend backend, const IntegerProgramme& programme) {
     // worth short-circuiting on.
     // One launcher for the whole repository, in `run_limits`. No memory cap and
     // stderr in the log, which is exactly what this route has always run with.
-    const bool started = bilinear_rank::run_to_completion(
-        recipe.command, log, bilinear_rank::ChildLimits{static_cast<double>(solver_time_limit()), 0, true});
+    const bool started = run_limits::run_to_completion(
+        recipe.command, log, run_limits::ChildLimits{static_cast<double>(solver_time_limit()), 0, true});
 
     std::vector<Number> values(programme.variables.size(), Number(0));
     const std::vector<std::string> output = lines_of(recipe.answer_in_log ? log : answer);
@@ -210,4 +210,4 @@ Solution run_backend(Backend backend, const IntegerProgramme& programme) {
     return solution;
 }
 
-}  // namespace optimisation
+}  // namespace integer_programme

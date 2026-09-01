@@ -13,7 +13,7 @@
 
 namespace {
 
-using linear_algebra::Cnf;
+using formats::Cnf;
 
 std::size_t body_lines(const std::string& text) {
     std::istringstream lines(text);
@@ -27,7 +27,7 @@ std::size_t body_lines(const std::string& text) {
 
 std::string written(const Cnf& formula, bool native_xor) {
     std::ostringstream out;
-    linear_algebra::write_dimacs(out, formula, native_xor);
+    formats::write_dimacs(out, formula, native_xor);
     return out.str();
 }
 
@@ -72,20 +72,20 @@ int main() {
     check::equal("expanded has no x lines",
                  static_cast<long long>(std::count(plain.begin(), plain.end(), 'x')), 0);
     check::equal("expanding adds variables",
-                 linear_algebra::with_parities_expanded(formula).variable_count > 3 ? 1 : 0, 1);
+                 formats::with_parities_expanded(formula).variable_count > 3 ? 1 : 0, 1);
 
     // A verdict that never arrived is not a verdict.
     std::istringstream silent("c solving\nc gave up\n");
-    const auto quiet = linear_algebra::read_dimacs_model(silent);
+    const auto quiet = formats::read_dimacs_model(silent);
     check::equal("no verdict is not unsatisfiable", quiet.answered ? 1 : 0, 0);
 
     std::istringstream refused("s UNSATISFIABLE\n");
-    const auto no = linear_algebra::read_dimacs_model(refused);
+    const auto no = formats::read_dimacs_model(refused);
     check::equal("unsatisfiable is answered", no.answered ? 1 : 0, 1);
     check::equal("unsatisfiable is not satisfiable", no.satisfiable ? 1 : 0, 0);
 
     std::istringstream yes("s SATISFIABLE\nv 1 -2 3 0\n");
-    const auto model = linear_algebra::read_dimacs_model(yes);
+    const auto model = formats::read_dimacs_model(yes);
     check::equal("satisfiable is read", model.satisfiable ? 1 : 0, 1);
     check::equal("variable 1 is true", model.values[1] ? 1 : 0, 1);
     check::equal("variable 2 is false", model.values[2] ? 1 : 0, 0);

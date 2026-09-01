@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace linear_algebra {
+namespace formats {
 
 namespace {
 
@@ -114,7 +114,7 @@ void require_value_ends_its_line(const std::vector<Token>& tokens, std::size_t v
 
 }  // namespace
 
-RationalMatrix read_sms(std::istream& input) {
+linear_algebra::RationalMatrix read_sms(std::istream& input) {
     const std::vector<Token> tokens = tokens_of(input);
     if (tokens.size() < 3) throw std::runtime_error("SMS needs a header: rows columns type");
     if (!is_type_letter(tokens[2].text)) {
@@ -124,7 +124,7 @@ RationalMatrix read_sms(std::istream& input) {
 
     const std::size_t rows = parse_count(tokens[0].text);
     const std::size_t columns = parse_count(tokens[1].text);
-    RationalMatrix matrix(rows, columns);
+    linear_algebra::RationalMatrix matrix(rows, columns);
 
     bool terminated = false;
     for (std::size_t at = 3; at + 2 < tokens.size(); at += 3) {
@@ -151,13 +151,13 @@ RationalMatrix read_sms(std::istream& input) {
     return matrix;
 }
 
-ModularMatrix read_sms(std::istream& input, const ModularField& field) {
-    const RationalMatrix rationals = read_sms(input);
-    ModularMatrix matrix(rationals.rows(), rationals.columns());
+linear_algebra::ModularMatrix read_sms(std::istream& input, const linear_algebra::ModularField& field) {
+    const linear_algebra::RationalMatrix rationals = read_sms(input);
+    linear_algebra::ModularMatrix matrix(rationals.rows(), rationals.columns());
     for (std::size_t row = 0; row < rationals.rows(); ++row) {
         for (std::size_t column = 0; column < rationals.columns(); ++column) {
             const Givaro::Rational& value = rationals(row, column);
-            ModularField::Element numerator, denominator;
+            linear_algebra::ModularField::Element numerator, denominator;
             field.init(numerator, value.nume());
             field.init(denominator, value.deno());
             if (field.isZero(denominator)) {
@@ -173,20 +173,20 @@ ModularMatrix read_sms(std::istream& input, const ModularField& field) {
     return matrix;
 }
 
-ModularMatrix read_sms_file(const std::string& path, const ModularField& field) {
+linear_algebra::ModularMatrix read_sms_file(const std::string& path, const linear_algebra::ModularField& field) {
     std::ifstream input(path);
     if (!input) throw std::runtime_error("cannot open SMS file: " + path);
     return read_sms(input, field);
 }
 
-RationalMatrix read_sms_file(const std::string& path) {
+linear_algebra::RationalMatrix read_sms_file(const std::string& path) {
     std::ifstream input(path);
     if (!input) throw std::runtime_error("cannot open SMS file: " + path);
     return read_sms(input);
 }
 
-void write_sms(std::ostream& output, const RationalMatrix& matrix) {
-    const RationalField field;
+void write_sms(std::ostream& output, const linear_algebra::RationalMatrix& matrix) {
+    const linear_algebra::RationalField field;
     output << matrix.rows() << " " << matrix.columns() << " R\n";
     for (std::size_t row = 0; row < matrix.rows(); ++row) {
         for (std::size_t column = 0; column < matrix.columns(); ++column) {
@@ -201,7 +201,7 @@ void write_sms(std::ostream& output, const RationalMatrix& matrix) {
 }
 
 void write_sms_file(const std::string& path, const std::string& comment,
-                    const ModularMatrix& matrix) {
+                    const linear_algebra::ModularMatrix& matrix) {
     std::ofstream output(path);
     if (!output) throw std::runtime_error("cannot write SMS file: " + path);
     std::istringstream lines(comment);
@@ -209,7 +209,7 @@ void write_sms_file(const std::string& path, const std::string& comment,
     write_sms(output, matrix);
 }
 
-void write_sms(std::ostream& output, const ModularMatrix& matrix) {
+void write_sms(std::ostream& output, const linear_algebra::ModularMatrix& matrix) {
     output << matrix.rows() << " " << matrix.columns() << " M\n";
     for (std::size_t row = 0; row < matrix.rows(); ++row) {
         for (std::size_t column = 0; column < matrix.columns(); ++column) {
@@ -221,4 +221,4 @@ void write_sms(std::ostream& output, const ModularMatrix& matrix) {
     output << "0 0 0\n";
 }
 
-}  // namespace linear_algebra
+}  // namespace formats

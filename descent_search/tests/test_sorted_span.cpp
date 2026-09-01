@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
     const std::string directory = argv[1];
 
     for (const char* name : kFixtures) {
-        const auto tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const auto tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
         const Field field(tensor.characteristic);
         agrees(name, field, tensor.slices);
     }
@@ -141,7 +141,7 @@ int main(int argc, char** argv) {
     // And on spans the search actually builds, which are not the span of a file:
     // adjoin rank-one maps one at a time and re-ask at every dimension.
     for (const char* name : {"matmul_2x2x2", "f2_2x3", "gf4_multiplication"}) {
-        const auto tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const auto tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
         const Field field(tensor.characteristic);
         const std::vector<Matrix> pool = bilinear_rank::all_rank_one_maps(
             field, tensor.slices.front().rows(), tensor.slices.front().columns());

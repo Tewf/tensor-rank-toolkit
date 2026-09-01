@@ -55,8 +55,8 @@ int main(int argc, char** argv) {
     std::size_t shortlisted = 0;
 
     for (const Fixture& fixture : kFixtures) {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(directory + "/" + fixture.name + ".tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(directory + "/" + fixture.name + ".tensor");
         const Field field(tensor.characteristic);
         const std::string label = fixture.name;
 

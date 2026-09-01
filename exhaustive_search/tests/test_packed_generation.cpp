@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 
     for (const char* name : {"f2_2x2", "f2_2x3", "f2_5x5", "gf16_multiplication",
                              "matmul_2x2x2", "matmul_2x2x3", "cyclic_f2_5"}) {
-        const auto tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const auto tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
         const Field field(tensor.characteristic);
         if (tensor.characteristic != 2) continue;
         const std::size_t rows = tensor.slices.front().rows();
@@ -67,16 +67,16 @@ int main(int argc, char** argv) {
         const std::size_t wanted = span.dimension();
 
         // With room, the whole pool is packed once and read from the table.
-        bilinear_rank::set_memory_budget(std::size_t(2) << 30);
+        run_limits::set_memory_budget(std::size_t(2) << 30);
         const bilinear_rank::Gf2Leaf<bilinear_rank::Addressed> tabled(field, pool, rows, columns);
         const std::vector<Matrix> from_table = tabled.by_scanning_the_pool(span, wanted);
 
         // With none, every element is formed on demand, which is the route the
         // shapes that matter take.
-        bilinear_rank::set_memory_budget(1);
+        run_limits::set_memory_budget(1);
         const bilinear_rank::Gf2Leaf<bilinear_rank::Addressed> onthefly(field, pool, rows, columns);
         const std::vector<Matrix> from_masks = onthefly.by_scanning_the_pool(span, wanted);
-        bilinear_rank::set_memory_budget(std::size_t(2) << 30);
+        run_limits::set_memory_budget(std::size_t(2) << 30);
 
         check::equal(std::string(name) + ": both routes agree on span(T)",
                      static_cast<long long>(same(from_table, from_masks)), 1);

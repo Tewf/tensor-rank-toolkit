@@ -25,7 +25,7 @@ SortedSpan::SortedSpan(const Field& field, const std::vector<Matrix>& slices,
     // One byte an element, against the sixteen a `{rank, index}` pair costs.
     // Nothing else is held: the element itself is rebuilt from its index when
     // the greedy below reaches it, which is at most `dimension` times.
-    require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
+    run_limits::require_room("the ranks of a span of " + std::to_string(slices.size()) + " slices",
                  combinations, sizeof(std::uint8_t));
     std::vector<std::uint8_t> rank_of(combinations, 0);
     std::vector<int64_t> coefficients;

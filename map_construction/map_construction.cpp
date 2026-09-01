@@ -115,9 +115,9 @@ std::vector<Matrix> matrix_multiplication_tensor(std::size_t rows, std::size_t i
     // makes `bytes_per_matrix` safe by construction.
     const std::string product = std::to_string(rows) + "x" + std::to_string(inner) + "x" +
                                 std::to_string(columns) + " matrix product";
-    require_room("one slice of a " + product, left_width, right_width * sizeof(Element));
-    require_room("the slices of a " + product, rows * columns,
-                 bytes_per_matrix(left_width * right_width));
+    run_limits::require_room("one slice of a " + product, left_width, right_width * sizeof(Element));
+    run_limits::require_room("the slices of a " + product, rows * columns,
+                 run_limits::bytes_per_matrix(left_width * right_width));
 
     std::vector<Matrix> slices;
     slices.reserve(rows * columns);
@@ -139,8 +139,8 @@ std::vector<Matrix> cyclic_convolution_tensor(std::size_t length) {
     // `--cyclic` takes: 1.25e11 entries at `--cyclic 2 5000`. One slice, then the
     // count of them, for the reason the matrix product above gives.
     const std::string convolution = "a cyclic convolution of length " + std::to_string(length);
-    require_room("one slice of " + convolution, length, length * sizeof(Element));
-    require_room("the slices of " + convolution, length, bytes_per_matrix(length * length));
+    run_limits::require_room("one slice of " + convolution, length, length * sizeof(Element));
+    run_limits::require_room("the slices of " + convolution, length, run_limits::bytes_per_matrix(length * length));
 
     std::vector<Matrix> slices;
     slices.reserve(length);

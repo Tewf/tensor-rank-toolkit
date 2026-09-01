@@ -20,7 +20,7 @@
 /// instances are small, and a solver that loops for ever is worse than one that
 /// plods. The arithmetic being exact, there is no tolerance to tune and no
 /// degenerate pivot that is only degenerate to fifteen digits.
-namespace optimisation {
+namespace integer_programme {
 
 struct LinearOptimum {
     Status status = Status::Exhausted;
@@ -29,4 +29,4 @@ struct LinearOptimum {
 
 LinearOptimum solve_relaxation(const StandardForm& form);
 
-}  // namespace optimisation
+}  // namespace integer_programme

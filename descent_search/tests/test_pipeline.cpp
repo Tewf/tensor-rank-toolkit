@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 
     for (const Expectation& expected : kExpectations) {
         const std::string name = expected.name;
-        const linear_algebra::Tensor tensor = linear_algebra::read_tensor_file(directory + "/" + name + ".tensor");
+        const formats::Tensor tensor = formats::read_tensor_file(directory + "/" + name + ".tensor");
         const linear_algebra::ModularField field(tensor.characteristic);
         std::cout << name << "\n";
 

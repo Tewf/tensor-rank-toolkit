@@ -174,16 +174,16 @@ int main(int argc, char** argv) {
     fixtures = argc > 1 ? argv[1] : "fixtures";
 
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
         const Field field(tensor.characteristic);
         the_quotient_keeps_the_answer(
             "matmul_2x2x2", tensor.slices, field,
             bilinear_rank::matrix_multiplication_symmetry_generators(field, 2, 2, 2));
     }
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(fixtures + "/gf4_multiplication.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(fixtures + "/gf4_multiplication.tensor");
         const Field field(tensor.characteristic);
         the_quotient_keeps_the_answer("gf4_multiplication", tensor.slices, field,
                                       bilinear_rank::all_automorphisms(field, 2, 2));
@@ -199,8 +199,8 @@ int main(int argc, char** argv) {
     // has to leave the search exactly as it was rather than quotient by the
     // trivial group and cost a stabiliser scan a node.
     {
-        const linear_algebra::Tensor tensor =
-            linear_algebra::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
+        const formats::Tensor tensor =
+            formats::read_tensor_file(fixtures + "/matmul_2x2x2.tensor");
         const Field field(tensor.characteristic);
         const std::vector<Matrix> start =
             bilinear_rank::minimum_weight_basis(field, tensor.slices);

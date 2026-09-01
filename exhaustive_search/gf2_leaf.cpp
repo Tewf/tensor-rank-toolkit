@@ -74,7 +74,7 @@ Gf2Leaf<Candidates>::Gf2Leaf(const Field& field, const Candidates& pool, std::si
     const std::size_t bytes_each = sizeof(std::uint64_t) * words_per_map_;
     // No table, so every element is formed on demand, which `bits_of` does from
     // the two lists above where there are any and out of the pool where not.
-    if (bytes_each > memory_budget() / pool.size()) return;
+    if (bytes_each > run_limits::memory_budget() / pool.size()) return;
 
     table_.resize(pool.size() * words_per_map_);
     for (std::size_t index = 0; index < pool.size(); ++index) {
