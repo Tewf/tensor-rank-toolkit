@@ -24,10 +24,15 @@ is not measurement.
    from a known lower-rank scheme (`descent_search/`, `canonical_factorisation/`) and ask
    SAT for the extension - the same question shape `exhaustive_search/` already walks, so
    the fixed half is algebra, not luck.
-7. **Statistics mined from flip-graph output**: `flip_graph/` can generate thousands of
-   schemes for a fixture, so the zeroing rates and pairing quotas of device 3 and 4 can be
-   *computed* for any tensor rather than copied from matmul folklore - the generalisation
-   Heule's matmul-specific term types cannot give.
+7. **Statistics mined from known schemes**: Mohamed's catch (2026-09-01 night) - do not
+   run a flip graph for this at all: the field's schemes are published as data,
+   github.com/dronperminov/FastMatrixMultiplication (680 schemes, 2x2x2 to 16x16x16,
+   Laderman and Smirnov for 3x3x3 included), the open framework beside it
+   (ternary_flip_graph, arXiv:2603.02398). Mine the zeroing rates and pairing quotas from
+   that corpus; our own `flip_graph/` stays for what it uniquely does - schemes that feed
+   the toolkit's own checkers directly (`algorithm_of`), measured tonight at a 23-scheme
+   in 16 s a walk - and their framework is the generator of record if generation at scale
+   is ever needed.
 8. **A sparsity streamliner**: known operators are sparse and `matrix_sparsification/`
    knows how sparse; "at most X nonzeros per row of the encoding operators" is an
    algebra-motivated streamliner not in the literature's list.
