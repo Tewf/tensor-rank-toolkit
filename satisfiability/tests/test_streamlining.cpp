@@ -2,6 +2,7 @@
 // derives instead of hardcoding: 8 odd entries over 7 products is one double
 // and six singles, the small case of Heule's 19 and 4.
 #include <cstdlib>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -35,18 +36,28 @@ int main(int argc, char** argv) {
     satisfiability::streamline_matmul(encoding, {0, 2, 0}, devices);
 
     // The pairing adds one unit per (odd entry, product): 8 entries times 7.
-    // The zeroing adds half of the light terms: 56 even entries times 7
-    // products, halved. Every added clause is a unit.
+    // The zeroing adds about half of the light terms' pool, which excludes the
+    // cross terms the pairing forces, so its exact count depends on the draw.
+    // Every added clause is a unit, and no literal may carry both signs: a
+    // contradictory pair is the cross-term channel the closure exists to close.
     const std::size_t added = encoding.formula.clauses.size() - before;
-    check::equal("pairing and zeroing add units", static_cast<long long>(added), 8 * 7 + 56 * 7 / 2);
+    check::equal("the pairing's units and a nonempty zeroing are there",
+                 added > 8 * 7 + 100 ? 1 : 0, 1);
     std::size_t units = 0, positives = 0;
+    std::set<int> seen;
+    std::size_t contradictions = 0;
     for (std::size_t index = before; index < encoding.formula.clauses.size(); ++index) {
         const auto& clause = encoding.formula.clauses[index];
         units += clause.size() == 1;
         positives += clause.size() == 1 && clause.front() > 0;
+        if (clause.size() == 1) {
+            contradictions += seen.count(-clause.front());
+            seen.insert(clause.front());
+        }
     }
     check::equal("every added clause is a unit", static_cast<long long>(units),
                  static_cast<long long>(added));
+    check::equal("no unit contradicts another", static_cast<long long>(contradictions), 0);
     // One positive unit per odd entry: each type-3 term lives in exactly one product.
     check::equal("each odd entry is assigned one product", static_cast<long long>(positives), 8);
 

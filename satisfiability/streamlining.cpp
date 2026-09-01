@@ -62,6 +62,15 @@ void streamline_matmul(BinaryEncoding& encoding, const MatmulShape& shape,
 
     std::mt19937_64 draw(devices.seed);
 
+    // A product's owned entries force alpha, beta and gamma pieces, and through
+    // the Tseitin chain every cross combination (a, b, c) of forced pieces is a
+    // forced-true triple term. A draw whose exclusivity unit denies a forced
+    // term - or a zeroing that hits one - is refuted by propagation before any
+    // search: the cross-term channel that killed 197 of 250 instances in
+    // [campaign-2026-09-01.md](shaped-encodings/campaign-2026-09-01.md). So the
+    // pairing redraws until consistent, and the forced terms leave the zeroing
+    // pool.
+    std::vector<int> forced_terms;   // triple literals the pairing forces true
     if (devices.pair_type3) {
         const std::size_t type3 = odd_entries.size(), products = encoding.products;
         if (type3 < products || type3 > 2 * products) {
@@ -69,18 +78,58 @@ void streamline_matmul(BinaryEncoding& encoding, const MatmulShape& shape,
                                         std::to_string(type3) + " over r = " +
                                         std::to_string(products));
         }
-        // T3 - r products carry two odd terms, the rest one: Heule's quota with
-        // the 19 and the 4 derived instead of hardcoded.
+        const std::size_t area = encoding.columns * encoding.slices;
+        std::vector<std::size_t> owner_of(formula.parities.size(), products);
+        bool consistent = false;
         std::vector<std::size_t> owners;
-        std::vector<std::size_t> order(products);
-        for (std::size_t term = 0; term < products; ++term) order[term] = term;
-        std::shuffle(order.begin(), order.end(), draw);
-        for (std::size_t index = 0; index < products; ++index) {
-            owners.push_back(order[index]);
-            if (index < type3 - products) owners.push_back(order[index]);
+        for (std::size_t attempt = 0; attempt < 500 && !consistent; ++attempt) {
+            // T3 - r products carry two odd terms, the rest one: Heule's quota
+            // with the 19 and the 4 derived instead of hardcoded.
+            owners.clear();
+            std::vector<std::size_t> order(products);
+            for (std::size_t term = 0; term < products; ++term) order[term] = term;
+            std::shuffle(order.begin(), order.end(), draw);
+            for (std::size_t index = 0; index < products; ++index) {
+                owners.push_back(order[index]);
+                if (index < type3 - products) owners.push_back(order[index]);
+            }
+            std::shuffle(owners.begin(), owners.end(), draw);
+            std::shuffle(odd_entries.begin(), odd_entries.end(), draw);
+            owner_of.assign(formula.parities.size(), products);
+            for (std::size_t index = 0; index < odd_entries.size(); ++index) {
+                owner_of[odd_entries[index]] = owners[index];
+            }
+            consistent = true;
+            forced_terms.clear();
+            for (std::size_t product = 0; consistent && product < products; ++product) {
+                std::vector<std::size_t> lefts, rights, outputs;
+                for (std::size_t index = 0; index < odd_entries.size(); ++index) {
+                    if (owners[index] != product) continue;
+                    const std::size_t entry = odd_entries[index];
+                    lefts.push_back(entry / area);
+                    rights.push_back(entry % area / encoding.slices);
+                    outputs.push_back(entry % encoding.slices);
+                }
+                for (std::size_t left : lefts) {
+                    for (std::size_t right : rights) {
+                        for (std::size_t output : outputs) {
+                            const std::size_t entry =
+                                (left * encoding.columns + right) * encoding.slices + output;
+                            if (owner_of[entry] == product) continue;   // its own unit
+                            if (owner_of[entry] < products) {           // odd, owned elsewhere
+                                consistent = false;
+                            } else {                                    // even: protect it
+                                forced_terms.push_back(formula.parities[entry].literals[product]);
+                            }
+                        }
+                    }
+                }
+            }
         }
-        std::shuffle(owners.begin(), owners.end(), draw);
-        std::shuffle(odd_entries.begin(), odd_entries.end(), draw);
+        if (!consistent) {
+            throw std::runtime_error("no consistent pairing in 500 draws for seed " +
+                                     std::to_string(devices.seed));
+        }
         for (std::size_t index = 0; index < odd_entries.size(); ++index) {
             const linear_algebra::Cnf::Parity& parity = formula.parities[odd_entries[index]];
             for (std::size_t term = 0; term < parity.literals.size(); ++term) {
@@ -91,11 +140,18 @@ void streamline_matmul(BinaryEncoding& encoding, const MatmulShape& shape,
     }
 
     if (devices.zero_fraction > 0.0) {
-        std::shuffle(light_terms.begin(), light_terms.end(), draw);
+        std::sort(forced_terms.begin(), forced_terms.end());
+        std::vector<int> pool;
+        for (int literal : light_terms) {
+            if (!std::binary_search(forced_terms.begin(), forced_terms.end(), literal)) {
+                pool.push_back(literal);
+            }
+        }
+        std::shuffle(pool.begin(), pool.end(), draw);
         const std::size_t zeroed =
-            static_cast<std::size_t>(devices.zero_fraction * static_cast<double>(light_terms.size()));
-        for (std::size_t index = 0; index < zeroed && index < light_terms.size(); ++index) {
-            formula.add_clause({-light_terms[index]});
+            static_cast<std::size_t>(devices.zero_fraction * static_cast<double>(pool.size()));
+        for (std::size_t index = 0; index < zeroed && index < pool.size(); ++index) {
+            formula.add_clause({-pool[index]});
         }
     }
 }
