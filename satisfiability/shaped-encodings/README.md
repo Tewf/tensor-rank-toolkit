@@ -34,11 +34,12 @@ the cutting number); cube and conquer as shaping-by-splitting.
 
 ## Baselines (named now, so the review is finishable)
 
-1. **xnfsat on Heule's own instances**: 3 of 10 within 5 s (one seed; tonight's five-seed
-   run replaces this number). The target shape.
-2. **kissat on our plain encodings**: Strassen-7 in 0.13 s, f2_5x5@14 found at 347 s at a
-   600 s cap. The control every shaped variant must beat *for local search* without losing
-   to *for CDCL*.
+1. **xnfsat on Heule's own instances**: finds on 6 of 10 at a 300 s cap, four of them on
+   every one of five seeds (means 0.06 to 24 s), where kissat finds none - the five-seed
+   distribution of 2026-09-01, `../las-vegas/results.md`. The target shape.
+2. **kissat on our plain encodings**: Strassen-7 in 0.13 s, f2_5x5@14 found and checked at
+   390 s at a 600 s cap (reproduced on the fixed parser). The control every shaped variant
+   must beat *for local search* without losing to *for CDCL*.
 3. **The walk's violated floor** per instance (5-15 on the 2-2-2-2 family): a shaped
    variant succeeds when the floor reaches zero, not when it merely drops.
 
