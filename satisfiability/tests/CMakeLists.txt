@@ -39,3 +39,6 @@ add_test(NAME exit_codes
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_exit_codes.sh
                  $<TARGET_FILE:decide-rank-by-sat> ${PROJECT_SOURCE_DIR}/fixtures)
 set_tests_properties(exit_codes PROPERTIES TIMEOUT 120)
+add_executable(test_streamlining test_streamlining.cpp)
+target_link_libraries(test_streamlining PRIVATE satisfiability project_warnings testing)
+add_test(NAME streamlining COMMAND test_streamlining ${PROJECT_SOURCE_DIR}/fixtures)

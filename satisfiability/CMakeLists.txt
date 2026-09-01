@@ -4,6 +4,7 @@ add_library(satisfiability STATIC boolean_formula.cpp formula_to_tensor.cpp
                                  model_decomposition.cpp
                                  symmetry_breaking.cpp
                                  solver_process.cpp
+                                 streamlining.cpp
                                  local_search_solver.cpp)
 target_include_directories(satisfiability PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(satisfiability PUBLIC run_limits linear_algebra formats cli PRIVATE project_warnings)

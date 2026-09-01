@@ -7,7 +7,7 @@ under the arms discipline, priced with `satisfiability/las-vegas/measure.py --ch
 is expected to move only local search, the streamliners could move either, and expectation
 is not measurement.
 
-## Replication half (Heule's own devices, from the review)
+## Replication half (Heule's own devices, from the review; machinery built 2026-09-01)
 
 1. encoding floor: plain 3-cut / cut-6 pooled / native XNF (no shaping);
 2. + zero-or-two strengthening (generic, cheapest streamliner);

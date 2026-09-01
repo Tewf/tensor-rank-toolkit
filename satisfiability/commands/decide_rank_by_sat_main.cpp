@@ -53,6 +53,13 @@ void usage() {
                    "                      literals - a found model still certifies, a no or an\n"
                    "                      exhausted run proves NOTHING about the unstreamlined\n"
                    "                      question\n"
+                   "  --inner <m>         the matmul inner dimension, which arms the shaping\n"
+                   "                      devices below (GF(2) matmul tensors only)\n"
+                   "  --pair-type3        distribute the odd entries over the products under\n"
+                   "                      the derived quota; same contract as --zero-or-two\n"
+                   "  --zero-terms <pct>  force this percent of the even entries' terms to\n"
+                   "                      zero; same contract\n"
+                   "  --streamline-seed <s>  the draw behind the two devices above\n"
                    "  --break-symmetry    quotient by term order, and by operand scaling over\n"
                    "                      GF(p). Sound, off by default, and worth at least 76x\n"
                    "                      on a question expected to answer no\n"
@@ -136,7 +143,21 @@ bool report(const linear_algebra::Tensor& tensor, std::size_t products,
             cli::result() << "FOUND a decomposition into " << products << "  (" << answer.seconds
                           << " s)\n";
             return true;
-        case satisfiability::Verdict::No:
+        case satisfiability::Verdict::No: {
+            // A streamliner keeps a slice of the solution space, so its no is a
+            // fact about the slice and never a rank bound; saying "rank is more
+            // than" here would be the exact wrong claim the shaping contract
+            // forbids, and the sweep treats it as undecided.
+            const bool shaped = approach.streamline_inner > 0 || approach.expansion.zero_or_two ||
+                                approach.streamliners.pair_type3 ||
+                                approach.streamliners.zero_fraction > 0;
+            if (shaped) {
+                cli::result() << "no solution under the streamliner, which proves nothing"
+                              << "  (" << answer.seconds << " s)\n";
+                progress.all_below_refused = false;
+                progress.any_undecided = true;
+                return false;
+            }
             cli::result() << "NO, rank is more than " << products << "  (" << answer.seconds
                           << " s)";
             if (answer.proof == satisfiability::Proof::Verified) {
@@ -146,6 +167,7 @@ bool report(const linear_algebra::Tensor& tensor, std::size_t products,
             }
             cli::result() << "\n";
             return false;
+        }
         case satisfiability::Verdict::Unknown:
             cli::result() << "no answer, gave up after " << answer.seconds << " s\n";
             progress.all_below_refused = false;
@@ -287,6 +309,15 @@ int run(int argc, char** argv) {
             approach.expansion.pooled = true;
         } else if (arguments.is("--zero-or-two")) {
             approach.expansion.zero_or_two = true;
+        } else if (arguments.is("--inner")) {
+            approach.streamline_inner = arguments.count();
+        } else if (arguments.is("--pair-type3")) {
+            approach.streamliners.pair_type3 = true;
+        } else if (arguments.is("--zero-terms")) {
+            approach.streamliners.zero_fraction =
+                static_cast<double>(arguments.count()) / 100.0;
+        } else if (arguments.is("--streamline-seed")) {
+            approach.streamliners.seed = arguments.count();
         } else if (arguments.is("--break-symmetry")) {
             approach.break_symmetry = true;
         } else if (arguments.is("--symmetry", "-s")) {

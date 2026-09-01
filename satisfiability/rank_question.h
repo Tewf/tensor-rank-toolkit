@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "solver_process.h"
+#include "streamlining.h"
 #include "tensor_file.h"
 #include "types.h"
 
@@ -31,6 +32,11 @@ struct SolveOptions {
     /// How --plain-cnf and --emit-cnf expand each parity: the cutting number,
     /// the chaining, and Heule's zero-or-two streamliner (shaped-encodings/).
     linear_algebra::ParityExpansion expansion;
+
+    /// The matmul shaping devices (shaped-encodings/): applied when
+    /// `streamline_inner` names the inner dimension, GF(2) matmul tensors only.
+    std::size_t streamline_inner = 0;
+    Streamliners streamliners;
     /// Quotient by the symmetries a decomposition has: the order of its terms
     /// over any field, and the scaling of its operand vectors over GF(p).
     /// Sound, and worth a great deal on a question expected to answer no.

@@ -112,6 +112,10 @@ Forms build_forms(const linear_algebra::Tensor& tensor, std::size_t products,
     if (forms.binary) {
         forms.boolean_form =
             encode_binary_rank_at_most(tensor, products, approach.break_symmetry, pinned);
+        if (approach.streamline_inner > 0) {
+            streamline_matmul(forms.boolean_form, {0, approach.streamline_inner, 0},
+                              approach.streamliners);
+        }
     } else {
         forms.prime_form = encode_prime_rank_at_most(tensor, products, approach.break_symmetry);
     }
