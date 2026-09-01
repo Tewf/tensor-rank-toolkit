@@ -59,7 +59,11 @@ void usage() {
                    "                      the derived quota; same contract as --zero-or-two\n"
                    "  --zero-terms <pct>  force this percent of the even entries' terms to\n"
                    "                      zero; same contract\n"
-                   "  --streamline-seed <s>  the draw behind the two devices above\n"
+                   "  --streamline-seed <s>  the draw behind the shaping devices\n"
+                   "  --fix-scheme <file>  a known scheme (nested-braces coefficients, read\n"
+                   "                      mod 2, verified against the Brent equations)\n"
+                   "  --fix-fraction <pct> instantiate this percent of the operator variables\n"
+                   "                      from it; same contract as --zero-or-two\n"
                    "  --break-symmetry    quotient by term order, and by operand scaling over\n"
                    "                      GF(p). Sound, off by default, and worth at least 76x\n"
                    "                      on a question expected to answer no\n"
@@ -318,6 +322,11 @@ int run(int argc, char** argv) {
                 static_cast<double>(arguments.count()) / 100.0;
         } else if (arguments.is("--streamline-seed")) {
             approach.streamliners.seed = arguments.count();
+        } else if (arguments.is("--fix-scheme")) {
+            approach.streamliners.fixing_scheme = arguments.text();
+        } else if (arguments.is("--fix-fraction")) {
+            approach.streamliners.fixing_fraction =
+                static_cast<double>(arguments.count()) / 100.0;
         } else if (arguments.is("--break-symmetry")) {
             approach.break_symmetry = true;
         } else if (arguments.is("--symmetry", "-s")) {

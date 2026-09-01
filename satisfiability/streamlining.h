@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include "binary_encoding.h"
 
@@ -33,6 +34,15 @@ struct Streamliners {
     /// "motivated by the observation that in most of the known solutions,
     /// almost all these terms are zero"; their choice was one half.
     double zero_fraction = 0.0;
+
+    /// Neighborhood fixing, their strongest device: instantiate this share of
+    /// the alpha/beta/gamma variables from a known scheme (their choice ~50 %).
+    /// `fixing_scheme` is a file of the products' coefficient matrices as
+    /// nested braces of integers (the FastMatrixMultiplication .m layout);
+    /// coefficients are read modulo 2, and the scheme is verified against
+    /// every Brent parity before a single variable is fixed.
+    std::string fixing_scheme;
+    double fixing_fraction = 0.0;
 
     std::uint64_t seed = 1;
 };

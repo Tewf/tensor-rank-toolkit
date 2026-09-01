@@ -1,6 +1,7 @@
 #include "streamlining.h"
 
 #include <algorithm>
+#include <fstream>
 #include <random>
 #include <stdexcept>
 #include <string>
@@ -9,6 +10,33 @@
 namespace satisfiability {
 
 namespace {
+
+/// A scheme file as the bits of its coefficients: every integer in the file in
+/// order, |value| mod 2. The .m layout is nested braces around exactly
+/// products x 3 x (rows + columns + slices)... integers, so reading the
+/// integers in order is the whole parse and the count is the format check.
+std::vector<int> scheme_bits(const std::string& path, std::size_t expected) {
+    std::ifstream input(path);
+    if (!input) throw std::invalid_argument("cannot read the scheme file " + path);
+    std::vector<int> bits;
+    char c;
+    std::string number;
+    auto flush = [&] {
+        if (!number.empty() && number != "-") bits.push_back(std::abs(std::stoi(number)) % 2);
+        number.clear();
+    };
+    while (input.get(c)) {
+        if (c == '-' || (c >= '0' && c <= '9')) number.push_back(c);
+        else flush();
+    }
+    flush();
+    if (bits.size() != expected) {
+        throw std::invalid_argument("scheme file holds " + std::to_string(bits.size()) +
+                                    " coefficients where this encoding wants " +
+                                    std::to_string(expected));
+    }
+    return bits;
+}
 
 /// How many of the three matmul index agreements an entry satisfies. Entry
 /// (row, column, slice) decodes as A-entry (i1, i2), B-entry (j1, j2) and
@@ -136,6 +164,82 @@ void streamline_matmul(BinaryEncoding& encoding, const MatmulShape& shape,
                 formula.add_clause({term == owners[index] ? parity.literals[term]
                                                           : -parity.literals[term]});
             }
+        }
+    }
+
+    if (!devices.fixing_scheme.empty() && devices.fixing_fraction > 0.0) {
+        // The scheme's bits in the file's order: per product, the A matrix, the
+        // B matrix, the C matrix, row-major - which is exactly this encoding's
+        // left/right/output coordinate order.
+        const std::size_t per_product = encoding.rows + encoding.columns + encoding.slices;
+        const std::vector<int> bits =
+            scheme_bits(devices.fixing_scheme, encoding.products * per_product);
+        // Scheme files disagree on the third matrix's orientation - the matmul
+        // tensor's own third index is (result column, result row), so many
+        // formats store C transposed, the same convention split the two
+        // Algorithm types document. The 729 Brent equations are the arbiter:
+        // whichever orientation satisfies them all is the file's, and a file
+        // satisfying neither is refused before a single unit is emitted, since
+        // fixing a wrong solution would make every no downstream meaningless.
+        const std::size_t result_columns = full.columns;
+        auto slice_offset = [&](std::size_t slice, bool transposed) {
+            if (!transposed) return slice;
+            return slice % result_columns * full.rows + slice / result_columns;
+        };
+        auto bit = [&](std::size_t product, std::size_t offset) {
+            return bits[product * per_product + offset];
+        };
+        auto satisfies = [&](bool transposed) {
+            std::size_t index = 0;
+            for (std::size_t row = 0; row < encoding.rows; ++row) {
+                for (std::size_t column = 0; column < encoding.columns; ++column) {
+                    for (std::size_t slice = 0; slice < encoding.slices; ++slice, ++index) {
+                        int parity = 0;
+                        const std::size_t offset = encoding.rows + encoding.columns +
+                                                   slice_offset(slice, transposed);
+                        for (std::size_t product = 0; product < encoding.products; ++product) {
+                            parity ^= bit(product, row) & bit(product, encoding.rows + column) &
+                                      bit(product, offset);
+                        }
+                        if ((parity != 0) != formula.parities[index].value) return false;
+                    }
+                }
+            }
+            return true;
+        };
+        const bool direct = satisfies(false);
+        if (!direct && !satisfies(true)) {
+            throw std::invalid_argument(
+                "the scheme does not satisfy this tensor's Brent equations in either "
+                "orientation of its third matrix");
+        }
+        const bool transposed = !direct;
+        // Fix the drawn share of the operator variables to the scheme's values.
+        std::vector<std::pair<int, int>> assignments;   // (variable, value)
+        for (std::size_t product = 0; product < encoding.products; ++product) {
+            for (std::size_t offset = 0; offset < encoding.rows; ++offset) {
+                assignments.push_back({encoding.left[product * encoding.rows + offset],
+                                       bit(product, offset)});
+            }
+            for (std::size_t offset = 0; offset < encoding.columns; ++offset) {
+                assignments.push_back({encoding.right[product * encoding.columns + offset],
+                                       bit(product, encoding.rows + offset)});
+            }
+            for (std::size_t offset = 0; offset < encoding.slices; ++offset) {
+                assignments.push_back(
+                    {encoding.output[product * encoding.slices + offset],
+                     bit(product, encoding.rows + encoding.columns +
+                                      slice_offset(offset, transposed))});
+            }
+        }
+        std::shuffle(assignments.begin(), assignments.end(), draw);
+        const std::size_t fixed = static_cast<std::size_t>(
+            devices.fixing_fraction * static_cast<double>(assignments.size()));
+        for (std::size_t position = 0; position < fixed && position < assignments.size();
+             ++position) {
+            formula.add_clause(
+                {assignments[position].second ? assignments[position].first
+                                              : -assignments[position].first});
         }
     }
 

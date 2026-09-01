@@ -2,6 +2,7 @@
 // derives instead of hardcoding: 8 odd entries over 7 products is one double
 // and six singles, the small case of Heule's 19 and 4.
 #include <cstdlib>
+#include <fstream>
 #include <set>
 #include <string>
 #include <vector>
@@ -83,6 +84,50 @@ int main(int argc, char** argv) {
     }
     check::equal("one product owns two odd entries", static_cast<long long>(doubles), 1);
     check::equal("six products own one each", static_cast<long long>(singles), 6);
+
+    // The fixing device with Strassen mod 2 written out: a full fixing passes
+    // the Brent verification and pins every operator variable; one flipped
+    // coefficient must be refused before any unit is emitted.
+    {
+        const std::string strassen =
+            "{{{1,0},{0,1}},{{1,0},{0,1}},{{1,0},{0,1}}}"
+            "{{{0,0},{1,1}},{{1,0},{0,0}},{{0,0},{1,1}}}"
+            "{{{1,0},{0,0}},{{0,1},{0,1}},{{0,1},{0,1}}}"
+            "{{{0,0},{0,1}},{{1,0},{1,0}},{{1,0},{1,0}}}"
+            "{{{1,1},{0,0}},{{0,0},{0,1}},{{1,1},{0,0}}}"
+            "{{{1,0},{1,0}},{{1,1},{0,0}},{{0,0},{0,1}}}"
+            "{{{0,1},{0,1}},{{0,0},{1,1}},{{1,0},{0,0}}}";
+        const std::string path = "/tmp/streamlining-strassen-test.m";
+        {
+            std::ofstream out(path);
+            out << strassen;
+        }
+        auto fixed = satisfiability::encode_binary_rank_at_most(tensor, 7);
+        satisfiability::Streamliners fixing;
+        fixing.fixing_scheme = path;
+        fixing.fixing_fraction = 1.0;
+        const std::size_t before_fix = fixed.formula.clauses.size();
+        satisfiability::streamline_matmul(fixed, {0, 2, 0}, fixing);
+        check::equal("a full fixing pins every operator variable",
+                     static_cast<long long>(fixed.formula.clauses.size() - before_fix),
+                     7 * 12);
+
+        std::string corrupt = strassen;
+        corrupt[3] = '0';   // flip the first coefficient of the first product
+        {
+            std::ofstream out(path);
+            out << corrupt;
+        }
+        auto refused_encoding = satisfiability::encode_binary_rank_at_most(tensor, 7);
+        bool refused_scheme = false;
+        try {
+            satisfiability::streamline_matmul(refused_encoding, {0, 2, 0}, fixing);
+        } catch (const std::invalid_argument&) {
+            refused_scheme = true;
+        }
+        check::equal("a wrong scheme is refused by the Brent check",
+                     refused_scheme ? 1 : 0, 1);
+    }
 
     return check::report("streamlining");
 }
