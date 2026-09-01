@@ -1911,9 +1911,9 @@
         },
         "kissat": {
           "verdict": "unknown",
-          "seconds": 60.2661,
+          "seconds": 601.006,
           "fastest_of": 3,
-          "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/.local/bin/kissat --seed 1 --timeout 600 --plain-cnf"
         }
       }
     },
@@ -2061,9 +2061,9 @@
         },
         "kissat": {
           "verdict": "unknown",
-          "seconds": 60.3516,
+          "seconds": 601.018,
           "fastest_of": 3,
-          "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/cyclic_f2_7.tensor --target 13 --solver ~/.local/bin/kissat --seed 1 --timeout 600 --plain-cnf --break-symmetry"
         }
       }
     },
@@ -2210,10 +2210,10 @@
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
         },
         "kissat": {
-          "verdict": "unknown",
-          "seconds": 60.3411,
+          "verdict": "found",
+          "seconds": 389.975,
           "fastest_of": 3,
-          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/.local/bin/kissat --seed 1 --timeout 600 --plain-cnf"
         }
       }
     },
@@ -2361,9 +2361,9 @@
         },
         "kissat": {
           "verdict": "unknown",
-          "seconds": 60.3318,
+          "seconds": 601.012,
           "fastest_of": 3,
-          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/f2_5x5.tensor --target 14 --solver ~/.local/bin/kissat --seed 1 --timeout 600 --plain-cnf --break-symmetry"
         }
       }
     },
@@ -2511,9 +2511,9 @@
         },
         "kissat": {
           "verdict": "unknown",
-          "seconds": 60.2287,
+          "seconds": 601.019,
           "fastest_of": 3,
-          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf"
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/.local/bin/kissat --seed 1 --timeout 600 --plain-cnf"
         }
       }
     },
@@ -2661,15 +2661,15 @@
         },
         "kissat": {
           "verdict": "unknown",
-          "seconds": 60.2332,
+          "seconds": 601.007,
           "fastest_of": 3,
-          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/.local/bin/kissat --seed 1 --timeout 60 --plain-cnf --break-symmetry"
+          "command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_3x3x3.tensor --target 23 --solver ~/.local/bin/kissat --seed 1 --timeout 600 --plain-cnf --break-symmetry"
         }
       }
     }
   ],
   "provenance": {
-    "commit": "b13f4f0f4b749b90292b7239570f143d62bec3b3",
+    "commit": "3b196c62f11d25715a53e1a93b817db7be152ff1",
     "tree_clean": false,
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
@@ -2691,13 +2691,7 @@
       "node_limit": 5000000,
       "solver_timeout_seconds": 300
     },
-    "solvers_run_directly": {
-      "yalsat": "build/third_party/yalsat/yalsat",
-      "xnfsat": "build/third_party/xnfsat/xnfsat",
-      "probSAT": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT",
-      "multilinear-sat": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat"
-    },
-    "typed_by_hand": "The two sweep blocks below and the `conditions` in them were written by hand after the runs, from the command lines that launched them and from sensor readings taken during them. The driver stamps them itself since commit after b13f4f0; the runs that produced this file predate that and stamped one flat block per invocation, which the second invocation overwrote."
+    "solvers_run_directly": {}
   },
   "challenges": [
     {
@@ -2707,14 +2701,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.024,
+              "seconds": 301.106,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-3.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.037,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-3.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-3.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.117,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-3.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.112,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-3.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2723,46 +2741,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.021,
+              "seconds": 301.116,
               "verdict": "unknown",
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-3.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.018,
+              "seed": 2,
+              "seconds": 301.115,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-3.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-3.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.03,
+              "seed": 3,
+              "seconds": 301.114,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-3.cnf 1"
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-3.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.051,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-3.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.113,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-3.xnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2771,14 +2781,14 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.015,
+              "seconds": 301.017,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-2-3.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2792,15 +2802,40 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.023,
+              "seconds": 301.116,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-A.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-A.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 291.842,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-A.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.112,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-A.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-A.cnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
+          "finished_within_cap": 1,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 291.842,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
         },
@@ -2808,62 +2843,58 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 2.391,
+              "seconds": 2.325,
               "verdict": "found",
               "model_checked": true,
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-A.xnf 1"
-            }
-          ],
-          "finished_within_cap": 1,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": 2.391,
-          "median_seconds": 2.391
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.019,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-A.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "seed": 2,
+              "seconds": 2.677,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-A.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.032,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-A.cnf 1"
+              "seed": 3,
+              "seconds": 1.859,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-A.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 0.431,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-A.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 2.225,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-A.xnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 1.9034,
+          "median_seconds": 2.225
         },
         "kissat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.02,
+              "seconds": 301.021,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-2-A.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2877,14 +2908,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.025,
+              "seconds": 301.114,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-B.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.118,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-B.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-B.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.093,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-B.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.017,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-B.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2893,46 +2948,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.02,
+              "seconds": 301.115,
               "verdict": "unknown",
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-B.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.018,
+              "seed": 2,
+              "seconds": 301.116,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-B.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-B.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.033,
+              "seed": 3,
+              "seconds": 301.118,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-B.cnf 1"
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-B.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.014,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-B.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.118,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-B.xnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2941,14 +2988,14 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.014,
+              "seconds": 301.02,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-2-B.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2962,14 +3009,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.019,
+              "seconds": 301.054,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-C.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-C.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.12,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-C.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-C.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.117,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-C.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -2978,62 +3049,58 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.02,
-              "verdict": "unknown",
+              "seconds": 7.537,
+              "verdict": "found",
+              "model_checked": true,
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-C.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.019,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-C.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "seed": 2,
+              "seconds": 7.683,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-C.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 5.93,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-C.cnf 1"
+              "seed": 3,
+              "seconds": 31.785,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-C.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 70.863,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-C.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 1.021,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-C.xnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 23.7778,
+          "median_seconds": 7.683
         },
         "kissat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.016,
+              "seconds": 301.02,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-2-C.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3047,14 +3114,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.016,
+              "seconds": 301.116,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-D.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-D.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-D.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.121,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-D.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-D.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3063,62 +3154,58 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 0.827,
+              "seconds": 0.877,
               "verdict": "found",
               "model_checked": true,
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-D.xnf 1"
-            }
-          ],
-          "finished_within_cap": 1,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": 0.827,
-          "median_seconds": 0.827
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.018,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-D.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "seed": 2,
+              "seconds": 7.382,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-D.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.034,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-D.cnf 1"
+              "seed": 3,
+              "seconds": 12.108,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-D.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 0.363,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-D.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 3.429,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-D.xnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 4.8318,
+          "median_seconds": 3.429
         },
         "kissat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.016,
+              "seconds": 301.02,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-2-D.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3132,14 +3219,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.019,
+              "seconds": 301.122,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-M.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.117,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-M.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.118,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-M.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-M.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-2-M.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3148,46 +3259,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.021,
+              "seconds": 301.037,
               "verdict": "unknown",
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-M.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.02,
+              "seed": 2,
+              "seconds": 301.116,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-2-M.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-M.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 5.927,
+              "seed": 3,
+              "seconds": 301.12,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-2-M.cnf 1"
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-M.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.121,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-M.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.119,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-2-M.xnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3196,14 +3299,14 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.018,
+              "seconds": 301.026,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-2-M.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3217,15 +3320,40 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.021,
+              "seconds": 301.122,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-3-4.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.118,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-3-4.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 198.897,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-3-4.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-3-4.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.122,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-3-4.cnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
+          "finished_within_cap": 1,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 198.897,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
         },
@@ -3233,62 +3361,58 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.021,
-              "verdict": "unknown",
+              "seconds": 5.654,
+              "verdict": "found",
+              "model_checked": true,
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-3-4.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.02,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-3-4.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "seed": 2,
+              "seconds": 3.999,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-3-4.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.037,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-3-4.cnf 1"
+              "seed": 3,
+              "seconds": 2.161,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-3-4.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 0.515,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-3-4.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 6.07,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-3-4.xnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 3.6798,
+          "median_seconds": 3.999
         },
         "kissat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.016,
+              "seconds": 301.02,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-3-4.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3302,14 +3426,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.019,
+              "seconds": 301.117,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-A.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.071,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-A.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.116,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-A.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.117,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-A.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.119,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-A.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3318,46 +3466,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.02,
+              "seconds": 301.116,
               "verdict": "unknown",
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-A.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.019,
+              "seed": 2,
+              "seconds": 301.117,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-4-A.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-A.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.036,
+              "seed": 3,
+              "seconds": 301.117,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-4-A.cnf 1"
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-A.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.115,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-A.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.118,
+              "verdict": "unknown",
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-A.xnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3366,14 +3506,14 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.016,
+              "seconds": 301.022,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-4-A.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3387,14 +3527,38 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.019,
+              "seconds": 301.115,
               "verdict": "unknown",
               "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-B.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 301.12,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-B.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 301.114,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-B.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.117,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-B.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 301.111,
+              "verdict": "unknown",
+              "command": "build/third_party/yalsat/yalsat MM-23-2-2-2-4-B.cnf 5"
             }
           ],
           "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
+          "of": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3403,62 +3567,56 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.02,
+              "seconds": 301.096,
               "verdict": "unknown",
               "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-B.xnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.025,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-2-2-2-4-B.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "seed": 2,
+              "seconds": 143.935,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-B.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.036,
+              "seed": 3,
+              "seconds": 204.13,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-B.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 301.113,
               "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-2-2-2-4-B.cnf 1"
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-B.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 237.961,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-2-2-2-4-B.xnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+          "finished_within_cap": 3,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 195.342,
+          "median_seconds": 237.961
         },
         "kissat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.018,
+              "seconds": 301.02,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-2-2-2-4-B.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3472,78 +3630,102 @@
           "seeds": [
             {
               "seed": 1,
-              "seconds": 0.763,
+              "seconds": 0.726,
               "verdict": "found",
               "model_checked": true,
               "command": "build/third_party/yalsat/yalsat MM-23-4-4-4-4-1.cnf 1"
+            },
+            {
+              "seed": 2,
+              "seconds": 0.736,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-4-4-4-4-1.cnf 2"
+            },
+            {
+              "seed": 3,
+              "seconds": 1.54,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-4-4-4-4-1.cnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 1.83,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-4-4-4-4-1.cnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 7.121,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/yalsat/yalsat MM-23-4-4-4-4-1.cnf 5"
             }
           ],
-          "finished_within_cap": 1,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": 0.763,
-          "median_seconds": 0.763
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 2.3906,
+          "median_seconds": 1.54
         },
         "xnfsat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 0.027,
+              "seconds": 0.03,
               "verdict": "found",
               "model_checked": true,
               "command": "build/third_party/xnfsat/xnfsat MM-23-4-4-4-4-1.xnf 1"
-            }
-          ],
-          "finished_within_cap": 1,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": 0.027,
-          "median_seconds": 0.027
-        },
-        "probSAT": {
-          "seeds": [
+            },
             {
-              "seed": 1,
-              "seconds": 6.016,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT MM-23-4-4-4-4-1.cnf 1"
-            }
-          ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
-        },
-        "multilinear-sat": {
-          "seeds": [
+              "seed": 2,
+              "seconds": 0.033,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-4-4-4-4-1.xnf 2"
+            },
             {
-              "seed": 1,
-              "seconds": 6.034,
-              "verdict": "unknown",
-              "command": "~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat MM-23-4-4-4-4-1.cnf 1"
+              "seed": 3,
+              "seconds": 0.048,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-4-4-4-4-1.xnf 3"
+            },
+            {
+              "seed": 4,
+              "seconds": 0.142,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-4-4-4-4-1.xnf 4"
+            },
+            {
+              "seed": 5,
+              "seconds": 0.068,
+              "verdict": "found",
+              "model_checked": true,
+              "command": "build/third_party/xnfsat/xnfsat MM-23-4-4-4-4-1.xnf 5"
             }
           ],
-          "finished_within_cap": 0,
-          "of": 1,
-          "cap_seconds": 5,
-          "mean_seconds_of_finished": null,
-          "median_seconds": null,
-          "median_note": "half or more of the seeds hit the cap, so the median is above it"
+          "finished_within_cap": 5,
+          "of": 5,
+          "cap_seconds": 300,
+          "mean_seconds_of_finished": 0.0642,
+          "median_seconds": 0.048
         },
         "kissat": {
           "seeds": [
             {
               "seed": 1,
-              "seconds": 6.015,
+              "seconds": 301.017,
               "verdict": "unknown",
               "command": "~/.local/bin/kissat MM-23-4-4-4-4-1.cnf 1"
             }
           ],
           "finished_within_cap": 0,
           "of": 1,
-          "cap_seconds": 5,
+          "cap_seconds": 300,
           "mean_seconds_of_finished": null,
           "median_seconds": null,
           "median_note": "half or more of the seeds hit the cap, so the median is above it"
@@ -3552,25 +3734,23 @@
     }
   ],
   "fixtures_provenance": {
-    "jobs": 3,
+    "jobs": 2,
     "solvers": [
-      "kissat",
-      "multilinear-sat",
-      "probSAT",
-      "xnfsat",
-      "yalsat"
+      "kissat"
     ],
-    "commit": "b13f4f0f4b749b90292b7239570f143d62bec3b3",
-    "finished": "2026-08-29 11:08",
+    "commit": "3b196c62f11d25715a53e1a93b817db7be152ff1",
+    "finished": "2026-09-01 21:03",
     "seeds": 5,
     "control_seeds": 3,
-    "cap_seconds": 60,
-    "rerun_of": null,
-    "conditions": "Three solver processes at once on a 12-thread i5-12450H; CPU package between 84 and 95 C, touching the 95 C throttle point twice; clock 2.3 GHz on average when read; for part of the sweep another session's model runner at about half a core. So a second here is an order of magnitude, never a two-digit ratio.",
-    "not_taken": "kissat is unknown at the 60 s cap on cyclic_f2_7 at 13, f2_5x5 at 14 and matmul_3x3x3 at 23, both orderings. A rerun of those six cells at a 300 s cap was queued and killed with the challenge sweep before it ran; the cells stand at 60 s."
+    "cap_seconds": 600,
+    "rerun_of": [
+      "cyclic_f2_7",
+      "f2_5x5",
+      "matmul_3x3x3"
+    ]
   },
   "challenges_provenance": {
-    "jobs": 1,
+    "jobs": 2,
     "solvers": [
       "kissat",
       "multilinear-sat",
@@ -3578,13 +3758,11 @@
       "xnfsat",
       "yalsat"
     ],
-    "commit": "b13f4f0f4b749b90292b7239570f143d62bec3b3",
-    "finished": "2026-08-29 11:19",
-    "seeds": 1,
-    "control_seeds": 1,
-    "cap_seconds": 5,
-    "cnf2xnf": "build/third_party/cnf2xnf/cnf2xnf",
-    "what_this_is": "A five-second, one-seed smoke of the driver on the ten challenge-1 instances, run by hand to check the command before the full sweep. It is not the reproduction of Nawrocki et al.'s Table 1 and must not be read as one.",
-    "the_full_run": "Five seeds for xnfsat and yalsat, one for the controls and kissat, 300 s cap, three jobs: started 11:19, stopped by hand at 12:16 on its third instance of ten (MM-23-2-2-2-2-B) after the chassis reached 96 C three times, with the two 300 s control rows per instance most of the load. Its partial results were not written; the command to run it unattended is in how-it-was-measured.md."
+    "commit": "3b196c62f11d25715a53e1a93b817db7be152ff1",
+    "finished": "2026-09-01 19:37",
+    "seeds": 5,
+    "control_seeds": 0,
+    "cap_seconds": 300,
+    "cnf2xnf": "build/third_party/cnf2xnf/cnf2xnf"
   }
 }
