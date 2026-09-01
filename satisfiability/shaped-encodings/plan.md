@@ -20,10 +20,13 @@ is not measurement.
 
 ## Algebra-fed half (what this repository can mine that statistics cannot)
 
-6. **Neighborhood fixing from the toolkit's own objects**: fix a partial product basis
-   from a known lower-rank scheme (`descent_search/`, `canonical_factorisation/`) and ask
-   SAT for the extension - the same question shape `exhaustive_search/` already walks, so
-   the fixed half is algebra, not luck.
+6. **Neighborhood fixing** - built and calibrated 2026-09-01 night (`--fix-scheme`,
+   `--fix-fraction`, the Brent equations arbitrating the file's third-matrix
+   orientation): Laderman at 50 % hands kissat a checked 23-scheme in 0.34 s, the
+   threshold is a cliff between 48 and 45 %, and the device feeds CDCL, not the walk
+   (campaign file, device 6 section). Still open from the original entry: fixing a
+   partial *basis* from the toolkit's own objects rather than a coordinate share of one
+   scheme - the algebra-shaped version of the same anchor.
 7. **Statistics mined from known schemes**: Mohamed's catch (2026-09-01 night) - do not
    run a flip graph for this at all: the field's schemes are published as data,
    github.com/dronperminov/FastMatrixMultiplication (680 schemes, 2x2x2 to 16x16x16,
