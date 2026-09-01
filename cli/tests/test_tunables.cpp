@@ -47,7 +47,8 @@ void check_the_defaults_are_the_documented_numbers() {
     check::equal("ilp node limit", static_cast<long long>(values.ilp_node_limit), 200'000);
     check::equal("plateau state budget", static_cast<long long>(values.plateau_state_budget),
                  200'000);
-    check::equal("sat memory", static_cast<long long>(values.sat_memory_megabytes), 2048);
+    check::equal("sat memory follows the machine", static_cast<long long>(values.sat_memory_megabytes),
+                 static_cast<long long>(run_limits::suggested_memory_budget() >> 20));
     check::equal("sat timeout", static_cast<long long>(values.sat_timeout_seconds), 300);
     check::equal("ilp time limit", static_cast<long long>(values.ilp_time_limit_seconds), 300);
     check::text("kissat is asked first", values.sat_solver_order.front(), "kissat");
