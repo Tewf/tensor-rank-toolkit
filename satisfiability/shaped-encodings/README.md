@@ -42,21 +42,34 @@ the cutting number); cube and conquer as shaping-by-splitting.
 3. **The walk's violated floor** per instance (5-15 on the 2-2-2-2 family): a shaped
    variant succeeds when the floor reaches zero, not when it merely drops.
 
-## The review to finish before any code
+## The review (closed 2026-09-01)
 
-- Heule, Kauers, Seidl (the MM-Challenge papers): exactly which streamlining predicates and
-  pairing constraints they add, and which are specific to Z2 matrix multiplication.
-- Gomes and Sellmann's streamlining line: what survives when the streamliner is wrong
-  (completeness is lost per-streamliner, recovered by the portfolio).
-- The 2026 record holders the Q2 review named (AFSAT; GaloisSAT/TurboSAT, relaxation feeding
-  CDCL): what shaping, if any, they add.
-- The cutting-number measurements: whether cut-6 transfers to our parity lengths (23).
+Done: [review.md](review.md), primary sources read and the load-bearing quotes verified.
+What it settled: Heule's shaping is four named devices (zero-or-two strengthening,
+~50 % neighborhood fixing, type-0/1/2 zeroing, the type-3 pairing quota 19x1 + 4x2), the
+instances were generated survival-of-the-fastest against yalsat, **no symmetry breaking is
+encoded**, cut 6 pooled is the best CNF of a length-23 parity (native XNF better still),
+no 2026 solver beats the record or adds shaping - and scheme discovery's actual state of
+the art is the flip graph, this repository's own `flip_graph/`, which joins kissat as an
+incumbent to beat.
 
-## The experiment plan, once the review closes
+## The experiment plan
 
-Generate shaped variants of one fixture family (matmul_3x3x3 at 23 and the 2-2-2-2
-challenges as the bridge): plain, cut-6, native XNF, +term ordering, +pairing anchors,
-+streamliners from the review — one factor at a time, the arms discipline. Price xnfsat,
-yalsat and kissat on every variant with `satisfiability/las-vegas/measure.py --challenges`
-(it already prices a directory), five seeds, one protocol. The claim to test: shaping moves
-xnfsat from 0 to found on at least one instance our plain encoding loses.
+Generate shaped variants of matmul_3x3x3 at 23 (the bridge to challenge1), one factor at
+a time under the arms discipline, priced with
+`satisfiability/las-vegas/measure.py --challenges` (five seeds, one protocol):
+
+1. encoding floor: plain 3-cut / cut-6 pooled / native XNF (no shaping);
+2. + zero-or-two strengthening (generic, cheapest streamliner);
+3. + type-3 pairing under the 19x1 + 4x2 quota, randomised, many instances,
+   discard-and-retry after minutes (their generation discipline, the portfolio across
+   instances);
+4. + zeroing of type-0/1/2 terms at their observed rate;
+5. + neighborhood fixing from a known scheme (Strassen-derived or a flip-graph find),
+   the variant that tests transfer to *our* instances rather than replication;
+6. deliberately no in-encoding symmetry breaking, since theirs has none and ours
+   measurably hurt every walk.
+
+The claim to test stands: shaping moves xnfsat from 0 to found on at least one instance
+our plain encoding loses. Success is compared against kissat-on-plain AND against
+`flip_graph/` on the same tensor, or the win is only against a strawman.
