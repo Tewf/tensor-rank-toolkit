@@ -354,9 +354,16 @@ std::string write_question(const linear_algebra::Tensor& tensor, std::size_t pro
     }
 
     const bool binary = tensor.characteristic == 2;
-    const linear_algebra::Cnf formula =
-        binary ? encode_binary_rank_at_most(tensor, products, approach.break_symmetry).formula
-               : encode_prime_rank_at_most(tensor, products, approach.break_symmetry).formula;
+    linear_algebra::Cnf formula;
+    if (binary) {
+        auto encoding = encode_binary_rank_at_most(tensor, products, approach.break_symmetry);
+        if (approach.streamline_inner > 0) {
+            streamline_matmul(encoding, {0, approach.streamline_inner, 0}, approach.streamliners);
+        }
+        formula = std::move(encoding.formula);
+    } else {
+        formula = encode_prime_rank_at_most(tensor, products, approach.break_symmetry).formula;
+    }
 
     const bool native = !approach.plain_cnf;
     linear_algebra::write_dimacs(out, formula, native, approach.expansion);

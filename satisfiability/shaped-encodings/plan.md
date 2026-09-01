@@ -60,7 +60,11 @@ is not measurement.
 
 ## The claims
 
-Shaping moves xnfsat from 0 to found on at least one instance our plain encoding loses;
+Shaping moves xnfsat from 0 to found on at least one instance our plain encoding loses
+- **first tested 2026-09-01 and negative for devices 3 + 4 alone**
+([campaign-2026-09-01.md](campaign-2026-09-01.md)): 250 instances, 197 propagation-dead
+through the cross-term channel, zero finds among the 53 that searched, up to 900 s. The
+claim now rides the remaining devices;
 and device 9's consensus beats the ascent seed's measured failure (the relaxation's
 *rounded point* was a bad start - a *consensus over thousands of walks* is a different
 object, and that difference is the experiment). Success is compared against kissat-on-plain
