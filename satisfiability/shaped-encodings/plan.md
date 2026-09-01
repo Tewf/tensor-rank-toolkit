@@ -7,6 +7,16 @@ under the arms discipline, priced with `satisfiability/las-vegas/measure.py --ch
 is expected to move only local search, the streamliners could move either, and expectation
 is not measurement.
 
+**Once a walk-favoring encoding exists** (Mohamed's instruction, 2026-09-02): price the
+**whole stochastic family** on the upper-bound task the way the las-vegas route priced its
+two, under the same discipline - seeds-within-cap distributions, every find re-multiplied,
+kissat as the complete control. The family: WalkSAT/SKC, probSAT, Schoening, yalsat,
+xnfsat, this repository's own batched walk under each of its rules (skc, probsat, xnf),
+and whatever the next review's pass certifies as the 2026 stochastic frontier. The thesis
+under test is his, stated as one unit: the randomized solvers win at finding *given the
+correct encoding* - so the family is priced only on encodings the devices have shaped,
+never on the plain floor the sweep already convicted.
+
 ## Replication half (Heule's own devices, from the review; machinery built 2026-09-01)
 
 1. encoding floor: plain 3-cut / cut-6 pooled / native XNF (no shaping);
