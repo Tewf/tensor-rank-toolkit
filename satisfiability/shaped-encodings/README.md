@@ -55,21 +55,4 @@ incumbent to beat.
 
 ## The experiment plan
 
-Generate shaped variants of matmul_3x3x3 at 23 (the bridge to challenge1), one factor at
-a time under the arms discipline, priced with
-`satisfiability/las-vegas/measure.py --challenges` (five seeds, one protocol):
-
-1. encoding floor: plain 3-cut / cut-6 pooled / native XNF (no shaping);
-2. + zero-or-two strengthening (generic, cheapest streamliner);
-3. + type-3 pairing under the 19x1 + 4x2 quota, randomised, many instances,
-   discard-and-retry after minutes (their generation discipline, the portfolio across
-   instances);
-4. + zeroing of type-0/1/2 terms at their observed rate;
-5. + neighborhood fixing from a known scheme (Strassen-derived or a flip-graph find),
-   the variant that tests transfer to *our* instances rather than replication;
-6. deliberately no in-encoding symmetry breaking, since theirs has none and ours
-   measurably hurt every walk.
-
-The claim to test stands: shaping moves xnfsat from 0 to found on at least one instance
-our plain encoding loses. Success is compared against kissat-on-plain AND against
-`flip_graph/` on the same tensor, or the win is only against a strawman.
+Moved to [plan.md](plan.md) when the algebra-fed devices joined it.
