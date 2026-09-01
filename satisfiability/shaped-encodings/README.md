@@ -56,4 +56,7 @@ incumbent to beat.
 
 ## The experiment plan
 
-Moved to [plan.md](plan.md) when the algebra-fed devices joined it.
+Moved to [plan.md](plan.md) when the algebra-fed devices joined it. Before the next
+device is built: [next-review.md](next-review.md), the literature pass on encoding
+knowledge into SAT (dynamic canonicity, CAS-feeding, encoding-strength theory), opened
+2026-09-02 on Mohamed's instruction.
