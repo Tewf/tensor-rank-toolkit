@@ -28,6 +28,9 @@ struct SolveOptions {
     /// native XOR. Most solvers here have none, so this is usually what happens
     /// whether it is asked for or not.
     bool plain_cnf = false;
+    /// How --plain-cnf and --emit-cnf expand each parity: the cutting number,
+    /// the chaining, and Heule's zero-or-two streamliner (shaped-encodings/).
+    linear_algebra::ParityExpansion expansion;
     /// Quotient by the symmetries a decomposition has: the order of its terms
     /// over any field, and the scaling of its operand vectors over GF(p).
     /// Sound, and worth a great deal on a question expected to answer no.

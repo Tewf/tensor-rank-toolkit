@@ -46,6 +46,13 @@ void usage() {
                    "                      that xnfsat, cnf2xnf and cryptominisat read. Refused\n"
                    "                      with --plain-cnf, which asks for the other file\n"
                    "  --plain-cnf         expand parities into clauses\n"
+                   "  --cut <n>           slice parities at this cutting number (default 3;\n"
+                   "                      the SAT 2021 measurement peaks at 6)\n"
+                   "  --pooled            chain slices as a tree instead of a line\n"
+                   "  --zero-or-two       Heule's streamliner: a slice holds zero or two true\n"
+                   "                      literals - a found model still certifies, a no or an\n"
+                   "                      exhausted run proves NOTHING about the unstreamlined\n"
+                   "                      question\n"
                    "  --break-symmetry    quotient by term order, and by operand scaling over\n"
                    "                      GF(p). Sound, off by default, and worth at least 76x\n"
                    "                      on a question expected to answer no\n"
@@ -274,6 +281,12 @@ int run(int argc, char** argv) {
             approach.memory_megabytes = arguments.memory_size() / (1024 * 1024);
         } else if (arguments.is("--plain-cnf")) {
             approach.plain_cnf = true;
+        } else if (arguments.is("--cut")) {
+            approach.expansion.cutting_number = arguments.count();
+        } else if (arguments.is("--pooled")) {
+            approach.expansion.pooled = true;
+        } else if (arguments.is("--zero-or-two")) {
+            approach.expansion.zero_or_two = true;
         } else if (arguments.is("--break-symmetry")) {
             approach.break_symmetry = true;
         } else if (arguments.is("--symmetry", "-s")) {

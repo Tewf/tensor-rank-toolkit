@@ -355,7 +355,7 @@ std::string write_question(const linear_algebra::Tensor& tensor, std::size_t pro
                : encode_prime_rank_at_most(tensor, products, approach.break_symmetry).formula;
 
     const bool native = !approach.plain_cnf;
-    linear_algebra::write_dimacs(out, formula, native);
+    linear_algebra::write_dimacs(out, formula, native, approach.expansion);
     std::string sizes = std::to_string(formula.total_variable_count(native)) + " variables, " +
                         std::to_string(formula.total_clause_count(native)) + " clauses";
     // Said because the two files look alike from the header: an `x` line is

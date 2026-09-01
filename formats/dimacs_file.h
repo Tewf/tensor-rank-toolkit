@@ -65,7 +65,8 @@ Cnf with_parities_expanded(const Cnf& formula, ParityExpansion shape = {});
 
 /// Write DIMACS. With `native_xor` the parities become `x`-prefixed lines, which
 /// CryptoMiniSat reads directly; without it they are expanded first.
-void write_dimacs(std::ostream& output, const Cnf& formula, bool native_xor);
+void write_dimacs(std::ostream& output, const Cnf& formula, bool native_xor,
+                  ParityExpansion shape = {});
 
 /// What a solver said: whether it was satisfiable and, if so, the value of every
 /// variable, indexed from 1 so that `values[v]` is variable `v`.

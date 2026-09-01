@@ -110,8 +110,9 @@ std::size_t Cnf::total_variable_count(bool native_xor) const {
     return with_parities_expanded(*this).variable_count;
 }
 
-void write_dimacs(std::ostream& output, const Cnf& formula, bool native_xor) {
-    const Cnf written = native_xor ? formula : with_parities_expanded(formula);
+void write_dimacs(std::ostream& output, const Cnf& formula, bool native_xor,
+                  ParityExpansion shape) {
+    const Cnf written = native_xor ? formula : with_parities_expanded(formula, shape);
 
     output << "p cnf " << written.variable_count << ' '
            << (written.clauses.size() + written.parities.size()) << '\n';
