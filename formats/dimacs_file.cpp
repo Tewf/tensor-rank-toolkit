@@ -1,6 +1,7 @@
 #include "dimacs_file.h"
 
 #include <algorithm>
+#include <deque>
 #include <cstdlib>
 #include <sstream>
 #include <string>
@@ -9,17 +10,29 @@ namespace linear_algebra {
 
 namespace {
 
-/// Clauses forcing `result` to be `left` xor `right`.
-void equate_to_xor(Cnf& formula, int result, int left, int right) {
-    formula.add_clause({-result, left, right});
-    formula.add_clause({-result, -left, -right});
-    formula.add_clause({result, -left, right});
-    formula.add_clause({result, left, -right});
+/// Clauses forcing the xor of `slice` to be false: one clause forbidding each
+/// odd-parity sign pattern, 2^(n-1) clauses of length n. The n = 3 case is the
+/// classic xor gadget; larger slices are what a cutting number above 3 buys.
+void forbid_odd_parity(Cnf& formula, const std::vector<int>& slice) {
+    const std::size_t patterns = std::size_t{1} << slice.size();
+    for (std::size_t pattern = 0; pattern < patterns; ++pattern) {
+        if (__builtin_parityll(pattern) == 0) continue;   // even patterns satisfy xor = 0
+        // The slice's output (its last element) leads each clause: the model
+        // sweep in test_binary_encoding derives forced aux values from clauses
+        // shaped `-output, inputs...`, the old fixed gadget's order.
+        std::vector<int> clause(slice.size());
+        for (std::size_t bit = 0; bit < slice.size(); ++bit) {
+            clause[bit] = (pattern >> bit) & 1 ? -slice[bit] : slice[bit];
+        }
+        std::rotate(clause.begin(), clause.end() - 1, clause.end());
+        formula.add_clause(std::move(clause));
+    }
 }
 
 }  // namespace
 
-Cnf with_parities_expanded(const Cnf& formula) {
+Cnf with_parities_expanded(const Cnf& formula, std::size_t cutting_number, bool pooled) {
+    if (cutting_number < 3) std::abort();   // a slice needs one output and two inputs
     Cnf expanded;
     expanded.variable_count = formula.variable_count;
     expanded.clauses = formula.clauses;
@@ -32,13 +45,38 @@ Cnf with_parities_expanded(const Cnf& formula) {
             continue;
         }
 
-        int running = parity.literals.front();
-        for (std::size_t index = 1; index < parity.literals.size(); ++index) {
-            const int next = expanded.new_variable();
-            equate_to_xor(expanded, next, running, parity.literals[index]);
-            running = next;
+        // Slices of up to cutting_number - 1 inputs each get a fresh output
+        // carrying their xor. Linear chaining consumes the carried output first,
+        // so the chain a walk must traverse is as long as the parity; pooled
+        // chaining takes inputs first-in-first-out and pushes each output at the
+        // back, which makes the chains logarithmic - the SAT 2021 measurement
+        // behind this knob found cut 6 pooled the best CNF of a length-23 parity
+        // and this function's old fixed shape, cut 3 linear, the worst.
+        std::deque<int> pending(parity.literals.begin(), parity.literals.end());
+        while (pending.size() > 1) {
+            std::vector<int> slice;
+            const std::size_t inputs =
+                std::min(cutting_number - 1, pending.size());
+            if (pooled) {
+                for (std::size_t taken = 0; taken < inputs; ++taken) {
+                    slice.push_back(pending.front());
+                    pending.pop_front();
+                }
+            } else {
+                slice.push_back(pending.front());   // the carried output stays first
+                pending.pop_front();
+                for (std::size_t taken = 1; taken < inputs; ++taken) {
+                    slice.push_back(pending.front());
+                    pending.pop_front();
+                }
+            }
+            const int output = expanded.new_variable();
+            slice.push_back(output);                // xor(inputs) ^ output = 0, so output carries the xor
+            forbid_odd_parity(expanded, slice);
+            if (pooled) pending.push_back(output);
+            else pending.push_front(output);
         }
-        expanded.add_clause({parity.value ? running : -running});
+        expanded.add_clause({parity.value ? pending.front() : -pending.front()});
     }
     return expanded;
 }

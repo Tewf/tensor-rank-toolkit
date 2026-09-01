@@ -39,6 +39,25 @@ is not measurement.
    already produces the consensus for free. Their caveat carries over: unsound units lose
    completeness per instance, recovered by the portfolio, so a no still proves nothing.
 
+## The quotient device (Mohamed's, 2026-09-01: the theoretical lever)
+
+10. **Encode the quotient, not the tuple space.** The current encoding searches ordered
+    product tuples with full per-product freedom, an assignment space of order
+    2^(r(m+n)); the exhaustive search walks *subspaces*, which quotients away the
+    ~2^(r^2) bases of the span and drops the exponent to r(m+n-r) - that quotient is
+    what made the algebraic search faster than SAT here. The SAT analogue: fix the
+    first products in a canonical position (a normal form of the span's basis), which
+    is **sound per orbit** when every decomposition's orbit contains a representative
+    in that form - a proof obligation, not a heuristic, and `orbit_reduction/` plus the
+    memory `orbit-cubes-and-term-ordering` are where that argument lives. Device 6 is
+    this device's heuristic shadow: fixing from a known scheme loses completeness,
+    fixing a canonical form does not. **Predicted split, priced not assumed**: the
+    quotient should help the systematic solvers (fewer symmetric branches) and may hurt
+    the walks - symmetric solution copies are food for a walk, which is plausibly why
+    Heule encodes no symmetry breaking and why ours measurably hurt every walk. If the
+    prediction holds, the portfolio becomes: quotient encoding for kissat, streamlined
+    unquotiented encoding for xnfsat - each solver gets the space it wants.
+
 ## The claims
 
 Shaping moves xnfsat from 0 to found on at least one instance our plain encoding loses;

@@ -98,5 +98,46 @@ int main() {
     check::equal("variable 2 is false", model.values[2] ? 1 : 0, 0);
     check::equal("variable 3 is true", model.values[3] ? 1 : 0, 1);
 
+    // The generalised expansion: whatever the cutting number and the chaining,
+    // the expansion must have exactly one model per original assignment that
+    // satisfies the parity (each aux variable is determined), checked by
+    // enumerating every assignment of the expanded formula.
+    {
+        linear_algebra::Cnf parity_formula;
+        parity_formula.variable_count = 7;
+        parity_formula.parities.push_back({{1, -2, 3, 4, -5, 6, 7}, true});
+        const auto models_of = [](const linear_algebra::Cnf& cnf) {
+            std::size_t models = 0;
+            for (std::size_t assignment = 0; assignment < (std::size_t{1} << cnf.variable_count);
+                 ++assignment) {
+                const auto holds = [&](int literal) {
+                    const bool value = (assignment >> (std::abs(literal) - 1)) & 1;
+                    return literal > 0 ? value : !value;
+                };
+                bool satisfied = true;
+                for (const auto& clause : cnf.clauses) {
+                    bool any = false;
+                    for (int literal : clause) any = any || holds(literal);
+                    if (!any) { satisfied = false; break; }
+                }
+                models += satisfied;
+            }
+            return models;
+        };
+        const std::size_t expected = 64;   // half of the 2^7 assignments satisfy an odd parity
+        for (std::size_t cut : {std::size_t{3}, std::size_t{4}, std::size_t{6}}) {
+            for (bool pooled : {false, true}) {
+                const auto expanded =
+                    linear_algebra::with_parities_expanded(parity_formula, cut, pooled);
+                check::equal("expansion keeps exactly the parity's models", 
+                             static_cast<long long>(models_of(expanded)),
+                             static_cast<long long>(expected));
+            }
+        }
+        const auto six = linear_algebra::with_parities_expanded(parity_formula, 6, true);
+        check::equal("cut 6 slices are length 6",
+                     static_cast<long long>(six.clauses.front().size()), 6);
+    }
+
     return check::report("dimacs");
 }
