@@ -29,9 +29,27 @@ void forbid_odd_parity(Cnf& formula, const std::vector<int>& slice) {
     }
 }
 
+/// Heule's zero-or-two streamliner on one slice: forbid the even patterns with
+/// four or more true literals, so each slice may hold zero or two. Sufficient,
+/// not necessary - a solution may be lost, which is the streamlining contract.
+void forbid_heavy_even_patterns(Cnf& formula, const std::vector<int>& slice) {
+    const std::size_t patterns = std::size_t{1} << slice.size();
+    for (std::size_t pattern = 0; pattern < patterns; ++pattern) {
+        if (__builtin_parityll(pattern) != 0) continue;
+        if (__builtin_popcountll(pattern) < 4) continue;
+        std::vector<int> clause(slice.size());
+        for (std::size_t bit = 0; bit < slice.size(); ++bit) {
+            clause[bit] = (pattern >> bit) & 1 ? -slice[bit] : slice[bit];
+        }
+        formula.add_clause(std::move(clause));
+    }
+}
+
 }  // namespace
 
-Cnf with_parities_expanded(const Cnf& formula, std::size_t cutting_number, bool pooled) {
+Cnf with_parities_expanded(const Cnf& formula, ParityExpansion shape) {
+    const std::size_t cutting_number = shape.cutting_number;
+    const bool pooled = shape.pooled;
     if (cutting_number < 3) std::abort();   // a slice needs one output and two inputs
     Cnf expanded;
     expanded.variable_count = formula.variable_count;
@@ -73,6 +91,7 @@ Cnf with_parities_expanded(const Cnf& formula, std::size_t cutting_number, bool 
             const int output = expanded.new_variable();
             slice.push_back(output);                // xor(inputs) ^ output = 0, so output carries the xor
             forbid_odd_parity(expanded, slice);
+            if (shape.zero_or_two) forbid_heavy_even_patterns(expanded, slice);
             if (pooled) pending.push_back(output);
             else pending.push_front(output);
         }

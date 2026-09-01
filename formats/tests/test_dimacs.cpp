@@ -128,15 +128,44 @@ int main() {
         for (std::size_t cut : {std::size_t{3}, std::size_t{4}, std::size_t{6}}) {
             for (bool pooled : {false, true}) {
                 const auto expanded =
-                    linear_algebra::with_parities_expanded(parity_formula, cut, pooled);
+                    linear_algebra::with_parities_expanded(parity_formula, {cut, pooled});
                 check::equal("expansion keeps exactly the parity's models", 
                              static_cast<long long>(models_of(expanded)),
                              static_cast<long long>(expected));
             }
         }
-        const auto six = linear_algebra::with_parities_expanded(parity_formula, 6, true);
+        const auto six = linear_algebra::with_parities_expanded(parity_formula, {6, true});
         check::equal("cut 6 slices are length 6",
                      static_cast<long long>(six.clauses.front().size()), 6);
+
+        // The zero-or-two streamliner keeps a strict, nonempty subset of the
+        // models: every surviving assignment still satisfies the plain
+        // expansion (same variables, same slicing), and some are lost, which is
+        // the streamlining contract rather than a defect.
+        const auto plain = linear_algebra::with_parities_expanded(parity_formula, {4, false});
+        const auto tight =
+            linear_algebra::with_parities_expanded(parity_formula, {4, false, true});
+        const std::size_t plain_models = models_of(plain), tight_models = models_of(tight);
+        check::equal("zero-or-two loses some models", tight_models < plain_models ? 1 : 0, 1);
+        check::equal("zero-or-two keeps some models", tight_models > 0 ? 1 : 0, 1);
+        std::size_t strays = 0;
+        for (std::size_t assignment = 0; assignment < (std::size_t{1} << tight.variable_count);
+             ++assignment) {
+            const auto satisfies = [&](const linear_algebra::Cnf& cnf) {
+                for (const auto& clause : cnf.clauses) {
+                    bool any = false;
+                    for (int literal : clause) {
+                        const bool value = (assignment >> (std::abs(literal) - 1)) & 1;
+                        any = any || (literal > 0 ? value : !value);
+                    }
+                    if (!any) return false;
+                }
+                return true;
+            };
+            strays += satisfies(tight) && !satisfies(plain);
+        }
+        check::equal("every streamlined model satisfies the plain expansion",
+                     static_cast<long long>(strays), 0);
     }
 
     return check::report("dimacs");

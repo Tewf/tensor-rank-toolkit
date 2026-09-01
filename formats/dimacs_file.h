@@ -50,8 +50,18 @@ struct Cnf {
 ///
 /// Tseitin: a chain of fresh variables, each the xor of the running total and
 /// the next literal, four clauses apiece, and a unit clause fixing the end.
-Cnf with_parities_expanded(const Cnf& formula, std::size_t cutting_number = 3,
-                           bool pooled = false);
+/// How a parity becomes clauses. The defaults are the shape every existing
+/// measurement used (cut 3, linear, no streamlining); `zero_or_two` is
+/// Heule's streamliner - each slice may hold zero or two true literals, a
+/// sufficient condition, so the expansion is then a strengthening whose no
+/// proves nothing.
+struct ParityExpansion {
+    std::size_t cutting_number = 3;
+    bool pooled = false;
+    bool zero_or_two = false;
+};
+
+Cnf with_parities_expanded(const Cnf& formula, ParityExpansion shape = {});
 
 /// Write DIMACS. With `native_xor` the parities become `x`-prefixed lines, which
 /// CryptoMiniSat reads directly; without it they are expanded first.
