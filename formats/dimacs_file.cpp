@@ -82,9 +82,16 @@ Model read_dimacs_model(std::istream& input) {
     std::string line;
     while (std::getline(input, line)) {
         if (line.rfind("s ", 0) == 0) {
-            model.answered = true;
-            model.satisfiable = line.find("UNSATISFIABLE") == std::string::npos &&
-                                line.find("SATISFIABLE") != std::string::npos;
+            // Only the two verdicts are answers. A solver interrupted by its
+            // deadline can still print an s line - kissat's alarm handler says
+            // `s UNKNOWN` on the way out - and reading any s line as an answer
+            // turned a timeout into a refutation on 2026-09-01: cyclic_f2_7
+            // "refuted" at 601 s under a 600 s cap and at 901 s under a 900 s
+            // one, the verdict tracking the cap.
+            const bool unsatisfiable = line.find("UNSATISFIABLE") != std::string::npos;
+            const bool satisfiable = !unsatisfiable && line.find("SATISFIABLE") != std::string::npos;
+            model.answered = satisfiable || unsatisfiable;
+            model.satisfiable = satisfiable;
             continue;
         }
         if (line.rfind("v ", 0) != 0) continue;
