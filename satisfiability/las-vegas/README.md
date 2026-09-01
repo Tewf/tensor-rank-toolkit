@@ -29,7 +29,7 @@ could not be found: [`what-the-field-says.md`](what-the-field-says.md).
 ## What was built
 
 A class of solvers that can only answer yes, `SatSolver::finds_only`: `yalsat`,
-`xnfsat`, `probSAT` and `multilinear-sat`, pinned with `--solver` by name or by path,
+`xnfsat`, `probSAT` and [`multilinear-sat`](https://github.com/Tewf/multilinear-sat), pinned with `--solver` by name or by path,
 `--proof` refused and a `s UNSATISFIABLE` from them discarded, so a sweep under one can
 raise the upper bound and nothing else; `--emit-xnf` for the file xnfsat reads; the tests
 that need no solver and the ones gated on a real one. Piece by piece, with what each run

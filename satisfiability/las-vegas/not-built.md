@@ -4,9 +4,11 @@
   ingredient the literature shows to matter is the parity kept as a parity
   inside the flip loop, which is xnfSAT's and not ours (`[nawrocki2021]`). A
   Fourier or continuous solver takes an XOR natively as a single monomial with
-  no transform, and `multilinear-sat` does not support XOR constraints yet, so
-  its turn at these instances comes only with that support. It is the open item
-  of this route, and it is stated rather than started here.
+  no transform. Since 2026-08-29 `multilinear-sat` carries native parity rows,
+  and since 2026-09-01 xnfSAT's weighted-break rule as `--walk-rule xnf`; both
+  are measured on MM-Challenge-1 in its `benchmark/findings-walk/parities.md`
+  (the floor halves, no instance closes, the residue tracks chain length), so
+  what was stated here has been started and priced elsewhere.
 - **No `--las-vegas` portfolio mode** running a walk for the yes and kissat for
   the no. Which solver to put in front of kissat is what the table decides, and
   nothing here becomes a default without a number behind it.
