@@ -56,7 +56,9 @@ incumbent to beat.
 
 ## The experiment plan
 
-Moved to [plan.md](plan.md) when the algebra-fed devices joined it. Before the next
-device is built: [next-review.md](next-review.md), the literature pass on encoding
-knowledge into SAT (dynamic canonicity, CAS-feeding, encoding-strength theory), opened
-2026-09-02 on Mohamed's instruction.
+Moved to [plan.md](plan.md) when the algebra-fed devices joined it. The literature pass it
+required — [encoding-knowledge-review.md](encoding-knowledge-review.md), opened 2026-09-02
+on Mohamed's instruction — closed the same day: device 10 is unblocked (canonical form as
+orbit lex-minimum, not RREF; SMS and prefix-assignment are the precedents), CryptoMiniSat's
+in-search Gauss-Jordan is the new experiment 0, no theory ranks cutting numbers, and the
+no-symmetry-breaking doctrine for walks is published field consensus.
