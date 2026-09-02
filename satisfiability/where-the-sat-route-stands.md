@@ -63,21 +63,24 @@ and [`shaped-encodings/plan.md`](shaped-encodings/plan.md).
   Aloul–Lynce–Prestwich). Kept only for `kissat`, where it is worth ≥76×.
 - **Plain 3-cut CNF** — the worst of the eight CNF encodings the xnfSAT paper measured;
   cut-6-pooled and native XNF dominate it.
-- **CryptoMiniSat + Gauss at defaults** — dominated by plain `kissat`: it fails
-  ⟨3,3,3⟩@23, f2_5x5@14 and cyclic_f2_7@13 at the 600 s cap on both cut-6-pooled CNF and
-  native XNF, where `kissat` finds f2_5x5@14 in 390 s. On the CNF path Gauss never engages
-  at all — this build caps XOR *recovery* at width 8 and our parities are width 23.
+- **CryptoMiniSat + Gauss, defaults *and* tuned** — dominated by plain `kissat`. At
+  defaults it fails ⟨3,3,3⟩@23, f2_5x5@14 and cyclic_f2_7@13 at 600 s on both cut-6-pooled
+  CNF and native XNF, where `kissat` finds f2_5x5@14 in 390 s. Tuned — `--maxxormat` lifted
+  400 → 100000 so the 729-parity matrix is echelonized, native XNF so Gauss actually holds
+  the XORs — it **still fails all three at 600 s** (2026-09-02). On the CNF path Gauss never
+  engages at all: this build caps XOR *recovery* at width 8 and our parities are width 23.
+  So the linear-algebra route does not reach the frontier; it is orthogonal to the search,
+  not a substitute for a better encoding.
 
 ## In flight — the cells the current queue is settling
 
-`work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/` (detached, measure-lock held):
-- **CMS + Gauss, tuned** (`--maxxormat` 400 → 100000, so the 729-parity matrix is
-  echelonized) on the three hard fixtures — does the linear-algebra route reach the
-  frontier once the matrix cap is lifted.
-- **CMS + Gauss on Heule's ten challenges** (XORs recovered by `cnf2xnf`) — does it touch
-  `xnfsat`'s 6/10 where `kissat` finds none.
-- **The 17 closure-wave survivors** a missing binary voided on 2026-09-01 — completes the
-  honest wave record (0 of 24 real runs so far) at 2 seeds × 900 s.
+`work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/` (detached, 1-way after 2-way hit
+the 95 C throttle):
+- **CMS + Gauss on Heule's ten challenges** — does it touch `xnfsat`'s 6/10 where `kissat`
+  finds none. (XORs recovered by `cnf2xnf`, whose `p xnf` header is rewritten to `p cnf`
+  since CMS reads inline `x` clauses, not that format.)
+- **The closure-wave survivors** a missing binary voided on 2026-09-01 — completing the
+  honest record. 8 of 17 re-run, all 0 finds at 900 s; the remaining 9 at 1 seed.
 
 ## Owed, not yet built
 
