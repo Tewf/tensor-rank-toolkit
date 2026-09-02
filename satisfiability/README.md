@@ -98,3 +98,7 @@ Nothing here decides rank over the rationals, and nothing could: over `ℚ` the
 problem is `∃ℚ`-complete and **not known to be decidable**. That the difficulty
 depends this sharply on the field, and why "NP-hard" is the wrong shorthand for
 it, is [`complexity.md`](complexity.md).
+
+Which solver wins on which encoding, and which encoding device is kept versus
+dominated — one ordering over the whole strand, each with its number:
+[`where-the-sat-route-stands.md`](where-the-sat-route-stands.md).
