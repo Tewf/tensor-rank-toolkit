@@ -70,17 +70,19 @@ and [`shaped-encodings/plan.md`](shaped-encodings/plan.md).
   the XORs — it **still fails all three at 600 s** (2026-09-02). On the CNF path Gauss never
   engages at all: this build caps XOR *recovery* at width 8 and our parities are width 23.
   So the linear-algebra route does not reach the frontier; it is orthogonal to the search,
-  not a substitute for a better encoding.
+  not a substitute for a better encoding. And on **Heule's ten challenges it finds 0/10**
+  at 300 s (2026-09-03, XORs recovered and three Gauss matrices echelonized before it
+  searched — a real no-find, verified against the logs), where `xnfsat` finds 6/10. So the
+  regime table's shaped row holds against Gauss too: `xnfsat` ≻ everything, including CMS.
 
-## In flight — the cells the current queue is settling
+## Measurement status — the queue that settled the above
 
-`work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/` (detached, 1-way after 2-way hit
-the 95 C throttle):
-- **CMS + Gauss on Heule's ten challenges** — does it touch `xnfsat`'s 6/10 where `kissat`
-  finds none. (XORs recovered by `cnf2xnf`, whose `p xnf` header is rewritten to `p cnf`
-  since CMS reads inline `x` clauses, not that format.)
-- **The closure-wave survivors** a missing binary voided on 2026-09-01 — completing the
-  honest record. 8 of 17 re-run, all 0 finds at 900 s; the remaining 9 at 1 seed.
+All the informative cells are in and folded above (experiment 0 in both regimes: CMS+Gauss
+dominated on the fixtures and 0/10 on the challenges). What remains is negative-confirmation
+bookkeeping: the closure-wave survivors a missing binary voided on 2026-09-01, completing
+the honest record — **12 of 17 re-run, every one 0 finds at 900 s**; the last five land at
+1-way (a 2-way run hit the 95 C throttle). Raw cells in
+`work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/summary.txt`.
 
 ## Owed, not yet built
 
