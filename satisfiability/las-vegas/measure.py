@@ -27,6 +27,7 @@ records the count so nobody quotes a two-digit ratio off it.
 import argparse
 import concurrent.futures
 import json
+import os
 import pathlib
 import re
 import shutil
@@ -75,11 +76,19 @@ def portable(command):
 
 def solvers_from(arguments):
     """Name to binary, for every solver this run can reach. A finds-only
-    solver is given by flag or found on PATH; kissat is PATH only."""
+    solver is given by flag or found on PATH; kissat is PATH only.
+
+    A given path that does not exist is refused rather than dropped: on
+    2026-09-01 a deleted `build/third_party/` turned 34 overnight runs into
+    `timeout: failed to run command` logs that were read as negatives. A
+    missing binary must end the run, never thin the roster."""
     found = {}
     for name, given in (("yalsat", arguments.yalsat), ("xnfsat", arguments.xnfsat),
                         ("probSAT", arguments.probsat),
                         ("multilinear-sat", arguments.multilinear_sat), ("kissat", None)):
+        if given and not os.access(given, os.X_OK):
+            raise SystemExit(f"--{name.lower().replace('-', '_')} {given}: "
+                             "not an executable file")
         path = given or shutil.which(name)
         if path:
             found[name] = str(pathlib.Path(path).resolve())
