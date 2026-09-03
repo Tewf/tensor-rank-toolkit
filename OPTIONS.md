@@ -17,6 +17,13 @@ not repeated in the tables below, and it is asserted against every built binary
 rather than described, in
 [`cli/tests/check_argument_grammar.sh`](cli/tests/check_argument_grammar.sh).
 
+**A word to script authors before `set -e`.** Nonzero here is an answer, not a
+failure: a proved refutation is **1**, `--help` is **2**, and a budget that ran
+out is **3**, which proves nothing in either direction. A script that treats
+any of them as an error aborts on the tool's most useful answers; test the code
+you mean, the way [`.github/workflows/ci.yml`](.github/workflows/ci.yml) does
+around every refusal it asserts.
+
 ## Before the tables
 
 - [**One question per command**](OPTIONS/one-question-per-command.md): the one
