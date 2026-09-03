@@ -29,7 +29,7 @@
       "states_visited": 386,
       "reached": 7,
       "seconds": 0.0179,
-      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 380"
+      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank evidence/fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 380"
     },
     {
       "name": "<2,2,2> at a 370-state budget",
@@ -44,7 +44,7 @@
       "states_visited": 376,
       "reached": 8,
       "seconds": 0.0164,
-      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 370"
+      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank evidence/fixtures/matmul_2x2x2.tensor --steps 3 --plateau 2 --plateau-states 370"
     }
   ],
   "walk": [
@@ -60,7 +60,7 @@
       "best_seed": 1,
       "reductions": 1,
       "seconds": 0.0273,
-      "command": "build/methods/bilinear_rank/flip_graph/walk-scheme fixtures/matmul_2x2x2.tensor --flips 20000 --seeds 8"
+      "command": "build/methods/bilinear_rank/flip_graph/walk-scheme evidence/fixtures/matmul_2x2x2.tensor --flips 20000 --seeds 8"
     },
     {
       "name": "GF(16) from naive, 20 000 flips over 8 seeds",
@@ -74,7 +74,7 @@
       "best_seed": 1,
       "reductions": 6,
       "seconds": 0.1968,
-      "command": "build/methods/bilinear_rank/flip_graph/walk-scheme fixtures/gf16_multiplication.tensor --flips 20000 --seeds 8"
+      "command": "build/methods/bilinear_rank/flip_graph/walk-scheme evidence/fixtures/gf16_multiplication.tensor --flips 20000 --seeds 8"
     },
     {
       "name": "<3,3,3> from naive, 20 000 flips over 8 seeds",
@@ -88,7 +88,7 @@
       "best_seed": 1,
       "reductions": 3,
       "seconds": 11.4446,
-      "command": "build/methods/bilinear_rank/flip_graph/walk-scheme fixtures/matmul_3x3x3.tensor --flips 20000 --seeds 8"
+      "command": "build/methods/bilinear_rank/flip_graph/walk-scheme evidence/fixtures/matmul_3x3x3.tensor --flips 20000 --seeds 8"
     }
   ],
   "provenance": {
@@ -116,8 +116,8 @@
     }
   },
   "counts_provenance": {
-    "commit": "eb8572b012e3540952947cbf149eafe21f0695aa",
-    "tree_clean": true,
+    "commit": "be8fa2aa2844e6302f85834237f8f4819643c6d3",
+    "tree_clean": false,
     "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",

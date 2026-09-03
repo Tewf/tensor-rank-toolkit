@@ -11,7 +11,7 @@
     {
       "name": "strassen_u",
       "shape": "7x4",
-      "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_u.matrix",
+      "command": "build/methods/matrix_sparsification/sparsify-operator evidence/fixtures/strassen_u.matrix",
       "seconds": 0.0017,
       "as_given": 12,
       "exact_matroid_greedy": 10,
@@ -22,7 +22,7 @@
     {
       "name": "strassen_v",
       "shape": "7x4",
-      "command": "build/matrix_sparsification/sparsify-operator fixtures/strassen_v.matrix",
+      "command": "build/methods/matrix_sparsification/sparsify-operator evidence/fixtures/strassen_v.matrix",
       "seconds": 0.0019,
       "as_given": 12,
       "exact_matroid_greedy": 10,
@@ -33,7 +33,7 @@
     {
       "name": "alternative_basis_u",
       "shape": "7x4",
-      "command": "build/matrix_sparsification/sparsify-operator fixtures/alternative_basis_u.matrix",
+      "command": "build/methods/matrix_sparsification/sparsify-operator evidence/fixtures/alternative_basis_u.matrix",
       "seconds": 0.0038,
       "as_given": 21,
       "exact_matroid_greedy": 10,
@@ -107,8 +107,8 @@
     }
   },
   "counts_provenance": {
-    "commit": "eb8572b012e3540952947cbf149eafe21f0695aa",
-    "tree_clean": true,
+    "commit": "be8fa2aa2844e6302f85834237f8f4819643c6d3",
+    "tree_clean": false,
     "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",

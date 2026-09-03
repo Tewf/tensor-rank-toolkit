@@ -281,7 +281,7 @@ def main():
     flip = ROOT / "methods/bilinear_rank/flip_graph" / "results.json"
     committed = {path: json.loads(path.read_text()) if path.exists() else {}
                  for path in (descent, sparsification, satisfiability, flip)}
-    sat_rows = {row["name"]: row for row in committed[satisfiability].get("evidence/fixtures", [])}
+    sat_rows = {row["name"]: row for row in committed[satisfiability].get("fixtures", [])}
 
     # Said before anything is measured, so that a reader of the output knows what
     # the run below is not going to tell them.
@@ -303,7 +303,7 @@ def main():
     stamp = None if arguments.check else provenance(build, counts=arguments.counts)
 
     measured = {
-        descent: {"evidence/fixtures": [descent_of(build, name, repeats) for name in FIXTURES],
+        descent: {"fixtures": [descent_of(build, name, repeats) for name in FIXTURES],
                   "exact_search": exact_search_of(
                       build, committed[descent].get("exact_search", {}), repeats),
                   "famous_tensors": famous_tensors_of(
@@ -311,9 +311,9 @@ def main():
                   "quotient": [quotient_of(build, question, repeats)
                                for question in QUOTIENT_QUESTIONS]},
         sparsification:
-            {"evidence/fixtures": [sparsification_of(build, name, repeats) for name in OPERATORS]},
+            {"fixtures": [sparsification_of(build, name, repeats) for name in OPERATORS]},
         satisfiability:
-            {"evidence/fixtures": [satisfiability_of(build, question,
+            {"fixtures": [satisfiability_of(build, question,
                                             sat_rows.get(question["name"], {}), repeats,
                                             arguments.slow)
                           for question in SAT_QUESTIONS]},

@@ -20,10 +20,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0095,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/f2_2x2.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
       "ruled_out_seconds": 0.0108,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 2 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/f2_2x2.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "f2_2x3",
@@ -31,10 +31,10 @@
       "known_rank": 5,
       "found_at": 5,
       "found_seconds": 0.0294,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 5 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/f2_2x3.tensor --target 5 --break-symmetry --plain-cnf",
       "ruled_out_at": 4,
       "ruled_out_seconds": 0.0154,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/f2_2x3.tensor --target 4 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/f2_2x3.tensor --target 4 --break-symmetry --plain-cnf"
     },
     {
       "name": "gf4_multiplication",
@@ -42,10 +42,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0037,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 3 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/gf4_multiplication.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
       "ruled_out_seconds": 0.0042,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf4_multiplication.tensor --target 2 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/gf4_multiplication.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "gf8_multiplication",
@@ -53,11 +53,11 @@
       "known_rank": 6,
       "found_at": 6,
       "found_seconds": 0.0549,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 6 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/gf8_multiplication.tensor --target 6 --break-symmetry --plain-cnf",
       "ruled_out_at": 5,
       "ruled_out_seconds": 0.0539,
       "ruled_out_seconds_under_cryptominisat": 0.0357,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf8_multiplication.tensor --target 5 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/gf8_multiplication.tensor --target 5 --break-symmetry --plain-cnf",
       "note": "The 4.13 s recorded here for ruling out 5 could not be reproduced by anything tried: 0.0378 s with the term ordering, 0.534 s without it, 0.0357 s under cryptominisat. It is replaced rather than explained, and said so here so the next reader does not inherit the same puzzle. `search/` was the file that was right: its gf8 floor of 0.085 s is the sum of these two questions."
     },
     {
@@ -66,10 +66,10 @@
       "known_rank": 3,
       "found_at": 3,
       "found_seconds": 0.0054,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 3 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/w_state.tensor --target 3 --break-symmetry --plain-cnf",
       "ruled_out_at": 2,
       "ruled_out_seconds": 0.0071,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/w_state.tensor --target 2 --break-symmetry --plain-cnf"
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/w_state.tensor --target 2 --break-symmetry --plain-cnf"
     },
     {
       "name": "matmul_2x2x2",
@@ -78,13 +78,13 @@
       "found_at": 7,
       "found_seconds": 0.1834,
       "found_seconds_under_cryptominisat": 0.469,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 7 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor --target 7 --break-symmetry --plain-cnf",
       "ruled_out_at": 6,
       "ruled_out_seconds": 0.339,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 6 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor --target 6 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 25399,
       "exhaustive_ruled_out_seconds": 0.029074,
-      "exhaustive_command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6"
+      "exhaustive_command": "build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6"
     },
     {
       "name": "matmul_2x2x3",
@@ -92,10 +92,10 @@
       "known_rank": 11,
       "ruled_out_at": 8,
       "ruled_out_seconds": 34.2968,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x3.tensor --target 8 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x3.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 0,
       "exhaustive_ruled_out_seconds": null,
-      "exhaustive_command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x3.tensor --target 8",
+      "exhaustive_command": "build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x3.tensor --target 8",
       "exhaustive_note": "The tree search opens no node here any more, and that is a real change rather than a lost measurement. `rank_lower_bound` is the maximum over the flattening rank and `[yang2025]`'s two rank sums, and it puts this tensor at 9, so `decide-rank --target 8` refutes the target by Gaussian elimination and returns before the search opens a node. There is therefore no search time to report. The 446 923 nodes and 53.1 s this row carried before were what the same command produced when the flattening rank was the only bound it had; no invocation of the shipped binary produces them now."
     },
     {
@@ -105,10 +105,10 @@
       "found_at": 9,
       "found_seconds": 0.2866,
       "found_seconds_under_cryptominisat": 36.19,
-      "found_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 9 --break-symmetry --plain-cnf",
+      "found_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/gf16_multiplication.tensor --target 9 --break-symmetry --plain-cnf",
       "ruled_out_at": 8,
       "ruled_out_seconds": 107.3929,
-      "ruled_out_command": "build/satisfiability/decide-rank-by-sat fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
+      "ruled_out_command": "build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/gf16_multiplication.tensor --target 8 --break-symmetry --plain-cnf",
       "exhaustive_nodes": 105600301,
       "exhaustive_ruled_out_seconds": 247.118,
       "exhaustive_command": "build/exhaustive_search/decide-rank fixtures/gf16_multiplication.tensor --target 8 --node-limit 200000000",
@@ -214,8 +214,8 @@
     }
   },
   "counts_provenance": {
-    "commit": "eb8572b012e3540952947cbf149eafe21f0695aa",
-    "tree_clean": true,
+    "commit": "be8fa2aa2844e6302f85834237f8f4819643c6d3",
+    "tree_clean": false,
     "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
     "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
     "givaro": "4.2.0",
