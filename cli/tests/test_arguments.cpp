@@ -26,7 +26,7 @@ struct Parsed {
     bool as_json = false;
     std::string anchor;
     std::string file;
-    bool from_stdin = false;
+    bool no_file = false;
     bool wants_help = false;
     cli::Symmetry symmetry;
 };
@@ -62,7 +62,7 @@ std::string refusal(std::vector<std::string> words, Parsed& parsed) {
             }
         }
         parsed.file = arguments.filename();
-        parsed.from_stdin = arguments.reads_stdin();
+        parsed.no_file = arguments.no_file_named();
         return "";
     } catch (const std::exception& problem) {
         return problem.what();
@@ -77,7 +77,7 @@ void check_reads_a_line() {
     check::equal("the count is read", static_cast<long long>(parsed.threads), 6);
     check::equal("the bare flag is set", parsed.as_json, 1);
     check::text("the positional word is the file", parsed.file, "tensor.sms");
-    check::equal("and it is not stdin", parsed.from_stdin, 0);
+    check::equal("and a file was named", parsed.no_file, 0);
 
     Parsed after;
     check::text("the file may come last",
@@ -87,11 +87,11 @@ void check_reads_a_line() {
 
     Parsed absent;
     check::text("no file at all is accepted", refusal({"--json"}, absent), "");
-    check::equal("and means stdin", absent.from_stdin, 1);
+    check::equal("and no_file_named says so", absent.no_file, 1);
 
     Parsed dash;
     check::text("a lone dash is accepted", refusal({"-", "--json"}, dash), "");
-    check::equal("and also means stdin", dash.from_stdin, 1);
+    check::equal("and no_file_named calls it unnamed", dash.no_file, 1);
     check::equal("and is not read as a flag", dash.as_json, 1);
 
     Parsed sized;

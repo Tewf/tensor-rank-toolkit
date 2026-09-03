@@ -42,8 +42,9 @@ class ArgumentError : public std::runtime_error {
 /// The fault this header removes has a quieter form than a missing value:
 /// `--anchor --json` is a value that is the next flag, and a command taking the
 /// word as given searches from an anchor named `--json` and reports nothing. A
-/// lone `-` is a filename, meaning stdin, and `-1` is a number, so neither
-/// counts as a flag.
+/// lone `-` is a filename — one every command here refuses with its usage,
+/// because nothing reads stdin — and `-1` is a number, so neither counts as a
+/// flag.
 inline bool looks_like_flag(const std::string& word) {
     if (word.size() < 2 || word.front() != '-') return false;
     return word.find_first_not_of("0123456789", 1) != std::string::npos;
@@ -105,7 +106,7 @@ inline long long parse_whole_number(const std::string& named, const std::string&
 ///     else if (arguments.is("--symmetry", "-s")) symmetry = arguments.parsed_by(parse_symmetry);
 ///     else arguments.refuse();
 /// }
-/// const std::string path = arguments.filename();  // empty or "-" means stdin
+/// const std::string path = arguments.filename();  // empty or "-": none named
 /// ```
 class Arguments {
    public:
@@ -197,9 +198,11 @@ class Arguments {
     /// The positional word. Empty when none was given.
     const std::string& filename() const { return filename_; }
 
-    /// Whether the map comes in on stdin: no filename, or the lone `-`. What
-    /// reading it then means is the command's business, not this header's.
-    bool reads_stdin() const { return filename_.empty() || filename_ == "-"; }
+    /// No input file was named: the word is missing, or is the lone `-`.
+    /// Every command answers that with its usage. This was `no_file_named`, a
+    /// name that promised a route nothing implements: no command here reads a
+    /// map from stdin, and a reader who piped one in got usage and exit 2.
+    bool no_file_named() const { return filename_.empty() || filename_ == "-"; }
 
    private:
     /// One file per run. A second one is a mistake worth naming: it is what a

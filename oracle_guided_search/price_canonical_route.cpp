@@ -143,7 +143,7 @@ int run(int argc, char** argv) {
             arguments.refuse();
         }
     }
-    if (arguments.reads_stdin() || symmetry.kind != cli::SymmetryKind::MatrixMultiplication) {
+    if (arguments.no_file_named() || symmetry.kind != cli::SymmetryKind::MatrixMultiplication) {
         usage();
         return cli::exit_status(cli::ExitCode::Usage);
     }

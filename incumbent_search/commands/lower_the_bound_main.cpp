@@ -197,7 +197,7 @@ int run(int argc, char** argv) {
             arguments.refuse();
         }
     }
-    if (arguments.reads_stdin()) {
+    if (arguments.no_file_named()) {
         usage();
         return cli::exit_status(cli::ExitCode::Usage);
     }

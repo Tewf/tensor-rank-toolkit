@@ -3,9 +3,9 @@
 #include <stdexcept>
 #include <string>
 
-/// How a command tells a script what happened, in one vocabulary for all three.
+/// How a command tells a script what happened, in one vocabulary for all of them.
 ///
-/// The three commands here answer the same question by different machinery, so
+/// The commands here answer the same question by different machinery, so
 /// a caller must be able to read their answers the same way. The distinction
 /// that earns most of these codes: **a question that was not answered is not a
 /// question answered no.** A budget running out proves nothing, and folding it

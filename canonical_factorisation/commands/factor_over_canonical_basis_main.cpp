@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
             }
         }
         // No file named, and nothing here reads a tensor on stdin.
-        if (arguments.reads_stdin()) {
+        if (arguments.no_file_named()) {
             usage();
             return cli::exit_status(cli::ExitCode::Usage);
         }
