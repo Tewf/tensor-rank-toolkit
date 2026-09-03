@@ -44,19 +44,18 @@ reste de la documentation technique.
 | [sans isomorphes](methods/bilinear_rank/canonical_augmentation/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
 | [creusement](methods/matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
-L'infrastructure partagée et la documentation :
+Les groupes autour des axes :
 
-| Chemin | Contenu |
+| Groupe | Contenu |
 |---|---|
-| [`core/linear_algebra/`](core/linear_algebra/README.md), [`core/formats/`](core/formats/README.md) | l'arithmétique exacte ; les fichiers tensor, SMS, DIMACS et SMT-LIB |
-| [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`methods/bilinear_rank/search_plan/`](methods/bilinear_rank/search_plan/README.md) | la grammaire de commande et les codes de sortie partagés ; ce qu'un calcul peut prendre à la machine ; les choix qu'un calcul écrit et rejoue |
-| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`evidence/fixtures/`](evidence/fixtures/README.md), [`evidence/benchmark_tensors/`](evidence/benchmark_tensors/README.md) | construire les applications ; les jeux d'essai de tout le reste ; où chaque recherche s'arrête sur les tenseurs dont la littérature débat |
-| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`methods/curve_bounds/`](methods/curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`methods/rank_metric_bound/`](methods/rank_metric_bound/README.md), [`methods/integer_programme/`](methods/integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
-| [`evidence/reproduce/`](evidence/reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | chaque compte publié re-dérivé en CI ; l'assertion partagée des tests ; le script de comparaison des moteurs |
+| [`core/`](core/linear_algebra/README.md) | l'arithmétique exacte ([`linear_algebra/`](core/linear_algebra/README.md)) et les formats de fichiers ([`formats/`](core/formats/README.md)) |
+| [`methods/bilinear_rank/`](methods/bilinear_rank/README.md) | le cœur de recherche ci-dessus, un seul espace de noms, son vocabulaire partagé à la racine du groupe avec `operators-to-tensor`, plus [`map_construction/`](methods/bilinear_rank/map_construction/README.md) et [`search_plan/`](methods/bilinear_rank/search_plan/README.md) |
+| [`infrastructure/`](infrastructure/cli/README.md) | [`cli/`](infrastructure/cli/README.md), [`run_limits/`](infrastructure/run_limits/README.md), [`testing/`](infrastructure/testing/README.md), [`gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`tools/`](infrastructure/tools/README.md) |
+| [`evidence/`](evidence/fixtures/README.md) | [`fixtures/`](evidence/fixtures/README.md), [`benchmark_tensors/`](evidence/benchmark_tensors/README.md), [`reproduce/`](evidence/reproduce/README.md) |
+| [`writeup/`](writeup/article/README.md) | [`article/`](writeup/article/README.md), [`how-the-search-works/`](writeup/how-the-search-works/README.md), [`positioning/`](writeup/positioning/README.md), [`the-research-front/`](writeup/the-research-front/README.md) |
 | [`web_interface/`](web_interface/README.md) | les outils pilotés depuis un navigateur, sur la seule bibliothèque standard de Python |
-| [`start-here.md`](start-here.md) | une première session en mots simples, pour un lecteur sans le vocabulaire du domaine (en anglais) |
+| [`start-here.md`](start-here.md) | une première session en mots simples (en anglais) |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | la carte raisonnée ; chaque option avec la mesure derrière sa valeur par défaut ; la bibliographie, citée par clé depuis le code |
-| [`writeup/article/`](writeup/article/README.md), [`writeup/positioning/`](writeup/positioning/README.md), [`writeup/the-research-front/`](writeup/the-research-front/README.md) | la rédaction avec définitions, théorèmes et résultats négatifs ; ce que cette bibliothèque apporte ; où en est le domaine |
 
 Pourquoi treize outils en ligne de commande plutôt que huit, et la question
 que chacun est seul à traiter :

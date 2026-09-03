@@ -3,8 +3,8 @@
 On the polynomial fixtures, `|Stab(T)|` is about 6 over `F₂`, a single-digit
 constant at the top of the tree and less below. That turns the seven-hour
 `--target 12` into one or two hours. Useful; not a change of kind. And per
-[`known_ranks.md`](../../greedy_heuristic/known_ranks.md), that run now reproduces a published
-exclusion rather than settling anything.
+[`evidence/benchmark_tensors/decided-exactly.md`](../../../../evidence/benchmark_tensors/decided-exactly.md),
+that run now reproduces a published exclusion rather than settling anything.
 
 **Point it at matrix multiplication instead.** ⟨2,2,2⟩ has the sandwich
 symmetries and the cyclic one: order in the hundreds over `F₂`, against a

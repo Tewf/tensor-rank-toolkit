@@ -49,7 +49,7 @@ namespace {
 struct Fixture {
     const char* name;
     /// A rank that is known to be achievable, so no lower bound may exceed it.
-    /// From `methods/bilinear_rank/greedy_heuristic/known_ranks.md`, `evidence/benchmark_tensors/`,
+    /// From `evidence/benchmark_tensors/`,
     /// `methods/pencil_rank/what-the-literature-settles.md` and the fixtures' own table.
     ///
     /// **Two of the rows below hold a naive count instead**, and the difference

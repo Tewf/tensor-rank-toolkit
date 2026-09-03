@@ -41,19 +41,18 @@ The ten method strands, one directory each. Method and caveats, per strand:
 | [isomorph-free](methods/bilinear_rank/canonical_augmentation/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
 | [sparsification](methods/matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
-The shared infrastructure and the documentation:
+The groups around the strands:
 
-| Path | Holds |
+| Group | Holds |
 |---|---|
-| [`core/linear_algebra/`](core/linear_algebra/README.md), [`core/formats/`](core/formats/README.md) | exact arithmetic; tensor, SMS, DIMACS and SMT-LIB files |
-| [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`methods/bilinear_rank/search_plan/`](methods/bilinear_rank/search_plan/README.md) | the shared command grammar and exit codes; what a run may take from the machine; the choices a run records and replays |
-| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`evidence/fixtures/`](evidence/fixtures/README.md), [`evidence/benchmark_tensors/`](evidence/benchmark_tensors/README.md) | building the maps; the maps everything runs on; where each search stops on the tensors the literature argues about |
-| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`methods/curve_bounds/`](methods/curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`methods/rank_metric_bound/`](methods/rank_metric_bound/README.md), [`methods/integer_programme/`](methods/integer_programme/README.md) | one consumer GPU priced on the leaf test; bounds from algebraic curves; a walk that moves schemes sideways; two search-free lower bounds; the LP and ILP layer |
-| [`evidence/reproduce/`](evidence/reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | every published count re-derived in CI; the shared assertion helper; the backend comparison script |
+| [`core/`](core/linear_algebra/README.md) | the exact arithmetic ([`linear_algebra/`](core/linear_algebra/README.md)) and the file formats ([`formats/`](core/formats/README.md)) |
+| [`methods/bilinear_rank/`](methods/bilinear_rank/README.md) | the search core above, one namespace, its shared vocabulary at the group root with `operators-to-tensor`, plus [`map_construction/`](methods/bilinear_rank/map_construction/README.md) and [`search_plan/`](methods/bilinear_rank/search_plan/README.md) |
+| [`infrastructure/`](infrastructure/cli/README.md) | [`cli/`](infrastructure/cli/README.md), [`run_limits/`](infrastructure/run_limits/README.md), [`testing/`](infrastructure/testing/README.md), [`gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`tools/`](infrastructure/tools/README.md) |
+| [`evidence/`](evidence/fixtures/README.md) | [`fixtures/`](evidence/fixtures/README.md), [`benchmark_tensors/`](evidence/benchmark_tensors/README.md), [`reproduce/`](evidence/reproduce/README.md) |
+| [`writeup/`](writeup/article/README.md) | [`article/`](writeup/article/README.md), [`how-the-search-works/`](writeup/how-the-search-works/README.md), [`positioning/`](writeup/positioning/README.md), [`the-research-front/`](writeup/the-research-front/README.md) |
 | [`web_interface/`](web_interface/README.md) | the tools driven from a browser, on Python's standard library alone |
 | [`start-here.md`](start-here.md) | a first session in plain words, for a reader without the field's vocabulary |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | the reasoned map; every flag with the measurement behind its default; the bibliography, keyed from the code |
-| [`writeup/article/`](writeup/article/README.md), [`writeup/positioning/`](writeup/positioning/README.md), [`writeup/the-research-front/`](writeup/the-research-front/README.md) | the write-up with definitions, theorems and negative results; what this library adds; where the field stands |
 
 Why thirteen command-line tools rather than eight, and the one question each
 answers that no other does:

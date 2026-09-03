@@ -91,6 +91,67 @@ step is one row added; and the scan carries a residual through the pool, so a
 step is one exclusive or and a test for zero. Same verdicts, same counts, and
 [`the-whole-algorithm.md`](the-whole-algorithm.md) has both in place.
 
+## What it costs
+
+| | |
+|---|---|
+| Time | `O(C(\|pool\|, k − dim T) · \|pool\| · d · w)`, one pool scan per leaf |
+| Space | `Θ((k − dim T) · d · w)`, the recursion depth times a basis |
+
+**Where the cost actually is.** Essentially every node is a leaf, and every leaf
+scans the whole pool testing membership at `Θ(d·w)` each. For F2 5×5 at `k = 11`
+that is 459 239 leaves × ~950 tests × ~275 field operations ≈ 10¹¹, and it
+measured 77 seconds, which agrees.
+
+Six questions, measured, anchored at the map throughout, the true minimum
+([`parameters.md`](parameters.md) says why):
+
+| Map | Question | Nodes | Time |
+|---|---|---|---|
+| F2 2×2 | fewest | 1 | 7 µs |
+| F2 2×3 | fewest | 3 | 20 µs |
+| GF(8) | fewest | 1 606 | 4.7 ms |
+| F2 5×5 | is there a 10? **no** | 959 | 0.17 s |
+| F2 5×5 | is there an 11? **no** | 459 239 | 77 s |
+| F2 5×5 | is there a 12? **no** | 146 402 553 | 535.59 s |
+
+`decide-rank evidence/fixtures/f2_2x2.tensor` reproduces the first row; this run's own
+printed output was
+
+    evidence/fixtures/f2_2x2.tensor
+      rank bound: rank is at least 3
+      pool: 9 rank-one maps of shape 2x2
+      leaf: GF(2), one bit per entry
+      plan:
+        pool: materialised (9 maps at 88 B each is 792 B, inside the 4.00 GiB budget)
+        leaf route: auto (a sweep tests leaves of many dimensions, so each takes the cheaper by size)
+        device: cpu (9 elements at the deepest leaf, under the 8192 launch floor)
+        threads: 1
+        quotient: none
+        orbit test: full
+        anchor: map
+      1 nodes in 1.7802e-05 s
+      FOUND: 3 products, rank bound 3, gap 0
+      verified: they compute the map
+
+which agrees on the node count and the answer; the microseconds are this run's
+own, not the table's 7 µs, since two different runs measure two different
+moments rather than one number twice.
+
+The last row was an extrapolation, `C(961,3)` = 1.47×10⁸ nodes priced at seven
+hours from the k = 11 rate, until the run itself on 2026-08-19: the predicted
+node count was right to within half a percent, and the hours were wrong by an
+order of magnitude because the GF(2) leaf did not exist when the rate was
+taken. The full account, including the retraction it settles, is
+[`../../methods/bilinear_rank/exhaustive/what-it-decides.md`](../../methods/bilinear_rank/exhaustive/what-it-decides.md).
+
+Every row but the last is asserted and run in CI: the two Karatsuba answers and
+both exclusions in
+[`../../methods/bilinear_rank/exhaustive/tests/test_exhaustive_search.cpp`](../../methods/bilinear_rank/exhaustive/tests/test_exhaustive_search.cpp), with the
+11 as its own `slow`-labelled test, and GF(8)'s 6 in
+[`../../methods/bilinear_rank/map_construction/tests/test_map_construction.cpp`](../../methods/bilinear_rank/map_construction/tests/test_map_construction.cpp) beside the
+tensor it is built from.
+
 ## The pieces that are not in it
 
 **McKay** replaces "have I seen this subspace" with "is this subspace's canonical

@@ -22,11 +22,12 @@ In this folder:
 - [`fewest_products.h`](fewest_products.h): the sweep that turns the yes/no
   question into the rank itself.
 - [`search_trace.h`](search_trace.h): `--trace`, the tree as it was walked.
-- Four notes, each holding one measured answer:
+- Five notes, each holding one measured answer:
   [`which-leaf-route-is-cheaper.md`](which-leaf-route-is-cheaper.md),
   [`what-threads-change.md`](what-threads-change.md),
   [`what-a-node-cannot-tell-you.md`](what-a-node-cannot-tell-you.md),
-  [`generating-candidates-from-the-span.md`](generating-candidates-from-the-span.md).
+  [`generating-candidates-from-the-span.md`](generating-candidates-from-the-span.md),
+  [`what-it-decides.md`](what-it-decides.md).
 - [`tests/`](tests): the classical answers, asserted.
 
 Example of use:

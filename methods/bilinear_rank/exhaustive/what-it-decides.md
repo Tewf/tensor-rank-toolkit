@@ -1,8 +1,9 @@
 # What the exact search decides
 
 The expensive direction, and what it proves. What the descent reaches is in
-[`README.md`](README.md); the guarantees each step carries are in
-[`correctness.md`](correctness.md).
+[`../greedy_heuristic/README.md`](../greedy_heuristic/README.md); the guarantees
+each step carries are in
+[`../greedy_heuristic/correctness.md`](../greedy_heuristic/correctness.md).
 
 | Map | Answer | |
 |---|---|---|
@@ -22,7 +23,7 @@ construction, which this search cannot make and does not have to.
 `decide-rank evidence/fixtures/f2_5x5.tensor --target 12 --node-limit 300000000 --threads 6`
 returns **NO exhaustively in 146 402 553 nodes and 535.59 s**. A refutation's node
 count does not depend on the thread count, measured in
-[`../exhaustive_search/what-threads-change.md`](../exhaustive/what-threads-change.md),
+[`what-threads-change.md`](what-threads-change.md),
 so the node figure is the tree's and not this run's.
 
 **What that costs is now a tenth of what this page priced it at, and the reason is
@@ -33,7 +34,7 @@ the GF(2) leaf is 7.69 s, or **16.7 µs a node**, and 1.47×10⁸ nodes at that 
 
 **The retracted figure's node count was exactly right.** This paragraph previously
 reported this run as done, at "146 402 553 nodes and 3 610 s on eight threads", and
-[`../satisfiability/measurements.md`](../../satisfiability/measurements.md) retracted
+[`../../satisfiability/measurements.md`](../../satisfiability/measurements.md) retracted
 it because no such run had happened. The measured node count is **146 402 553**, the
 same number to the digit, which says the count was derived correctly and only the
 seconds were invented. The measured 535.59 s is 6.7x faster than the invented
@@ -54,5 +55,7 @@ upper one; closing it means deciding 15, which neither side has done. That lower
 bound reads their `k` column by its stated convention rather than from prose
 naming the map, and their 7×4 row carries no timing, so verify it against the
 paper before quoting it as a bound.
-[`method/exact-search.md`](method/exact-search.md) says where the cost is and
-what would cut it.
+[`../../../writeup/how-the-search-works/README.md`](../../../writeup/how-the-search-works/README.md)
+says where the cost is, and
+[`what-the-rewrites-were-worth.md`](../../../writeup/how-the-search-works/what-the-rewrites-were-worth.md)
+says what cut it.

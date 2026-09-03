@@ -1,4 +1,4 @@
-# The two tensors decided outright
+# The tensors decided outright
 
 ## The result worth having: rank ⟨2,2,2⟩ = 7, decided here in 0.042 s
 
@@ -31,3 +31,32 @@ theorem, no solver and no exhaustion, because all fifteen nonzero contractions
 have full rank 4 (the span is a field, so every nonzero element is invertible)
 and `60 / 8 = 7.5`. That it needs more than 8 is still decided here by
 exhaustion, and that is the half the 4.12 minutes buys.
+
+## Two more, decided against a citation: F2 5×5 and F3 3×6
+
+The paper and the table identifying these fixtures with it are in
+[`README.md`](README.md).
+
+**`f3_3x6`: the heuristic is optimal, and this repository now proves it alone.**
+Step 3 returns 10 in 17.28 s, and `decide-rank --target 9` returns NO
+exhaustively in 7.65 s over 4729 nodes. Two sides, 25 seconds, no citation
+needed: `rank(f3_3x6) = 10`. Their 566-second run agrees, and is no longer what
+the claim rests on.
+
+**`f2_5x5`: settled here, and it took both directions.** The descent alone
+stops at 14. `decide-rank --target 12` runs to exhaustion in 146 402 553 nodes
+and refuses, which reproduces their exclusion and puts the floor at 13, and
+[`tighten-rank-bound`](../../methods/bilinear_rank/branch_and_bound/README.md)
+exhibits 13 in 80 nodes on 2026-08-21, closing the ceiling. Their 9.65×10⁹
+tests agree with the exhaustion and are no longer what the claim rests on.
+**Finding a 13 was the part the heuristic missed**, and it is a construction
+rather than a refutation, which is why a different search had to make it. The
+full account of that run, including a retraction it settles, is
+[`../../methods/bilinear_rank/exhaustive/what-it-decides.md`](../../methods/bilinear_rank/exhaustive/what-it-decides.md).
+
+**Why the second half took until 2026-08-17 to notice.** The refutation was
+never run. Everything here asked `--target 10`, which is a find, so the answer
+arrived as a decomposition and the rank stayed a citation. Asking `--target 9`,
+a refutation, is both the cheaper question and the one that settles it. That
+asymmetry is the whole reason `decide-rank` takes a target at all, and it was
+being used the expensive way round.

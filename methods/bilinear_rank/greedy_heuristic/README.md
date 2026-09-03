@@ -19,7 +19,7 @@ Every claim below is one of the four earning or failing to earn its keep.
 | [`minimise_rank.*`](minimise_rank.h) | Steps 2 and 3. None. First-improvement, irreversible pruning | New here |
 | [`gf2_span_walk.*`](gf2_span_walk.h) | Step 1's representation over GF(2), a bit an entry rather than an `int64_t`: the same span in the same order, and asserted to be the same answer | New here. The representation is [`../exhaustive_search/gf2_leaf.h`](../exhaustive/gf2_leaf.h)'s, applied to the loop the incumbent search lives in |
 | [`exhaustive_search.*`](../exhaustive/exhaustive_search.h) | Complete. A "no" that ran to exhaustion is a fact about the problem | An implementation of a pre-existing published algorithm |
-| [`fewest_products.*`](../exhaustive/fewest_products.h) | Inherits the exact search's: sweep, bisection, or from the flattening bound | Which `k` to ask it about |
+| [`fewest_products.*`](../exhaustive/fewest_products.h) | The exact search's sweep upward, starting at the flattening bound | Which `k` to ask it about |
 | [`rank_one_basis.*`](../exhaustive/rank_one_basis.h) | The question at every leaf of both searches: has this subspace a basis of rank-one maps? | |
 | [`span_enumeration.*`](span_enumeration.h) | | Walking the `p^k` elements of a map's span |
 | [`algorithm_recovery.*`](../algorithm_recovery.h) |  | Turns either answer into the algorithm ⟨L, R, P⟩ it stands for |
@@ -43,7 +43,9 @@ F2 5x5 to **14**, F2 3x8 to **15**, F2 4x7 to **16**, F3 3x6 to **10**, against
 published 13, no-solution-at-14, no-solution-at-14 and 10. **Step 3 is priced
 badly**: it improved two of the four by one product each, at one to two orders of
 magnitude what steps 1 and 2 cost together. Per-step times and the full table:
-[`what-it-reaches.md`](what-it-reaches.md).
+[`what-it-reaches.md`](what-it-reaches.md). The literature comparison behind
+these published numbers, and how far each is safe to quote, is in
+[`../../../evidence/benchmark_tensors/README.md`](../../../evidence/benchmark_tensors/README.md).
 
 ## What the exact search decides
 
@@ -51,7 +53,7 @@ Small maps outright, with proof: Karatsuba's 3, the classical 3 and 6 for GF(4)
 and GF(8), **rank ⟨2,2,2⟩ = 7** in half a second, and the refutation at 12 that
 [`../incumbent_search/`](../branch_and_bound/README.md)'s 13 completes into
 **rank(F2 5x5) = 13**. Costs, and what a spent budget does and does not mean:
-[`what-the-exact-search-decides.md`](what-the-exact-search-decides.md).
+[`../exhaustive/what-it-decides.md`](../exhaustive/what-it-decides.md).
 
 ## Step 1 is not a heuristic
 

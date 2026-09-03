@@ -73,3 +73,19 @@ over the 2.0 GiB budget. Raise it with --max-memory if the machine has the room.
 `(2¹⁶−1)²` rank-one maps of 256 entries each. Reaching that allocation is not a
 slow run, it is the machine going down, and until tonight nothing stood between
 the call and the allocator.
+
+## Two polynomial-multiplication fixtures read from a citation's convention
+
+[`README.md`](README.md) identifies `f2_3x8` and `f2_4x7` with two rows of
+Barbulescu, Detrey, Estibals and Zimmermann's 2012 paper by their `#G`. Both
+readings rest on the paper's stated convention for the `k` column rather than
+on prose naming the maps, and the `8×3` row carries no timing, which is
+consistent with an estimate rather than a completed run. Verify against the
+paper before either is quoted as a bound.
+
+**`f2_3x8`: the heuristic is optimal too, if the convention holds.** No 14
+exists by that reading and step 3 reaches 15, so the rank would be 15.
+
+**`f2_4x7` is the one still open**: `15 ≤ rank ≤ 16`, their lower bound against
+this repository's upper one. Closing it means deciding 15, which neither side
+has done.
