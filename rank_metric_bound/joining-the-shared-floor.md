@@ -29,7 +29,7 @@ Three edits, all made:
   modules then require each other, and CMake accepts that between `INTERFACE`
   libraries in either declaration order. Compiled before being written down.
 - Two test expectations, on `f2_5x5` and nowhere else.
-  `methods/bilinear_rank/descent_search/tests/test_pipeline.cpp`'s floor column goes 10 to 12.
+  `methods/bilinear_rank/greedy_heuristic/tests/test_pipeline.cpp`'s floor column goes 10 to 12.
   `linear_algebra/tests/test_rank_sum.cpp` asserted `rank_lower_bound` is
   **exactly** `max(rank sums, flattening)`, and that is what the edit breaks; it
   now asserts the shared entry point is **at least** that, because pinning it to
@@ -40,8 +40,8 @@ Three edits, all made:
 `reproduce/measure.py --check` reports that every published count still
 reproduces. `f2_5x5` is the only fixture whose floor changes, and no other file
 publishes a floor for it: the `12 <= rank <= 14` in `satisfiability/results.json`,
-`methods/bilinear_rank/descent_search/known_ranks.md` and `the-research-front/where-we-stand.md` is the
+`methods/bilinear_rank/greedy_heuristic/known_ranks.md` and `the-research-front/where-we-stand.md` is the
 exhaustive search's bracket, which this reaches rather than improves. That
 bracket was `13 <= rank <= 14` once `--target 12` was exhausted and is `13` since
-[`lower-the-bound`](../methods/bilinear_rank/incumbent_search/README.md) exhibited one; the sentence
+[`lower-the-bound`](../methods/bilinear_rank/branch_and_bound/README.md) exhibited one; the sentence
 above is what was true when the floor moved.

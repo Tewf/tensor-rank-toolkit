@@ -34,8 +34,8 @@ failures=0
 # One binary per strand, all siblings of the one ctest passes. Derived rather
 # than listed, so moving the build layout moves one line.
 binaries=${3:?the build root, passed by the add_test registration}
-minimise=$binaries/methods/bilinear_rank/descent_search/minimise-rank
-lower=$binaries/methods/bilinear_rank/incumbent_search/lower-the-bound
+minimise=$binaries/methods/bilinear_rank/greedy_heuristic/minimise-rank
+lower=$binaries/methods/bilinear_rank/branch_and_bound/lower-the-bound
 walk=$binaries/methods/bilinear_rank/flip_graph/walk-scheme
 sparsify=$binaries/matrix_sparsification/sparsify-operator
 pencil=$binaries/pencil_rank/decide-rank-by-pencil

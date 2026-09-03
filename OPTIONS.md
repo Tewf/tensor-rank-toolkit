@@ -56,11 +56,11 @@ around every refusal it asserts.
 
 `find-at-rank` is gone from this branch, to `rejected-experiments`, and with it
 the `--descend` and `--pretest-ceiling` flags; the numbers that retired it are in
-[`methods/bilinear_rank/oracle_guided_search/measurements/`](methods/bilinear_rank/oracle_guided_search/measurements/README.md).
+[`methods/bilinear_rank/canonical_augmentation/measurements/`](methods/bilinear_rank/canonical_augmentation/measurements/README.md).
 **`--candidate-timeout` is not gone**, and this sentence used to say it was:
 `find-at-rank` had a flag of that name and so does `deflate-strictly`, which
 still accepts it and is documented in
 [`OPTIONS/committing-to-candidates.md`](OPTIONS/committing-to-candidates.md).
 Checked against the branch rather than guessed —
-`rejected-experiments:methods/bilinear_rank/oracle_guided_search/commands/find_at_rank_main.cpp`
+`rejected-experiments:methods/bilinear_rank/canonical_augmentation/commands/find_at_rank_main.cpp`
 parses its own.

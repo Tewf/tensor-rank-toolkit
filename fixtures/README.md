@@ -75,7 +75,7 @@ the same argument the rest of this directory rests on one step further out.
 `f5_3x3.tensor` ships for a *test*, and is the only fixture here that does.
 Everything else here is over GF(2) or GF(3), so the general-field leaf, which
 walks a subspace by its base-`p` digits in
-[`subspace_walk.h`](../methods/bilinear_rank/exhaustive_search/subspace_walk.h), was only ever
+[`subspace_walk.h`](../methods/bilinear_rank/exhaustive/subspace_walk.h), was only ever
 exercised at one odd prime, and a walk right at `p = 3` and wrong at `p = 5` had
 nothing to fail against. Written by `make-tensor --polynomial 5 3 3`, like the
 rest. Its rank is 5, which is `n+m-1` and so optimal by Winograd's bound,

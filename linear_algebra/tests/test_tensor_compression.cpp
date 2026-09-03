@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
                      64);
 
         // The rank is unchanged, and known: the core is the fixture the padded one
-        // was built from, whose rank is 7. `methods/bilinear_rank/descent_search/known_ranks.md` is where
+        // was built from, whose rank is 7. `methods/bilinear_rank/greedy_heuristic/known_ranks.md` is where
         // the ranks this repository stands behind are collected; 7 for <2,2,2> is
         // the one nobody disputes.
         check::equal("the core is matmul_2x2x2 itself",

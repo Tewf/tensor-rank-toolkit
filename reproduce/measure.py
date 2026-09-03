@@ -275,7 +275,7 @@ def main():
     # would compare a count against itself at the price of tripling the sweep.
     repeats = REPEATS if not (arguments.check or arguments.counts) else 1
 
-    descent = ROOT / "methods/bilinear_rank/descent_search" / "results.json"
+    descent = ROOT / "methods/bilinear_rank/greedy_heuristic" / "results.json"
     sparsification = ROOT / "matrix_sparsification" / "results.json"
     satisfiability = ROOT / "satisfiability" / "results.json"
     flip = ROOT / "methods/bilinear_rank/flip_graph" / "results.json"

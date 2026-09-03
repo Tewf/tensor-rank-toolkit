@@ -83,10 +83,10 @@ run's directory first, and that path is what the line then names.
 ## The first two starters, end to end
 
 ```
-build/methods/bilinear_rank/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7
+build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 7
 exit 0, FOUND: 7 products, rank bound 6, gap 1;  verified: they compute the map
 
-build/methods/bilinear_rank/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6
+build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6
 exit 1, NO:    there is no algorithm with 6 products. The search was exhaustive.
 ```
 

@@ -47,7 +47,7 @@ expect 5 "$fixtures/no_such_file.tensor"
 # seconds cannot settle twelve products for F2 5x5, and saying so is the point.
 expect 3 "$fixtures/f2_5x5.tensor" --target 12 --timeout 5
 
-command=$binaries/methods/bilinear_rank/exhaustive_search/decide-rank
+command=$binaries/methods/bilinear_rank/exhaustive/decide-rank
 echo "decide-rank"
 expect 2
 expect 2 "$fixtures/f2_2x2.tensor" --nonsense
@@ -83,7 +83,7 @@ expect 5 "$fixtures/matmul_2x2x2.tensor" --max-memory 1
 # form: undecided at one node, never a refusal.
 expect 3 "$fixtures/matmul_2x2x2.tensor" --target 7 --max-memory 1 --node-limit 1
 
-command=$binaries/methods/bilinear_rank/descent_search/minimise-rank
+command=$binaries/methods/bilinear_rank/greedy_heuristic/minimise-rank
 echo "minimise-rank"
 expect 2
 expect 2 "$fixtures/f2_2x2.tensor" --nonsense

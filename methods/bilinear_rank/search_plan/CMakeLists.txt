@@ -6,14 +6,14 @@
 # of the module that already had it, which is why this links four of them and
 # restates none.
 #
-# It sits above `orbit_reduction`, which sits above `exhaustive_search`, because
+# It sits above `orbit_reduction`, which sits above `exhaustive`, because
 # a plan names the rejection rule and the leaf route both. That is the reason it
 # is a directory of its own rather than a file inside either: neither can see
 # the other's enum, and a copy of one in the other is how the plan and the run
 # would come to disagree.
 add_library(search_plan STATIC search_plan.cpp plan_file.cpp)
 target_include_directories(search_plan PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(search_plan PUBLIC exhaustive_search orbit_reduction run_limits cli
+target_link_libraries(search_plan PUBLIC exhaustive orbit_reduction run_limits cli
                                   PRIVATE project_warnings)
 
 add_subdirectory(tests)

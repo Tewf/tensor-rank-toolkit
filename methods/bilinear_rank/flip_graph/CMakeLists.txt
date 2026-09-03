@@ -5,7 +5,7 @@ target_include_directories(flip_graph PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Both are PUBLIC because both are header-level: flip_graph.h includes
 # algorithm_recovery.h, plateau_search.h includes automorphism.h.
-target_link_libraries(flip_graph PUBLIC descent_search orbit_reduction
+target_link_libraries(flip_graph PUBLIC greedy_heuristic orbit_reduction
                                  PRIVATE project_warnings)
 
 add_subdirectory(commands)

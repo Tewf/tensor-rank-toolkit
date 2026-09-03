@@ -39,7 +39,7 @@ struct Fixture {
     long long total;
 };
 
-/// Ranks from `famous_tensors/`, `methods/bilinear_rank/descent_search/known_ranks.md` and the
+/// Ranks from `famous_tensors/`, `methods/bilinear_rank/greedy_heuristic/known_ranks.md` and the
 /// fixtures' own table. Where a rank is not settled, the column holds the best
 /// decomposition anyone here has actually exhibited, which is still an upper
 /// bound a lower bound may not cross.

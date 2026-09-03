@@ -30,7 +30,7 @@ That claim is checked rather than assumed. Read straight from `build/`, the same
 binary the checks use:
 
 ```
-build/methods/bilinear_rank/descent_search/minimise-rank fixtures/f2_5x5.tensor
+build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f2_5x5.tensor
 exit 0, algorithm: 14 products, rank bound 12, gap 2
 ```
 

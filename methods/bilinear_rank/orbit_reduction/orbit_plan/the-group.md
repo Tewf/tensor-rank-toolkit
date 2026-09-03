@@ -71,7 +71,7 @@ What licenses keeping one representative per orbit is the separate
 Prop. 14 says a representative may be substituted at a node. The search needs
 both, so citing one for the other left half the argument unsourced.
 
-[`candidate_pool.h`](../../descent_search/candidate_pool.h) already says its
+[`candidate_pool.h`](../../greedy_heuristic/candidate_pool.h) already says its
 `row_space_representatives` must not be wired in, and it is right, because that
 quotients by row space alone, which fixes almost no span. It is not a weaker
 version of this; it is a different equivalence.

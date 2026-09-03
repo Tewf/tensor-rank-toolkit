@@ -39,7 +39,7 @@ One thing here is embarrassingly parallel and branch-free: **the leaf test**,
 where an exhaustive search spends its life. **But the first order of magnitude
 was never on a card, it was in the representation**: over GF(2) a span
 membership test is an exclusive or, not a loop of Givaro calls on `int64_t`, and
-`methods/bilinear_rank/exhaustive_search/gf2_leaf.h` now answers the leaf with one bit per entry.
+`methods/bilinear_rank/exhaustive/gf2_leaf.h` now answers the leaf with one bit per entry.
 
 ### This page predicted 40x to 64x. Measured, it is 6.0x to 39.6x
 
@@ -80,7 +80,7 @@ the incumbent search lives, and it is the same shape of loop over the same
 field: `lower-the-bound` costs one `minimum_weight_basis_with` per child, and
 each of those walks a span taking the rank of a matrix at every element. So the
 same representation went there on 2026-08-22,
-[`../descent_search/gf2_span_walk.h`](../methods/bilinear_rank/descent_search/gf2_span_walk.h), and
+[`../descent_search/gf2_span_walk.h`](../methods/bilinear_rank/greedy_heuristic/gf2_span_walk.h), and
 was measured the same way, each question asked twice with and without
 `lower-the-bound --general-span`:
 

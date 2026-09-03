@@ -3,7 +3,7 @@
 # gives? The contract they meet is
 # `methods/bilinear_rank/orbit_reduction/orbit_cube_boundary/`.
 add_executable(test_orbit_cubes test_orbit_cubes.cpp)
-target_link_libraries(test_orbit_cubes PRIVATE orbit_reduction descent_search
+target_link_libraries(test_orbit_cubes PRIVATE orbit_reduction greedy_heuristic
                                                map_construction satisfiability formats
                                                testing project_warnings)
 add_test(NAME orbit_cubes COMMAND test_orbit_cubes)
@@ -18,7 +18,7 @@ set_tests_properties(orbit_cubes_preserve_the_answer PROPERTIES LABELS slow TIME
 # The only test that can catch a wrong symmetry group: the quotiented tree and
 # the whole tree must answer the same question the same way.
 add_executable(test_symmetry_agreement test_symmetry_agreement.cpp)
-target_link_libraries(test_symmetry_agreement PRIVATE orbit_reduction descent_search
+target_link_libraries(test_symmetry_agreement PRIVATE orbit_reduction greedy_heuristic
                                                       formats testing project_warnings)
 add_test(NAME symmetry_agreement COMMAND test_symmetry_agreement ${PROJECT_SOURCE_DIR}/fixtures)
 
@@ -27,7 +27,7 @@ add_test(NAME symmetry_agreement COMMAND test_symmetry_agreement ${PROJECT_SOURC
 # `⟨2,2,2⟩` is emptied by the generator-only test, checked against a sabotaged
 # rule that empties orbits, so a green line here means something.
 add_executable(test_generator_rejection test_generator_rejection.cpp)
-target_link_libraries(test_generator_rejection PRIVATE orbit_reduction descent_search
+target_link_libraries(test_generator_rejection PRIVATE orbit_reduction greedy_heuristic
                                                        formats testing project_warnings)
 add_test(NAME generator_rejection COMMAND test_generator_rejection
                                           ${PROJECT_SOURCE_DIR}/fixtures)
@@ -36,6 +36,6 @@ add_test(NAME generator_rejection COMMAND test_generator_rejection
 # must not move where it stops. That is the argument orbit_heuristic.h makes, and
 # it had no test at all.
 add_executable(test_orbit_heuristic test_orbit_heuristic.cpp)
-target_link_libraries(test_orbit_heuristic PRIVATE orbit_reduction descent_search
+target_link_libraries(test_orbit_heuristic PRIVATE orbit_reduction greedy_heuristic
                                                    formats testing project_warnings)
 add_test(NAME orbit_heuristic COMMAND test_orbit_heuristic ${PROJECT_SOURCE_DIR}/fixtures)

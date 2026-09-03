@@ -23,18 +23,18 @@ methods/bilinear_rank/search_plan/             the seven choices a run makes abo
                          own; --plan-out writes them down and --plan-in
                          replays them, so a run on other hardware differs in
                          its machine and not in its decisions
-methods/bilinear_rank/descent_search/          rank from above, by descent
-methods/bilinear_rank/exhaustive_search/       rank decided outright, and what that costs
+methods/bilinear_rank/greedy_heuristic/          rank from above, by descent
+methods/bilinear_rank/exhaustive/       rank decided outright, and what that costs
 methods/bilinear_rank/map_construction/        building the maps every method runs on
 methods/bilinear_rank/orbit_reduction/         quotienting all three searches by symmetry
 infrastructure/gpu_leaf/                what one consumer GPU is worth on the leaf test,
                          measured; built only where nvcc is present, and called
                          by nothing else here
 methods/bilinear_rank/flip_graph/              moving a decomposition sideways instead of building one
-methods/bilinear_rank/incumbent_search/        the exact search's tree cut by what has been built
+methods/bilinear_rank/branch_and_bound/        the exact search's tree cut by what has been built
                          rather than by a target: upper bounds, and an answer
                          whenever it is stopped
-methods/bilinear_rank/oracle_guided_search/    fixed-k search, tree refutation, canonical augmentation
+methods/bilinear_rank/canonical_augmentation/    fixed-k search, tree refutation, canonical augmentation
 canonical_factorisation/ the rank as A B, with the receipt that checks it
 pencil_rank/             two slices, where the answer is read off a canonical
                          form instead of searched for

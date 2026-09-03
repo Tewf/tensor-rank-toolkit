@@ -36,7 +36,7 @@
 
   <p>The cheap direction is rank by descent. Three steps: an exact matroid greedy for the starting basis, then two relaxations that trade the guarantee for reach.</p>
 
-  <figure><div id="ranks"></div><figcaption>Multiplications before and after the search, on four bilinear maps. Source: <code>methods/bilinear_rank/descent_search/results.json</code>, produced by <code>minimise-rank</code>.</figcaption></figure>
+  <figure><div id="ranks"></div><figcaption>Multiplications before and after the search, on four bilinear maps. Source: <code>methods/bilinear_rank/greedy_heuristic/results.json</code>, produced by <code>minimise-rank</code>.</figcaption></figure>
 
   <div class="tw"><table id="descent-table">
     <thead><tr><th>Field</th><th>Product</th><th class="n">Naive</th><th class="n">Reached</th><th class="n">Time</th><th>Published rank</th></tr></thead>
@@ -52,7 +52,7 @@
   <h2>What the timings are, and are not</h2>
   <p>Every figure in the Time column was measured by hand on one core of an i5-12450H at 2.2 GHz, on an otherwise quiet machine, under the protocol in <code>MEASURING.md</code>. Two timings close enough together to be the fan rather than the code are never reported here as a ratio, and no timing is checked by CI, because a shared runner would turn a real regression and a noisy afternoon into the same red tick.</p>
 
-  <figure><div id="times"></div><figcaption>Total search time per map, log scale. One core of an i5-12450H at 2.2 GHz. Source: <code>methods/bilinear_rank/descent_search/results.json</code>.</figcaption></figure>
+  <figure><div id="times"></div><figcaption>Total search time per map, log scale. One core of an i5-12450H at 2.2 GHz. Source: <code>methods/bilinear_rank/greedy_heuristic/results.json</code>.</figcaption></figure>
 
   <h2>The finding worth stating on its own</h2>
   <p>The expensive step buys almost nothing. Step 3 of the descent enumerates the full pool of rank-one maps, and across the four polynomial fixtures it improved the answer in <strong>two of four cases</strong>, by one product each time, while accounting for essentially all of the cost: on F2 4&times;7 almost the whole of the 0.397 seconds went to returning the rank the previous step already had.</p>
@@ -169,7 +169,7 @@ const explain = (id, why) => {
 };
 
 try {
-  const descent = await load('methods/bilinear_rank/descent_search/results.json');
+  const descent = await load('methods/bilinear_rank/greedy_heuristic/results.json');
   const rows = descent.fixtures.map((fixture) => ({
     label: mapLabel(fixture.name),
     from: fixture.naive,
@@ -198,7 +198,7 @@ try {
   if (drift.length) {
     const warning = document.getElementById('descent-drift');
     warning.hidden = false;
-    warning.textContent = `This table disagrees with methods/bilinear_rank/descent_search/results.json on `
+    warning.textContent = `This table disagrees with methods/bilinear_rank/greedy_heuristic/results.json on `
       + `${drift.join(', ')}. The file is the source; the table is stale.`;
   }
 
@@ -212,8 +212,8 @@ try {
     note: 'log scale; one core of an i5-12450H at 2.2 GHz',
   });
 } catch (unreachable) {
-  explain('ranks', 'Chart needs methods/bilinear_rank/descent_search/results.json, which a file:// page cannot fetch.');
-  explain('times', 'Chart needs methods/bilinear_rank/descent_search/results.json, which a file:// page cannot fetch.');
+  explain('ranks', 'Chart needs methods/bilinear_rank/greedy_heuristic/results.json, which a file:// page cannot fetch.');
+  explain('times', 'Chart needs methods/bilinear_rank/greedy_heuristic/results.json, which a file:// page cannot fetch.');
 }
 
 try {

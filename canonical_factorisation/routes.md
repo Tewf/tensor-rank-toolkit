@@ -70,7 +70,7 @@ deal: `methods/bilinear_rank/orbit_reduction/` measures the `<3,3,3>` pool colla
 
 But note what that does and does not save. The quotient prunes the **search**;
 the pool is still built in full before it is pruned, so the **space** is
-unchanged. `RankOnePool` in `methods/bilinear_rank/descent_search/candidate_pool.h` is the piece that
+unchanged. `RankOnePool` in `methods/bilinear_rank/greedy_heuristic/candidate_pool.h` is the piece that
 would fix that, storing the left and right vectors and computing `at(i)` on
 demand, which is `O(p^n + p^m)` against `O(p^n * p^m)`. The exhaustive search
 carries a pool index down its recursion and has not been converted. Until it is,

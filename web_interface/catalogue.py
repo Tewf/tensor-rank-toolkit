@@ -92,7 +92,7 @@ def memory_cap(refuses):
 TOOLS = [
     {
         "name": "minimise-rank",
-        "binary": "methods/bilinear_rank/descent_search/minimise-rank",
+        "binary": "methods/bilinear_rank/greedy_heuristic/minimise-rank",
         "input": "tensor",
         "asks": "How few multiplications can a cheap descent reach?",
         "answers": "An upper bound, reached in three steps, with the encoding "
@@ -130,7 +130,7 @@ TOOLS = [
     },
     {
         "name": "lower-the-bound",
-        "binary": "methods/bilinear_rank/incumbent_search/lower-the-bound",
+        "binary": "methods/bilinear_rank/branch_and_bound/lower-the-bound",
         "input": "tensor",
         "asks": "How much cheaper can a branch and bound make an algorithm?",
         "answers": "The exact search's tree cut by what has been built rather "
@@ -147,7 +147,7 @@ TOOLS = [
                      "nothing. basis is a looser incumbent and therefore a "
                      "taller tree, which is what reaches 13 on f2_5x5 where "
                      "descent exhausts at 14: "
-                     "methods/bilinear_rank/incumbent_search/what-it-reaches.md."},
+                     "methods/bilinear_rank/branch_and_bound/what-it-reaches.md."},
             {"flag": "--below", "kind": "count",
              "label": "stop at k products or fewer",
              "note": "The incumbent is seeded at k+1 instead of at the start, so "
@@ -200,7 +200,7 @@ TOOLS = [
              "note": "Off by default. Over GF(2) step 1 walks the span with a "
                      "bit an entry; this forces the general one, same tree and "
                      "same counts, so the two can be timed on one question: "
-                     "methods/bilinear_rank/descent_search/gf2_span_walk.h."},
+                     "methods/bilinear_rank/greedy_heuristic/gf2_span_walk.h."},
             dict(SYMMETRY),
             threads("The children of one node are prepared in parallel and "
                     "entered in the same order at any count, so every number "
@@ -211,7 +211,7 @@ TOOLS = [
     },
     {
         "name": "decide-rank",
-        "binary": "methods/bilinear_rank/exhaustive_search/decide-rank",
+        "binary": "methods/bilinear_rank/exhaustive/decide-rank",
         "input": "tensor",
         "asks": "Is there an algorithm with k products, and is that proved?",
         "answers": "An exhaustive search. Exit 0 is a verified decomposition, "
@@ -289,7 +289,7 @@ TOOLS = [
                     "workers already running and what they spent counts "
                     "against the same budget, so a tight node limit can turn "
                     "exit 0 into exit 3. "
-                    "methods/bilinear_rank/exhaustive_search/what-threads-change.md."),
+                    "methods/bilinear_rank/exhaustive/what-threads-change.md."),
             dict(MEMORY),
         ],
     },
@@ -446,7 +446,7 @@ TOOLS = [
     },
     {
         "name": "deflate-strictly",
-        "binary": "methods/bilinear_rank/oracle_guided_search/deflate-strictly",
+        "binary": "methods/bilinear_rank/canonical_augmentation/deflate-strictly",
         "input": "tensor",
         "asks": "Can a committed candidate be refuted from the tree?",
         "answers": "Exit 0 accepts the candidate, exit 1 refutes it, exit 3 is "
@@ -477,7 +477,7 @@ TOOLS = [
     },
     {
         "name": "enumerate-subspaces",
-        "binary": "methods/bilinear_rank/oracle_guided_search/enumerate-subspaces",
+        "binary": "methods/bilinear_rank/canonical_augmentation/enumerate-subspaces",
         "input": "tensor",
         "asks": "How many solution subspaces are there, once per orbit?",
         "answers": "A count, not a decision. It walks and counts, so every "

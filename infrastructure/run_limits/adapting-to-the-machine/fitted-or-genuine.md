@@ -87,7 +87,7 @@ is measured it can be chosen rather than guessed.
 | number | where | why it does not move |
 |---|---|---|
 | `bytes_per_matrix = 56 + 8 * entries` | `../memory_budget.cpp` | `sizeof` of the structures on any LP64 target, plus an allocator header. Givaro fixes the element at `int64_t`, so the 8 is the format and not the machine. |
-| `longest_vector_listed = 20` | `methods/bilinear_rank/exhaustive_search/gf2_leaf.cpp` | a ceiling on `2^length`, and the file says outright it is *"not a tuning knob"*. |
+| `longest_vector_listed = 20` | `methods/bilinear_rank/exhaustive/gf2_leaf.cpp` | a ceiling on `2^length`, and the file says outright it is *"not a tuning knob"*. |
 | `kWordCeiling = 4`, `kScanDimensionCeiling = 256`, `kWalkDimensionCeiling = 64` | `infrastructure/gpu_leaf/leaf_backend.cpp` | what the kernels' own `__constant__` arrays hold. Compile-time facts about the source. |
 | `handles(): 4, 5, 9, 16` | `infrastructure/gpu_leaf/leaf_backend.cpp`, `span_ranks.cu` | the four shapes a kernel is instantiated at. A fact about the template list. |
 | `kRowsPerLaunch = 2048` | `infrastructure/gpu_leaf/pool_scan.cu` | keeps the grid under CUDA's **65 535** second-dimension ceiling, which is a CUDA limit and not a card's. |
@@ -110,7 +110,7 @@ which is why none of them moved here.
 ## The one that is adaptive already, and is the model for the rest
 
 `set_worker_count(0)` asks `std::thread::hardware_concurrency()`, and
-`methods/bilinear_rank/descent_search/minimise_rank.cpp` sizes its prefetch window as
+`methods/bilinear_rank/greedy_heuristic/minimise_rank.cpp` sizes its prefetch window as
 `worker_count() * 4`. **No number from this chassis appears in either.** A
 128-core machine gets 128 workers and a 512-deep window without anybody
 re-measuring anything. That is what the other three axes should look like and

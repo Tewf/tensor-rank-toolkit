@@ -21,7 +21,7 @@ translated into term counts (`n+m+1` is Toom-Cook, so their `(n,m)` is our
 `[bdez2012]` settled `f2_5x5` at 13 and `f3_3x6` at 10 in 2012, and **this
 repository now settles `f2_5x5` at 13 by its own two searches**: the exhaustive
 one refutes 12 in 146 402 553 nodes and
-[`lower-the-bound`](../methods/bilinear_rank/incumbent_search/README.md) exhibits 13 in 80. It was
+[`lower-the-bound`](../methods/bilinear_rank/branch_and_bound/README.md) exhibits 13 in 80. It was
 13 ≤ rank ≤ 14 until 2026-08-21, the citation carrying the upper half.
 **`f2_4x7` is the one genuinely open map here**, at 15 ≤ rank ≤ 16, their lower
 bound against our upper one; deciding 15 would close it and neither side has,

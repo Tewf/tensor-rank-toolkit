@@ -186,7 +186,7 @@ def checks(port, build):
                       "name": "matmul_2x2x2.tensor",
                       "fixture": "matmul_2x2x2.tensor"}}
     _, seen = ask(port, "POST", "/api/preview", body)
-    wanted = ("build/methods/bilinear_rank/exhaustive_search/decide-rank "
+    wanted = ("build/methods/bilinear_rank/exhaustive/decide-rank "
               "fixtures/matmul_2x2x2.tensor --target 7")
     check("the preview is the retypable line", seen["command"] == wanted)
     _, card = run(port, "decide-rank", {"--target": "7"}, "matmul_2x2x2.tensor")
@@ -387,7 +387,7 @@ def checks(port, build):
                         "wall_clock_seconds": 120,
                         "input": _box("f2_5x5.tensor", None)})
     check("a flow shows its first line and says what follows it",
-          previewed["command"].startswith("build/methods/bilinear_rank/descent_search/minimise-rank") and
+          previewed["command"].startswith("build/methods/bilinear_rank/greedy_heuristic/minimise-rank") and
           len(previewed["then"]) == 1 and
           "sparsify-operator" in previewed["then"][0])
 

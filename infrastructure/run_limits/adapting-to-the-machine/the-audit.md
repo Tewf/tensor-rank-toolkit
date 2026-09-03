@@ -12,9 +12,9 @@ Taken 2026-08-21, before any of it was changed.
 
 | strand | dominant inner loop | GPU-shaped? | (a) threads | (b) memory | (c) device |
 |---|---|---|---|---|---|
-| **exhaustion** `methods/bilinear_rank/exhaustive_search/` | the leaf test: millions of rank-one maps reduced against one span, `gf2_leaf.cpp` | **YES**, and it is *the* measured case: 4.29e9 maps in 1.02 s on a card against 9.2 min on a core | ✔ `--threads`, `parallel_for` over subtrees `exhaustive_search.cpp:151` | ✔ `--max-memory`, `require_room` on the pool | ✔ `--device`, `chosen_device` per leaf `gf2_leaf.cpp:237,284` |
-| **descent** `methods/bilinear_rank/descent_search/` | `span_element_ranks`: `p^dim` ranks of one span, then a greedy over them | **YES** for the rank sweep (the second seam). **No** for the greedy above it, which carries the basis forward | ✔ `--threads`, prefetch window `worker_count()*4` `minimise_rank.cpp:39` | ✔ `--max-memory`, `require_room` ×3 | ~ `chosen_device(combinations)` `minimum_weight_basis.cpp:118`, no `--device` flag |
-| **incumbent** `methods/bilinear_rank/incumbent_search/` | branch-and-bound over `V + <g>`; per node one `p^dim` sweep then one `minimum_weight_basis_with` per surviving move `cost_first_search.cpp:121` | **NO**: the incumbent `ceiling` decides what the next node prunes; items are six orders of magnitude apart in cost; hundreds of nodes, not millions | ✖ **no `--threads` at all**, and the per-move loop is the twin of the one `descent` already threads | ✖ **no `--max-memory`**, and `require_room`'s refusal names a flag this command did not have. Plus `p^r` unguarded at `level_lowering_moves.cpp:25` | ~ reaches the span seam through `descent`; no flag |
+| **exhaustion** `methods/bilinear_rank/exhaustive/` | the leaf test: millions of rank-one maps reduced against one span, `gf2_leaf.cpp` | **YES**, and it is *the* measured case: 4.29e9 maps in 1.02 s on a card against 9.2 min on a core | ✔ `--threads`, `parallel_for` over subtrees `exhaustive_search.cpp:151` | ✔ `--max-memory`, `require_room` on the pool | ✔ `--device`, `chosen_device` per leaf `gf2_leaf.cpp:237,284` |
+| **descent** `methods/bilinear_rank/greedy_heuristic/` | `span_element_ranks`: `p^dim` ranks of one span, then a greedy over them | **YES** for the rank sweep (the second seam). **No** for the greedy above it, which carries the basis forward | ✔ `--threads`, prefetch window `worker_count()*4` `minimise_rank.cpp:39` | ✔ `--max-memory`, `require_room` ×3 | ~ `chosen_device(combinations)` `minimum_weight_basis.cpp:118`, no `--device` flag |
+| **incumbent** `methods/bilinear_rank/branch_and_bound/` | branch-and-bound over `V + <g>`; per node one `p^dim` sweep then one `minimum_weight_basis_with` per surviving move `cost_first_search.cpp:121` | **NO**: the incumbent `ceiling` decides what the next node prunes; items are six orders of magnitude apart in cost; hundreds of nodes, not millions | ✖ **no `--threads` at all**, and the per-move loop is the twin of the one `descent` already threads | ✖ **no `--max-memory`**, and `require_room`'s refusal names a flag this command did not have. Plus `p^r` unguarded at `level_lowering_moves.cpp:25` | ~ reaches the span seam through `descent`; no flag |
 | **flip graph** `methods/bilinear_rank/flip_graph/` (walk) | a Markov chain: rebuild all `3n²` moves, pick one, apply, re-merge `flip_graph.cpp:190` | **NO**: step *k+1* is built from step *k*'s scheme; serial RNG *is* the walk's identity; `n` is 8 to 24 | ✔ `--threads`, and it is the **only** correctly threaded loop here: per seed, bit-identical at any count | ✖ **no `--max-memory`** | ✖ |
 | **plateau crossing** `methods/bilinear_rank/flip_graph/plateau_search.cpp` | per state, one `p^dim` sweep then one `minimum_weight_basis_with` per candidate `:95` | **NO**, same shape as the incumbent: `visited` and `best_cost` carried forward, depth-first recursion on the first improvement | ✖ **worse than absent**: `minimise-rank --threads 8 --plateau` *accepts* the flag and then runs the whole crossing on one core | ✔ via `minimise-rank`; `visited` bounded by `plateau_state_budget`, `level` not bounded by anything | ~ via the span seam |
 | **orbit reduction** `methods/bilinear_rank/orbit_reduction/` | the isomorph-rejected tree walk `orbit_search.cpp:64` | **NO**: the span grows and the residual group narrows down each branch; subtree cost "wildly uneven" by `parallel.cpp`'s own admission | ✔ `parallel_for` `:220`, reached by 3 commands' `--threads` | ~ `require_room` ×4, but `pool_orbits.cpp:54,120` builds the *same shape of table* the guarded site prices, unguarded. **It has to stay that way**: see "the knob that means two things" below | ✖ |
@@ -31,8 +31,8 @@ Taken 2026-08-21, before any of it was changed.
 ## The two seams cover the two GPU-shaped loops, and that is the whole list
 
 `chosen_device` is called from exactly four places:
-`methods/bilinear_rank/exhaustive_search/gf2_leaf.cpp:237` and `:284` (the leaf, both routes),
-`methods/bilinear_rank/descent_search/minimum_weight_basis.cpp:118` (`span_element_ranks`), and
+`methods/bilinear_rank/exhaustive/gf2_leaf.cpp:237` and `:284` (the leaf, both routes),
+`methods/bilinear_rank/greedy_heuristic/minimum_weight_basis.cpp:118` (`span_element_ranks`), and
 `methods/bilinear_rank/search_plan/search_plan.cpp:123` (the plan, which reports what the other three
 will do). **No strand decides on its own**, so the "route it through" half of the
 brief had nothing to route.
@@ -68,13 +68,13 @@ expensive form:
 
 - `methods/bilinear_rank/search_plan/tests/check_the_plan_reaches_a_run.sh` uses `--max-memory 1K` to
   assert `pool: addressed`;
-- `methods/bilinear_rank/exhaustive_search/tests/test_packed_generation.cpp` and two beside it use
+- `methods/bilinear_rank/exhaustive/tests/test_packed_generation.cpp` and two beside it use
   `set_memory_budget(1)` to force `Gf2Leaf` to answer with no mask table;
 - `satisfiability/tests/check_exit_codes.sh` uses `--max-memory 1` to assert that
   `--symmetry matmul` takes the *addressed* pool and still returns a genuine NO.
 
 So `require_room` was added in front of the addressed pool's two vector lists
-(`methods/bilinear_rank/descent_search/candidate_pool.cpp`) and the factored orbit action
+(`methods/bilinear_rank/greedy_heuristic/candidate_pool.cpp`) and the factored orbit action
 (`methods/bilinear_rank/orbit_reduction/pool_orbits.cpp`), and **all three of those test files failed
 within the minute**. The guards were correct about the arithmetic (at the 25x25
 slices of `⟨5,5,5⟩` those lists really are 7.5 GB a side) and wrong about the

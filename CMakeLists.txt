@@ -51,22 +51,22 @@ add_subdirectory(infrastructure/run_limits)
 add_subdirectory(linear_algebra)
 add_subdirectory(formats)
 add_subdirectory(methods/bilinear_rank/map_construction)
-add_subdirectory(methods/bilinear_rank/descent_search)
-# Before exhaustive_search, because `decide-rank` asks it whether a two-slice
+add_subdirectory(methods/bilinear_rank/greedy_heuristic)
+# Before exhaustive, because `decide-rank` asks it whether a two-slice
 # tensor is settled in polynomial time before it builds any pool.
 add_subdirectory(pencil_rank)
-add_subdirectory(methods/bilinear_rank/exhaustive_search)
+add_subdirectory(methods/bilinear_rank/exhaustive)
 add_subdirectory(methods/bilinear_rank/orbit_reduction)
 add_subdirectory(methods/bilinear_rank/flip_graph)
-# After descent_search, whose minimum-weight basis it grows, and before nothing:
+# After greedy_heuristic, whose minimum-weight basis it grows, and before nothing:
 # the upper-bound search links the heuristic and is linked by no other module.
-add_subdirectory(methods/bilinear_rank/incumbent_search)
+add_subdirectory(methods/bilinear_rank/branch_and_bound)
 add_subdirectory(integer_programme)
 add_subdirectory(matrix_sparsification)
 add_subdirectory(satisfiability)
 add_subdirectory(curve_bounds)
 add_subdirectory(rank_metric_bound)
-add_subdirectory(methods/bilinear_rank/oracle_guided_search)
+add_subdirectory(methods/bilinear_rank/canonical_augmentation)
 add_subdirectory(canonical_factorisation)
 # After both of the modules whose enums a plan names, and after run_limits,
 # whose device ranking it routes: search_plan owns no rule and links every

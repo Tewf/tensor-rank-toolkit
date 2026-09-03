@@ -60,7 +60,7 @@ sequential leaf
 - **At a node**, as `cost(V)` meeting the floor: sound, and measured not to fire.
   The cheapest `cost(V)` seen is 8, 8, 8 over 4000 nodes of `matmul_2x2x2`
   against a floor of 6, so it fires only where the search is two nodes anyway:
-  [`../exhaustive_search/what-a-node-cannot-tell-you.md`](../methods/bilinear_rank/exhaustive_search/what-a-node-cannot-tell-you.md).
+  [`../exhaustive_search/what-a-node-cannot-tell-you.md`](../methods/bilinear_rank/exhaustive/what-a-node-cannot-tell-you.md).
 - **At a leaf**, as `dim R[1] == dim V`: that *is* the walk route, minus its early
   exit and with a Gaussian rank in place of a rank-one test.
 - **At the descent's cost query**, which is what it was written for, and stands.
@@ -113,4 +113,4 @@ the solver. The fix worth making is the `Theta(|P|)` pass, not the route.
 
 The whole argument, the five-shape table behind it, the partial-symmetry-break
 verdict and the one question where canonical augmentation wins outright:
-[`../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md`](../methods/bilinear_rank/oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md).
+[`../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md`](../methods/bilinear_rank/canonical_augmentation/when-canonical-pays/why-nothing-consults-it.md).

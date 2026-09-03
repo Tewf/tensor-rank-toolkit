@@ -20,7 +20,7 @@ links; ours is [`../sms_file.cpp`](../sms_file.cpp).
 | ordering | not required, and `DPS-smallrat` does not obey it | not required | yes |
 | terminator | `0 0 v` for any `v`, `sms.h:113`; EOF without one is an error | `0 0` and the value ignored; EOF without one throws | yes |
 | after the terminator | PLinOpt's checkers stop; `sms2pretty` loops with `newmatrix()` and `4o4o4_F32_Montgomery_P.sms` really holds four | stops | yes with the checkers, no with `sms2pretty` |
-| the triple | `stem_L.sms`, `stem_R.sms`, `stem_P.sms`; L is products×(m·n), R products×(n·k), P (m·k)×products, row-major, `src/MMchecker.cpp:7-10` | the same, written by `--emit-operators` and read by `operators-to-tensor` | yes, and asserted in `methods/bilinear_rank/descent_search/tests/test_operators_to_tensor.cpp` |
+| the triple | `stem_L.sms`, `stem_R.sms`, `stem_P.sms`; L is products×(m·n), R products×(n·k), P (m·k)×products, row-major, `src/MMchecker.cpp:7-10` | the same, written by `--emit-operators` and read by `operators-to-tensor` | yes, and asserted in `methods/bilinear_rank/greedy_heuristic/tests/test_operators_to_tensor.cpp` |
 
 ## What was actually round-tripped
 

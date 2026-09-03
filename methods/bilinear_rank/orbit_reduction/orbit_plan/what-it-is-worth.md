@@ -3,7 +3,7 @@
 On the polynomial fixtures, `|Stab(T)|` is about 6 over `F₂`, a single-digit
 constant at the top of the tree and less below. That turns the seven-hour
 `--target 12` into one or two hours. Useful; not a change of kind. And per
-[`known_ranks.md`](../../descent_search/known_ranks.md), that run now reproduces a published
+[`known_ranks.md`](../../greedy_heuristic/known_ranks.md), that run now reproduces a published
 exclusion rather than settling anything.
 
 **Point it at matrix multiplication instead.** ⟨2,2,2⟩ has the sandwich
@@ -42,7 +42,7 @@ asserts the verdict and
 the node count at 1, 2, 4, 6 and 12 workers on every fixture it already covered.
 **On a satisfiable question the total is an upper bound**, because a witness stops
 the search and the subtrees already in flight spend against the same counter: the
-finding [`../../exhaustive_search/what-threads-change.md`](../../exhaustive_search/what-threads-change.md)
+finding [`../../exhaustive_search/what-threads-change.md`](../../exhaustive/what-threads-change.md)
 made about the plain search applies here unchanged, and so does its mitigation.
 `expand_up_to_impl` tests the shared `found` flag before it consumes a node.
 

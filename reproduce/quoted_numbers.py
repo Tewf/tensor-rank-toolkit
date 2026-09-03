@@ -38,8 +38,8 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-TEST = ROOT / "methods/bilinear_rank/oracle_guided_search" / "tests" / "test_canonical_augmentation.cpp"
-DESCENT = ROOT / "methods/bilinear_rank/descent_search" / "results.json"
+TEST = ROOT / "methods/bilinear_rank/canonical_augmentation" / "tests" / "test_canonical_augmentation.cpp"
+DESCENT = ROOT / "methods/bilinear_rank/greedy_heuristic" / "results.json"
 SPARSIFICATION = ROOT / "matrix_sparsification" / "results.json"
 
 
@@ -97,8 +97,8 @@ def claims():
          "how-the-search-works/README.md",
          "OPTIONS/committing-to-candidates.md",
          "canonical_factorisation/canonical-augmentation.md",
-         "methods/bilinear_rank/oracle_guided_search/deduplication-cost.md",
-         "methods/bilinear_rank/oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md"],
+         "methods/bilinear_rank/canonical_augmentation/deduplication-cost.md",
+         "methods/bilinear_rank/canonical_augmentation/when-canonical-pays/why-nothing-consults-it.md"],
     ), (
         "what the orbit quotient removes refuting 6 products on <2,2,2>",
         f"{quotient}x",

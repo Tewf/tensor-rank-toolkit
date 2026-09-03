@@ -45,7 +45,7 @@ REPEATS = 3
 
 # The four the descent is measured on, and deliberately only those. `fixtures/`
 # holds twenty-six tensors, but a name here is a claim that
-# `methods/bilinear_rank/descent_search/results.json` publishes a step-by-step row for it, and the six
+# `methods/bilinear_rank/greedy_heuristic/results.json` publishes a step-by-step row for it, and the six
 # that ship for a published target rather than for a measurement made here
 # (`fixtures/published-targets.md`) have no such row to re-derive.
 #
@@ -116,7 +116,7 @@ PLATEAU_QUESTIONS = [
      "depth": 2, "state_budget": 370},
 ]
 
-# The flip walk's, from `methods/bilinear_rank/oracle_guided_search/measurements/three-by-three.md`.
+# The flip walk's, from `methods/bilinear_rank/canonical_augmentation/measurements/three-by-three.md`.
 # The eight seeds are independent and each is reproducible from its own number,
 # so the scheme found is a fact about the code and re-derives anywhere; only the
 # wall clock is this machine's, and `counts_only` drops that before comparing.
@@ -142,7 +142,7 @@ NOT_REPRODUCIBLE = "_not_reproducible"
 # and the field its rows are named by.
 #
 # `--check` used to know about exactly one section, `fixtures`, and a results
-# file is not one section. `methods/bilinear_rank/descent_search/results.json` also publishes
+# file is not one section. `methods/bilinear_rank/greedy_heuristic/results.json` also publishes
 # `exact_search` and `famous_tensors`, some thirty counts, and nothing looked at
 # them: three of the four `decided` node counts and four whole refutations went
 # stale, one of them during the session that added them, and the driver whose job
@@ -175,20 +175,20 @@ FAMOUS_FIXTURES = {
 # reads as a checked one. Printed on every run, `--check` included, next to the
 # satisfiability strand's own skipped line.
 CARRIED = (
-    ("methods/bilinear_rank/descent_search/results.json", "<2,3,3> matrix multiplication", "the whole row",
+    ("methods/bilinear_rank/greedy_heuristic/results.json", "<2,3,3> matrix multiplication", "the whole row",
      "no fixture ships for this tensor, `make-tensor --matmul 2 2 3 3` builds it, and its "
      "step 3 scan is 32 193 candidates and 153.6 s. Nothing here asks it."),
-    ("methods/bilinear_rank/descent_search/results.json", "<3,3,3> matrix multiplication", "heuristic step_3",
+    ("methods/bilinear_rank/greedy_heuristic/results.json", "<3,3,3> matrix multiplication", "heuristic step_3",
      "not a count but a note: the scan was stopped at 45 minutes against a projected 4.2 "
      "hours. Steps 1 and 2 are re-derived, and cost 0.05 s."),
-    ("methods/bilinear_rank/descent_search/results.json", "f2_5x5", "ruling out 12 products",
+    ("methods/bilinear_rank/greedy_heuristic/results.json", "f2_5x5", "ruling out 12 products",
      "146 402 553 nodes, NO and exhaustive, which is the floor of `rank(f2_5x5) = 13` and "
      "this repository's own rather than `[bdez2012]`'s. It ran once, on 2026-08-19, in "
      "535.59 s on six cores. That is 273 000 nodes a second across them, so one core is "
      "the better part of an hour by arithmetic rather than by measurement, against CI's 35 "
      "minute cap with nine slow tests already under it. Carried, not asserted. A "
      "refutation's node count does not depend on the thread count, measured in "
-     "`methods/bilinear_rank/exhaustive_search/what-threads-change.md`, so the 146 402 553 is the tree's and "
+     "`methods/bilinear_rank/exhaustive/what-threads-change.md`, so the 146 402 553 is the tree's and "
      "re-deriving it needs only patience."),
     ("matrix_sparsification/results.json", "3x3x3_23_Grey-221",
      "the whole published_scheme_operators block",
@@ -229,7 +229,7 @@ def fastest(command, repeats=REPEATS, expect=(0,)):
 
 def descent_of(build, name, repeats=REPEATS):
     """One fixture through minimise-rank, per step."""
-    command = [str(build / "methods/bilinear_rank/descent_search" / "minimise-rank"),
+    command = [str(build / "methods/bilinear_rank/greedy_heuristic" / "minimise-rank"),
                str(ROOT / "fixtures" / f"{name}.tensor"), "--steps", "3"]
     text, seconds = fastest(command, repeats)
 
@@ -294,7 +294,7 @@ def tree_search(build, fixture, target=None, expect=(0,), repeats=REPEATS, symme
     `None` says the question has no wall clock, not that a measurement went
     missing.
     """
-    command = [str(build / "methods/bilinear_rank/exhaustive_search" / "decide-rank"),
+    command = [str(build / "methods/bilinear_rank/exhaustive" / "decide-rank"),
                str(ROOT / "fixtures" / f"{fixture}.tensor")]
     if target is not None:
         command += ["--target", str(target)]
@@ -402,7 +402,7 @@ def famous_tensors_of(build, committed, repeats=REPEATS):
 
 def heuristic_of(build, fixture, steps, repeats=REPEATS):
     """(the descent's per-step counts, its naive count, the invocation)."""
-    command = [str(build / "methods/bilinear_rank/descent_search" / "minimise-rank"),
+    command = [str(build / "methods/bilinear_rank/greedy_heuristic" / "minimise-rank"),
                str(ROOT / "fixtures" / f"{fixture}.tensor"), "--steps", str(steps)]
     text, _ = fastest(command, repeats)
     counts = {}
@@ -464,7 +464,7 @@ def exhaustive_command(build, tensor, target, committed):
     A row with no recorded line yet gets the bare command, which is what the two
     cheap exhaustions want and what wrote their lines in the first place.
     """
-    command = [str(build / "methods/bilinear_rank/exhaustive_search" / "decide-rank"), tensor,
+    command = [str(build / "methods/bilinear_rank/exhaustive" / "decide-rank"), tensor,
                "--target", str(target)]
     recorded = (committed.get("exhaustive_command") or "").split()
     if "--target" in recorded:
@@ -514,7 +514,7 @@ def satisfiability_of(build, question, committed, repeats=REPEATS, slow=False):
         # with no search time to report, not a measurement that went missing.
         #
         # The seconds are the search's own, for the reason `tree_search` gives:
-        # `methods/bilinear_rank/descent_search/results.json` publishes some of these same questions,
+        # `methods/bilinear_rank/greedy_heuristic/results.json` publishes some of these same questions,
         # and two files quoting one run must quote the same number.
         visited = re.search(r"(\d+) nodes in ([\d.e+-]+) s", text)
         row.update({"exhaustive_nodes": int(visited.group(1)) if visited else 0,
@@ -538,7 +538,7 @@ def plateau_of(build, question, repeats=REPEATS):
     `cross_plateaus` returns, so a row saying 8 is a row saying the walk never
     left the naive scheme and not that it lost a better one on the way back.
     """
-    command = [str(build / "methods/bilinear_rank/descent_search" / "minimise-rank"),
+    command = [str(build / "methods/bilinear_rank/greedy_heuristic" / "minimise-rank"),
                str(ROOT / "fixtures" / f"{question['tensor']}.tensor"), "--steps", "3",
                "--plateau", str(question["depth"]),
                "--plateau-states", str(question["state_budget"])]

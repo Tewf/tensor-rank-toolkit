@@ -62,7 +62,7 @@ codeword where `rref` uses `n_0` of them. On `matmul_3x3x3` that is 14 against 1
 What it does that no bound here does is **construct**: when the chosen slice ranks
 sum to at most `R` it emits a CPD rather than a verdict. That half is real and it
 is also beaten, by the strand built for it. It returns 8 on `matmul_2x2x2` where
-[`methods/bilinear_rank/descent_search/`](../methods/bilinear_rank/descent_search/README.md) returns 7, and 12 on `f3_3x6` where the
+[`methods/bilinear_rank/greedy_heuristic/`](../methods/bilinear_rank/greedy_heuristic/README.md) returns 7, and 12 on `f3_3x6` where the
 descent returns 10.
 
 ## What this does not settle

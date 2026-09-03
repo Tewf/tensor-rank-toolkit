@@ -30,15 +30,15 @@ The ten method strands, one directory each. Method and caveats, per strand:
 
 | Strand | Asks | Headline |
 |---|---|---|
-| [descent](methods/bilinear_rank/descent_search/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
-| [exhaustion](methods/bilinear_rank/exhaustive_search/README.md) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
-| [incumbent](methods/bilinear_rank/incumbent_search/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
+| [descent](methods/bilinear_rank/greedy_heuristic/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive/README.md) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
+| [incumbent](methods/bilinear_rank/branch_and_bound/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
 | [pencils](pencil_rank/README.md) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
 | [factorisation](canonical_factorisation/README.md) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
 | [satisfiability](satisfiability/README.md) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
 | [symmetry](methods/bilinear_rank/orbit_reduction/README.md) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](methods/bilinear_rank/oracle_guided_search/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
+| [isomorph-free](methods/bilinear_rank/canonical_augmentation/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
 | [sparsification](matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 The shared infrastructure and the documentation:
@@ -167,7 +167,7 @@ cmake --install build --prefix ~/.local   # the thirteen tools, onto PATH
 
 **Every documented command line types its tool bare**, `minimise-rank …`,
 which assumes the install above. Without it the same binaries sit under the
-module that owns each, `build/methods/bilinear_rank/descent_search/minimise-rank` and so on, and
+module that owns each, `build/methods/bilinear_rank/greedy_heuristic/minimise-rank` and so on, and
 the lines run with that prefix instead. The three instruments and the
 `list-solvers` shim deliberately do not install; the top `CMakeLists.txt`
 says why. A reader new to the area starts at

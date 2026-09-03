@@ -83,7 +83,7 @@ does run out of nodes.
 Run against this build, that line ends:
 
 ```
-build/methods/bilinear_rank/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000
+build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000
 exit 3, GAVE UP: the node limit was reached, so nothing is decided. 1000 nodes.
 ```
 

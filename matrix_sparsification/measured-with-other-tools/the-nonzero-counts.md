@@ -73,7 +73,7 @@ reader is least likely to check.
 Over GF(2) and GF(3) `bin/sparsifier` returns the zero matrix and exits 0, so on
 the finite fields there is no column to record. The matroid greedy runs over
 `q^k` and stays exact there, which is what every operator
-[the rank search](../../methods/bilinear_rank/descent_search/README.md) emits is over.
+[the rank search](../../methods/bilinear_rank/greedy_heuristic/README.md) emits is over.
 
 What these nonzeros are worth once a subexpression pass sees them:
 [`before-a-subexpression-pass.md`](before-a-subexpression-pass.md).

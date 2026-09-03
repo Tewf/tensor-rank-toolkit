@@ -60,7 +60,7 @@ reason: nothing here can compute it, so nothing here pretends to.
 
 `symmetric_bound_table.h` is `[rambaud2014, Table 1]` transcribed, and three of
 its entries can be checked a second way. `µ_sym_2(2)`, `µ_sym_2(3)` and
-`µ_sym_2(4)` are 3, 6 and 9; the exact search in [`../exhaustive_search/`](../methods/bilinear_rank/exhaustive_search/README.md)
+`µ_sym_2(4)` are 3, 6 and 9; the exact search in [`../exhaustive_search/`](../methods/bilinear_rank/exhaustive/README.md)
 reaches exactly 3, 6 and 9 for GF(4), GF(8) and GF(16), from the tensors
 themselves and by exhaustion.
 

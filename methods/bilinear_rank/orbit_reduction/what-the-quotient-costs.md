@@ -15,7 +15,7 @@ what this page argues from. `⟨2,2,2⟩` over GF(2),
 | refuting k = 6 | 25 399 | **648** | 39.2x | 0.029257 to 0.000992, **about 30x** |
 | finding k = 7 | 7 436 | **3 167** | 2.35x | 0.012633 to 0.005903, **about 2.1x** |
 
-The seconds are the ones `methods/bilinear_rank/descent_search/results.json` publishes, last written by
+The seconds are the ones `methods/bilinear_rank/greedy_heuristic/results.json` publishes, last written by
 a full `measure.py` run on 2026-08-23; they were 0.0362 and 0.0214 before the
 GF(2) leaf and the reflected Gray walk landed, when the two ratios read 27.8x and
 2.14x. **Nothing in the node columns moved and nothing was expected to.**
@@ -73,7 +73,7 @@ refutations, which are where a sweep spends its time.
 
 Nothing here says a *better* order exists or how to find one. What it says is
 that the search has a knob it does not know it has, and that
-[`../exhaustive_search/what-threads-change.md`](../exhaustive_search/what-threads-change.md)'s
+[`../exhaustive_search/what-threads-change.md`](../exhaustive/what-threads-change.md)'s
 "it is the same tree whoever visits it" is true of workers and not of orders.
 
 ## What that leaves

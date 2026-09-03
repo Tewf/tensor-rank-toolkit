@@ -71,7 +71,7 @@ count, which this file used to deny: a refutation visits the same nodes at any
 thread count, a witness stops early and the workers already running spend against
 the same budget, so a tight `--node-limit` can turn exit 0 into exit 3. Measured,
 with the consequence and what to do about it:
-[`methods/bilinear_rank/exhaustive_search/what-threads-change.md`](methods/bilinear_rank/exhaustive_search/what-threads-change.md).
+[`methods/bilinear_rank/exhaustive/what-threads-change.md`](methods/bilinear_rank/exhaustive/what-threads-change.md).
 
 The heuristic is unaffected and adopts the same candidates in the same order.
 

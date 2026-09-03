@@ -22,7 +22,7 @@ Adds two.
 | parameter | what it is | what it decides |
 |---|---|---|
 | `group` | `vector<Automorphism>`, **generators** | the quotient. Empty means no quotient, and the search is the one above. Generators, never the enumerated group: `least_in_orbit` walks an orbit, and an orbit needs generators |
-| `spread_over_cores` | bool | whether the top level is split across workers. A refutation's node count does not depend on it; a satisfiable search's does, measured in [`../exhaustive_search/what-threads-change.md`](../methods/bilinear_rank/exhaustive_search/what-threads-change.md) |
+| `spread_over_cores` | bool | whether the top level is split across workers. A refutation's node count does not depend on it; a satisfiable search's does, measured in [`../exhaustive_search/what-threads-change.md`](../methods/bilinear_rank/exhaustive/what-threads-change.md) |
 
 ## `rank_one_basis_of(field, span, pool, needed, scratch, budget, binary)`
 

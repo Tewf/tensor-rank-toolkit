@@ -37,7 +37,7 @@ from pathlib import Path
 
 # (tensor, target, matmul shape or None, the answer). One row either side of every
 # known rank, so a wrong verdict is visible rather than merely slow. Ranks are
-# from methods/bilinear_rank/descent_search/README.md and fixtures/README.md.
+# from methods/bilinear_rank/greedy_heuristic/README.md and fixtures/README.md.
 QUESTIONS = [
     ("f2_2x2", 3, None, "yes"),
     ("f2_2x2", 2, None, "no"),
@@ -69,7 +69,7 @@ QUESTIONS = [
 # method and not a group too large to build. `--break-symmetry` is the term
 # ordering, which is a different reduction and composes with the cubes.
 BACKENDS = [
-    ("tree search", "methods/bilinear_rank/exhaustive_search/decide-rank", [], "any"),
+    ("tree search", "methods/bilinear_rank/exhaustive/decide-rank", [], "any"),
     ("SAT", "satisfiability/decide-rank-by-sat", [], "matmul"),
     ("SAT + term ordering", "satisfiability/decide-rank-by-sat", ["--break-symmetry"], "matmul"),
 ]

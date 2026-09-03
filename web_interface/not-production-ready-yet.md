@@ -31,10 +31,10 @@ quotient turns 25 399 nodes into 648; run against this build, the same map
 ends both ways:
 
 ```
-build/methods/bilinear_rank/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6
+build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6
 exit 1, NO: there is no algorithm with 6 products. The search was exhaustive. 25399 nodes.
 
-build/methods/bilinear_rank/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
 exit 1, NO: there is no algorithm with 6 products. The search was exhaustive. 648 nodes, quotiented.
 ```
 

@@ -66,7 +66,7 @@ two mutually exclusive flag sets is worse than two commands.**
 - **`operators-to-tensor` into `make-tensor`.** Tempting, because both write a
   tensor and `--field` would be shared: `make-tensor --operators L R P -q 2`
   reads well. Refused on the dependency rather than on the flags. Building a map
-  from its definition is `methods/bilinear_rank/map_construction/`, which sits *below* `methods/bilinear_rank/descent_search/`
+  from its definition is `methods/bilinear_rank/map_construction/`, which sits *below* `methods/bilinear_rank/greedy_heuristic/`
   in the build; rebuilding one from a decomposition is `algorithm_recovery.h`'s
   `map_computed_by`, which sits above it and cannot move down, because the
   `Algorithm` it is written in terms of is the search's own type. The merge would

@@ -56,15 +56,15 @@ inline constexpr const char* tunables_filename = "tunables.conf";
 struct Tunables {
     /// Nodes an exhaustive search may visit before it gives up, which is a
     /// budget and never a refutation. Fills `SearchBudget::node_limit`
-    /// (`methods/bilinear_rank/exhaustive_search/exhaustive_search.h`) and `StrictSettings::node_limit`
-    /// (`methods/bilinear_rank/oracle_guided_search/strict_deflation.h`), from `decide-rank
+    /// (`methods/bilinear_rank/exhaustive/exhaustive_search.h`) and `StrictSettings::node_limit`
+    /// (`methods/bilinear_rank/canonical_augmentation/strict_deflation.h`), from `decide-rank
     /// --node-limit` and `deflate-strictly --node-limit`.
     std::size_t search_node_limit = 5'000'000;
 
     /// Elements one leaf of an exhaustive search may examine before it gives up
     /// on that leaf, which is likewise a budget and never a refutation. Fills
     /// `SearchBudget::leaf_element_limit`
-    /// (`methods/bilinear_rank/exhaustive_search/exhaustive_search.h`), from `decide-rank
+    /// (`methods/bilinear_rank/exhaustive/exhaustive_search.h`), from `decide-rank
     /// --leaf-limit`. The node limit bounds how many leaves are reached and
     /// nothing inside one, which is what this is for.
     std::size_t search_leaf_limit = 100'000'000;

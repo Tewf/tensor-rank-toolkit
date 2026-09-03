@@ -50,9 +50,9 @@ for. The two rows below reach the same crossing with a different tool,
 | `⟨3,3,3⟩` | 27, no improvement | **24** | 38.1 s, `--flips 20000 --seeds 8` |
 
 Both rows are `walk-scheme`'s, measured in
-[`against-the-heuristics.md`](../methods/bilinear_rank/oracle_guided_search/measurements/against-the-heuristics.md)
+[`against-the-heuristics.md`](../methods/bilinear_rank/canonical_augmentation/measurements/against-the-heuristics.md)
 line 5 and
-[`three-by-three.md`](../methods/bilinear_rank/oracle_guided_search/measurements/three-by-three.md) line
+[`three-by-three.md`](../methods/bilinear_rank/canonical_augmentation/measurements/three-by-three.md) line
 6. On `⟨2,2,2⟩` the number to beat is 7 and not 8; on `⟨3,3,3⟩`
 the walk is three products under the naive 27 where the descent is level with
 it. One sideways step does not do it: from the naive eight, `⟨2,2,2⟩` needs

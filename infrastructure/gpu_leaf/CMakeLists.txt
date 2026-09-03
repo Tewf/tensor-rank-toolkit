@@ -13,7 +13,7 @@
 # have caught `Gf2Leaf` gaining a `field` argument on 2026-08-20.
 add_library(measure-leaf-host-check OBJECT measure_leaf.cpp)
 target_include_directories(measure-leaf-host-check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(measure-leaf-host-check PRIVATE exhaustive_search descent_search
+target_link_libraries(measure-leaf-host-check PRIVATE exhaustive greedy_heuristic
                                                      linear_algebra run_limits project_warnings)
 
 find_package(CUDAToolkit QUIET)
@@ -45,8 +45,8 @@ set(CMAKE_CUDA_STANDARD_REQUIRED ON)
 # The three kernels and the two backends that offer them, compiled once and
 # linked by both the harness and the commands. Two leaf routes and one that
 # ranks every element of a span, which is a different question for a different
-# caller: `span_ranks.cu` answers `descent_search`'s and the other two answer
-# `exhaustive_search`'s. The ptxas report is how the register and local-memory
+# caller: `span_ranks.cu` answers `greedy_heuristic`'s and the other two answer
+# `exhaustive`'s. The ptxas report is how the register and local-memory
 # counts in README.md were read off; a kernel that spills is measuring the memory
 # system rather than the arithmetic, so the report is on by default.
 #
@@ -61,7 +61,7 @@ target_include_directories(gpu_leaf_kernels PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # executables now: CMake adds the runtime for a target that has `.cu` sources of
 # its own and for no other, which is why it used to arrive by itself and does
 # not any more.
-target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive_search CUDA::cudart
+target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive CUDA::cudart
                                        PRIVATE project_warnings)
 # **Which card, asked of the machine rather than written down.**
 #
@@ -103,7 +103,7 @@ endif()
 target_compile_options(gpu_leaf_kernels PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--ptxas-options=-v>)
 
 add_executable(measure-leaf measure_leaf.cpp)
-target_link_libraries(measure-leaf PRIVATE gpu_leaf_kernels exhaustive_search descent_search
+target_link_libraries(measure-leaf PRIVATE gpu_leaf_kernels exhaustive greedy_heuristic
                                            linear_algebra run_limits project_warnings)
 
 # The registration, and only the registration.

@@ -20,7 +20,7 @@ What it built to, concretely: `decide-rank fixtures/matmul_2x2x2.tensor
 table.
 
 The published continuation of the algorithm in
-[`exhaustive_search.h`](../../exhaustive_search/exhaustive_search.h). Source:
+[`exhaustive_search.h`](../../exhaustive/exhaustive_search.h). Source:
 `[covanov2018]` §1.3, *RP-automorphisms*, and §2.2.4, *Improving on BDEZ using
 RP-automorphisms*, whose `[covanov2018, Alg. 6]` is `BDEZStab` and is
 `[covanov2019, Alg. 3]` reprinted. §2.2.4 opens *"we present in this section,

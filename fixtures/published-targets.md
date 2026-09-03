@@ -37,13 +37,13 @@ both searches actually say. Counts are exact and reproduce anywhere.
 | `matmul_3x4x4` | **21** | 48 | 48 | not run | | not run | floor 8 under |
 
 The `incumbent` column is
-[`lower-the-bound`](../methods/bilinear_rank/incumbent_search/README.md), which walks the same tree the
+[`lower-the-bound`](../methods/bilinear_rank/branch_and_bound/README.md), which walks the same tree the
 exact search does and cuts it at `dim V + 1 >= best` instead of at a target. It
 moves the two rows the descent cannot: **`cyclic_f2_7` reaches the published 13
 in 22 nodes**, and `gf32_multiplication` reaches 13 in 1 873. Both counts are
 verified in the tool and again outside this repository, from the emitted `.sms`
 operators. Node counts per fixture:
-[`../incumbent_search/what-it-reaches.md`](../methods/bilinear_rank/incumbent_search/what-it-reaches.md).
+[`../incumbent_search/what-it-reaches.md`](../methods/bilinear_rank/branch_and_bound/what-it-reaches.md).
 
 **The floor is one product short of the published rank on all three that the
 descent can finish**, from `rank_lower_bound` alone and in under a millisecond.
@@ -87,7 +87,7 @@ first property.
 on. `mu_2(n)` is the bilinear complexity of `F_{2^n}` over `F_2`, and the values
 published for `n` up to 6 are 3, 6, 9, 13, 15. The first three of those are
 `gf4`, `gf8` and `gf16`, and each is settled here by
-[`../exhaustive_search/`](../methods/bilinear_rank/exhaustive_search/README.md) rather than taken on trust.
+[`../exhaustive_search/`](../methods/bilinear_rank/exhaustive/README.md) rather than taken on trust.
 
 **13 and 15 are the two numbers on this page with no key beside them**, and that
 is deliberate rather than an omission to fill in later. They are widely quoted,

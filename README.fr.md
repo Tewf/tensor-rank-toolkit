@@ -33,15 +33,15 @@ reste de la documentation technique.
 
 | Axe | Question | Résultat |
 |---|---|---|
-| [descente](methods/bilinear_rank/descent_search/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
-| [exhaustion](methods/bilinear_rank/exhaustive_search/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
-| [titulaire](methods/bilinear_rank/incumbent_search/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
+| [descente](methods/bilinear_rank/greedy_heuristic/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
+| [titulaire](methods/bilinear_rank/branch_and_bound/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
 | [faisceaux](pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
 | [factorisation](canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
 | [satisfiabilité](satisfiability/README.md) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
 | [symétrie](methods/bilinear_rank/orbit_reduction/README.md) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
-| [sans isomorphes](methods/bilinear_rank/oracle_guided_search/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
+| [sans isomorphes](methods/bilinear_rank/canonical_augmentation/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
 | [creusement](matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
 L'infrastructure partagée et la documentation :
@@ -178,7 +178,7 @@ cmake --install build --prefix ~/.local   # les treize outils, sur le PATH
 **Chaque ligne de commande documentée écrit son outil nu**, `minimise-rank …`,
 ce qui suppose l'installation ci-dessus. Sans elle, les mêmes binaires se
 trouvent sous le module qui possède chacun,
-`build/methods/bilinear_rank/descent_search/minimise-rank` et ainsi de suite, et les lignes
+`build/methods/bilinear_rank/greedy_heuristic/minimise-rank` et ainsi de suite, et les lignes
 s'exécutent avec ce préfixe. Les trois instruments et la coquille
 `list-solvers` ne s'installent volontairement pas ; le `CMakeLists.txt`
 racine dit pourquoi. Un lecteur nouveau dans le domaine commence par

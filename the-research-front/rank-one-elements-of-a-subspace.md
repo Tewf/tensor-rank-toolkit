@@ -15,12 +15,12 @@ the `(i+1) x (i+1)` minors, so the rank stratification of a matrix space is a
 chain of secant varieties and nothing else.
 
 `ones(V)` in
-[`../exhaustive_search/generating-candidates-from-the-span.md`](../methods/bilinear_rank/exhaustive_search/generating-candidates-from-the-span.md)
+[`../exhaustive_search/generating-candidates-from-the-span.md`](../methods/bilinear_rank/exhaustive/generating-candidates-from-the-span.md)
 is therefore the affine cone over `P(V) ∩ Segre`, a **linear section** of the
 Segre variety, and `deficit(V) == 0` asks whether that section spans `V`.
 
 **The pool is the point set, exactly.** `normalised_vectors` in
-[`../descent_search/candidate_pool.cpp`](../methods/bilinear_rank/descent_search/candidate_pool.cpp)
+[`../descent_search/candidate_pool.cpp`](../methods/bilinear_rank/greedy_heuristic/candidate_pool.cpp)
 builds vectors with leading entry 1, one per point of `PG(m−1, q)`, and
 `RankOnePool::at` takes outer products, so the pool holds one matrix per point
 of the Segre variety and `|pool| = ((q^m−1)/(q−1)) · ((q^n−1)/(q−1))`, which is
@@ -65,7 +65,7 @@ a finite field, in FPT with respect to `R` and `|F|`.
 
 **This repository reaches the leaf by enumeration**, scanning the pool or
 walking the subspace, whichever
-[`../exhaustive_search/rank_one_basis.h`](../methods/bilinear_rank/exhaustive_search/rank_one_basis.h)
+[`../exhaustive_search/rank_one_basis.h`](../methods/bilinear_rank/exhaustive/rank_one_basis.h)
 prices cheaper per call. No ideal is ever formed:
 [`../satisfiability/`](../satisfiability/README.md) hands a solver the *whole*
 rank question in one encoding, never the leaf.
