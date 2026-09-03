@@ -94,6 +94,20 @@ def main():
     if not check_the_build(chosen.build):
         return 1
 
+    # A wildcard bind has no name a browser would send: the Host-header guard
+    # below admits loopback and the one chosen name, so under 0.0.0.0 every
+    # request from elsewhere arrives named something else and is refused. That
+    # was a console that listened everywhere and answered nobody. The deliberate
+    # exception has to be spelled as the address this machine is reached at.
+    if chosen.host in {"0.0.0.0", "::", ""}:
+        print("--host " + chosen.host + " binds every interface, and the guard "
+              "on the Host header then has no name to accept.\nName the address "
+              "this machine is reached at instead:\n"
+              "    python3 web_interface/serve.py --host 192.0.2.7\n"
+              "or drive it over ssh -L, which needs no flag at all.",
+              file=sys.stderr)
+        return 1
+
     console = service.Service(chosen.build, chosen.runs, chosen.wall_clock)
     handler = http_service.make_handler(console, LOOPBACK | {chosen.host})
     try:

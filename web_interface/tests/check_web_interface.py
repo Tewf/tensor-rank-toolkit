@@ -136,6 +136,18 @@ def main():
         server.shutdown()
         server.server_close()
 
+    # The README quotes how many checks this run is, and that number aged in
+    # place once already, the way the front page's test count did before CI
+    # owned it. The run is the owner: this last check counts itself in, so the
+    # sentence and the suite move together or this run fails.
+    quoted = re.search(r"# (\d+) checks",
+                       (HERE.parent / "README.md").read_text(encoding="utf-8"))
+    counting_this_one = len(PASSED) + len(FAILED) + 1
+    check("the README's check count is this run's" +
+          " (quoted " + (quoted.group(1) if quoted else "nothing") +
+          ", ran " + str(counting_this_one) + ")",
+          quoted is not None and int(quoted.group(1)) == counting_this_one)
+
     print("\n" + str(len(PASSED)) + " passed, " + str(len(FAILED)) + " failed")
     return 1 if FAILED else 0
 

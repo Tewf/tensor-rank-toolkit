@@ -20,7 +20,11 @@ interface is a browser, so it needs exactly what building the toolkit needed.
 
 It listens on the loopback address, so only this machine can reach it, and
 `ssh -L 8770:localhost:8770 host` is how it drives a run on a server. The flags
-are `--build`, `--port`, `--host`, `--runs` and `--wall-clock`; `--help` lists them.
+are `--build`, `--port`, `--host`, `--runs`, `--wall-clock` and `--no-browser`;
+`--help` lists them. `--host` takes the address this machine is reached at,
+never a wildcard: `0.0.0.0` is refused at startup, because the Host-header
+guard would then have no name to accept and every remote request would be
+refused after the bind.
 
 ## What you do with it
 
@@ -102,7 +106,7 @@ to be discovered.
 ## Checking it
 
 ```sh
-python3 web_interface/tests/check_web_interface.py     # 64 checks
+python3 web_interface/tests/check_web_interface.py     # 65 checks
 ```
 
 It starts a console, drives it over HTTP and asserts against real runs of real
