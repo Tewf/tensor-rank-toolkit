@@ -23,7 +23,10 @@ public:
     std::size_t dimension() const { return rows_.size(); }
 
     /// Reduce a vector against the rows held. What remains is zero exactly when
-    /// the vector was already in the span.
+    /// the vector was already in the span. The vector must be as wide as this
+    /// span was built (`entries.size() == width`): assumed, not checked, for
+    /// the reason matrix.h gives — this is the innermost question both
+    /// searches ask.
     void reduce(std::vector<Element>& entries) const {
         for (std::size_t index = 0; index < rows_.size(); ++index) {
             const Element leading = entries[pivot_columns_[index]];

@@ -10,6 +10,7 @@
 /// selections the sparsification restricts operators with.
 namespace linear_algebra {
 
+/// The matrix flipped about its diagonal. Any shape is welcome.
 template <class Field>
 MatrixOver<Field> transpose(const MatrixOver<Field>& matrix) {
     MatrixOver<Field> result(matrix.columns(), matrix.rows());
@@ -21,6 +22,11 @@ MatrixOver<Field> transpose(const MatrixOver<Field>& matrix) {
     return result;
 }
 
+/// The product `left * right`. **The shapes must already agree**:
+/// `left.columns() == right.rows()` is assumed, not checked, and a mismatch
+/// reads past `right`'s storage — matrix.h says why nothing here checks. Every
+/// caller in this repository multiplies operators whose shapes a reader has
+/// already refused or a decomposition has already fixed.
 template <class Field>
 MatrixOver<Field> multiply(const Field& field, const MatrixOver<Field>& left,
                            const MatrixOver<Field>& right) {

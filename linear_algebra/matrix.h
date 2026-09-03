@@ -11,6 +11,12 @@ namespace linear_algebra {
 /// so there is nothing to gain from a sparse representation and a great deal to
 /// lose in legibility. The element type is what makes the same code serve both
 /// a finite field and the rationals.
+///
+/// **Indexing is unchecked.** `operator()` and `row()` assume the row and
+/// column are in range, because the searches' innermost loops live on these
+/// accesses and a bounds test there is paid once per element visited. The
+/// boundary where malformed input is refused is `formats/`, before a matrix
+/// exists; past it, an index out of range is a bug here, not bad input.
 template <class Element>
 class Matrix {
 public:
