@@ -7,3 +7,5 @@ add_executable(walk-scheme walk_scheme_main.cpp)
 # one search here whose workers share nothing at all.
 target_link_libraries(walk-scheme PRIVATE flip_graph exhaustive_search formats cli run_limits
                                           project_warnings)
+
+install(TARGETS walk-scheme)

@@ -6,3 +6,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
 add_executable(lower-the-bound lower_the_bound_main.cpp)
 target_link_libraries(lower-the-bound PRIVATE incumbent_search exhaustive_search formats cli
                                               project_warnings)
+
+install(TARGETS lower-the-bound)

@@ -129,7 +129,15 @@ number.
 cmake -B build -G Ninja && cmake --build build
 ctest --test-dir build            # everything, about two minutes
 ctest --test-dir build -LE slow   # skip the expensive searches
+cmake --install build --prefix ~/.local   # the thirteen tools, onto PATH
 ```
+
+**Every documented command line types its tool bare** — `minimise-rank …` —
+which assumes the install above. Without it the same binaries sit under the
+module that owns each, `build/descent_search/minimise-rank` and so on, and the
+lines run with that prefix instead. The three instruments and the
+`list-solvers` shim deliberately do not install; the top `CMakeLists.txt` says
+why.
 
 Add `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` and symlink the result to the top of
 the tree (`ln -sf build/compile_commands.json .`) to give clangd — and any

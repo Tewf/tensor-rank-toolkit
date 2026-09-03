@@ -9,6 +9,15 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
 endif()
 
+# `cmake --install build --prefix ~/.local` puts the thirteen tools on PATH,
+# which is the assumption every documented command line makes when it types
+# `minimise-rank` bare. Each tool's install() sits beside its add_executable.
+# The three instruments (`measure-leaf`, `price-canonical-route`,
+# `show-limits`) and the `list-solvers` shim stay in the build tree: an
+# instrument prints facts about one machine and one working directory, so it
+# belongs beside the build it measures rather than on a PATH that outlives it.
+include(GNUInstallDirs)
+
 # ccache when the machine has it, and nothing when it does not, so this changes
 # how long a build takes and never what it produces. Guarded on find_program
 # rather than required, which keeps Givaro the only dependency.

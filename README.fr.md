@@ -143,7 +143,15 @@ publié.
 cmake -B build -G Ninja && cmake --build build
 ctest --test-dir build            # tout, environ deux minutes
 ctest --test-dir build -LE slow   # sans les recherches coûteuses
+cmake --install build --prefix ~/.local   # les treize outils, sur le PATH
 ```
+
+**Chaque ligne de commande documentée écrit son outil nu** — `minimise-rank …`
+— ce qui suppose l'installation ci-dessus. Sans elle, les mêmes binaires se
+trouvent sous le module qui possède chacun, `build/descent_search/minimise-rank`
+et ainsi de suite, et les lignes s'exécutent avec ce préfixe. Les trois
+instruments et la coquille `list-solvers` ne s'installent volontairement pas ;
+le `CMakeLists.txt` racine dit pourquoi.
 
 Ajouter `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` et lier le résultat à la racine de
 l'arbre (`ln -sf build/compile_commands.json .`) donne à clangd — et à tout

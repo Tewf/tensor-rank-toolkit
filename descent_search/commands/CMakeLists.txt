@@ -14,3 +14,5 @@ target_link_libraries(minimise-rank PRIVATE descent_search exhaustive_search
 # which is why neither belongs in formats/.
 add_executable(operators-to-tensor operators_to_tensor_main.cpp)
 target_link_libraries(operators-to-tensor PRIVATE descent_search formats cli project_warnings)
+
+install(TARGETS minimise-rank operators-to-tensor)

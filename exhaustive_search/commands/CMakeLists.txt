@@ -7,3 +7,5 @@ add_executable(decide-rank decide_rank_main.cpp)
 target_link_libraries(decide-rank PRIVATE exhaustive_search descent_search pencil_rank
                                           orbit_reduction search_plan formats cli
                                           project_warnings)
+
+install(TARGETS decide-rank)
