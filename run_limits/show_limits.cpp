@@ -22,9 +22,11 @@
 
 #include "arguments.h"
 #include "device.h"
+#include "exit_code.h"
 #include "machine.h"
 #include "memory_budget.h"
 #include "parallel.h"
+#include "report.h"
 #include "tunables.h"
 
 namespace {
@@ -57,20 +59,23 @@ void row(const std::string& name, const std::string& value, const std::string& n
 
 }  // namespace
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) try {
     cli::Arguments arguments(argc, argv);
     while (arguments.next_flag()) {
         if (arguments.is("--help", "-h")) {
-            std::cout << "# usage: show-limits [--help]\n"
-                         "#\n"
-                         "#   Prints what bounds a run here: the machine, the memory and core\n"
-                         "#   ceilings derived from it, and every tunable with the value in\n"
-                         "#   force and where it came from. Reads tunables.conf the same way\n"
-                         "#   every command does. Runs nothing and measures nothing.\n";
-            // Exit 2, as every command here does for --help: a line asking for
-            // help asked no question. `cli/exit_code.h` has the convention and
+            // Through note(), as report.h's rule has it: a usage block is not
+            // a result, so it is commented, on stderr, and stdout is untouched.
+            // Exit Usage, as every command here does for --help: a line asking
+            // for help asked no question, and
             // `cli/tests/check_argument_grammar.sh` asserts it on every binary.
-            return 2;
+            cli::note()
+                << "usage: show-limits [--help]\n"
+                   "\n"
+                   "  Prints what bounds a run here: the machine, the memory and core\n"
+                   "  ceilings derived from it, and every tunable with the value in\n"
+                   "  force and where it came from. Reads tunables.conf the same way\n"
+                   "  every command does. Runs nothing and measures nothing.";
+            return cli::exit_status(cli::ExitCode::Usage);
         }
         arguments.refuse();
     }
@@ -124,4 +129,11 @@ int main(int argc, char** argv) {
                  "# OPTIONS.md. `auto` in the file asks the machine, and is accepted only\n"
                  "# where a machine reading exists.\n";
     return 0;
+} catch (const cli::ArgumentError& problem) {
+    // A word that could not be read: the run never started, so Usage, the way
+    // every command leaves. Until 2026-09-03 refuse() escaped to
+    // std::terminate here - the one binary that aborted on a typo, and
+    // web_interface/limits.py shells out to this one.
+    cli::note() << "show-limits: " << problem.what();
+    return cli::exit_status(cli::ExitCode::Usage);
 }

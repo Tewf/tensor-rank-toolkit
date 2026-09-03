@@ -492,6 +492,27 @@ void measure_the_floor() {
 
 int main(int argc, char** argv) try {
     const std::string what = argc > 1 ? argv[1] : "check";
+    // The shared grammar, kept by hand because this file does not link cli/:
+    // usage is commentary on stderr, leaves as 2, and a word that is not a
+    // mode is refused by name rather than falling through every `if` below
+    // to a device line and a green exit, which is what it did until
+    // 2026-09-03.
+    if (what == "--help" || what == "-h") {
+        std::fprintf(stderr,
+                     "# usage: measure-leaf [check|measure|both|floor] [shipped-rows] [packed-rows]\n"
+                     "#\n"
+                     "#   check    every device answer against the host's (the default)\n"
+                     "#   measure  the scan, the walk and the widest walk, timed\n"
+                     "#   both     check, then measure\n"
+                     "#   floor    where the card starts winning, re-fit\n"
+                     "#   --help   print this and stop, as exit 2\n");
+        return 2;
+    }
+    if (what != "check" && what != "measure" && what != "both" && what != "floor") {
+        std::fprintf(stderr, "# measure-leaf: '%s' is not a mode: check, measure, both or floor\n",
+                     what.c_str());
+        return 2;
+    }
     std::printf("device: %s\n", gpu_leaf::device_description().c_str());
 
     if (what == "check" || what == "both") check_everything();

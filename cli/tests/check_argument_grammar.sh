@@ -86,9 +86,13 @@ refuses 2 "only one file is read" \
 # Every command, because `--help` is the flag a reader tries first and it used to
 # be read as a tensor file by three of them, which left as 5: could not run at
 # all. `looks_like_flag` calls it a flag, so `exit_code.h` makes it Usage.
-echo "--help prints the usage and leaves as 2, on every command"
-for relative in \
-    descent_search/minimise-rank \
+#
+# The instruments are in the list too, because OPTIONS.md says the flag is the
+# one thing every binary shares: show-limits printed its usage to stdout and
+# aborted on a typo until 2026-09-03, and measure-leaf read `--help` as a mode
+# it did not know and left green. measure-leaf exists only where nvcc did, so
+# it joins where it was built; absent, there is no binary to ask.
+everything="descent_search/minimise-rank \
     descent_search/operators-to-tensor \
     exhaustive_search/decide-rank \
     flip_graph/walk-scheme \
@@ -101,7 +105,13 @@ for relative in \
     oracle_guided_search/enumerate-subspaces \
     oracle_guided_search/price-canonical-route \
     pencil_rank/decide-rank-by-pencil \
-    canonical_factorisation/factor-over-canonical-basis
+    canonical_factorisation/factor-over-canonical-basis \
+    run_limits/show-limits"
+if [ -x "$binaries/gpu_leaf/measure-leaf" ]; then
+    everything="$everything gpu_leaf/measure-leaf"
+fi
+echo "--help prints the usage and leaves as 2, on every command"
+for relative in $everything
 do
     tool=$binaries/$relative
     name=$(basename "$tool")
@@ -139,6 +149,12 @@ do
     fi
     echo "  ok    2  $name --help"
 done
+
+# The crash this asserts against was real: show-limits had no catch around
+# refuse(), so a typo reached std::terminate and dumped core, and the browser
+# console shells out to this binary.
+echo "an instrument refuses a flag it does not know instead of aborting"
+refuses 2 "unrecognised option: --bogus" "$binaries/run_limits/show-limits" --bogus
 
 # A spelling that has been published and then merged away has one job left: to
 # name what to type instead. Silence would be worse than the old command, because
