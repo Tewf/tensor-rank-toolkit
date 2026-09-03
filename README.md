@@ -116,11 +116,19 @@ with the number that retired each:
 
 ## Building
 
-Needs a C++20 compiler, CMake ≥ 3.22, **Givaro** and **Boost's headers**
-(`sudo apt install libgivaro-dev libboost-dev`). Those two are the only build
-dependencies — Boost is needed by [`vendor/permlib/`](vendor/permlib/) alone, for
-`boost::next` and `boost::shared_ptr`, and no header outside that vendored
-library includes it. Every solver is optional and located on `PATH` at run time.
+Needs a C++20 compiler, CMake ≥ 3.22 with `pkg-config`, **Givaro** and
+**Boost's headers**:
+
+```sh
+sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-dev
+```
+
+Givaro and Boost are the only libraries anything links — Boost is needed by
+[`vendor/permlib/`](vendor/permlib/) alone, for `boost::next` and
+`boost::shared_ptr`, and no header outside that vendored library includes it.
+`libgmp-dev` is on the line because `libgivaro-dev` pulls GMP's runtime but not
+`gmpxx.h`, which Givaro's own headers include; the
+[`Containerfile`](Containerfile) found that by failing to build. Every solver is optional and located on `PATH` at run time.
 `ccache` is used when installed and ignored when not, and
 [`Containerfile`](Containerfile) pins an environment for reproducing a published
 number.

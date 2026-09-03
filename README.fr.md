@@ -129,11 +129,19 @@ L'index de tout cela, avec le nombre qui a retiré chacun :
 
 ## Compilation
 
-Il faut un compilateur C++20, CMake ≥ 3.22, **Givaro** et les en-têtes de
-**Boost** (`sudo apt install libgivaro-dev libboost-dev`). Ce sont les deux
-seules dépendances de compilation : Boost n'est nécessaire qu'à
-[`vendor/permlib/`](vendor/permlib/), pour `boost::next` et `boost::shared_ptr`,
-et aucun en-tête hors de cette bibliothèque embarquée ne l'inclut. Tous les
+Il faut un compilateur C++20, CMake ≥ 3.22 avec `pkg-config`, **Givaro** et les
+en-têtes de **Boost** :
+
+```sh
+sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-dev
+```
+
+Givaro et Boost sont les seules bibliothèques liées : Boost n'est nécessaire
+qu'à [`vendor/permlib/`](vendor/permlib/), pour `boost::next` et
+`boost::shared_ptr`, et aucun en-tête hors de cette bibliothèque embarquée ne
+l'inclut. `libgmp-dev` est sur la ligne parce que `libgivaro-dev` apporte
+l'exécutable de GMP mais pas `gmpxx.h`, que les en-têtes de Givaro incluent ;
+le [`Containerfile`](Containerfile) l'a découvert en échouant à compiler. Tous les
 solveurs sont optionnels et cherchés sur le `PATH` à l'exécution. `ccache` est
 utilisé quand il est installé et ignoré quand il ne l'est pas, et
 [`Containerfile`](Containerfile) fixe un environnement pour reproduire un nombre
