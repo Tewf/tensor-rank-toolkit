@@ -1,3 +1,12 @@
+/// The card's instrument: checks every device answer against the host's,
+/// times the scan, the walk and the widest walk, and re-fits the launch
+/// floor below which the host answers. Three modes and a default (check),
+/// printed by --help; what each number means and what it deliberately does
+/// not claim is measuring-on-the-card.md, beside this file.
+///
+/// An instrument, not a tool: it asks nothing about a tensor and answers no
+/// question in OPTIONS/one-question-per-command.md. What it prints is this
+/// machine, this card, this afternoon.
 #include <algorithm>
 #include <chrono>
 #include <cstdio>
