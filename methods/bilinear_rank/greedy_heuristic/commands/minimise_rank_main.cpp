@@ -54,7 +54,8 @@ void report(const std::string& step, std::size_t multiplications, std::size_t sl
 void usage() {
     cli::note() << "usage: minimise-rank <tensor-file> [--steps 1|2|3] [--json]"
                    " [--emit-operators <stem>] [--max-memory 2G]"
-                   " [--threads N] [--help]\n"
+                   " [--threads N] [--plateau N] [--plateau-states N]\n"
+                   "                     [-s|--symmetry none|auto|matmul <n> <m> <k>] [--help]\n"
                    "  --emit-operators <stem>   write <stem>_{L,R,P}.sms, the encoding\n"
                    "                            operators, in the format PLinOpt reads\n"
                    "  --plateau N               allow N equal-cost steps. The crossing runs\n"
