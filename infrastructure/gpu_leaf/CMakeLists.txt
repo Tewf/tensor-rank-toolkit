@@ -135,7 +135,7 @@ target_link_libraries(gpu_leaf_registration PRIVATE gpu_leaf_kernels run_limits 
 # available" must not be the one tool that cannot see the card. The cost is a
 # `cudaGetDeviceCount`, which is a runtime query rather than a context, so the
 # rule the four searches follow does not apply to it.
-foreach(command decide-rank minimise-rank lower-the-bound walk-scheme show-limits)
+foreach(command decide-rank minimise-rank tighten-rank-bound walk-scheme show-limits)
   target_link_libraries(${command} PRIVATE gpu_leaf_registration gpu_leaf_kernels)
 endforeach()
 

@@ -43,5 +43,5 @@ publishes a floor for it: the `12 <= rank <= 14` in `methods/satisfiability/resu
 `methods/bilinear_rank/greedy_heuristic/known_ranks.md` and `writeup/the-research-front/where-we-stand.md` is the
 exhaustive search's bracket, which this reaches rather than improves. That
 bracket was `13 <= rank <= 14` once `--target 12` was exhausted and is `13` since
-[`lower-the-bound`](../bilinear_rank/branch_and_bound/README.md) exhibited one; the sentence
+[`tighten-rank-bound`](../bilinear_rank/branch_and_bound/README.md) exhibited one; the sentence
 above is what was true when the floor moved.

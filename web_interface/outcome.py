@@ -65,7 +65,7 @@ def of_exit_status(status, tool_verdicts):
 
     `tool_verdicts` is the tool's own reading of 0 and 1, from the catalogue,
     because the tools do not all answer the same question: 0 is a decomposition
-    for `decide-rank`, an accepted candidate for `deflate-strictly` and simply a
+    for `decide-rank`, an accepted candidate for `decide-rank-by-deflation` and simply a
     completed pass for `minimise-rank`. The header's own sentence comes back
     beside it as `standing`, and `show_standing` says whether it is the faithful
     reading of this run or a claim about a different kind of tool.

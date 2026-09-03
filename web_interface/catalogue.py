@@ -5,7 +5,7 @@ counted.** `tests/catalogue_against_the_build.py` asserts in both directions and
 at both depths: every binary named here exists and every command the build
 produces is either here or named there as not a tool, and every flag a binary's
 own `--help` prints is either an option below or named there as deliberately not
-offered. A literal count is what let the first of those drift: `lower-the-bound`
+offered. A literal count is what let the first of those drift: `tighten-rank-bound`
 shipped on 2026-08-21 and did not reach this file for a day, while
 `len(TOOLS) == 12` stayed true throughout. Nothing at all was watching the
 second, and twenty-one flags had reached the binaries and not this table by
@@ -129,8 +129,8 @@ TOOLS = [
         ],
     },
     {
-        "name": "lower-the-bound",
-        "binary": "methods/bilinear_rank/branch_and_bound/lower-the-bound",
+        "name": "tighten-rank-bound",
+        "binary": "methods/bilinear_rank/branch_and_bound/tighten-rank-bound",
         "input": "tensor",
         "asks": "How much cheaper can a branch and bound make an algorithm?",
         "answers": "The exact search's tree cut by what has been built rather "
@@ -445,8 +445,8 @@ TOOLS = [
         ],
     },
     {
-        "name": "deflate-strictly",
-        "binary": "methods/bilinear_rank/canonical_augmentation/deflate-strictly",
+        "name": "decide-rank-by-deflation",
+        "binary": "methods/bilinear_rank/canonical_augmentation/decide-rank-by-deflation",
         "input": "tensor",
         "asks": "Can a committed candidate be refuted from the tree?",
         "answers": "Exit 0 accepts the candidate, exit 1 refutes it, exit 3 is "

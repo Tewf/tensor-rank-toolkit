@@ -9,7 +9,7 @@ flags are gone with it. Its defaults and what chose them are recorded there, and
 the measurement that retired it is in
 [`../oracle_guided_search/measurements/README.md`](../methods/bilinear_rank/canonical_augmentation/measurements/README.md).
 
-## `deflate-strictly`
+## `decide-rank-by-deflation`
 
 Waits for a proof, which is what makes it minimality-preserving and dear.
 
@@ -43,7 +43,7 @@ Neither a node limit nor a timeout exists here.
 and quotiented by `-s matmul` instead:
 
 ```sh
-$ deflate-strictly evidence/fixtures/matmul_2x2x2.tensor --target 6 --refuter tree -s matmul 2 2 2
+$ decide-rank-by-deflation evidence/fixtures/matmul_2x2x2.tensor --target 6 --refuter tree -s matmul 2 2 2
   candidate 0: refuted, 0.00324674 s, 45 nodes
   candidate 1: refuted, 0.000665064 s, 45 nodes
   candidate 2: refuted, 0.000659531 s, 72 nodes

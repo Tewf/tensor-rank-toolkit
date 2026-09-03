@@ -65,7 +65,7 @@ namespace bilinear_rank {
 /// wide as the worker count.
 ///
 /// `spread_over_cores` off keeps this on one core whatever `run_limits::worker_count()` says,
-/// for a caller that is **already** spreading work over them. `deflate-strictly
+/// for a caller that is **already** spreading work over them. `decide-rank-by-deflation
 /// --parallel` asks every candidate at once and each candidate calls this, so
 /// without the switch twelve workers would each start eleven more. The outer level
 /// is the one to keep: it has one branch per candidate and no shared state, where

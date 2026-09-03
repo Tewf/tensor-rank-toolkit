@@ -66,17 +66,17 @@ different numbers in one run.
 
 | Tunable | Reaches | Flag that beats it |
 |---|---|---|
-| `search_node_limit` | `decide-rank`, `deflate-strictly`, `factor-over-canonical-basis` | `--node-limit` |
+| `search_node_limit` | `decide-rank`, `decide-rank-by-deflation`, `factor-over-canonical-basis` | `--node-limit` |
 | `search_leaf_limit` | `decide-rank` | `--leaf-limit` |
 | `ilp_node_limit` | `curve-bounds` | `--node-limit` |
 | `plateau_state_budget` | `minimise-rank` | `--plateau-states` |
-| `sat_memory_megabytes` | `decide-rank-by-sat`, `deflate-strictly` | `--max-memory` |
-| `sat_timeout_seconds` | `decide-rank-by-sat`, `deflate-strictly` | `--timeout`, `--candidate-timeout` |
+| `sat_memory_megabytes` | `decide-rank-by-sat`, `decide-rank-by-deflation` | `--max-memory` |
+| `sat_timeout_seconds` | `decide-rank-by-sat`, `decide-rank-by-deflation` | `--timeout`, `--candidate-timeout` |
 | `ilp_time_limit_seconds` | `curve-bounds` | `--solver-timeout` |
-| `sat_solver_order` | `decide-rank-by-sat`, `deflate-strictly` | `--solver` |
+| `sat_solver_order` | `decide-rank-by-sat`, `decide-rank-by-deflation` | `--solver` |
 | `ilp_backend_order` | `curve-bounds` | none; `--route built-in` sidesteps it, `--solvers` prints it |
 
-**`lower-the-bound` reaches no row**, and that is a fact about it rather than an
+**`tighten-rank-bound` reaches no row**, and that is a fact about it rather than an
 omission here: its main does not include `infrastructure/cli/tunables.h` at all, so `--nodes`,
 `--width`, `--summand-rank` and `--rounds` are compiled defaults the file cannot
 move. A run of it is bounded by what is on the line and nothing else.

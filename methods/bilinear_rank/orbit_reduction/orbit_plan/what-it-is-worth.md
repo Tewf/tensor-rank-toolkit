@@ -62,7 +62,7 @@ chassis will not show it. On the small shapes the difference is invisible for a
 different reason: `⟨2,2,2⟩` at target 6 is 648 nodes at every thread count and
 15 ms, which is process start rather than search.
 
-**One fan-out, not two.** `deflate-strictly --parallel` already asks every
+**One fan-out, not two.** `decide-rank-by-deflation --parallel` already asks every
 candidate at once and each candidate calls this search, so it passes
 `spread_over_cores` false and keeps the cores at the outer level, where there is
 one branch per candidate and no shared budget.

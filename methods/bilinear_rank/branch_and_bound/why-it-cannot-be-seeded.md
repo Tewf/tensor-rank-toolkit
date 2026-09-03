@@ -1,6 +1,6 @@
 # Why this search cannot be started from a decomposition somebody else found
 
-The obvious thing to want: hand `lower-the-bound` a published `k`-product
+The obvious thing to want: hand `tighten-rank-bound` a published `k`-product
 algorithm and ask it for `k − 1`. `⟨3,4,5⟩` at 47 is the case that prompts it.
 
 **It cannot be done, and the reason is the bound rather than the infrastructure.**
@@ -28,7 +28,7 @@ A `k`-product decomposition is `k` matrices of rank **one**. Cost `k`, and the
 dimension of what they span is `k` too, unless the terms are dependent.
 
 Measured on this repository's own 19-product `gf64_multiplication` scheme, the one
-`lower-the-bound` found on 2026-08-22:
+`tighten-rank-bound` found on 2026-08-22:
 
 | | |
 |---|---|
@@ -44,7 +44,7 @@ like an answer.
 The same firing, on a fixture small enough to run end to end: the descent's own
 seed is already the answer, so the root itself is where the bound cuts.
 
-    lower-the-bound evidence/fixtures/gf4_multiplication.tensor
+    tighten-rank-bound evidence/fixtures/gf4_multiplication.tensor
 
     GF(2), start: 3 products over 3 dimensions
     best: 3 products, rank bound 3, gap 0, verified

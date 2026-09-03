@@ -93,7 +93,7 @@ def settled_ranks():
 
     A `bounded` row publishes refutations, not a rank, which is the honest shape
     for a map only bounded. `settled` appears on it once two searches have met:
-    the exhaustion refuses everything below and `lower-the-bound` exhibits the
+    the exhaustion refuses everything below and `tighten-rank-bound` exhibits the
     number itself, and neither is the answer alone. It is carried rather than
     re-derived, at the price `questions.CARRIED` states, so this holds the page
     to the field and `measure.py --check` holds the field to nothing. That is
@@ -157,7 +157,7 @@ def exact_answer_disagreements(page):
     # The paragraph under the table is the same claim in words, and a paragraph
     # is as copied as a table cell. This is the half that was wrong: the row said
     # `>= 13` and the sentence under it said finding a thirteen "has not been
-    # run", two days after `lower-the-bound` had run it.
+    # run", two days after `tighten-rank-bound` had run it.
     prose = re.sub(r"<[^>]+>", "", page)
     for name, settled in settled_ranks().items():
         if f"the rank is exactly {settled}" not in prose:

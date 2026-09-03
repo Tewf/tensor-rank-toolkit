@@ -21,7 +21,7 @@ The `⟨2,2,2⟩` descent, itemised:
 The same per-candidate pattern, from the tool that replaced the finder:
 
 ```sh
-deflate-strictly evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+decide-rank-by-deflation evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
   candidate 0: refuted, 0.721823 s
   candidate 1: refuted, 0.644588 s
   candidate 2: refuted, 0.720952 s

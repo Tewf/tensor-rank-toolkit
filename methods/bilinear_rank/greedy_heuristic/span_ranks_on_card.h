@@ -17,7 +17,7 @@
 ///
 /// **What holds it back is the shape list and not the launch floor**, and this
 /// file said the opposite until 2026-08-22. The spans are well past the floor:
-/// `lower-the-bound` on `<3,4,5>` prints *"start: 60 products over 15
+/// `tighten-rank-bound` on `<3,4,5>` prints *"start: 60 products over 15
 /// dimensions"*, and a node's dimension only climbs, so every span it ranks is
 /// `2^15 = 32 768` elements against the 8 192 in
 /// [`../run_limits/device.h`](../run_limits/device.h); `gf32_multiplication`

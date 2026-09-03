@@ -215,7 +215,7 @@ int run(int argc, char** argv) {
     // they were given.
     //
     // They did exactly that, silently, until 2026-08-22. Every operator fixture
-    // shipped here is 7x4, and `lower-the-bound --emit-operators` writes `P` the
+    // shipped here is 7x4, and `tighten-rank-bound --emit-operators` writes `P` the
     // other way up, so the two halves of this repository's own pipeline
     // disagreed about the orientation of the third operator and nothing said so.
     // Measured on a 19-product GF(64) scheme: `P` as emitted, 6x19, reported 54

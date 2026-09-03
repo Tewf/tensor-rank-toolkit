@@ -12,7 +12,7 @@ weaker algorithm rather than no answer.
 | [`cost_first_search.h`](cost_first_search.h) | the branch and bound, its bound, and why the bound is admissible |
 | [`level_lowering_moves.h`](level_lowering_moves.h) | the moves, generated from `V` in closed form instead of scanned out of the pool |
 
-    lower-the-bound evidence/fixtures/cyclic_f2_7.tensor --from descent --width 4
+    tighten-rank-bound evidence/fixtures/cyclic_f2_7.tensor --from descent --width 4
 
 ## The tree is `[bdez2012]`, and only the stopping rule is new here
 

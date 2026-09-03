@@ -1,6 +1,6 @@
 # methods/bilinear_rank/canonical_augmentation/
 
-Refinements that reduce what the exact search spends. `deflate-strictly`
+Refinements that reduce what the exact search spends. `decide-rank-by-deflation`
 commits to one candidate at a time, so a negative answer is a proof rather
 than a spent budget;
 `enumerate-subspaces` generates each candidate subspace once per symmetry
@@ -9,7 +9,7 @@ that says what that canonical generation costs before an hour is spent on it.
 
 In this folder:
 
-- [`commands/`](commands): `deflate-strictly` and `enumerate-subspaces`.
+- [`commands/`](commands): `decide-rank-by-deflation` and `enumerate-subspaces`.
 - [`strict_deflation.h`](strict_deflation.h) and
   [`tree_refutation.h`](tree_refutation.h): the commit-and-refute loop and
   the tree route that buys a proof without a solver.
@@ -32,7 +32,7 @@ In this folder:
 Example of use:
 
 ```sh
-deflate-strictly evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+decide-rank-by-deflation evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
 #   candidate 4: refuted, 0.592915 s
 #   k = 6: every candidate refuted, so the rank is above 6, 3.12693 s, kissat
 ```

@@ -205,7 +205,7 @@ void check_everything() {
     check_walk(Question(16, 16, 20, false), 1ull << 20, 47, "walk 16x16 dim 20");
 
     // The span seam, on the four shapes a kernel is compiled for. The dimensions
-    // are the ones `lower-the-bound` actually reaches, 11 to 13, which is also
+    // are the ones `tighten-rank-bound` actually reaches, 11 to 13, which is also
     // why every one of them is below the 8 192 launch floor: what is checked
     // here is that the two agree, not that the card would be asked.
     std::printf("\nAgreement, rank by rank, over a span's elements\n\n");

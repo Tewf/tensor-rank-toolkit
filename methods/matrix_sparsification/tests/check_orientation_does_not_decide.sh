@@ -10,7 +10,7 @@
 # constraint holds for anything and every route returns what it was given.
 #
 # Nothing caught it because every operator fixture here is 7x4, while
-# `lower-the-bound --emit-operators` writes the decoding operator the other way
+# `tighten-rank-bound --emit-operators` writes the decoding operator the other way
 # up. Two halves of one pipeline, disagreeing silently about the third operator.
 set -eu
 tool="$1"

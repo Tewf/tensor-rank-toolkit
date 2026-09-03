@@ -58,7 +58,7 @@ evidence/fixtures/f2_5x5.tensor
 | `--from k` | off, walk from naive | Measured: on `f3_3x6`, four seeds of 20 000 flips reach **12** products from the naive scheme and hold the heuristic's **10** when started there (`../flip_graph/README.md`). |
 | `--max-memory N` | `2G` | Argument: same default and source. `--from k` runs the heuristic first, whose span table is p^dim. |
 
-## `lower-the-bound`
+## `tighten-rank-bound`
 
 The command shipped on 2026-08-21 with **nothing on this page tuned**; two of its
 knobs have been measured since, on 2026-08-22 and 2026-08-23, and their rows say

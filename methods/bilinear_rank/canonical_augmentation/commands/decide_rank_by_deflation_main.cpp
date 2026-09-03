@@ -20,7 +20,7 @@
 namespace {
 
 void usage() {
-    cli::note() << "usage: deflate-strictly <tensor-file> --target k -s matmul <n> <m> <k>\n"
+    cli::note() << "usage: decide-rank-by-deflation <tensor-file> --target k -s matmul <n> <m> <k>\n"
                    "\n"
                    "  --target k          the rank to test the candidates against\n"
                    "  --refuter solver|tree\n"
@@ -140,15 +140,15 @@ int main(int argc, char** argv) {
     try {
         return run(argc, argv);
     } catch (const cli::CheckFailed& failure) {
-        cli::note() << "deflate-strictly: " << failure.what();
+        cli::note() << "decide-rank-by-deflation: " << failure.what();
         return cli::exit_status(cli::ExitCode::Unverified);
     } catch (const cli::ArgumentError& problem) {
         // A word on the command line, or a line of tunables.conf, that could not
         // be read: the run never started, so Usage rather than Error.
-        cli::note() << "deflate-strictly: " << problem.what();
+        cli::note() << "decide-rank-by-deflation: " << problem.what();
         return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& error) {
-        cli::note() << "deflate-strictly: " << error.what();
+        cli::note() << "decide-rank-by-deflation: " << error.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

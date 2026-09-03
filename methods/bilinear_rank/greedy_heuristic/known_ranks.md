@@ -35,7 +35,7 @@ the claim rests on.
 **`f2_5x5`: the same, and it took a second search to get there.** The descent
 stops at 14 and `decide-rank --target 12` returns NO exhaustively in
 146 402 553 nodes, so the upper half was a citation until
-[`lower-the-bound`](../branch_and_bound/README.md) exhibited 13 in 80 nodes on
+[`tighten-rank-bound`](../branch_and_bound/README.md) exhibited 13 in 80 nodes on
 2026-08-21. Their 9.65·10⁹ tests agree and are no longer what the claim rests on.
 
 **Why that took until 2026-08-17 to notice.** The refutation was never run.
@@ -51,7 +51,7 @@ convention says. No 14 exists, step 3 reaches 15, so the rank is 15.
 **`f2_5x5`: settled here, and it took both directions.** `--target 12` was run
 to exhaustion on 2026-08-19, 146 402 553 nodes, and refused, which reproduces
 their exclusion and puts the floor at 13. The heuristic reaches only 14, so the
-ceiling was theirs until [`lower-the-bound`](../branch_and_bound/README.md)
+ceiling was theirs until [`tighten-rank-bound`](../branch_and_bound/README.md)
 exhibited 13 in 80 nodes on 2026-08-21. **Finding a 13 was the part the heuristic
 missed**, and it is a construction rather than a refutation, which is why a
 different search had to make it.

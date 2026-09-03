@@ -77,12 +77,12 @@ two cleanly, 6.0x scanning against 16.2x walking at one shape. The 64x row for
 
 The leaf is where the *exact* search lives. The **span walk of step 1** is where
 the incumbent search lives, and it is the same shape of loop over the same
-field: `lower-the-bound` costs one `minimum_weight_basis_with` per child, and
+field: `tighten-rank-bound` costs one `minimum_weight_basis_with` per child, and
 each of those walks a span taking the rank of a matrix at every element. So the
 same representation went there on 2026-08-22,
 [`../descent_search/gf2_span_walk.h`](../../methods/bilinear_rank/greedy_heuristic/gf2_span_walk.h), and
 was measured the same way, each question asked twice with and without
-`lower-the-bound --general-span`:
+`tighten-rank-bound --general-span`:
 
 | question | slice | nodes | children | general | GF(2) | factor |
 |---|---|---|---|---|---|---|

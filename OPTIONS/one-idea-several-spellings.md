@@ -13,16 +13,16 @@ tool should be told where it means something else. That is what this page is.
 | | `factor-over-canonical-basis` | `--route auto\|exhaustive\|sat\|canonical` |
 | | `curve-bounds` | `--route built-in\|chain\|enumeration` |
 | | `decide-rank-by-sat` | `--backend cnf\|smt` |
-| | `deflate-strictly` | `--refuter solver\|tree` |
+| | `decide-rank-by-deflation` | `--refuter solver\|tree` |
 | a seconds budget | `decide-rank-by-sat` | `--timeout N` |
-| | `deflate-strictly` | `--candidate-timeout N` (same tunable) |
+| | `decide-rank-by-deflation` | `--candidate-timeout N` (same tunable) |
 | | `curve-bounds` | `--solver-timeout N` |
 | where the search starts | `decide-rank-by-sat` | `--from a` |
 | | `factor-over-canonical-basis` | `--floor k` |
 | | `decide-rank` | `--anchor map\|heuristic` |
 | more than one core | five tools | `--threads N`, `0` for every core |
-| | `deflate-strictly` | `--parallel`, which is all cores or none |
-| write a file | `minimise-rank`, `lower-the-bound` | `--emit-operators <stem>`, three files from it |
+| | `decide-rank-by-deflation` | `--parallel`, which is all cores or none |
+| write a file | `minimise-rank`, `tighten-rank-bound` | `--emit-operators <stem>`, three files from it |
 | | `decide-rank-by-sat` | `--emit-cnf <path>`, the path itself |
 
 **There is no `--seed` anywhere.** `walk-scheme --seeds N` is a count of
@@ -36,12 +36,12 @@ independent walks, not a seed value; each walk's seed is its index.
 | | `walk-scheme` | flips per seed, an accepted older spelling of `--flips` |
 | `--from k` | `decide-rank-by-sat` | the bottom of the sweep |
 | | `walk-scheme` | the k-product scheme to start walking from |
-| | `lower-the-bound` | `basis` or `descent`: which root, an enum, not a count |
-| `--node-limit N` | `decide-rank`, `deflate-strictly`, `factor-over-canonical-basis` | search-tree nodes, from `search_node_limit` |
+| | `tighten-rank-bound` | `basis` or `descent`: which root, an enum, not a count |
+| `--node-limit N` | `decide-rank`, `decide-rank-by-deflation`, `factor-over-canonical-basis` | search-tree nodes, from `search_node_limit` |
 | | `curve-bounds` | branch-and-bound nodes, from `ilp_node_limit`, whose default is 25x smaller |
-| | `lower-the-bound` spells the same idea `--nodes N`, from no tunable at all |
+| | `tighten-rank-bound` spells the same idea `--nodes N`, from no tunable at all |
 | `--max-memory` | the three searches | the bulk-allocation budget (`set_memory_budget`), in bytes |
-| | `decide-rank-by-sat`, `deflate-strictly` | the child solver's address-space cap via `RLIMIT_AS` (**not** the bulk-allocation budget), in bytes, from `sat_memory_megabytes`, see [`asking-a-sat-solver.md`](asking-a-sat-solver.md) |
+| | `decide-rank-by-sat`, `decide-rank-by-deflation` | the child solver's address-space cap via `RLIMIT_AS` (**not** the bulk-allocation budget), in bytes, from `sat_memory_megabytes`, see [`asking-a-sat-solver.md`](asking-a-sat-solver.md) |
 | `--route` | see the table above | two different sets of values |
 
 ## What a bad value gets you
@@ -57,11 +57,11 @@ because two rows of this table had gone stale in the direction that flatters:
 |---|---|
 | names the flag and quotes the word | `--anchor`, `--leaf-route`, `--orbit-test`, `--device`, `--route` on `factor-over-canonical-basis` |
 | reprints the whole usage; the word is never named | `--tune`, `--refuter`, `--route` on `curve-bounds` |
-| reports a bad **value** as an unrecognised **flag** | `--from` on `lower-the-bound` |
+| reports a bad **value** as an unrecognised **flag** | `--from` on `tighten-rank-bound` |
 | accepts anything as the non-default, silently | `--backend` |
 
 So `decide-rank --orbit-test bogus` says `--orbit-test expects full or
-generators, not 'bogus'`, while `lower-the-bound --from sideways` says
+generators, not 'bogus'`, while `tighten-rank-bound --from sideways` says
 `unrecognised option: --from`, of a flag it recognises perfectly well, naming
 neither the wrong word nor the two right ones. And `--backend smtt` runs the CNF
 backend without a word, which is the quieter fault: it answers, and about a
@@ -80,3 +80,11 @@ Two more shapes worth knowing: `curve-bounds --table` and `--solvers` leave as
 **exit 0** where every other early-out flag leaves as 2, and a malformed
 `--points` term leaves as **exit 5** rather than 2, because its parser throws
 outside the argument system.
+
+## Spellings retired with the 2026-09-03 renaming
+
+`deflate-strictly` is **`decide-rank-by-deflation`**, joining the family
+whose members say the method after the question, and `lower-the-bound` is
+**`tighten-rank-bound`**, because what it lowers is an upper bound and the
+old spelling read as lower-bound work. As with `list-solvers`, the old
+names' last job is this paragraph.

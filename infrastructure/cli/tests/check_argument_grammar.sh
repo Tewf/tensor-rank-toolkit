@@ -101,8 +101,8 @@ everything="methods/bilinear_rank/greedy_heuristic/minimise-rank \
     methods/matrix_sparsification/sparsify-operator \
     methods/satisfiability/decide-rank-by-sat \
     methods/curve_bounds/curve-bounds \
-    methods/bilinear_rank/branch_and_bound/lower-the-bound \
-    methods/bilinear_rank/canonical_augmentation/deflate-strictly \
+    methods/bilinear_rank/branch_and_bound/tighten-rank-bound \
+    methods/bilinear_rank/canonical_augmentation/decide-rank-by-deflation \
     methods/bilinear_rank/canonical_augmentation/enumerate-subspaces \
     methods/bilinear_rank/canonical_augmentation/price-canonical-route \
     methods/pencil_rank/decide-rank-by-pencil \

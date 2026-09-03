@@ -19,7 +19,7 @@
 /// the leaf of the exact search, applied to the two functions the incumbent
 /// search spends its life inside.
 ///
-/// **Why here and not somewhere cheaper.** `lower-the-bound` on the 15x12x20
+/// **Why here and not somewhere cheaper.** `tighten-rank-bound` on the 15x12x20
 /// flattening of `<3,4,5>` over GF(2) costs one `span_element_ranks` and one
 /// `minimum_weight_basis_with` per child, and **one node of it costs 26 040
 /// children** at `--summand-rank 4`. The root basis there has dimension 15, so
@@ -35,8 +35,8 @@
 /// Every pair below is **one question asked twice**, `--general-span` selecting
 /// the path this file replaces, so the two columns are one tree:
 ///
-///     build/methods/bilinear_rank/branch_and_bound/lower-the-bound FIXTURE --width W [--nodes 5]
-///     build/methods/bilinear_rank/branch_and_bound/lower-the-bound FIXTURE --width W [--nodes 5] --general-span
+///     build/methods/bilinear_rank/branch_and_bound/tighten-rank-bound FIXTURE --width W [--nodes 5]
+///     build/methods/bilinear_rank/branch_and_bound/tighten-rank-bound FIXTURE --width W [--nodes 5] --general-span
 ///
 /// | question | slice | nodes | children | general | GF(2) | factor |
 /// |---|---|---|---|---|---|---|
@@ -144,7 +144,7 @@ bool gf2_span_walk_applies(const Field& field, const std::vector<Matrix>& slices
 /// the reason `set_gf2_leaf_offered` exists for the leaf: a path that is only
 /// ever taken cannot be compared with the one it replaced, and a comparison
 /// across two different questions is not a comparison. So `--general-span` on
-/// `lower-the-bound` sets this false for the run, the general path answers
+/// `tighten-rank-bound` sets this false for the run, the general path answers
 /// every call, every count is unchanged because only the arithmetic differs,
 /// and the two wall clocks are of the same tree.
 ///

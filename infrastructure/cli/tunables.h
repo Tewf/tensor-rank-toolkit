@@ -58,7 +58,7 @@ struct Tunables {
     /// budget and never a refutation. Fills `SearchBudget::node_limit`
     /// (`methods/bilinear_rank/exhaustive/exhaustive_search.h`) and `StrictSettings::node_limit`
     /// (`methods/bilinear_rank/canonical_augmentation/strict_deflation.h`), from `decide-rank
-    /// --node-limit` and `deflate-strictly --node-limit`.
+    /// --node-limit` and `decide-rank-by-deflation --node-limit`.
     std::size_t search_node_limit = 5'000'000;
 
     /// Elements one leaf of an exhaustive search may examine before it gives up
@@ -93,7 +93,7 @@ struct Tunables {
     /// (`methods/satisfiability/rank_question.h`), which `run_solver`
     /// (`methods/satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
     /// --max-memory` and `--timeout`, and from the same two flags on
-    /// `deflate-strictly`.
+    /// `decide-rank-by-deflation`.
     std::size_t sat_memory_megabytes = run_limits::suggested_memory_budget() >> 20;
     std::size_t sat_timeout_seconds = 300;
 

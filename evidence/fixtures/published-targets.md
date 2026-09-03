@@ -37,7 +37,7 @@ both searches actually say. Counts are exact and reproduce anywhere.
 | `matmul_3x4x4` | **21** | 48 | 48 | not run | | not run | floor 8 under |
 
 The `incumbent` column is
-[`lower-the-bound`](../../methods/bilinear_rank/branch_and_bound/README.md), which walks the same tree the
+[`tighten-rank-bound`](../../methods/bilinear_rank/branch_and_bound/README.md), which walks the same tree the
 exact search does and cuts it at `dim V + 1 >= best` instead of at a target. It
 moves the two rows the descent cannot: **`cyclic_f2_7` reaches the published 13
 in 22 nodes**, and `gf32_multiplication` reaches 13 in 1 873. Both counts are

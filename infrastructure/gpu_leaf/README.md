@@ -9,7 +9,7 @@ is that measurement, on an RTX 4060 Laptop, 24 SMs, compute capability 8.9.
 **It is a proof of concept, and it is wired behind `CUDAToolkit_FOUND`.** The
 kernels are built only where the toolkit is found. Where it is,
 [`register_the_card.cpp`](register_the_card.cpp) is linked into `decide-rank`,
-`minimise-rank`, `lower-the-bound`, `walk-scheme` and `show-limits`, and that
+`minimise-rank`, `tighten-rank-bound`, `walk-scheme` and `show-limits`, and that
 link is the whole of the registration: `../exhaustive_search/gf2_leaf.cpp` asks
 `leaf_on_card()` and `run_limits::chosen_device()` at each leaf, so `--device
 auto` sends one past the measured floor to the card. Where it is not,

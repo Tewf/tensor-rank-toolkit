@@ -84,7 +84,7 @@ levels pay.
 
 ## The three configurations, and what each is for
 
-    lower-the-bound <tensor> --from descent --width 4 --summand-rank 3
+    tighten-rank-bound <tensor> --from descent --width 4 --summand-rank 3
 
 `--width 0` enters every child, which makes the run a branch and bound and its
 `tree exhausted` a statement about the whole tree above that root. That is

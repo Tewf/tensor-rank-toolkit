@@ -57,7 +57,7 @@ std::vector<Matrix> general_linear_generators(const Field& field, std::size_t or
 /// for one shape to a tensor of another is not a weak quotient, it is undefined:
 /// `act_on` multiplies matrices whose sizes do not meet, and
 /// `matrix_ops.h::multiply` checks no shapes, so the write runs off the end of
-/// the result. Measured on `deflate-strictly --refuter tree`, that is
+/// the result. Measured on `decide-rank-by-deflation --refuter tree`, that is
 /// `free(): invalid pointer` and a core dump, and on `minimise-rank` it is worse
 /// than a crash: it exits 0 having quotiented by nothing, printing
 /// "stabiliser 0, 961 orbits of 961".

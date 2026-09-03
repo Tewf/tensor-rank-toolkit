@@ -15,13 +15,13 @@ pattern has missed it.
 | Command | The question no other command answers |
 |---|---|
 | `minimise-rank` | How few products does a cheap descent reach, and what did each of its three steps cost? |
-| `lower-the-bound` | How much cheaper can a branch and bound make an algorithm I already hold? |
+| `tighten-rank-bound` | How much cheaper can a branch and bound make an algorithm I already hold? |
 | `walk-scheme` | Can a decomposition that already works be moved sideways into a smaller one? |
 | `decide-rank` | Is there an algorithm with `k` products, decided by a tree this repository walked itself? |
 | `decide-rank-by-sat` | The same question, decided by somebody else's solver, with a refutation checkable as DRAT |
 | `decide-rank-by-pencil` | Two slices: what does the Kronecker canonical form prove, and is that the rank or only a bound? |
 | `factor-over-canonical-basis` | The rank as `S = C A`, so a reader who trusts nothing here can multiply it out |
-| `deflate-strictly` | Is this committed candidate refutable, and what did waiting for the proof cost? |
+| `decide-rank-by-deflation` | Is this committed candidate refutable, and what did waiting for the proof cost? |
 | `enumerate-subspaces` | How many solution subspaces are there at `k`, and how many orbits do they fall into? |
 | `sparsify-operator` | How few nonzero entries can one operator be written with? |
 | `curve-bounds` | What does interpolation on an algebraic curve bound, and which backend is available to say so? |
@@ -31,8 +31,8 @@ pattern has missed it.
 ## Three kinds of answer, which is what the grouping is for
 
 **Decided.** `decide-rank`, `decide-rank-by-sat`, `decide-rank-by-pencil`,
-`factor-over-canonical-basis` and `deflate-strictly` can say *no* and mean it.
-**Found.** `minimise-rank`, `lower-the-bound` and `walk-scheme` refute nothing
+`factor-over-canonical-basis` and `decide-rank-by-deflation` can say *no* and mean it.
+**Found.** `minimise-rank`, `tighten-rank-bound` and `walk-scheme` refute nothing
 ever: a spent budget hands back a weaker algorithm, never a bound.
 **Counted.** `enumerate-subspaces` and `sparsify-operator` return a number about
 the object rather than a verdict on it.
@@ -53,14 +53,14 @@ two mutually exclusive flag sets is worse than two commands.**
   and exit 3 would come to mean two things in one command: `check_exit_codes.sh`
   records that pencil is *the one place* Undecided means the mathematics stopped
   rather than a budget did.
-- **`minimise-rank` + `lower-the-bound`.** Refused. Same question, two machines,
+- **`minimise-rank` + `tighten-rank-bound`.** Refused. Same question, two machines,
   and no name collides, but four descent-only flags against six
   incumbent-only ones, and `--json` and `--steps` would silently mean nothing on
   half the command.
 - **`walk-scheme` into either of those.** Refused twice over: `--steps` already
   means pipeline stages on `minimise-rank` and flips here, and `--from` means a
-  starting scheme size here and an enum on `lower-the-bound`.
-- **`deflate-strictly` + `enumerate-subspaces`.** Refused. They share a directory
+  starting scheme size here and an enum on `tighten-rank-bound`.
+- **`decide-rank-by-deflation` + `enumerate-subspaces`.** Refused. They share a directory
   and nothing else: one decides a candidate and exits 0, 1 or 3; the other
   counts and always exits 0.
 - **`operators-to-tensor` into `make-tensor`.** Tempting, because both write a

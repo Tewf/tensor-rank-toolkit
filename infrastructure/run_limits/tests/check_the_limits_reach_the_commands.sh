@@ -20,7 +20,7 @@
 #     that then refuses the flag is worse than never mentioning it. So each is
 #     asked with `--max-memory 1` (a budget that holds nothing), and the refusal
 #     is the proof that the flag arrived.
-#  3. **`--threads` changes the clock and not the answer.** `lower-the-bound` is
+#  3. **`--threads` changes the clock and not the answer.** `tighten-rank-bound` is
 #     asked at 1 and at 4 and the whole count line has to match, because the
 #     children of one node are prepared in parallel and entered in the same order.
 #     A node count is a fact about the tree; a timing is a fact about the
@@ -35,7 +35,7 @@ failures=0
 # than listed, so moving the build layout moves one line.
 binaries=${3:?the build root, passed by the add_test registration}
 minimise=$binaries/methods/bilinear_rank/greedy_heuristic/minimise-rank
-lower=$binaries/methods/bilinear_rank/branch_and_bound/lower-the-bound
+lower=$binaries/methods/bilinear_rank/branch_and_bound/tighten-rank-bound
 walk=$binaries/methods/bilinear_rank/flip_graph/walk-scheme
 sparsify=$binaries/methods/matrix_sparsification/sparsify-operator
 pencil=$binaries/methods/pencil_rank/decide-rank-by-pencil
@@ -104,7 +104,7 @@ operator=$fixtures/strassen_u.matrix
 # would be asserting that command's prose in this file.
 echo "a budget that holds nothing is refused with the number, on every command"
 refuses_with_a_number "minimise-rank" "$minimise" "$tensor" --max-memory 1
-refuses_with_a_number "lower-the-bound" "$lower" "$tensor" --max-memory 1
+refuses_with_a_number "tighten-rank-bound" "$lower" "$tensor" --max-memory 1
 refuses_with_a_number "walk-scheme --from" "$walk" "$tensor" --from 7 --max-memory 1
 refuses_with_a_number "sparsify-operator" "$sparsify" "$operator" --max-memory 1
 refuses_with_a_number "decide-rank-by-pencil" \
@@ -120,7 +120,7 @@ refuses_with_a_number "make-tensor --matmul 2 100 100 100" \
 
 echo "--threads is accepted where a parallel_for is waiting for it"
 accepts "decide-rank-by-sat --threads" "$sat" "$small" --target 4 --threads 2
-accepts "lower-the-bound --threads" "$lower" "$tensor" --threads 2
+accepts "tighten-rank-bound --threads" "$lower" "$tensor" --threads 2
 
 echo "and it moves the clock rather than the answer"
 # The whole commentary line: nodes, children costed, moves offered, improvements,

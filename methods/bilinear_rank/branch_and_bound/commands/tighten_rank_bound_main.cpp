@@ -33,7 +33,7 @@
 namespace {
 
 void usage() {
-    cli::note() << "usage: lower-the-bound <tensor-file> [--from basis|descent] [--nodes N]\n"
+    cli::note() << "usage: tighten-rank-bound <tensor-file> [--from basis|descent] [--nodes N]\n"
                    "                       [--width N] [--summand-rank r] [--whole-pool]\n"
                    "                       [--below k] [--orbit-moves] [--span-census]\n"
                    "                       [-s|--symmetry none|auto|matmul <n> <m> <k>]\n"
@@ -392,7 +392,7 @@ int run(int argc, char** argv) {
         // The stem and the three suffixes are PLinOpt's interface, not a naming
         // choice here: `PMchecker stem_{L,R,P}.sms -q p` is how anything outside
         // this repository checks the answer.
-        const std::string origin = "Encoding operator recovered by lower-the-bound, " +
+        const std::string origin = "Encoding operator recovered by tighten-rank-bound, " +
                                    std::to_string(algorithm.product_count()) + " products, over GF(" +
                                    std::to_string(tensor.characteristic) + ").";
         formats::write_sms_file(operator_stem + "_L.sms", origin + " Left operand.",
@@ -419,10 +419,10 @@ int main(int argc, char** argv) {
     try {
         return run(argc, argv);
     } catch (const cli::ArgumentError& problem) {
-        cli::note() << "lower-the-bound: " << problem.what();
+        cli::note() << "tighten-rank-bound: " << problem.what();
         return cli::exit_status(cli::ExitCode::Usage);
     } catch (const std::exception& failure) {
-        cli::note() << "lower-the-bound: " << failure.what();
+        cli::note() << "tighten-rank-bound: " << failure.what();
         return cli::exit_status(cli::ExitCode::Error);
     }
 }

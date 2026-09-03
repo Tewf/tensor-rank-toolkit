@@ -41,11 +41,11 @@ around every refusal it asserts.
 
 ## The tables, one page per question
 
-- [Searching for rank](OPTIONS/searching-for-rank.md): `minimise-rank`, `lower-the-bound`,
+- [Searching for rank](OPTIONS/searching-for-rank.md): `minimise-rank`, `tighten-rank-bound`,
   `decide-rank`, `walk-scheme`
 - [Asking a SAT solver](OPTIONS/asking-a-sat-solver.md): `decide-rank-by-sat`
 - [Committing to candidates](OPTIONS/committing-to-candidates.md):
-  `deflate-strictly`, `enumerate-subspaces`
+  `decide-rank-by-deflation`, `enumerate-subspaces`
 - [Bounding from a curve](OPTIONS/bounding-from-a-curve.md): `curve-bounds`, and
   the `--solvers` that was the command `list-solvers`
 - [Sparsifying operators](OPTIONS/sparsifying-operators.md): `sparsify-operator`
@@ -58,7 +58,7 @@ around every refusal it asserts.
 the `--descend` and `--pretest-ceiling` flags; the numbers that retired it are in
 [`methods/bilinear_rank/canonical_augmentation/measurements/`](methods/bilinear_rank/canonical_augmentation/measurements/README.md).
 **`--candidate-timeout` is not gone**, and this sentence used to say it was:
-`find-at-rank` had a flag of that name and so does `deflate-strictly`, which
+`find-at-rank` had a flag of that name and so does `decide-rank-by-deflation`, which
 still accepts it and is documented in
 [`OPTIONS/committing-to-candidates.md`](OPTIONS/committing-to-candidates.md).
 Checked against the branch rather than guessed —

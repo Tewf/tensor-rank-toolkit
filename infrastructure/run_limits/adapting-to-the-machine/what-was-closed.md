@@ -19,7 +19,7 @@ line reached `set_worker_count`, so `worker_count()` was 1 for every run of the
 tool and the split ran one cube at a time. The flag is the whole fix; the loop was
 already there, already correct, and already documented.
 
-**`lower-the-bound` gained `--threads`, and a loop for it to reach.** The
+**`tighten-rank-bound` gained `--threads`, and a loop for it to reach.** The
 incumbent search costs one `minimum_weight_basis_with` per surviving move at every
 node. The identical call `descent_search` has spread over cores for months. The
 node loop above it cannot be threaded (the incumbent decides what the next node
@@ -70,7 +70,7 @@ kill is not.
 
 | where | what it asked for | reachable by |
 |---|---|---|
-| `methods/bilinear_rank/branch_and_bound/level_lowering_moves.cpp` | `p^r` vectors | `lower-the-bound --summand-rank r`, which took any count |
+| `methods/bilinear_rank/branch_and_bound/level_lowering_moves.cpp` | `p^r` vectors | `tighten-rank-bound --summand-rank r`, which took any count |
 | `methods/curve_bounds/interpolation_programme.cpp` | an `O(degree²)` frontier, twice | `curve-bounds --degree`, which took any whole number: 100 000 asks for about 240 GB |
 | `methods/pencil_rank/sumi_bound.cpp` | `x^p - x`, linear in `p` | **the tensor file**, whose header is checked for primality and not for size: `field 2147483647` asks for 17 GB |
 | `methods/matrix_sparsification/combinations.cpp` | `C(total, size)` subsets | `sparsify-operator` on anything larger than the 7x4 operators shipped: `C(47, 23)` ≈ 1.6e13 on a `⟨4,4,4⟩` operator, which `minimise-rank --emit-operators` invites |
@@ -82,7 +82,7 @@ row and then as a count of rows rather than as one product.
 
 **Five commands gained `--max-memory`, which their own refusals already named.**
 `require_room` ends every refusal with *"Raise it with --max-memory if the machine
-has the room"*, and `lower-the-bound`, `walk-scheme`, `curve-bounds`,
+has the room"*, and `tighten-rank-bound`, `walk-scheme`, `curve-bounds`,
 `sparsify-operator`, `decide-rank-by-pencil` and `make-tensor` did not have the
 flag. A command that prints that sentence and then refuses the flag is worse than
 one that never mentions it.
