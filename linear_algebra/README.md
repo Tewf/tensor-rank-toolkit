@@ -29,7 +29,7 @@ over five roles in one header, which is what the folder was reorganised to stop
 happening elsewhere. Include the part you need; the umbrella is for callers who
 want the layer as a whole.
 
-Reading and writing files is [`../formats/`](../formats/), which depends on this
+Reading and writing files is [`../formats/`](../formats/README.md), which depends on this
 and not the other way round.
 
 > **On the name.** This directory was called `exact/`, for exact arithmetic.

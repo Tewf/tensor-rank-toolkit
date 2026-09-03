@@ -24,7 +24,7 @@ un artefact d'arrondi.
 
 Chaque compte ci-dessous est vérifié par la suite de tests et se reproduit
 partout. Les temps de calcul, eux, non, et rien ne le prétend : voir
-[`MEASURING.md`](MEASURING.md) pour le protocole et [`reproduce/`](reproduce/)
+[`MEASURING.md`](MEASURING.md) pour le protocole et [`reproduce/`](reproduce/README.md)
 pour le pilote qui les régénère.
 
 ## Ce qu'il calcule
@@ -35,23 +35,23 @@ documentation technique.
 
 | Axe | Question | Résultat |
 |---|---|---|
-| [descente](descent_search/) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
-| [exhaustion](exhaustive_search/) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
-| [titulaire](incumbent_search/) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
+| [descente](descent_search/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
+| [exhaustion](exhaustive_search/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
+| [titulaire](incumbent_search/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
-| [faisceaux](pencil_rank/) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
-| [factorisation](canonical_factorisation/) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
-| [satisfiabilité](satisfiability/) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
-| [symétrie](orbit_reduction/) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
-| [sans isomorphes](oracle_guided_search/) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
-| [creusement](matrix_sparsification/) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
+| [faisceaux](pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
+| [factorisation](canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
+| [satisfiabilité](satisfiability/README.md) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
+| [symétrie](orbit_reduction/README.md) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
+| [sans isomorphes](oracle_guided_search/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
+| [creusement](matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
 **La feuille est l'endroit où vit une recherche exhaustive**, et aucune de ses
 deux routes n'y forme plus d'élément : le parcours avance en code de Gray
 réfléchi sur GF(2) comme sur GF(p), **2,52x par élément sur GF(3)**, le terme en
 dimension ayant disparu plutôt que diminué, et le balayage du vivier transporte
 un résidu. Mêmes verdicts, mêmes comptes de nœuds, et une carte grand public
-tarifée contre les deux : [`gpu_leaf/`](gpu_leaf/).
+tarifée contre les deux : [`gpu_leaf/`](gpu_leaf/README.md).
 
 ## Le résultat qui vaut d'être énoncé à part
 
@@ -74,7 +74,7 @@ sparsify-operator out_L.sms                                 # 31 -> 27 coefficie
 ```
 
 La console dans le navigateur enchaîne ces deux lignes dans cet ordre, une fois
-par opérateur, comme un seul parcours : [`web_interface/`](web_interface/).
+par opérateur, comme un seul parcours : [`web_interface/`](web_interface/README.md).
 
 ## Lire et écrire ce que le domaine publie
 
@@ -117,7 +117,7 @@ ne traite, et pourquoi treize plutôt que huit :
 Chaque option, sa valeur par défaut et la mesure qui l'a choisie :
 [`OPTIONS.md`](OPTIONS.md). Douze des treize se pilotent aussi depuis un
 navigateur, sur la seule bibliothèque standard de Python 3 :
-[`web_interface/`](web_interface/). Chaque article implémenté est nommé une seule
+[`web_interface/`](web_interface/README.md). Chaque article implémenté est nommé une seule
 fois, dans [`references.md`](references.md), et le code en cite la clé.
 
 ## Deux branches
@@ -142,7 +142,7 @@ sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-
 ```
 
 Givaro et Boost sont les seules bibliothèques liées : Boost n'est nécessaire
-qu'à [`vendor/permlib/`](vendor/permlib/), pour `boost::next` et
+qu'à [`vendor/permlib/`](vendor/permlib/README.md), pour `boost::next` et
 `boost::shared_ptr`, et aucun en-tête hors de cette bibliothèque embarquée ne
 l'inclut. `libgmp-dev` est sur la ligne parce que `libgivaro-dev` apporte
 l'exécutable de GMP mais pas `gmpxx.h`, que les en-têtes de Givaro incluent ;

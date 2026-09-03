@@ -6,10 +6,10 @@ fast matrix multiplication comes from, and finding such decompositions in
 general is open.
 
 There are four ways to go at it here, and the folder names say which is which:
-this one descends, [`../exhaustive_search/`](../exhaustive_search/) decides,
-[`../flip_graph/`](../flip_graph/) moves a decomposition sideways, and
-[`../integer_programme/`](../integer_programme/) hands the question to somebody
-else's solver. [`../orbit_reduction/`](../orbit_reduction/) quotients the first
+this one descends, [`../exhaustive_search/`](../exhaustive_search/README.md) decides,
+[`../flip_graph/`](../flip_graph/README.md) moves a decomposition sideways, and
+[`../integer_programme/`](../integer_programme/README.md) hands the question to somebody
+else's solver. [`../orbit_reduction/`](../orbit_reduction/README.md) quotients the first
 three by symmetry. Each guarantees something different, and each folder says what.
 Every claim below is one of the four earning or failing to earn its keep.
 
@@ -77,7 +77,7 @@ The same two searches on the tensors the complexity literature argues about:
 **[`../famous_tensors/`](../famous_tensors/README.md)**. No single rank-one map
 strictly improves a matrix multiplication tensor, so the step 3 shortlist is 0 of
 225 on `⟨2,2,2⟩` and this descent cannot take a first step. A walk that may cross
-equal-cost maps reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/)).
+equal-cost maps reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/README.md)).
 
 ## Where this stops
 

@@ -20,7 +20,7 @@ canonical form that needs no search at all. **Nothing here is ever a float**, so
 a reported rank is a fact about the map rather than an artefact of rounding, and
 every count below is asserted by the test suite. Timings are not and are not
 claimed to be: [`MEASURING.md`](MEASURING.md) has the protocol,
-[`reproduce/`](reproduce/) the driver that regenerates them.
+[`reproduce/`](reproduce/README.md) the driver that regenerates them.
 
 ## What it computes
 
@@ -28,22 +28,22 @@ Ten strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
 
 | Strand | Asks | Headline |
 |---|---|---|
-| [descent](descent_search/) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
-| [exhaustion](exhaustive_search/) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
-| [incumbent](incumbent_search/) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
+| [descent](descent_search/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
+| [exhaustion](exhaustive_search/README.md) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
+| [incumbent](incumbent_search/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
-| [pencils](pencil_rank/) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
-| [factorisation](canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
-| [satisfiability](satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
-| [symmetry](orbit_reduction/) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](oracle_guided_search/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
-| [sparsification](matrix_sparsification/) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
+| [pencils](pencil_rank/README.md) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
+| [factorisation](canonical_factorisation/README.md) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
+| [satisfiability](satisfiability/README.md) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
+| [symmetry](orbit_reduction/README.md) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
+| [isomorph-free](oracle_guided_search/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
+| [sparsification](matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 **The leaf is where an exhaustive search lives**, and neither of its two routes
 forms an element any more: the walk steps in reflected Gray order over GF(2) and
 GF(p) alike, **2.52x an element over GF(3)** with the dimension term gone rather
 than reduced, and the pool scan carries a residual. Same verdicts, same node
-counts, and one consumer card priced against both: [`gpu_leaf/`](gpu_leaf/).
+counts, and one consumer card priced against both: [`gpu_leaf/`](gpu_leaf/README.md).
 
 ## The finding worth stating on its own
 
@@ -64,7 +64,7 @@ sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 ```
 
 The browser console runs those two lines in order, once per operator, as a flow:
-[`web_interface/`](web_interface/).
+[`web_interface/`](web_interface/README.md).
 
 ## Reading and writing what the field publishes
 
@@ -103,7 +103,7 @@ other does, and why thirteen rather than eight:
 Every flag, its default, the measurement that chose it and the recipes people
 actually type: [`OPTIONS.md`](OPTIONS.md). Twelve of the thirteen can be driven
 from a browser instead, on Python 3's standard library and nothing else:
-[`web_interface/`](web_interface/). Every paper any of it implements is named
+[`web_interface/`](web_interface/README.md). Every paper any of it implements is named
 once, in [`references.md`](references.md), by the key the code cites.
 
 ## Two branches
@@ -128,7 +128,7 @@ sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-
 ```
 
 Givaro and Boost are the only libraries anything links — Boost is needed by
-[`vendor/permlib/`](vendor/permlib/) alone, for `boost::next` and
+[`vendor/permlib/`](vendor/permlib/README.md) alone, for `boost::next` and
 `boost::shared_ptr`, and no header outside that vendored library includes it.
 `libgmp-dev` is on the line because `libgivaro-dev` pulls GMP's runtime but not
 `gmpxx.h`, which Givaro's own headers include; the

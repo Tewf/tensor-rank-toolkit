@@ -5,7 +5,7 @@ Every number here comes from [`results.json`](results.json), which
 core of an i5-12450H, at the commands each row records. The counts are re-derived
 on every push; the seconds are not, for the reason
 [`../MEASURING.md`](../MEASURING.md) gives. The searches compared against are in
-[`../exhaustive_search/`](../exhaustive_search/), on the same fixtures. How the
+[`../exhaustive_search/`](../exhaustive_search/README.md), on the same fixtures. How the
 encodings work is [`method/`](method/README.md); this is only what they cost.
 
 ## The rank itself, not one `k` at a time

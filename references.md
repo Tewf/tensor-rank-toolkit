@@ -778,7 +778,7 @@ The measured baseline for all of this, on this repository's own instance, is
 ## Proving that no smaller decomposition exists
 
 The other direction from a search for schemes, and the direction
-[`satisfiability/`](satisfiability/) exists for. A refutation here is measured
+[`satisfiability/`](satisfiability/README.md) exists for. A refutation here is measured
 against these.
 
 **`wang2026`**: C. Wang. *Automated Lower Bounds for Bilinear Complexity over

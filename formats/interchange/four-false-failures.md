@@ -3,7 +3,7 @@
 Each of these looks like a defect in this layer. None is.
 
 **Match the checker to the map.** `PMchecker` checks polynomial multiplication,
-which is what everything in [`../../fixtures/`](../../fixtures/) is. `MMchecker`
+which is what everything in [`../../fixtures/`](../../fixtures/README.md) is. `MMchecker`
 is the
 matrix-multiplication one and is a separate binary. Handing a `matmul_*` fixture
 to `PMchecker` fails exactly as a bad operator would.

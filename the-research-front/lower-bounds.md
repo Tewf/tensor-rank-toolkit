@@ -4,10 +4,10 @@ Nothing above proves anything is optimal. That is the other half, it is where
 this repository is, and the front is much closer to us:
 
 - `[bdez2012]` searching subspaces rather than subsets, which
-  [`exhaustive_search/`](../exhaustive_search/) implements.
+  [`exhaustive_search/`](../exhaustive_search/README.md) implements.
 - `[covanov2019]` adding the automorphism group, which the orbit work implements.
 - `[heule2021]` encoding the question for a SAT solver, which
-  [`satisfiability/`](../satisfiability/) implements, and `[yang2024sat]` using SAT
+  [`satisfiability/`](../satisfiability/README.md) implements, and `[yang2024sat]` using SAT
   specifically to rule decompositions out under assumed symmetries.
 - `[yang2025]`, and this entry has now been wrong twice, so it is written out at
   length. Exact decision over finite fields in

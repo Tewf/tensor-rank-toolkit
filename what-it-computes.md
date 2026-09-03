@@ -5,7 +5,7 @@ page is the long form; [`README.md`](README.md) carries the headline numbers in 
 table and links here rather than restating them, which is the repository's
 zero-redundancy rule applied to itself.
 
-**[Rank by descent](descent_search/)**, the cheap direction. Three steps: an
+**[Rank by descent](descent_search/README.md)**, the cheap direction. Three steps: an
 exact matroid greedy for the starting basis, then two relaxations that trade the
 guarantee for reach.
 
@@ -25,7 +25,7 @@ scanned, and the orbit quotient is invariant under any subgroup of the
 stabiliser. Which of those a test would catch is recorded in
 [`descent_search/correctness.md`](descent_search/correctness.md).
 
-**[Rank by exhaustion](exhaustive_search/)**, the expensive direction, which
+**[Rank by exhaustion](exhaustive_search/README.md)**, the expensive direction, which
 proves things. It settles small maps outright, reproducing Karatsuba's 3, the
 classical 3 and 6 for GF(4) and GF(8), and **rank ⟨2,2,2⟩ = 7** decided from the
 tensor in half a second. On F2 5×5 it rules out 9, 10 and 11 from the bounds
@@ -33,7 +33,7 @@ and 12 by exhaustion, and with the 13 the strand below exhibits that is
 **rank(F2 5×5) = 13** proved here on both sides; `[bdez2012]` report the same 13.
 On F3 3×6 both sides are proved in about 25 seconds.
 
-**[The same tree, cut by an incumbent](incumbent_search/)**, which is the
+**[The same tree, cut by an incumbent](incumbent_search/README.md)**, which is the
 upper-bound direction of the one above. A node is a subspace containing
 `span(T)` and a child adjoins a rank-one map, exactly as `[bdez2012]` Algorithm 2
 does; what changes is that the branch stops at `dim V + 1 >= best` rather than at
@@ -52,7 +52,7 @@ are tight often enough to remove the dearest question in a sweep entirely: they
 raise GF(16) from 4 to **8** and cyclic convolution from 5 to **9**, each of
 which previously cost a minute of exhaustion.
 
-**[Sparsifying the operators](matrix_sparsification/)**, which is the other half
+**[Sparsifying the operators](matrix_sparsification/README.md)**, which is the other half
 of the cost. Fewer nonzeros means fewer additions, the cost the multiplication
 count does not capture. Strassen's encoding operators go from **12 nonzeros to
 10**, and on the operators of a published rank-23 ⟨3,3,3⟩ scheme **221 nonzeros
@@ -60,14 +60,14 @@ to 128**. That 128 is **the minimum over every change of basis** and not the bes
 found: the method is `[gottlieb2010]`'s greedy with an exact oracle under it, so
 Rado-Edmonds settles it.
 
-**[The rank question as satisfiability](satisfiability/).** Håstad proved
+**[The rank question as satisfiability](satisfiability/README.md).** Håstad proved
 deciding tensor rank NP-complete over every finite field, and that cuts both
 ways: `formula_to_tensor` turns 3SAT into a tensor, and three encoders turn the
 rank question into one a solver answers. A refutation can be written as DRAT and
 checked by `drat-trim`, so a lower bound from a solver is verifiable rather than
 trusted.
 
-**[Quotienting by symmetry](orbit_reduction/).** A change of coordinates fixing
+**[Quotienting by symmetry](orbit_reduction/README.md).** A change of coordinates fixing
 the target subspace maps solutions to solutions, so one member of each orbit
 suffices: **39.2× fewer nodes on a refutation**, and the ⟨3,3,3⟩ candidate pool
 collapses from 261 121 to **13 orbits**. It is worth 2.3× on *finding* a
@@ -75,7 +75,7 @@ decomposition rather than refuting one, because a proof walks every branch and a
 search that stops at the first answer stops before most of the repetition. Both
 are re-derived by `reproduce/measure.py --check`.
 
-**[Isomorph-free enumeration](oracle_guided_search/).**
+**[Isomorph-free enumeration](oracle_guided_search/README.md).**
 `enumerate-subspaces --canonical` is `[mckay1998]`'s canonical augmentation,
 which deduplicates with no memory at all. It returns ⟨2,2,2⟩'s 36 solution
 subspaces as the **1 orbit** they are, visiting **22 778× fewer nodes** and
@@ -84,7 +84,7 @@ named by least image under a prescribed group, which is what carried the saving
 on the clock from under 2× to that, and it is measured rather than glossed
 ([`deduplication-cost.md`](oracle_guided_search/deduplication-cost.md)).
 
-**[Two slices, without a search](pencil_rank/).** A tensor with two slices is a
+**[Two slices, without a search](pencil_rank/README.md).** A tensor with two slices is a
 matrix pencil, and Kronecker's theory gives its minimal indices and elementary
 divisors by exact linear algebra in **polynomial time, with no candidate pool**.
 What it will not give is a rank: Ja'Ja's formula is a theorem over an
@@ -95,7 +95,7 @@ diagonalisable over the field. Twelve pencils settled by exhaustion, three of
 which the classical formula gets wrong, are tabulated in
 [`pencil_rank/README.md`](pencil_rank/README.md).
 
-**[The rank as a factorisation](canonical_factorisation/).** Take `B`, the
+**[The rank as a factorisation](canonical_factorisation/README.md).** Take `B`, the
 canonical basis of the slice space — the `nm` matrices with a single 1 — and find
 the shortest `A` whose rows, read back through `B`, span a space containing the
 slices. `B` contributes nothing, and saying so is the useful part: every list of

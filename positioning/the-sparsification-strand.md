@@ -1,6 +1,6 @@
 # The other strand, where the finding is an absence
 
-[`../matrix_sparsification/`](../matrix_sparsification/) implements
+[`../matrix_sparsification/`](../matrix_sparsification/README.md) implements
 `[karstadt2017]`'s alternative-basis construction, SPAA 2017 and JACM 67(1) 2020,
 [doi:10.1145/3364504](https://doi.org/10.1145/3364504), and `[beniamini2020]`'s
 sparsification built on top of it,
