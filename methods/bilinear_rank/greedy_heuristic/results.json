@@ -14,7 +14,7 @@
     {
       "name": "f2_5x5",
       "naive": 25,
-      "command": "build/descent_search/minimise-rank fixtures/f2_5x5.tensor --steps 3",
+      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f2_5x5.tensor --steps 3",
       "step_1": {
         "multiplications": 16,
         "seconds": 0.0001
@@ -31,7 +31,7 @@
     {
       "name": "f2_3x8",
       "naive": 24,
-      "command": "build/descent_search/minimise-rank fixtures/f2_3x8.tensor --steps 3",
+      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f2_3x8.tensor --steps 3",
       "step_1": {
         "multiplications": 19,
         "seconds": 0.0001
@@ -48,7 +48,7 @@
     {
       "name": "f2_4x7",
       "naive": 28,
-      "command": "build/descent_search/minimise-rank fixtures/f2_4x7.tensor --steps 3",
+      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f2_4x7.tensor --steps 3",
       "step_1": {
         "multiplications": 19,
         "seconds": 0.0001
@@ -65,7 +65,7 @@
     {
       "name": "f3_3x6",
       "naive": 18,
-      "command": "build/descent_search/minimise-rank fixtures/f3_3x6.tensor --steps 3",
+      "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f3_3x6.tensor --steps 3",
       "step_1": {
         "multiplications": 12,
         "seconds": 0.0017
@@ -100,7 +100,7 @@
         "nodes": 1,
         "seconds": 1.2e-05,
         "why_trustworthy": "Karatsuba's answer, and 2n-1 = 3 is a lower bound, so 3 is optimal.",
-        "command": "build/exhaustive_search/decide-rank fixtures/f2_2x2.tensor"
+        "command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_2x2.tensor"
       },
       {
         "map": "f2_2x3",
@@ -109,7 +109,7 @@
         "nodes": 2,
         "seconds": 3.4e-05,
         "why_trustworthy": "A 2x3 product: five products instead of six.",
-        "command": "build/exhaustive_search/decide-rank fixtures/f2_2x3.tensor"
+        "command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_2x3.tensor"
       },
       {
         "map": "gf4_multiplication",
@@ -118,7 +118,7 @@
         "nodes": 2,
         "seconds": 7e-06,
         "why_trustworthy": "The bilinear complexity of GF(4) over GF(2) is classically 3.",
-        "command": "build/exhaustive_search/decide-rank fixtures/gf4_multiplication.tensor"
+        "command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/gf4_multiplication.tensor"
       },
       {
         "map": "gf8_multiplication",
@@ -127,7 +127,7 @@
         "nodes": 329,
         "seconds": 0.000558,
         "why_trustworthy": "The bilinear complexity of GF(8) over GF(2) is classically 6.",
-        "command": "build/exhaustive_search/decide-rank fixtures/gf8_multiplication.tensor"
+        "command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/gf8_multiplication.tensor"
       }
     ],
     "bounded": [
@@ -152,9 +152,9 @@
         "conclusion": "No algorithm with 9, 10 or 11 products exists, each refused by `rank_lower_bound` before the search opens a node, and none with 12 exists either, that one by exhaustion. So the rank is at least 13. Nine and ten were exhaustions and eleven was a 77 second one until 2026-08-19; see `retired_by_the_bounds`. The heuristic exhibits only 14, and `lower-the-bound` exhibits 13 in 80 nodes, so this repository proves rank = 13 on both sides. Table 1 of Barbulescu, Detrey, Estibals and Zimmermann (2012) gives 27 decompositions at 13 and agrees.",
         "not_decided": "nothing about the rank any more. This field read `whether 13 products suffice, and it has not been run` until 2026-08-21, when `lower-the-bound` exhibited a 13 in 80 nodes; with the refutation of 12 that closes the map at 13 from both sides inside this repository, and `settled` above is that number. What is still not re-derived on this row is the refutation itself, which `questions.CARRIED` prices rather than asks. Ruling out 12 has been run: 146402553 nodes, NO and exhaustive, on 2026-08-19. A refutation's node count does not depend on the thread count, measured in `exhaustive_search/what-threads-change.md`, so that figure is the tree's; the run itself took 535.59 s on six cores with `--node-limit 300000000`, which is not the one-core figure MEASURING.md publishes and is recorded here as what it is. This file previously priced ruling out 12 at about seven hours and recorded it as never run, and before that recorded it as done at 146402553 nodes and 3610.2 s when no such run had happened. The node count in that retracted figure was right and only the seconds were invented; the seven hours came from the general leaf's 5900 nodes a second, where the GF(2) leaf walks the same question at 459239 nodes in 7.69 s and repriced it at about 40 minutes on one core.",
         "commands": [
-          "build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 9",
-          "build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 10",
-          "build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 11"
+          "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_5x5.tensor --target 9",
+          "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_5x5.tensor --target 10",
+          "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_5x5.tensor --target 11"
         ]
       }
     ]
@@ -177,7 +177,7 @@
           "step_2": 8,
           "step_3": 8,
           "step_3_shortlist": 0,
-          "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3"
+          "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/matmul_2x2x2.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
@@ -189,8 +189,8 @@
           "seconds_to_rule_out_6": 0.029431,
           "nodes_to_find_7": 7436,
           "seconds_to_find_7": 0.012717,
-          "command_to_rule_out_6": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
-          "command_to_find_7": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7"
+          "command_to_rule_out_6": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
+          "command_to_find_7": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 7"
         },
         "known": 7,
         "reading": "Strassen's 7 and Winograd's proof that 6 is impossible, both reproduced from nothing in 0.042 s. No single rank-one map strictly improves the tensor, so the step 3 shortlist is 0 of 225 and the descent cannot take a first step. Two things cross the plateau it is stuck on, and their costs are published rather than quoted: flip_graph/results.json."
@@ -203,7 +203,7 @@
           "step_2": 12,
           "step_3": 12,
           "step_3_shortlist": 0,
-          "command": "build/descent_search/minimise-rank fixtures/matmul_2x2x3.tensor --steps 3"
+          "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/matmul_2x2x3.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
@@ -212,7 +212,7 @@
           ],
           "nodes_to_rule_out_8": 0,
           "seconds_to_rule_out_8": null,
-          "command_to_rule_out_8": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x3.tensor --target 8"
+          "command_to_rule_out_8": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x3.tensor --target 8"
         },
         "known": 11,
         "reading": "Rank >= 9 here. Ruling out 9 is about 1.4e8 nodes, some 4.6 hours, and was not run."
@@ -242,7 +242,7 @@
           "step_1": 27,
           "step_2": 27,
           "step_3": "stopped at 45 minutes; projected 4.2 hours from the measured 2x3x3 scan, and one independent test per candidate, so it parallelises",
-          "command": "build/descent_search/minimise-rank fixtures/matmul_3x3x3.tensor --steps 2"
+          "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/matmul_3x3x3.tensor --steps 2"
         },
         "known": "open: 19 <= rank <= 23, and >= 20 over F2 since 2026",
         "reading": "Out of reach exactly: ruling out 10 is 2.6e5 nodes against a pool of 261121, about 10 hours."
@@ -252,7 +252,7 @@
         "naive": 3,
         "heuristic": {
           "step_1": 3,
-          "command": "build/descent_search/minimise-rank fixtures/w_state.tensor --steps 1"
+          "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/w_state.tensor --steps 1"
         },
         "exact": {
           "ruled_out": [
@@ -270,7 +270,7 @@
           "step_1": 17,
           "step_2": 12,
           "step_3": 10,
-          "command": "build/descent_search/minimise-rank fixtures/cyclic_f2_5.tensor --steps 3"
+          "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/cyclic_f2_5.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
@@ -279,7 +279,7 @@
           ],
           "nodes_to_rule_out_7": 0,
           "seconds_to_rule_out_7": null,
-          "command_to_rule_out_7": "build/exhaustive_search/decide-rank fixtures/cyclic_f2_5.tensor --target 7"
+          "command_to_rule_out_7": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/cyclic_f2_5.tensor --target 7"
         },
         "reading": "9 <= rank <= 10. `rank_lower_bound` returns the 9 in milliseconds, where refusing 7 was 461 251 nodes and a minute; see `retired_by_the_bounds`. The heuristic works here, unlike on matrix multiplication."
       },
@@ -291,7 +291,7 @@
           "step_2": 11,
           "step_3": 9,
           "step_3_shortlist": 4,
-          "command": "build/descent_search/minimise-rank fixtures/gf16_multiplication.tensor --steps 3"
+          "command": "build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/gf16_multiplication.tensor --steps 3"
         },
         "exact": {
           "ruled_out": [
@@ -304,7 +304,7 @@
           "seconds_to_rule_out_7": null,
           "rule_out_8": "105 600 301 nodes, and the wall clock beside them, are published once, in `satisfiability/results.json`, which is the row `reproduce/measure.py` re-derives and where the `--node-limit 200000000` behind the count is recorded. This file used to restate the pair and stated the seconds as 2325.7 against that file's 2328 for the one run, which is what publishing a number twice costs. It is a pointer now rather than a copy.",
           "decided": 9,
-          "command_to_rule_out_7": "build/exhaustive_search/decide-rank fixtures/gf16_multiplication.tensor --target 7"
+          "command_to_rule_out_7": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/gf16_multiplication.tensor --target 7"
         },
         "known": ">= 8 by de Groote, since 2n-1 is attained only for n <= q/2 + 1",
         "reading": "Decided exactly: 9. The exact search ruled out everything below, 5, 6 and 7 free from the polynomial bounds and 8 by exhaustion; the heuristic supplied the 9, and neither method could have done it alone."
@@ -330,8 +330,8 @@
       "fewer_nodes_by": 39.2,
       "seconds": 0.029257,
       "quotiented_seconds": 0.000992,
-      "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
-      "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2"
+      "command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6",
+      "quotiented_command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2"
     },
     {
       "name": "<2,2,2> finding 7 products",
@@ -344,8 +344,8 @@
       "fewer_nodes_by": 2.3,
       "seconds": 0.012633,
       "quotiented_seconds": 0.005903,
-      "command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7",
-      "quotiented_command": "build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2"
+      "command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 7",
+      "quotiented_command": "build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2"
     }
   ],
   "provenance": {
@@ -365,6 +365,31 @@
     "build_directory": "build",
     "repeats": 3,
     "protocol": "one core, fastest of three, quiet machine. See MEASURING.md.",
+    "defaults_in_force": {
+      "threads": 1,
+      "max_memory_bytes": 2147483648,
+      "node_limit": 5000000,
+      "solver_timeout_seconds": 300
+    }
+  },
+  "counts_provenance": {
+    "commit": "eb8572b012e3540952947cbf149eafe21f0695aa",
+    "tree_clean": true,
+    "covers": "The counts in this file and the invocations that produced them, and nothing else. Every `seconds` field here is older than this block and was not touched: a count is exact arithmetic and comes out the same on any machine, a timing does not, so `--counts` refreshes the first and leaves the second exactly as measured. What produced the timings is the `provenance` block.",
+    "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "givaro": "4.2.0",
+    "solvers": {
+      "kissat": "4.0.4",
+      "cryptominisat5": "c CryptoMiniSat version 5.11.15",
+      "cadical": null,
+      "cvc5": "cvc5 1.3.4 [git f3b21c4 on branch HEAD]",
+      "drat-trim": "reports no version; found on ~/.local/bin",
+      "cbc": "Version: 2.10.11",
+      "glpsol": "GLPSOL--GLPK LP/MIP Solver 5.0"
+    },
+    "build_directory": "build",
+    "repeats": 1,
+    "protocol": "counts only: exact arithmetic, one run each, the machine irrelevant.",
     "defaults_in_force": {
       "threads": 1,
       "max_memory_bytes": 2147483648,
