@@ -1,0 +1,28 @@
+# What `podman build` must not be handed as context. Without this file the
+# daemon receives the whole working directory — half a gigabyte of build
+# trees, agent worktrees and .git for an image that needs none of it — and
+# `COPY . /src` bakes all of it into a published reproduction image.
+#
+# The list is .gitignore's directories plus .git itself: everything here is
+# either generated on this machine or is history the image does not build
+# from. A fresh `git clone` carries none of it, and the image must not differ
+# by having been built from a working tree instead of a clone.
+.git
+.claude
+.cache
+build
+build-cuda
+explain
+compile_commands.json
+web_interface/runs
+**/__pycache__
+*.pyc
+article/*.aux
+article/*.log
+article/*.out
+article/*.fls
+article/*.fdb_latexmk
+article/*.bbl
+article/*.blg
+article/*.synctex.gz
+Manifest.toml
