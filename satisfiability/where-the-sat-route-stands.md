@@ -80,8 +80,8 @@ and [`shaped-encodings/plan.md`](shaped-encodings/plan.md).
 Complete. Experiment 0 landed in both regimes (CMS+Gauss dominated on the fixtures, 0/10 on
 the challenges), and the closure-wave survivors a missing binary voided on 2026-09-01 are
 re-run: **all 17, across 25 runs at 900 s, every one a no-find** — the honest wave record is
-closed with zero finds, as the campaign predicted the unbuilt devices would leave it. Raw
-cells in `work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/summary.txt`.
+closed with zero finds, as the campaign predicted the unbuilt devices would leave it. The raw
+solver logs are kept as a local archive and not committed; the counts here are the record.
 
 ## Owed, not yet built
 

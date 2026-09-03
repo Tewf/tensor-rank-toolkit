@@ -47,8 +47,8 @@ flock /tmp/bilinear-measure.lock python3 satisfiability/las-vegas/measure.py \
     --challenge-seeds 5 --control-seeds 0 --challenge-timeout 300 --jobs 2 \
     --cnf2xnf build/third_party/cnf2xnf/cnf2xnf \
     --yalsat build/third_party/yalsat/yalsat --xnfsat build/third_party/xnfsat/xnfsat \
-    --probsat ~/Desktop/Etude/multilinear-sat/benchmark/third_party/probSAT/probSAT \
-    --multilinear-sat ~/Desktop/Etude/multilinear-sat/build-cuda/multilinear-sat
+    --probsat <path-to>/multilinear-sat/benchmark/third_party/probSAT/probSAT \
+    --multilinear-sat <path-to>/multilinear-sat/build/multilinear-sat
 ```
 
 `--control-seeds 0` drops the two control rows, `--jobs 2` keeps the chassis
