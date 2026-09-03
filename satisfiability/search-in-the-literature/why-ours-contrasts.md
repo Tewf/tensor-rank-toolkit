@@ -9,7 +9,7 @@ the reason is ours to give rather than the survey's to have missed.
 | Bisection (fewest calls, finishes last) | 113.614 |
 | Gallop down (wins) | 110.094 |
 
-Source: [`the-five-schedules.md`](../search/the-five-schedules.md).
+Source: [`the-five-schedules.md`](../bracket/the-five-schedules.md).
 
 The exponential-versus-linear gap is in the *size of the cost range*, which for
 MaxSAT is exponential in the number of soft clauses. Here the range is

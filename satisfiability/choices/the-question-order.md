@@ -2,7 +2,7 @@
 
 **Which order the questions are asked in**, which sits outside the three above
 for a reason worth naming. **One schedule is implemented and five were priced**,
-which [`search/`](../search/README.md) shows is the same thing here: a question's
+which [`bracket/`](../bracket/README.md) shows is the same thing here: a question's
 cost does not depend on the order it is reached in, so pricing every question prices
 every schedule over them, the four nobody wrote included. It barely matters. The
 two mandatory questions are 108.461 s of a 110 to 114 s search on GF(16), so the
@@ -15,7 +15,7 @@ default by 2.2%.
 | Ascending (shipped default) | 112.533 |
 | Fastest of the five (gallop down) | 110.094 |
 
-Source: [`the-five-schedules.md`](../search/the-five-schedules.md).
+Source: [`the-five-schedules.md`](../bracket/the-five-schedules.md).
 
 **The three above were settled by running both because no paper answered them.**
 This one had an answer already. `[morgado2013]` named all five of these schedules

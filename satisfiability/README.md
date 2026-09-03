@@ -76,7 +76,7 @@ not reproduce the tensor.
 
 What each claim rests on, and which are checked rather than argued:
 [`correctness.md`](correctness.md). How the rank is located between the free
-bounds, and the four searches measured to decide it: [`search/`](search/README.md).
+bounds, and the four searches measured to decide it: [`bracket/`](bracket/README.md).
 
 Symmetry breaking ships off by default, because an over-strong constraint would
 turn a satisfiable instance into UNSAT and a wrong "no" is a wrong lower bound.

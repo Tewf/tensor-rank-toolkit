@@ -3,7 +3,7 @@
 Solve time peaks sharply just below the rank, which invites a secant-style
 search: probe two ranks, read the times, extrapolate to where the peak must be.
 It is not implemented. The schedule this module does use, and the floor that
-bounds what any schedule can win, are in [`search/`](search/README.md).
+bounds what any schedule can win, are in [`bracket/`](bracket/README.md).
 
 Three reasons, the first two structural and independent of any measurement.
 
@@ -37,7 +37,7 @@ is already here as `--probe`.
 
 Any exact search pays a yes at `r` and a no at `r-1`. On GF(16) that mandatory
 floor is 108.461 s and the ascending sweep costs 112.533 s
-(measured in [`the-five-schedules.md`](search/the-five-schedules.md)), so
+(measured in [`the-five-schedules.md`](bracket/the-five-schedules.md)), so
 **everything a cleverer probe placement could win is 4.07 s, or 3.75%**. It
 would be bought with a signal that varies about 13% run to run on this chassis
 from thermal throttling alone: the noise is larger than the effect.

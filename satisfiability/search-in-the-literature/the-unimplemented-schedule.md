@@ -9,7 +9,7 @@ ascending asks one question and stops, and that it is the only schedule which
 never reads the ceiling and so cannot be misled by a loose one.
 
 On four of the seven fixtures measured in
-[`the-five-schedules.md`](../search/the-five-schedules.md) the floor already
+[`the-five-schedules.md`](../bracket/the-five-schedules.md) the floor already
 equals the rank, so ascending asks that one mandatory question and stops:
 
 | Fixture | Floor, s | Ascending, s |
