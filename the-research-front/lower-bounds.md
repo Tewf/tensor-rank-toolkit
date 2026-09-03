@@ -4,7 +4,7 @@ Nothing above proves anything is optimal. That is the other half, it is where
 this repository is, and the front is much closer to us:
 
 - `[bdez2012]` searching subspaces rather than subsets, which
-  [`exhaustive_search/`](../exhaustive_search/README.md) implements.
+  [`methods/bilinear_rank/exhaustive_search/`](../methods/bilinear_rank/exhaustive_search/README.md) implements.
 - `[covanov2019]` adding the automorphism group, which the orbit work implements.
 - `[heule2021]` encoding the question for a SAT solver, which
   [`satisfiability/`](../satisfiability/README.md) implements, and `[yang2024sat]` using SAT
@@ -22,7 +22,7 @@ this repository is, and the front is much closer to us:
   is a rank-one *matrix* and the pool at `⟨2,2,2⟩` is `(2^4−1)^2 = 225`. The
   paper's own state count for ruling out rank 6 there is
   `Σ_{k≤2} C(225, k) = 25426`, against 25399 for
-  [`expand_subspace`](../exhaustive_search/exhaustive_search.h) on the same
+  [`expand_subspace`](../methods/bilinear_rank/exhaustive_search/exhaustive_search.h) on the same
   question. **Agreement to a tenth of a percent on three questions is empirical
   proof the two walk the same tree**, and they do, because both are `[bdez2012]`
   Algorithm 1. Wall-clock comparisons between the two cross a JVM boundary and
@@ -34,7 +34,7 @@ this repository is, and the front is much closer to us:
   *pool*: `all_rank_one_maps` materialises it where it fits, 4.3e9 maps at
   `⟨4,4,4⟩` where it does not. Yang walks it with an in-place odometer
   instead, and that iterator now exists here:
-  [`descent_search/candidate_pool.h`](../descent_search/candidate_pool.h)'s
+  [`methods/bilinear_rank/descent_search/candidate_pool.h`](../methods/bilinear_rank/descent_search/candidate_pool.h)'s
   `RankOnePool` is `[yang2025]`'s odometer, and `decide-rank` takes it
   wherever the materialised pool would be refused. So the whole difference
   was the pool, and the iterator closed it.

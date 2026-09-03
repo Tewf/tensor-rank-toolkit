@@ -23,8 +23,8 @@ map, entry for entry, and a disagreement would be ours to explain.
 What the type letter means, and what is measured about it, is
 [`sms_file.h`](../sms_file.h). The `stem_{L,R,P}.sms` naming is the convention
 the external checkers expect, and it is explained where the files are written,
-[`../../descent_search/commands/minimise_rank_main.cpp`](../../descent_search/commands/minimise_rank_main.cpp),
-and read, [`../../descent_search/commands/operators_to_tensor_main.cpp`](../../descent_search/commands/operators_to_tensor_main.cpp).
+[`../../descent_search/commands/minimise_rank_main.cpp`](../../methods/bilinear_rank/descent_search/commands/minimise_rank_main.cpp),
+and read, [`../../descent_search/commands/operators_to_tensor_main.cpp`](../../methods/bilinear_rank/descent_search/commands/operators_to_tensor_main.cpp).
 
 | | |
 |---|---|

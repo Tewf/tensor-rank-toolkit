@@ -5,7 +5,7 @@
 # both would pass throughout a period when not one command offered `--threads` or
 # `--max-memory`, and that period was most of this repository's history. The same
 # argument `infrastructure/cli/tests/check_argument_grammar.sh` and
-# `search_plan/tests/check_the_plan_reaches_a_run.sh` make, so this one spends
+# `methods/bilinear_rank/search_plan/tests/check_the_plan_reaches_a_run.sh` make, so this one spends
 # processes too.
 #
 # Three things are asserted, and the middle one is the reason for the file:
@@ -33,14 +33,14 @@ failures=0
 
 # One binary per strand, all siblings of the one ctest passes. Derived rather
 # than listed, so moving the build layout moves one line.
-binaries=$(dirname "$(dirname "$command")")
-minimise=$binaries/descent_search/minimise-rank
-lower=$binaries/incumbent_search/lower-the-bound
-walk=$binaries/flip_graph/walk-scheme
+binaries=${3:?the build root, passed by the add_test registration}
+minimise=$binaries/methods/bilinear_rank/descent_search/minimise-rank
+lower=$binaries/methods/bilinear_rank/incumbent_search/lower-the-bound
+walk=$binaries/methods/bilinear_rank/flip_graph/walk-scheme
 sparsify=$binaries/matrix_sparsification/sparsify-operator
 pencil=$binaries/pencil_rank/decide-rank-by-pencil
 curve=$binaries/curve_bounds/curve-bounds
-maker=$binaries/map_construction/make-tensor
+maker=$binaries/methods/bilinear_rank/map_construction/make-tensor
 sat=$binaries/satisfiability/decide-rank-by-sat
 
 scratch=$(mktemp -d)
@@ -94,7 +94,7 @@ operator=$fixtures/strassen_u.matrix
 
 # **`decide-rank` is deliberately not in this list, either way round.** A budget
 # that holds nothing does not refuse `--target k`: the pool goes addressed and the
-# search runs, which is what `search_plan/tests/check_the_plan_reaches_a_run.sh`
+# search runs, which is what `methods/bilinear_rank/search_plan/tests/check_the_plan_reaches_a_run.sh`
 # asserts and what `satisfiability/tests/check_exit_codes.sh` asserts the exit
 # code of. **`--max-memory` is two things in this repository**: a ceiling on one
 # allocation, and the knob that chooses the cheaper representation. Wherever a

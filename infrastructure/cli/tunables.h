@@ -56,15 +56,15 @@ inline constexpr const char* tunables_filename = "tunables.conf";
 struct Tunables {
     /// Nodes an exhaustive search may visit before it gives up, which is a
     /// budget and never a refutation. Fills `SearchBudget::node_limit`
-    /// (`exhaustive_search/exhaustive_search.h`) and `StrictSettings::node_limit`
-    /// (`oracle_guided_search/strict_deflation.h`), from `decide-rank
+    /// (`methods/bilinear_rank/exhaustive_search/exhaustive_search.h`) and `StrictSettings::node_limit`
+    /// (`methods/bilinear_rank/oracle_guided_search/strict_deflation.h`), from `decide-rank
     /// --node-limit` and `deflate-strictly --node-limit`.
     std::size_t search_node_limit = 5'000'000;
 
     /// Elements one leaf of an exhaustive search may examine before it gives up
     /// on that leaf, which is likewise a budget and never a refutation. Fills
     /// `SearchBudget::leaf_element_limit`
-    /// (`exhaustive_search/exhaustive_search.h`), from `decide-rank
+    /// (`methods/bilinear_rank/exhaustive_search/exhaustive_search.h`), from `decide-rank
     /// --leaf-limit`. The node limit bounds how many leaves are reached and
     /// nothing inside one, which is what this is for.
     std::size_t search_leaf_limit = 100'000'000;
@@ -77,9 +77,9 @@ struct Tunables {
 
     /// Distinct subspaces a plateau crossing may visit. Measured: <2,2,2>
     /// crosses to 7 at 380 and stays at 8 at 370, published in
-    /// `flip_graph/results.json`. Why the default is not 380 is in
+    /// `methods/bilinear_rank/flip_graph/results.json`. Why the default is not 380 is in
     /// `tunables.conf` beside the value. Fills `cross_plateaus`'s
-    /// `state_budget` (`flip_graph/plateau_search.h`), from
+    /// `state_budget` (`methods/bilinear_rank/flip_graph/plateau_search.h`), from
     /// `minimise-rank --plateau-states`.
     std::size_t plateau_state_budget = 200'000;
 

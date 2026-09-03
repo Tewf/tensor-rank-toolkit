@@ -82,7 +82,7 @@ struct Factorisation {
     /// makes one of these per candidate parent plus one for the distinguished cell,
     /// so `canonisations / nodes_visited` is the branching factor `[mckay1998,
     /// Thm 3]` calls `c` multiplied by the candidate parents per test.
-    /// `oracle_guided_search/when-canonical-pays.md` is what reads it.
+    /// `methods/bilinear_rank/oracle_guided_search/when-canonical-pays.md` is what reads it.
     std::size_t canonisations = 0;
 
     /// The materialised pool this would have needed, whether or not it formed

@@ -3,10 +3,10 @@ NOTICE: scope of the MIT licence, and credit for material that is not mine
 
 The MIT LICENSE in this repository covers **my own work only**: the C++ in
 linear_algebra/, formats/, infrastructure/cli/, infrastructure/testing/,
-infrastructure/run_limits/, map_construction/, descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
-incumbent_search/, integer_programme/, matrix_sparsification/,
-satisfiability/, curve_bounds/, rank_metric_bound/, oracle_guided_search/,
-pencil_rank/, canonical_factorisation/ and search_plan/, the CUDA in
+infrastructure/run_limits/, methods/bilinear_rank/map_construction/, methods/bilinear_rank/descent_search/, methods/bilinear_rank/exhaustive_search/, methods/bilinear_rank/orbit_reduction/, methods/bilinear_rank/flip_graph/,
+methods/bilinear_rank/incumbent_search/, integer_programme/, matrix_sparsification/,
+satisfiability/, curve_bounds/, rank_metric_bound/, methods/bilinear_rank/oracle_guided_search/,
+pencil_rank/, canonical_factorisation/ and methods/bilinear_rank/search_plan/, the CUDA in
 infrastructure/gpu_leaf/, the Python in web_interface/ and reproduce/,
 together with the fixtures and the site. One directory of fixtures is the exception and is not
 mine: fixtures/plinopt/, below.
@@ -14,7 +14,7 @@ mine: fixtures/plinopt/, below.
 The list is every directory CMakeLists.txt adds, and it is written out rather
 than summarised because a folder missing from it is a folder whose licence this
 file does not state. Four were missing until 2026-08-20, and two more,
-incumbent_search/ and search_plan/, until 2026-09-03; a list that drifted twice
+methods/bilinear_rank/incumbent_search/ and methods/bilinear_rank/search_plan/, until 2026-09-03; a list that drifted twice
 by hand is now compared against CMakeLists.txt by reproduce/notice_scope.py,
 in CI.
 
@@ -102,4 +102,4 @@ and the author list travel with it in vendor/permlib/.
 It is here for one function, permlib_api.h's smallestSetImage, which is
 S. A. Linton, "Finding the smallest image of a set", ISSAC 2004, credited in
 PermLib's own include/permlib/search/orbit_lex_min_search.h. The reduction that
-uses it is oracle_guided_search/subspace_canon.h.
+uses it is methods/bilinear_rank/oracle_guided_search/subspace_canon.h.

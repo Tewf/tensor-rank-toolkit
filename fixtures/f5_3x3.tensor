@@ -5,7 +5,7 @@
 # The third characteristic in this directory, and it ships for that. Every other
 # tensor here is over GF(2) or GF(3), so the general-field leaf was only ever
 # exercised at one odd prime, and the walk of a subspace over GF(p) is where the
-# base-p digits matter: see exhaustive_search/subspace_walk.h.
+# base-p digits matter: see methods/bilinear_rank/exhaustive_search/subspace_walk.h.
 #
 # Its rank is 5, which is 3+3-1, so it is optimal and known to be: Winograd's
 # n+m-1 is reachable by interpolation once the field has at least n+m-2 = 4

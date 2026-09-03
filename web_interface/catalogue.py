@@ -92,7 +92,7 @@ def memory_cap(refuses):
 TOOLS = [
     {
         "name": "minimise-rank",
-        "binary": "descent_search/minimise-rank",
+        "binary": "methods/bilinear_rank/descent_search/minimise-rank",
         "input": "tensor",
         "asks": "How few multiplications can a cheap descent reach?",
         "answers": "An upper bound, reached in three steps, with the encoding "
@@ -119,7 +119,7 @@ TOOLS = [
              "note": "From plateau_state_budget, 200000. Measured and left "
                      "there: <2,2,2> crosses to 7 at 380 states and stays at 8 "
                      "at 370, and 380 is one shape's answer rather than a "
-                     "rule. flip_graph/results.json."},
+                     "rule. methods/bilinear_rank/flip_graph/results.json."},
             {"flag": "--json", "kind": "switch", "label": "results as JSON"},
             dict(SYMMETRY),
             threads("The three descent steps adopt the same candidates in the "
@@ -130,7 +130,7 @@ TOOLS = [
     },
     {
         "name": "lower-the-bound",
-        "binary": "incumbent_search/lower-the-bound",
+        "binary": "methods/bilinear_rank/incumbent_search/lower-the-bound",
         "input": "tensor",
         "asks": "How much cheaper can a branch and bound make an algorithm?",
         "answers": "The exact search's tree cut by what has been built rather "
@@ -147,7 +147,7 @@ TOOLS = [
                      "nothing. basis is a looser incumbent and therefore a "
                      "taller tree, which is what reaches 13 on f2_5x5 where "
                      "descent exhausts at 14: "
-                     "incumbent_search/what-it-reaches.md."},
+                     "methods/bilinear_rank/incumbent_search/what-it-reaches.md."},
             {"flag": "--below", "kind": "count",
              "label": "stop at k products or fewer",
              "note": "The incumbent is seeded at k+1 instead of at the start, so "
@@ -200,7 +200,7 @@ TOOLS = [
              "note": "Off by default. Over GF(2) step 1 walks the span with a "
                      "bit an entry; this forces the general one, same tree and "
                      "same counts, so the two can be timed on one question: "
-                     "descent_search/gf2_span_walk.h."},
+                     "methods/bilinear_rank/descent_search/gf2_span_walk.h."},
             dict(SYMMETRY),
             threads("The children of one node are prepared in parallel and "
                     "entered in the same order at any count, so every number "
@@ -211,7 +211,7 @@ TOOLS = [
     },
     {
         "name": "decide-rank",
-        "binary": "exhaustive_search/decide-rank",
+        "binary": "methods/bilinear_rank/exhaustive_search/decide-rank",
         "input": "tensor",
         "asks": "Is there an algorithm with k products, and is that proved?",
         "answers": "An exhaustive search. Exit 0 is a verified decomposition, "
@@ -260,7 +260,7 @@ TOOLS = [
                      "which is cheaper a candidate and leaves duplicate "
                      "branches standing. Same verdict either way, and the node "
                      "counts say what the duplication costs: "
-                     "orbit_reduction/what-partial-rejection-leaves.md."},
+                     "methods/bilinear_rank/orbit_reduction/what-partial-rejection-leaves.md."},
             {"flag": "--device", "kind": "choice",
              "values": ["auto", "cpu", "gpu"],
              "label": "which processor answers a leaf",
@@ -289,7 +289,7 @@ TOOLS = [
                     "workers already running and what they spent counts "
                     "against the same budget, so a tight node limit can turn "
                     "exit 0 into exit 3. "
-                    "exhaustive_search/what-threads-change.md."),
+                    "methods/bilinear_rank/exhaustive_search/what-threads-change.md."),
             dict(MEMORY),
         ],
     },
@@ -358,7 +358,7 @@ TOOLS = [
     },
     {
         "name": "walk-scheme",
-        "binary": "flip_graph/walk-scheme",
+        "binary": "methods/bilinear_rank/flip_graph/walk-scheme",
         "input": "tensor",
         "asks": "Can a decomposition be moved sideways into a smaller one?",
         "answers": "A flip-graph walk. Every seed is an independent walk and is "
@@ -446,7 +446,7 @@ TOOLS = [
     },
     {
         "name": "deflate-strictly",
-        "binary": "oracle_guided_search/deflate-strictly",
+        "binary": "methods/bilinear_rank/oracle_guided_search/deflate-strictly",
         "input": "tensor",
         "asks": "Can a committed candidate be refuted from the tree?",
         "answers": "Exit 0 accepts the candidate, exit 1 refutes it, exit 3 is "
@@ -477,7 +477,7 @@ TOOLS = [
     },
     {
         "name": "enumerate-subspaces",
-        "binary": "oracle_guided_search/enumerate-subspaces",
+        "binary": "methods/bilinear_rank/oracle_guided_search/enumerate-subspaces",
         "input": "tensor",
         "asks": "How many solution subspaces are there, once per orbit?",
         "answers": "A count, not a decision. It walks and counts, so every "
@@ -595,7 +595,7 @@ TOOLS = [
     },
     {
         "name": "make-tensor",
-        "binary": "map_construction/make-tensor",
+        "binary": "methods/bilinear_rank/map_construction/make-tensor",
         "input": "none",
         "produces": "tensor",
         "asks": "Build a map to run the others on.",

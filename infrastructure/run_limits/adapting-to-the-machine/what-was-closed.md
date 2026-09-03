@@ -70,11 +70,11 @@ kill is not.
 
 | where | what it asked for | reachable by |
 |---|---|---|
-| `incumbent_search/level_lowering_moves.cpp` | `p^r` vectors | `lower-the-bound --summand-rank r`, which took any count |
+| `methods/bilinear_rank/incumbent_search/level_lowering_moves.cpp` | `p^r` vectors | `lower-the-bound --summand-rank r`, which took any count |
 | `curve_bounds/interpolation_programme.cpp` | an `O(degree²)` frontier, twice | `curve-bounds --degree`, which took any whole number: 100 000 asks for about 240 GB |
 | `pencil_rank/sumi_bound.cpp` | `x^p - x`, linear in `p` | **the tensor file**, whose header is checked for primality and not for size: `field 2147483647` asks for 17 GB |
 | `matrix_sparsification/combinations.cpp` | `C(total, size)` subsets | `sparsify-operator` on anything larger than the 7x4 operators shipped: `C(47, 23)` ≈ 1.6e13 on a `⟨4,4,4⟩` operator, which `minimise-rank --emit-operators` invites |
-| `map_construction/map_construction.cpp` | `(rows·inner·columns)²` entries, and `length³` | `make-tensor --matmul 2 100 100 100`, which is 7.2 TiB |
+| `methods/bilinear_rank/map_construction/map_construction.cpp` | `(rows·inner·columns)²` entries, and `length³` | `make-tensor --matmul 2 100 100 100`, which is 7.2 TiB |
 
 Each count is computed with its own overflow checked, and where the product of
 two dimensions is itself the multiplication that wraps, the check is asked as one

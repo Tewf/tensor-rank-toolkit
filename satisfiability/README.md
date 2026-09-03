@@ -12,7 +12,7 @@ directions, and this folder runs both.
 
 The second is why this exists, and **the advantage grows with the instance**,
 up to twenty-one times against [the exhaustive
-search](../exhaustive_search/exhaustive_search.h) on GF(16). Where both finish they
+search](../methods/bilinear_rank/exhaustive_search/exhaustive_search.h) on GF(16). Where both finish they
 agree, on every fixture, in both directions, which is what makes them worth
 keeping together: a disagreement would mean one of them is wrong, and neither
 can check a "no" after the fact on its own. Numbers in

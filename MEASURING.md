@@ -37,7 +37,7 @@ that the band cannot account for them, which is why the ones that appear are
 **about 30x**, **73x** and **126x** rather than 1.2x. Each of the three is a
 published pair rather than a remembered figure: the orbit quotient refuting six
 products on ⟨2,2,2⟩
-([`orbit_reduction/what-the-quotient-costs.md`](orbit_reduction/what-the-quotient-costs.md)),
+([`methods/bilinear_rank/orbit_reduction/what-the-quotient-costs.md`](methods/bilinear_rank/orbit_reduction/what-the-quotient-costs.md)),
 what ordering the terms is worth to a solver, and what one solver is worth
 against another on GF(16) at nine
 ([`satisfiability/results.json`](satisfiability/results.json)).
@@ -71,7 +71,7 @@ count, which this file used to deny: a refutation visits the same nodes at any
 thread count, a witness stops early and the workers already running spend against
 the same budget, so a tight `--node-limit` can turn exit 0 into exit 3. Measured,
 with the consequence and what to do about it:
-[`exhaustive_search/what-threads-change.md`](exhaustive_search/what-threads-change.md).
+[`methods/bilinear_rank/exhaustive_search/what-threads-change.md`](methods/bilinear_rank/exhaustive_search/what-threads-change.md).
 
 The heuristic is unaffected and adopts the same candidates in the same order.
 

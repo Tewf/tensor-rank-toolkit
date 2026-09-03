@@ -29,7 +29,8 @@ add_test(NAME tunables COMMAND test_tunables ${PROJECT_SOURCE_DIR})
 # processes.
 add_test(NAME argument_grammar
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_argument_grammar.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures
+                 ${CMAKE_BINARY_DIR})
 set_tests_properties(argument_grammar PROPERTIES TIMEOUT 120)
 
 # That a file bounds a real run, which the check above cannot see, for the reason

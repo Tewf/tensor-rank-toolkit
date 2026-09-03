@@ -8,7 +8,7 @@ of narrowing this search, the one that works and the two that cannot, is
 subspace a group-invariant canonical parent and accept an augmentation only from
 that parent's class, so each class is reached exactly once with **no memory** of
 what was generated. It is the standard fix for the duplication the plain tree
-leaves, and `oracle_guided_search/` measures it at **22 778x fewer nodes** when
+leaves, and `methods/bilinear_rank/oracle_guided_search/` measures it at **22 778x fewer nodes** when
 *counting* solution subspaces.
 
 Deciding is not counting, and the first wiring of it lost by 129x. Two fixes
@@ -24,7 +24,7 @@ the floor:
 | `canonical`, one pool pass a node | 6 generators | **72** | 0.0458 s |
 | `canonical`, and a parent test that exits | 6 generators | **72** | **0.0381 s** |
 
-The last row is [`../oracle_guided_search/pool_cosets.h`](../oracle_guided_search/pool_cosets.h),
+The last row is [`../oracle_guided_search/pool_cosets.h`](../methods/bilinear_rank/oracle_guided_search/pool_cosets.h),
 and the plain route moved under it too: 0.0102 s to 0.00742 s on the same sweep,
 because the two rows were not measured on the same afternoon. **The ratio that
 stands today is 5.1x against, from 25.8x.**
@@ -82,7 +82,7 @@ That open question, whether the crossing arrives before the pool becomes the
 binding cost, has been swept at five shapes, and the answer is that **the pool
 became the binding cost first, and it is not the pool's size that does it**. Both
 routes at `⟨2,2,2⟩`, `⟨2,2,3⟩`, `⟨2,2,4⟩`, `⟨2,3,3⟩` and `⟨3,3,3⟩`, level by level:
-[`../oracle_guided_search/when-canonical-pays/`](../oracle_guided_search/when-canonical-pays/README.md).
+[`../oracle_guided_search/when-canonical-pays/`](../methods/bilinear_rank/oracle_guided_search/when-canonical-pays/README.md).
 
 Three results from it bear on this page. The node saving is **nothing at all** at
 one level of augmentation, because the baseline's `least_in_orbit` is the exact
@@ -99,7 +99,7 @@ the identical children: 5.05 s against 51.2 ms at the `⟨3,3,3⟩` root, which 
 the whole of the plain route's 4.87 s run. The margin is a quadratic in the
 baseline, on the one level a real sweep never reaches, and the predicate that
 finds it is deliberately wired to nothing:
-[`../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md`](../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md).
+[`../oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md`](../methods/bilinear_rank/oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md).
 
 What decided the rest was a pool scan and not the group: seven to fourteen of them
 per canonical node, 98% of the cost at `⟨2,3,3⟩`, where the setwise stabiliser was

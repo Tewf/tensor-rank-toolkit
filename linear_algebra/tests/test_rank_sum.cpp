@@ -9,7 +9,7 @@
 /// to dominate each other. **Correct as written**: the line bound's fast
 /// enumeration, which uses one direction per projective point and walks each line
 /// once, agrees with the obvious double loop over every ordered pair of vectors.
-/// That last check is the pattern `orbit_reduction/group_construction.h` already
+/// That last check is the pattern `methods/bilinear_rank/orbit_reduction/group_construction.h` already
 /// uses, where a brute-force enumeration and a closed form must agree on small
 /// shapes.
 #include <algorithm>
@@ -39,7 +39,7 @@ struct Fixture {
     long long total;
 };
 
-/// Ranks from `famous_tensors/`, `descent_search/known_ranks.md` and the
+/// Ranks from `famous_tensors/`, `methods/bilinear_rank/descent_search/known_ranks.md` and the
 /// fixtures' own table. Where a rank is not settled, the column holds the best
 /// decomposition anyone here has actually exhibited, which is still an upper
 /// bound a lower bound may not cross.

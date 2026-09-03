@@ -24,7 +24,7 @@ first-improvement greedy has nowhere to step. Nor does one of the 945 for
 `⟨2,2,3⟩`, nor one of the 32 193 for `⟨2,3,3⟩`: the shortlist is empty every
 time, on every size the scan can finish. Quotienting the pool by symmetry does
 not rescue it either, because an empty shortlist stays empty however it is
-grouped ([`flip_graph/plateau_search.h:15-20`](../flip_graph/plateau_search.h)).
+grouped ([`methods/bilinear_rank/flip_graph/plateau_search.h:15-20`](../methods/bilinear_rank/flip_graph/plateau_search.h)).
 
 The reason is structural, and it is the same property that makes step 1
 trustworthy: step 1 returns a minimum-weight basis of `span(T)` and is provably
@@ -39,7 +39,7 @@ road to 7 does not.
 Strassen's seven are reachable from the naive eight only through maps that cost
 the same, and a strictly descending walk cannot enter an equal-cost state by
 construction. That is what
-[`flip_graph/plateau_search.h:15-26`](../flip_graph/plateau_search.h) was written
+[`methods/bilinear_rank/flip_graph/plateau_search.h:15-26`](../methods/bilinear_rank/flip_graph/plateau_search.h) was written
 for. The two rows below reach the same crossing with a different tool,
 `walk-scheme`'s flip walk restarted over independent seeds rather than
 `plateau_search`'s own depth-limited backtracking:
@@ -50,9 +50,9 @@ for. The two rows below reach the same crossing with a different tool,
 | `⟨3,3,3⟩` | 27, no improvement | **24** | 38.1 s, `--flips 20000 --seeds 8` |
 
 Both rows are `walk-scheme`'s, measured in
-[`against-the-heuristics.md`](../oracle_guided_search/measurements/against-the-heuristics.md)
+[`against-the-heuristics.md`](../methods/bilinear_rank/oracle_guided_search/measurements/against-the-heuristics.md)
 line 5 and
-[`three-by-three.md`](../oracle_guided_search/measurements/three-by-three.md) line
+[`three-by-three.md`](../methods/bilinear_rank/oracle_guided_search/measurements/three-by-three.md) line
 6. On `⟨2,2,2⟩` the number to beat is 7 and not 8; on `⟨3,3,3⟩`
 the walk is three products under the naive 27 where the descent is level with
 it. One sideways step does not do it: from the naive eight, `⟨2,2,2⟩` needs

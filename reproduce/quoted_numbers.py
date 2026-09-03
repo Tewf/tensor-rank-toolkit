@@ -38,8 +38,8 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-TEST = ROOT / "oracle_guided_search" / "tests" / "test_canonical_augmentation.cpp"
-DESCENT = ROOT / "descent_search" / "results.json"
+TEST = ROOT / "methods/bilinear_rank/oracle_guided_search" / "tests" / "test_canonical_augmentation.cpp"
+DESCENT = ROOT / "methods/bilinear_rank/descent_search" / "results.json"
 SPARSIFICATION = ROOT / "matrix_sparsification" / "results.json"
 
 
@@ -97,8 +97,8 @@ def claims():
          "how-the-search-works/README.md",
          "OPTIONS/committing-to-candidates.md",
          "canonical_factorisation/canonical-augmentation.md",
-         "oracle_guided_search/deduplication-cost.md",
-         "oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md"],
+         "methods/bilinear_rank/oracle_guided_search/deduplication-cost.md",
+         "methods/bilinear_rank/oracle_guided_search/when-canonical-pays/why-nothing-consults-it.md"],
     ), (
         "what the orbit quotient removes refuting 6 products on <2,2,2>",
         f"{quotient}x",
@@ -107,9 +107,9 @@ def claims():
          "what-it-computes.md",
          "how-the-search-works/what-to-wire.md",
          "OPTIONS/searching-for-rank.md",
-         "orbit_reduction/README.md",
-         "orbit_reduction/what-the-quotient-costs.md",
-         "orbit_reduction/orbit_search.cpp"],
+         "methods/bilinear_rank/orbit_reduction/README.md",
+         "methods/bilinear_rank/orbit_reduction/what-the-quotient-costs.md",
+         "methods/bilinear_rank/orbit_reduction/orbit_search.cpp"],
     ), (
         "the Grey-221 operators, as given and at the proved minimum",
         f"{as_given} nonzeros to {minimum}",

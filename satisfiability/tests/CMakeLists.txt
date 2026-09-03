@@ -29,5 +29,6 @@ set_tests_properties(end_to_end_slow PROPERTIES LABELS slow TIMEOUT 900)
 # but the five-second SAT one answers in milliseconds.
 add_test(NAME exit_codes
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_exit_codes.sh
-                 $<TARGET_FILE:decide-rank-by-sat> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:decide-rank-by-sat> ${PROJECT_SOURCE_DIR}/fixtures
+                 ${CMAKE_BINARY_DIR})
 set_tests_properties(exit_codes PROPERTIES TIMEOUT 120)

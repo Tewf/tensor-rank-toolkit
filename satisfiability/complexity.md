@@ -65,7 +65,7 @@ being explicit about:
 
 That is also why two independent methods are kept on the same fixtures: for the
 `no` answers, agreement between [the exhaustive
-search](../exhaustive_search/exhaustive_search.h) and a solver is the only check
+search](../methods/bilinear_rank/exhaustive_search/exhaustive_search.h) and a solver is the only check
 available.
 
 ## Where the shorthand came from

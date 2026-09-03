@@ -25,7 +25,7 @@ Example of use, from a build tree (an instrument, deliberately not
 installed):
 
 ```sh
-build/run_limits/show-limits
+build/infrastructure/run_limits/show-limits
 # show-limits: what a run is bounded by here
 #
 # machine, as the kernel reports it

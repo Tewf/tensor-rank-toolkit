@@ -65,12 +65,12 @@ problem. The proof is in [`narrowing-the-search.md`](narrowing-the-search.md).
 The group that helps is the subgroup that stabilises `span(T)`, since only that
 one maps solutions for `T` to solutions for `T`. It is what
 `expand_subspace_up_to_symmetry` quotients by here, and it is worth a great
-deal: `orbit_reduction/` measures the `<3,3,3>` pool collapsing from 261 121 to
+deal: `methods/bilinear_rank/orbit_reduction/` measures the `<3,3,3>` pool collapsing from 261 121 to
 **13 orbits**.
 
 But note what that does and does not save. The quotient prunes the **search**;
 the pool is still built in full before it is pruned, so the **space** is
-unchanged. `RankOnePool` in `descent_search/candidate_pool.h` is the piece that
+unchanged. `RankOnePool` in `methods/bilinear_rank/descent_search/candidate_pool.h` is the piece that
 would fix that, storing the left and right vectors and computing `at(i)` on
 demand, which is `O(p^n + p^m)` against `O(p^n * p^m)`. The exhaustive search
 carries a pool index down its recursion and has not been converted. Until it is,

@@ -33,15 +33,15 @@ reste de la documentation technique.
 
 | Axe | Question | Résultat |
 |---|---|---|
-| [descente](descent_search/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
-| [exhaustion](exhaustive_search/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
-| [titulaire](incumbent_search/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
+| [descente](methods/bilinear_rank/descent_search/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive_search/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
+| [titulaire](methods/bilinear_rank/incumbent_search/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
 | [faisceaux](pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
 | [factorisation](canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
 | [satisfiabilité](satisfiability/README.md) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
-| [symétrie](orbit_reduction/README.md) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
-| [sans isomorphes](oracle_guided_search/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
+| [symétrie](methods/bilinear_rank/orbit_reduction/README.md) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
+| [sans isomorphes](methods/bilinear_rank/oracle_guided_search/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
 | [creusement](matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
 L'infrastructure partagée et la documentation :
@@ -49,9 +49,9 @@ L'infrastructure partagée et la documentation :
 | Chemin | Contenu |
 |---|---|
 | [`linear_algebra/`](linear_algebra/README.md), [`formats/`](formats/README.md) | l'arithmétique exacte ; les fichiers tensor, SMS, DIMACS et SMT-LIB |
-| [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`search_plan/`](search_plan/README.md) | la grammaire de commande et les codes de sortie partagés ; ce qu'un calcul peut prendre à la machine ; les choix qu'un calcul écrit et rejoue |
-| [`map_construction/`](map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | construire les applications ; les jeux d'essai de tout le reste ; où chaque recherche s'arrête sur les tenseurs dont la littérature débat |
-| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`flip_graph/`](flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
+| [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`methods/bilinear_rank/search_plan/`](methods/bilinear_rank/search_plan/README.md) | la grammaire de commande et les codes de sortie partagés ; ce qu'un calcul peut prendre à la machine ; les choix qu'un calcul écrit et rejoue |
+| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | construire les applications ; les jeux d'essai de tout le reste ; où chaque recherche s'arrête sur les tenseurs dont la littérature débat |
+| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
 | [`reproduce/`](reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | chaque compte publié re-dérivé en CI ; l'assertion partagée des tests ; le script de comparaison des moteurs |
 | [`web_interface/`](web_interface/README.md) | les outils pilotés depuis un navigateur, sur la seule bibliothèque standard de Python |
 | [`start-here.md`](start-here.md) | une première session en mots simples, pour un lecteur sans le vocabulaire du domaine (en anglais) |
@@ -178,7 +178,7 @@ cmake --install build --prefix ~/.local   # les treize outils, sur le PATH
 **Chaque ligne de commande documentée écrit son outil nu**, `minimise-rank …`,
 ce qui suppose l'installation ci-dessus. Sans elle, les mêmes binaires se
 trouvent sous le module qui possède chacun,
-`build/descent_search/minimise-rank` et ainsi de suite, et les lignes
+`build/methods/bilinear_rank/descent_search/minimise-rank` et ainsi de suite, et les lignes
 s'exécutent avec ce préfixe. Les trois instruments et la coquille
 `list-solvers` ne s'installent volontairement pas ; le `CMakeLists.txt`
 racine dit pourquoi. Un lecteur nouveau dans le domaine commence par

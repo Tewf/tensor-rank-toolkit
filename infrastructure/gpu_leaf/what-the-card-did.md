@@ -10,7 +10,7 @@ three, machine otherwise quiet, under `flock /tmp/bilinear-measure.lock`, at
 The only per-element figure this repository had was **785 ns**, the *general*
 Givaro path at `⟨4,4,4⟩`. The GF(2) leaf is 6.0x to 39.6x faster than that path on
 the same work
-([`../exhaustive_search/gf2_leaf.h`](../../exhaustive_search/gf2_leaf.h)), so timing
+([`../exhaustive_search/gf2_leaf.h`](../../methods/bilinear_rank/exhaustive_search/gf2_leaf.h)), so timing
 a kernel against 785 ns would have flattered the card by up to 23x. So the first
 thing measured is the GF(2) leaf itself, on an **addressed** pool at 16x16 over
 GF(2), one core. Three host rows follow and they are three different claims:

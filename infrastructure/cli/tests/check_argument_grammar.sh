@@ -17,11 +17,12 @@ command=$1
 fixtures=$2
 failures=0
 
-# The others sit beside this one, one directory per strand, so each path is the
-# one ctest passes with the strand swapped. Passing the rest in as arguments
-# would only restate that, and would need editing every time the list moves.
-binaries=$(dirname "$(dirname "$command")")
-minimise=$binaries/descent_search/minimise-rank
+# The build root arrives as an argument because the tree is nested: deriving
+# it from the command's path stopped being one dirname per level when the
+# strands moved under methods/bilinear_rank/, and a derivation that encodes
+# the depth breaks on every regrouping. The registration passes it instead.
+binaries=${3:?the build root, passed by the add_test registration}
+minimise=$binaries/methods/bilinear_rank/descent_search/minimise-rank
 
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
@@ -92,18 +93,18 @@ refuses 2 "only one file is read" \
 # aborted on a typo until 2026-09-03, and measure-leaf read `--help` as a mode
 # it did not know and left green. measure-leaf exists only where nvcc did, so
 # it joins where it was built; absent, there is no binary to ask.
-everything="descent_search/minimise-rank \
-    descent_search/operators-to-tensor \
-    exhaustive_search/decide-rank \
-    flip_graph/walk-scheme \
-    map_construction/make-tensor \
+everything="methods/bilinear_rank/descent_search/minimise-rank \
+    methods/bilinear_rank/descent_search/operators-to-tensor \
+    methods/bilinear_rank/exhaustive_search/decide-rank \
+    methods/bilinear_rank/flip_graph/walk-scheme \
+    methods/bilinear_rank/map_construction/make-tensor \
     matrix_sparsification/sparsify-operator \
     satisfiability/decide-rank-by-sat \
     curve_bounds/curve-bounds \
-    incumbent_search/lower-the-bound \
-    oracle_guided_search/deflate-strictly \
-    oracle_guided_search/enumerate-subspaces \
-    oracle_guided_search/price-canonical-route \
+    methods/bilinear_rank/incumbent_search/lower-the-bound \
+    methods/bilinear_rank/oracle_guided_search/deflate-strictly \
+    methods/bilinear_rank/oracle_guided_search/enumerate-subspaces \
+    methods/bilinear_rank/oracle_guided_search/price-canonical-route \
     pencil_rank/decide-rank-by-pencil \
     canonical_factorisation/factor-over-canonical-basis \
     infrastructure/run_limits/show-limits"

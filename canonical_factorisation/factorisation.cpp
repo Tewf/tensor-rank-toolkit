@@ -209,7 +209,7 @@ Factorisation by_satisfiability(const ModularField& field,
 /// rather than slow. `PoolSetCanon` names the same orbit from a base and strong
 /// generating set and never walks the group, so the list is no longer needed
 /// and costs a presentation built from 216 elements instead of six: the same
-/// change measured 3.04 s to 1.12 s in `oracle_guided_search/`.
+/// change measured 3.04 s to 1.12 s in `methods/bilinear_rank/oracle_guided_search/`.
 ///
 /// It also lifts a shape limit. `matrix_multiplication_symmetries` refuses
 /// above a list it can hold, which was the honest answer at `<3,3,3>` and is no

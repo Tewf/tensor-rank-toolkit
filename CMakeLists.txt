@@ -50,28 +50,28 @@ add_subdirectory(infrastructure/testing)
 add_subdirectory(infrastructure/run_limits)
 add_subdirectory(linear_algebra)
 add_subdirectory(formats)
-add_subdirectory(map_construction)
-add_subdirectory(descent_search)
+add_subdirectory(methods/bilinear_rank/map_construction)
+add_subdirectory(methods/bilinear_rank/descent_search)
 # Before exhaustive_search, because `decide-rank` asks it whether a two-slice
 # tensor is settled in polynomial time before it builds any pool.
 add_subdirectory(pencil_rank)
-add_subdirectory(exhaustive_search)
-add_subdirectory(orbit_reduction)
-add_subdirectory(flip_graph)
+add_subdirectory(methods/bilinear_rank/exhaustive_search)
+add_subdirectory(methods/bilinear_rank/orbit_reduction)
+add_subdirectory(methods/bilinear_rank/flip_graph)
 # After descent_search, whose minimum-weight basis it grows, and before nothing:
 # the upper-bound search links the heuristic and is linked by no other module.
-add_subdirectory(incumbent_search)
+add_subdirectory(methods/bilinear_rank/incumbent_search)
 add_subdirectory(integer_programme)
 add_subdirectory(matrix_sparsification)
 add_subdirectory(satisfiability)
 add_subdirectory(curve_bounds)
 add_subdirectory(rank_metric_bound)
-add_subdirectory(oracle_guided_search)
+add_subdirectory(methods/bilinear_rank/oracle_guided_search)
 add_subdirectory(canonical_factorisation)
 # After both of the modules whose enums a plan names, and after run_limits,
 # whose device ranking it routes: search_plan owns no rule and links every
 # module that owns one.
-add_subdirectory(search_plan)
+add_subdirectory(methods/bilinear_rank/search_plan)
 
 # Read unconditionally, and guarded inside instead. infrastructure/gpu_leaf/README.md is a
 # measurement that stands on its own and the directory builds nothing the rest of

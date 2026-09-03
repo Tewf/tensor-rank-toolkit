@@ -32,7 +32,7 @@
 /// weight is its *number of nonzeros*. One matroid, two costs, and the same
 /// theorem. That the two are not one function yet is a duplication this file
 /// names rather than hides: unifying them means lifting that header out of
-/// `descent_search/` into `linear_algebra/` and giving it the weight as an
+/// `methods/bilinear_rank/descent_search/` into `linear_algebra/` and giving it the weight as an
 /// argument, which is its own change with its own measurement.
 ///
 /// **Why the rational routes do not do this.** They work over `Q`, where

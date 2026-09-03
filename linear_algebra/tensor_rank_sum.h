@@ -137,7 +137,7 @@ inline std::size_t rank_sum_work(std::size_t characteristic, std::size_t length)
 
 /// `rk(v ·_axis T)` for every `v`, indexed by the base-`p` encoding of `v` with
 /// position 0 as the least significant digit, the encoding
-/// `descent_search/span_enumeration.cpp::coefficient_vector` uses.
+/// `methods/bilinear_rank/descent_search/span_enumeration.cpp::coefficient_vector` uses.
 /// **The one loop in this directory that spreads over cores.** Element `index` is
 /// built from the digits of `index` and reduced against `slices`, which nobody
 /// writes, and written to its own slot: no loop-carried dependency, uniform cost,

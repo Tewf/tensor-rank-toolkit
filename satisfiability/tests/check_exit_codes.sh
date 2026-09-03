@@ -20,7 +20,7 @@ failures=0
 # strand, so each path is the one ctest passes with the strand swapped. Passing
 # the rest in as arguments would only restate that, and would need editing every
 # time the list moves.
-binaries=$(dirname "$(dirname "$command")")
+binaries=${3:?the build root, passed by the add_test registration}
 
 expect() {
     want=$1
@@ -47,7 +47,7 @@ expect 5 "$fixtures/no_such_file.tensor"
 # seconds cannot settle twelve products for F2 5x5, and saying so is the point.
 expect 3 "$fixtures/f2_5x5.tensor" --target 12 --timeout 5
 
-command=$binaries/exhaustive_search/decide-rank
+command=$binaries/methods/bilinear_rank/exhaustive_search/decide-rank
 echo "decide-rank"
 expect 2
 expect 2 "$fixtures/f2_2x2.tensor" --nonsense
@@ -83,14 +83,14 @@ expect 5 "$fixtures/matmul_2x2x2.tensor" --max-memory 1
 # form: undecided at one node, never a refusal.
 expect 3 "$fixtures/matmul_2x2x2.tensor" --target 7 --max-memory 1 --node-limit 1
 
-command=$binaries/descent_search/minimise-rank
+command=$binaries/methods/bilinear_rank/descent_search/minimise-rank
 echo "minimise-rank"
 expect 2
 expect 2 "$fixtures/f2_2x2.tensor" --nonsense
 expect 0 "$fixtures/f2_2x2.tensor"
 expect 5 "$fixtures/no_such_file.tensor"
 
-command=$binaries/flip_graph/walk-scheme
+command=$binaries/methods/bilinear_rank/flip_graph/walk-scheme
 echo "walk-scheme"
 expect 2
 expect 2 "$fixtures/f2_2x2.tensor" --nonsense
@@ -100,7 +100,7 @@ expect 2 "$fixtures/f2_2x2.tensor" --flips 50 --seeds 1 --from 1
 expect 0 "$fixtures/f2_2x2.tensor" --flips 50 --seeds 1
 expect 5 "$fixtures/no_such_file.tensor"
 
-command=$binaries/map_construction/make-tensor
+command=$binaries/methods/bilinear_rank/map_construction/make-tensor
 echo "make-tensor"
 expect 2
 expect 2 --nonsense 2

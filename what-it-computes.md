@@ -5,7 +5,7 @@ page is the long form; [`README.md`](README.md) carries the headline numbers in 
 table and links here rather than restating them, which is the repository's
 zero-redundancy rule applied to itself.
 
-**[Rank by descent](descent_search/README.md)**, the cheap direction. Three steps: an
+**[Rank by descent](methods/bilinear_rank/descent_search/README.md)**, the cheap direction. Three steps: an
 exact matroid greedy for the starting basis, then two relaxations that trade the
 guarantee for reach.
 
@@ -23,9 +23,9 @@ for this problem by name), the descent is sound and terminates, its fixed point
 is locally optimal against the whole candidate pool and not merely the part it
 scanned, and the orbit quotient is invariant under any subgroup of the
 stabiliser. Which of those a test would catch is recorded in
-[`descent_search/correctness.md`](descent_search/correctness.md).
+[`methods/bilinear_rank/descent_search/correctness.md`](methods/bilinear_rank/descent_search/correctness.md).
 
-**[Rank by exhaustion](exhaustive_search/README.md)**, the expensive direction, which
+**[Rank by exhaustion](methods/bilinear_rank/exhaustive_search/README.md)**, the expensive direction, which
 proves things. It settles small maps outright, reproducing Karatsuba's 3, the
 classical 3 and 6 for GF(4) and GF(8), and **rank ⟨2,2,2⟩ = 7** decided from the
 tensor in half a second. On F2 5×5 it rules out 9, 10 and 11 from the bounds
@@ -33,7 +33,7 @@ and 12 by exhaustion, and with the 13 the strand below exhibits that is
 **rank(F2 5×5) = 13** proved here on both sides; `[bdez2012]` report the same 13.
 On F3 3×6 both sides are proved in about 25 seconds.
 
-**[The same tree, cut by an incumbent](incumbent_search/README.md)**, which is the
+**[The same tree, cut by an incumbent](methods/bilinear_rank/incumbent_search/README.md)**, which is the
 upper-bound direction of the one above. A node is a subspace containing
 `span(T)` and a child adjoins a rank-one map, exactly as `[bdez2012]` Algorithm 2
 does; what changes is that the branch stops at `dim V + 1 >= best` rather than at
@@ -44,7 +44,7 @@ convolution of length 7 over F2 from 15 to 13 in 22 nodes**, which is its
 published rank, where not one of the 16 129 rank-one maps strictly improves it;
 and GF(32) multiplication from 16 to 14. Every count is verified by rebuilding
 the algorithm and multiplying it out
-([`incumbent_search/what-it-reaches.md`](incumbent_search/what-it-reaches.md)).
+([`methods/bilinear_rank/incumbent_search/what-it-reaches.md`](methods/bilinear_rank/incumbent_search/what-it-reaches.md)).
 
 **[Lower bounds without a search](linear_algebra/tensor_rank_sum.h).** Two
 rank-sum bounds return a floor from the tensor alone in milliseconds, and they
@@ -67,7 +67,7 @@ rank question into one a solver answers. A refutation can be written as DRAT and
 checked by `drat-trim`, so a lower bound from a solver is verifiable rather than
 trusted.
 
-**[Quotienting by symmetry](orbit_reduction/README.md).** A change of coordinates fixing
+**[Quotienting by symmetry](methods/bilinear_rank/orbit_reduction/README.md).** A change of coordinates fixing
 the target subspace maps solutions to solutions, so one member of each orbit
 suffices: **39.2× fewer nodes on a refutation**, and the ⟨3,3,3⟩ candidate pool
 collapses from 261 121 to **13 orbits**. It is worth 2.3× on *finding* a
@@ -75,14 +75,14 @@ decomposition rather than refuting one, because a proof walks every branch and a
 search that stops at the first answer stops before most of the repetition. Both
 are re-derived by `reproduce/measure.py --check`.
 
-**[Isomorph-free enumeration](oracle_guided_search/README.md).**
+**[Isomorph-free enumeration](methods/bilinear_rank/oracle_guided_search/README.md).**
 `enumerate-subspaces --canonical` is `[mckay1998]`'s canonical augmentation,
 which deduplicates with no memory at all. It returns ⟨2,2,2⟩'s 36 solution
 subspaces as the **1 orbit** they are, visiting **22 778× fewer nodes** and
 running **11.8× faster**. The group is not walked at all any more: an orbit is
 named by least image under a prescribed group, which is what carried the saving
 on the clock from under 2× to that, and it is measured rather than glossed
-([`deduplication-cost.md`](oracle_guided_search/deduplication-cost.md)).
+([`deduplication-cost.md`](methods/bilinear_rank/oracle_guided_search/deduplication-cost.md)).
 
 **[Two slices, without a search](pencil_rank/README.md).** A tensor with two slices is a
 matrix pencil, and Kronecker's theory gives its minimal indices and elementary

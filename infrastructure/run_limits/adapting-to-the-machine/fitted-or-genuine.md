@@ -61,7 +61,7 @@ What they were, for the record:
 `plateau_state_budget = 200'000` was tagged *PROVISIONAL: never measured* here
 and in `infrastructure/cli/tunables.h` until the crossing it bounds was priced. **It is
 measured now**, and the pair is published in
-[`../../flip_graph/results.json`](../../../flip_graph/results.json), where
+[`../../flip_graph/results.json`](../../../methods/bilinear_rank/flip_graph/results.json), where
 `reproduce/measure.py --check` re-derives both rows on every push: `⟨2,2,2⟩`
 crosses to 7 at a **380-state budget**, visiting 386 subspaces, and stays at the
 naive 8 at 370, visiting 376. The negative row is why the boundary itself is
@@ -87,7 +87,7 @@ is measured it can be chosen rather than guessed.
 | number | where | why it does not move |
 |---|---|---|
 | `bytes_per_matrix = 56 + 8 * entries` | `../memory_budget.cpp` | `sizeof` of the structures on any LP64 target, plus an allocator header. Givaro fixes the element at `int64_t`, so the 8 is the format and not the machine. |
-| `longest_vector_listed = 20` | `exhaustive_search/gf2_leaf.cpp` | a ceiling on `2^length`, and the file says outright it is *"not a tuning knob"*. |
+| `longest_vector_listed = 20` | `methods/bilinear_rank/exhaustive_search/gf2_leaf.cpp` | a ceiling on `2^length`, and the file says outright it is *"not a tuning knob"*. |
 | `kWordCeiling = 4`, `kScanDimensionCeiling = 256`, `kWalkDimensionCeiling = 64` | `infrastructure/gpu_leaf/leaf_backend.cpp` | what the kernels' own `__constant__` arrays hold. Compile-time facts about the source. |
 | `handles(): 4, 5, 9, 16` | `infrastructure/gpu_leaf/leaf_backend.cpp`, `span_ranks.cu` | the four shapes a kernel is instantiated at. A fact about the template list. |
 | `kRowsPerLaunch = 2048` | `infrastructure/gpu_leaf/pool_scan.cu` | keeps the grid under CUDA's **65 535** second-dimension ceiling, which is a CUDA limit and not a card's. |
@@ -110,7 +110,7 @@ which is why none of them moved here.
 ## The one that is adaptive already, and is the model for the rest
 
 `set_worker_count(0)` asks `std::thread::hardware_concurrency()`, and
-`descent_search/minimise_rank.cpp` sizes its prefetch window as
+`methods/bilinear_rank/descent_search/minimise_rank.cpp` sizes its prefetch window as
 `worker_count() * 4`. **No number from this chassis appears in either.** A
 128-core machine gets 128 workers and a 512-deep window without anybody
 re-measuring anything. That is what the other three axes should look like and

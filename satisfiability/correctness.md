@@ -14,7 +14,7 @@ means a test fails if it stops being true.
 | Walking up finds the rank | monotonicity: a `k`-decomposition gives a `k+1` one | checked |
 | The rank is **exact** | a satisfiable `k`, a definite refusal below it, and a start at or below the flattening bound | checked |
 | Symmetry breaking removes no solution | the terms are a set; `(λa)⊗(μb)⊗(νc)` is the same term when `λμν = 1` | checked |
-| A cube split is complete | the representatives cover every first term up to the group | checked, [`orbit_reduction/tests/test_orbit_cubes.cpp`](../orbit_reduction/tests/test_orbit_cubes.cpp) |
+| A cube split is complete | the representatives cover every first term up to the group | checked, [`methods/bilinear_rank/orbit_reduction/tests/test_orbit_cubes.cpp`](../methods/bilinear_rank/orbit_reduction/tests/test_orbit_cubes.cpp) |
 
 ## The asymmetry that shapes everything else
 
@@ -60,7 +60,7 @@ lexicographically least. Nothing makes a representative least, so the ordering
 starts at term 1 whenever a cube is supplied.
 
 That is now checked beside the group it is a statement about.
-[`orbit_reduction/tests/test_orbit_cubes.cpp`](../orbit_reduction/tests/test_orbit_cubes.cpp)
+[`methods/bilinear_rank/orbit_reduction/tests/test_orbit_cubes.cpp`](../methods/bilinear_rank/orbit_reduction/tests/test_orbit_cubes.cpp)
 asks `⟨2,2,2⟩` whole and split into its 5 cubes at 7 products and at 6, with the
 ordering **off and on**, and `⟨2,2,3⟩` at 7 with it on. **Five for five on
 2026-08-16 in 65.4 s**, every answer agreeing.

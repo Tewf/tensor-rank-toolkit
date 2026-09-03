@@ -275,10 +275,10 @@ def main():
     # would compare a count against itself at the price of tripling the sweep.
     repeats = REPEATS if not (arguments.check or arguments.counts) else 1
 
-    descent = ROOT / "descent_search" / "results.json"
+    descent = ROOT / "methods/bilinear_rank/descent_search" / "results.json"
     sparsification = ROOT / "matrix_sparsification" / "results.json"
     satisfiability = ROOT / "satisfiability" / "results.json"
-    flip = ROOT / "flip_graph" / "results.json"
+    flip = ROOT / "methods/bilinear_rank/flip_graph" / "results.json"
     committed = {path: json.loads(path.read_text()) if path.exists() else {}
                  for path in (descent, sparsification, satisfiability, flip)}
     sat_rows = {row["name"]: row for row in committed[satisfiability].get("fixtures", [])}

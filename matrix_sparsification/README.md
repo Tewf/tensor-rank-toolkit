@@ -1,7 +1,7 @@
 # Sparsifying the operators
 
 A fast multiplication algorithm has two costs. The multiplications, which
-[the other strand](../descent_search/README.md) counts, and the additions, which are set
+[the other strand](../methods/bilinear_rank/descent_search/README.md) counts, and the additions, which are set
 by how many nonzero entries its operators carry. Given the operator `U`, the
 problem is to find an invertible `V` minimising `nnz(U V)`. The articles put it
 as `nnz + nns` instead, since an entry that is not `0` or `±1` costs a
@@ -52,7 +52,7 @@ moved to a branch: [`dominated.md`](dominated.md). Keys are
 [`../references.md`](../references.md).
 
 The operators do not have to be typed in. [The rank
-search](../descent_search/README.md) emits them, which is the whole pipeline: 25
+search](../methods/bilinear_rank/descent_search/README.md) emits them, which is the whole pipeline: 25
 multiplications become 14, and the additions the multiplication count never saw
 come down too.
 

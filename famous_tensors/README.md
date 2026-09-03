@@ -26,7 +26,7 @@ field characteristic (2 throughout this table).
 strand allowed to cross equal-cost maps, and on both matrix multiplication
 shapes it was run on it improves on the descent. Its three timings are
 `walk-scheme`, measured in
-[`../oracle_guided_search/measurements/README.md`](../oracle_guided_search/measurements/README.md);
+[`../oracle_guided_search/measurements/README.md`](../methods/bilinear_rank/oracle_guided_search/measurements/README.md);
 `⟨3,3,3⟩`'s 24 is `--flips 20000 --seeds 8`.
 
 ## Then one file per reading of that table

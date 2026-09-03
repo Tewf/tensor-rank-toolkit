@@ -42,7 +42,7 @@ the ones that do are in [`references.md`](../references.md).
 the answer is **128** nonzeros, and 128 is the minimum over every invertible `V`
 rather than the best found, because Rado-Edmonds says so. It holds over the finite
 fields as well as over `Q`, the greedy running on `q^k`, which is the half that
-matters here: every operator [the rank search](../descent_search/README.md) emits
+matters here: every operator [the rank search](../methods/bilinear_rank/descent_search/README.md) emits
 is over a finite field.
 
 ## Is any of it new? Four candidates, and the algorithm is not one of them

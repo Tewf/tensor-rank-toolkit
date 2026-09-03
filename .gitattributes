@@ -1,7 +1,7 @@
 # Language statistics
 #
 # The work in this repository is the C++ under linear_algebra/, formats/,
-# descent_search/, exhaustive_search/ and matrix_sparsification/, plus
+# methods/bilinear_rank/descent_search/, methods/bilinear_rank/exhaustive_search/ and matrix_sparsification/, plus
 # gets two things wrong here without help.
 
 # scores the whole file as "Jupyter Notebook". It is Julia, and it is real work.

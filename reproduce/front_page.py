@@ -2,7 +2,7 @@
 
 `index.html` typesets its evidence tables by hand, so a reader with no
 JavaScript still sees them, and that makes the page a second copy of
-`descent_search/results.json` and of `matrix_sparsification/results.json`. The
+`methods/bilinear_rank/descent_search/results.json` and of `matrix_sparsification/results.json`. The
 page warns about a mismatch in the browser; this refuses one before it lands,
 which is the half that runs in CI.
 
@@ -33,7 +33,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGE = ROOT / "index.html"
-DESCENT = ROOT / "descent_search" / "results.json"
+DESCENT = ROOT / "methods/bilinear_rank/descent_search" / "results.json"
 SPARSIFICATION = ROOT / "matrix_sparsification" / "results.json"
 
 # One table row, split into the thing it names and the cells after it. The page

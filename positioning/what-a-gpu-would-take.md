@@ -68,7 +68,7 @@ Four things line up, and they are the reason this section exists:
   derives its own element from its index. What lives in memory is the two vector
   lists at about 131 KB each, the span basis at **1.5 KB**, and a survivor buffer:
   **under 300 KB against 8 GB.** The 8.2 TiB never exists anywhere.
-  [`../orbit_reduction/pool_orbits.h`](../orbit_reduction/pool_orbits.h)'s
+  [`../orbit_reduction/pool_orbits.h`](../methods/bilinear_rank/orbit_reduction/pool_orbits.h)'s
   `PoolAction` is the other lookup a kernel would want, and it is arithmetic on
   two shared tables rather than a table read.
 

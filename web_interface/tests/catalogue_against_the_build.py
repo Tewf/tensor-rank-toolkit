@@ -34,7 +34,7 @@ NOT_TOOLS = {
     # An instrument: its output is nanoseconds, and MEASURING.md's line is that
     # counts reproduce anywhere and timings do not. `measure-leaf` is its model
     # and is CUDA-only, so it is usually not in the build tree at all.
-    "oracle_guided_search/price-canonical-route",
+    "methods/bilinear_rank/oracle_guided_search/price-canonical-route",
     "infrastructure/gpu_leaf/measure-leaf",
     # Retired into `curve-bounds --solvers`. It prints the line to type and
     # leaves as 2, so offering it here would offer a refusal.
@@ -45,7 +45,7 @@ NOT_TOOLS = {
     # typed map. Offering it with two of its three operands missing would be
     # worse than not offering it. A limit of the console, named here so that it
     # is a decision rather than a drift.
-    "descent_search/operators-to-tensor",
+    "methods/bilinear_rank/descent_search/operators-to-tensor",
     # An instrument that takes no map: it prints what this machine and this
     # working directory bound a run to. The console shows its output in the run
     # pane instead of offering it as a tool, because there is no question to ask
