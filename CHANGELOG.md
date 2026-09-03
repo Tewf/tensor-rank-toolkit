@@ -6,6 +6,55 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **`cmake --install` places the thirteen tools on PATH**, which every
+  documented command line assumed and nothing provided: the first line a
+  newcomer pasted from the README failed with command-not-found. The three
+  instruments and the `list-solvers` shim deliberately stay in the build tree;
+  the top `CMakeLists.txt` says why. Both READMEs carry the bridge, and the
+  dependency line now names every package the build needs (`pkg-config`,
+  `libgmp-dev` and `ninja-build` were missing; the Containerfile knew).
+
+- **`.containerignore`**, so `podman build` is handed what a fresh clone
+  carries instead of half a gigabyte of build trees and `.git` that
+  `COPY . /src` then baked into the reproduction image.
+
+- **`reproduce/notice_scope.py`, in CI**: NOTICE's promise that its MIT list
+  is every directory the build adds was kept by hand and drifted twice; it is
+  now compared against `CMakeLists.txt`, and NOTICE's count of PLinOpt's
+  matrices against the directory. Found by the same audit: the count said
+  eight, five documents said twelve, and the directory holds thirteen, since
+  the five that arrived with the interchange work joined the eight already
+  there; `incumbent_search/` and `search_plan/` were unclaimed.
+
+- **`reproduce/README.md`** and an import recipe in
+  `OPTIONS/common-recipes.md`: the two pages simulated first-contact users
+  reached for and did not find — the reviewer's one command, and the line
+  that reads a published ⟨L,R,P⟩ triple in.
+
+### Fixed
+
+- **`show-limits` aborted on a typo**: no catch around `refuse()`, so an
+  unrecognised flag reached `std::terminate` and dumped core — reachable from
+  the browser console, which shells out to it — and its usage went to stdout,
+  which is for results. **`measure-leaf` read `--help` as a mode it did not
+  know**, fell through every branch and left green. Both now refuse by name
+  and leave as 2, and `check_argument_grammar.sh` covers the instruments it
+  had been claiming to cover, `measure-leaf` where nvcc built it.
+
+- **`serve.py --host 0.0.0.0` produced a console that answered nobody**: the
+  wildcard went into the allowed-hosts set, so every remote request's Host
+  header failed the guard. A wildcard is refused at startup with the working
+  routes spelled out; a named `--host` already worked. The web README's
+  hardcoded "64 checks" is now owned by the run itself, which counts the
+  README's sentence against what ran.
+
+- **`cli/arguments.h` promised stdin nobody implemented**: the header and its
+  worked example said a lone `-` means stdin, while all thirteen callers
+  answer it with usage and exit 2. The accessor is renamed `no_file_named`,
+  and the header now says nothing reads stdin.
+
 ### Changed
 
 - **The sparsification result is stated on its own terms, and stops being

@@ -16,9 +16,14 @@ limit on how many runs may be going at once, so twelve heavy searches will
 oversubscribe the machine exactly as twelve terminals would. It listens on
 loopback because it assumes the person driving it is the person sitting there.
 
-**Nothing here has been driven by anybody but its author.** The checks pass and
-the worked example reproduces, and that is a different claim from a colleague
-having sat in front of it.
+**Nothing here has been driven by any person but its author.** The checks pass
+and the worked example reproduces, and that is a different claim from a
+colleague having sat in front of it. What has been done, on 2026-09-03, is a
+simulated first-time user: a language model handed only "run serve.py", driving
+the console over HTTP with no access to this directory's source. It started
+the cheapest search on a shipped fixture, followed the output, stopped a run
+and found where results are kept — evidence the pages carry enough to act on,
+and still not a person in the chair.
 
 ## Things it deliberately does not do
 
