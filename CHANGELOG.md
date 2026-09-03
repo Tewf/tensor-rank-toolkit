@@ -68,6 +68,17 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Both READMEs open academically and put the repository layout first.**
+  The abstract now frames the problem by its complexity (NP-complete over
+  finite fields per `[hastad1990]`, ∃ℝ-complete over the reals per
+  `[schaefer2018]`) and names the split the library is built on, complete
+  decision procedures against polynomial-time heuristics. The layout,
+  strands then infrastructure then documentation, sits at the top the way a
+  repository's file listing does; the narrative follows it. A closing
+  References section names the framing results and the implemented
+  algorithms (`[bdez2012]`, `[mckay1998]`, `[heule2021]`) and points at the
+  full keyed bibliography in `references.md`.
+
 - **The sparsification result is stated on its own terms, and stops being
   framed as a contest.** The front page, both READMEs, `what-it-computes.md`,
   the strand's positioning note and the article all presented `Grey-221` at 128

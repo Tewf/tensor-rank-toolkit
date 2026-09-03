@@ -6,25 +6,27 @@
 
 > [Lire en français](README.fr.md)
 
-> **New here, wanting one thing** (a decomposition, a rank, fewer additions)
-> **without the field's vocabulary?** **[start-here.md](start-here.md)**:
-> plain words, the exact lines to type, five minutes.
+A C++20 research library for exact tensor and bilinear rank over finite
+fields and over the rationals. The rank of a bilinear map is the number of
+multiplications an optimal bilinear algorithm for it uses; Strassen's seven
+for the 2×2 matrix product is the classical instance, and such ranks are
+where fast matrix multiplication comes from. Deciding tensor rank is
+NP-complete over finite fields [`[hastad1990]`](references.md) and
+∃ℝ-complete over the reals [`[schaefer2018]`](references.md), so the library
+pairs **complete, exponential-time decision procedures** with
+**polynomial-time heuristics** and with lower bounds that require no search.
+All arithmetic is exact, over GF(p) and ℚ via Givaro: a search over ranks and
+over counts of nonzeros gives a different answer when it is nearly right, so
+nothing here is ever a float. Every count below is asserted by the test
+suite; timings are not, and are not claimed to be
+([`MEASURING.md`](MEASURING.md) states the protocol,
+[`reproduce/`](reproduce/README.md) regenerates every published number with
+its provenance).
 
-**Exact tensor and bilinear rank over finite fields.** The rank of a bilinear
-map is how many multiplications it needs. Strassen's seven-instead-of-eight for
-2×2 matrices is where fast matrix multiplication comes from, and finding such
-decompositions in general is open.
+## Repository layout
 
-It attacks that from ten directions, from a cheap descent to a solver to a
-canonical form that needs no search at all. **Nothing here is ever a float**, so
-a reported rank is a fact about the map rather than an artefact of rounding, and
-every count below is asserted by the test suite. Timings are not and are not
-claimed to be: [`MEASURING.md`](MEASURING.md) has the protocol,
-[`reproduce/`](reproduce/README.md) the driver that regenerates them.
-
-## What it computes
-
-Ten strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
+The ten method strands, one directory each. Method and caveats, per strand:
+[`what-it-computes.md`](what-it-computes.md).
 
 | Strand | Asks | Headline |
 |---|---|---|
@@ -39,20 +41,54 @@ Ten strands. Method and caveats: [`what-it-computes.md`](what-it-computes.md).
 | [isomorph-free](oracle_guided_search/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
 | [sparsification](matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
-**The leaf is where an exhaustive search lives**, and neither of its two routes
-forms an element any more: the walk steps in reflected Gray order over GF(2) and
-GF(p) alike, **2.52x an element over GF(3)** with the dimension term gone rather
-than reduced, and the pool scan carries a residual. Same verdicts, same node
-counts, and one consumer card priced against both: [`gpu_leaf/`](gpu_leaf/README.md).
+The shared infrastructure and the documentation:
 
-## The finding worth stating on its own
+| Path | Holds |
+|---|---|
+| [`linear_algebra/`](linear_algebra/README.md), [`formats/`](formats/README.md) | exact arithmetic; tensor, SMS, DIMACS and SMT-LIB files |
+| [`cli/`](cli/README.md), [`run_limits/`](run_limits/README.md), [`search_plan/`](search_plan/README.md) | the shared command grammar and exit codes; what a run may take from the machine; the choices a run records and replays |
+| [`map_construction/`](map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | building the maps; the maps everything runs on; where each search stops on the tensors the literature argues about |
+| [`gpu_leaf/`](gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`flip_graph/`](flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | one consumer GPU priced on the leaf test; bounds from algebraic curves; a walk that moves schemes sideways; two search-free lower bounds; the LP and ILP layer |
+| [`reproduce/`](reproduce/README.md), [`testing/`](testing/README.md), [`tools/`](tools/README.md) | every published count re-derived in CI; the shared assertion helper; the backend comparison script |
+| [`web_interface/`](web_interface/README.md) | the tools driven from a browser, on Python's standard library alone |
+| [`start-here.md`](start-here.md) | a first session in plain words, for a reader without the field's vocabulary |
+| [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | the reasoned map; every flag with the measurement behind its default; the bibliography, keyed from the code |
+| [`article/`](article/README.md), [`positioning/`](positioning/README.md), [`the-research-front/`](the-research-front/README.md) | the write-up with definitions, theorems and negative results; what this library adds; where the field stands |
 
-**The expensive step is priced badly.** Step 3 of the descent enumerates the full
-pool of rank-one maps. Across the four polynomial fixtures it improved the answer
-in **two of four cases**, by one product each, and cost **one to two orders of
-magnitude** more than the first two steps together. A continuation that only
-makes step 3 faster optimises the part that mostly does not pay:
-[`fixtures/README.md`](fixtures/README.md) exists to hold that finding still.
+Why thirteen command-line tools rather than eight, and the one question each
+answers that no other does:
+[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
+
+## Methods
+
+The descent is a matroid-greedy **heuristic**: exact for the basis its first
+step picks, polynomial-time throughout, and offering no optimality guarantee
+past that step, which its correctness note states precisely. The exhaustive
+search is a **complete decision procedure** after
+[`[bdez2012]`](references.md), exponential as the NP-completeness of the
+problem leads one to expect; the isomorph-free strand generates one candidate
+per equivalence class in the sense of [`[mckay1998]`](references.md). The
+satisfiability strand reduces the rank decision to SAT, its binary encoding
+the idea of [`[heule2021]`](references.md); a negative answer there is a
+DRAT refutation checked by an independent program. The sparsification
+strand proves its minima: the reduction of the published `Grey-221` operators
+to 128 nonzeros is a minimum over every invertible change of basis, not a
+best effort.
+
+**The leaf is where the exhaustive search lives**, and neither of its two
+routes forms an element any more: the walk steps in reflected Gray order over
+GF(2) and GF(p) alike, **2.52x an element over GF(3)** with the dimension
+term gone rather than reduced, and the pool scan carries a residual. Same
+verdicts, same node counts, one consumer card priced against both:
+[`gpu_leaf/`](gpu_leaf/README.md).
+
+**A negative result on the expensive step.** Step 3 of the descent heuristic
+enumerates the full pool of rank-one maps. Across the four polynomial
+fixtures it improved the answer in **two of four cases**, by one product
+each, at a cost **one to two orders of magnitude** above the first two steps
+together. A continuation that only accelerates step 3 optimises the part
+that mostly does not pay; [`fixtures/README.md`](fixtures/README.md) holds
+that finding still.
 
 ## One pipeline
 
@@ -63,59 +99,44 @@ minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
 sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 ```
 
-The browser console runs those two lines in order, once per operator, as a flow:
-[`web_interface/`](web_interface/README.md).
+The browser console runs those two lines in order, once per operator, as a
+flow: [`web_interface/`](web_interface/README.md).
 
-## Reading and writing what the field publishes
+## Interchange with the published literature
 
-A ⟨L, R, P⟩ triple in SMS is what the field publishes a bilinear algorithm as,
-and very nearly the only thing it publishes, so that is the way in as well as the
-way out. Two sources hand them out in quantity: the
-[FMM catalogue](https://fmm.univ-lille.fr/), thousands of decompositions listed
-by rank, and [PLinOpt](https://github.com/jgdumas/plinopt), a C++ library for
-linear and bilinear straight-line programs whose `data/` ships Strassen,
-Winograd, Karatsuba, Toom-3 and matrix multiplication up to 32x32x32.
+A ⟨L, R, P⟩ triple in SMS is what the field publishes a bilinear algorithm
+as, and very nearly the only thing it publishes, so that is the way in as
+well as the way out. Two sources supply them in quantity: the
+[FMM catalogue](https://fmm.univ-lille.fr/), thousands of decompositions
+listed by rank, and [PLinOpt](https://github.com/jgdumas/plinopt), a C++
+library for linear and bilinear straight-line programs whose `data/` ships
+Strassen, Winograd, Karatsuba, Toom-3 and matrix multiplication up to
+32x32x32.
 
 Reading one is a test and not a claim: a Strassen triple published elsewhere
-rebuilds the fixture this repository writes from the definition of the map, entry
-for entry, and a disagreement would be ours to explain. **None of it is a
-dependency**: nothing here links against any of those tools and the whole suite
-passes on a machine where none is installed.
+rebuilds the fixture this repository writes from the definition of the map,
+entry for entry, and a disagreement would be ours to explain. **None of it is
+a dependency**: nothing here links against any of those tools and the whole
+suite passes on a machine where none is installed.
 
 ```sh
 operators-to-tensor L.sms R.sms P.sms -q 2 > map.tensor     # a published algorithm, read in
 PMchecker out_L.sms out_R.sms out_P.sms -q 2                # ours, checked elsewhere
 ```
 
-What to install, both directions and the differences that bite, on one page:
+Both directions and the differences that bite, on one page:
 [`formats/interchange/exchanging-files.md`](formats/interchange/exchanging-files.md).
-
-## What is where
-
-Thirteen modules — the directories that own a question, which is every
-`add_subdirectory` except the eight that carry no question of their own (`cli`,
-`testing`, `run_limits`, `linear_algebra`, `formats`, `map_construction`,
-`search_plan`, `gpu_leaf`) — and **thirteen tools**, in
-[`what-is-where.md`](what-is-where.md),
-with which tool answers which question. The one question each answers that no
-other does, and why thirteen rather than eight:
-[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
-Every flag, its default, the measurement that chose it and the recipes people
-actually type: [`OPTIONS.md`](OPTIONS.md). Twelve of the thirteen can be driven
-from a browser instead, on Python 3's standard library and nothing else:
-[`web_interface/`](web_interface/README.md). Every paper any of it implements is named
-once, in [`references.md`](references.md), by the key the code cites.
 
 ## Two branches
 
 `main` is what won. **`rejected-experiments` is what lost, kept whole**: the
 measurement that decided each rejection and the implementation it retired,
-because a rejection whose evidence was deleted is indistinguishable from a whim.
-On it are the orbit walk the canonical image replaced, the quotient by default
-that a find pays 7.4x for, `[beniamini2020]`'s two exact sparsification oracles
-with the row-basis heuristic, and `find-at-rank` with its descending sweep.
-Nothing there is broken and nothing there is maintained. The index of all of it,
-with the number that retired each:
+because a rejection whose evidence was deleted is indistinguishable from a
+whim. On it are the orbit walk the canonical image replaced, the quotient by
+default that a find pays 7.4x for, `[beniamini2020]`'s two exact
+sparsification oracles with the row-basis heuristic, and `find-at-rank` with
+its descending sweep. Nothing there is broken and nothing there is
+maintained. The index of all of it, with the number that retired each:
 [`retired/README.md`](https://github.com/Tewf/tensor-rank-toolkit/blob/rejected-experiments/retired/README.md).
 
 ## Building
@@ -130,12 +151,12 @@ sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-
 Givaro and Boost are the only libraries anything links. Boost is needed by
 [`vendor/permlib/`](vendor/permlib/README.md) alone, for `boost::next` and
 `boost::shared_ptr`, and no header outside that vendored library includes it.
-`libgmp-dev` is on the line because `libgivaro-dev` pulls GMP's runtime but not
-`gmpxx.h`, which Givaro's own headers include; the
-[`Containerfile`](Containerfile) found that by failing to build. Every solver is optional and located on `PATH` at run time.
-`ccache` is used when installed and ignored when not, and
-[`Containerfile`](Containerfile) pins an environment for reproducing a published
-number.
+`libgmp-dev` is on the line because `libgivaro-dev` pulls GMP's runtime but
+not `gmpxx.h`, which Givaro's own headers include; the
+[`Containerfile`](Containerfile) found that by failing to build. Every solver
+is optional and located on `PATH` at run time. `ccache` is used when
+installed and ignored when not, and the [`Containerfile`](Containerfile) pins
+an environment for reproducing a published number.
 
 ```sh
 cmake -B build -G Ninja && cmake --build build
@@ -146,17 +167,32 @@ cmake --install build --prefix ~/.local   # the thirteen tools, onto PATH
 
 **Every documented command line types its tool bare**, `minimise-rank …`,
 which assumes the install above. Without it the same binaries sit under the
-module that owns each, `build/descent_search/minimise-rank` and so on, and the
-lines run with that prefix instead. The three instruments and the
-`list-solvers` shim deliberately do not install; the top `CMakeLists.txt` says
-why.
+module that owns each, `build/descent_search/minimise-rank` and so on, and
+the lines run with that prefix instead. The three instruments and the
+`list-solvers` shim deliberately do not install; the top `CMakeLists.txt`
+says why. A reader new to the area starts at
+[`start-here.md`](start-here.md).
 
 Add `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` and symlink the result to the top of
-the tree (`ln -sf build/compile_commands.json .`) to give clangd — and any
-editor or agent that speaks to it — the real flags. Without it, every module's
+the tree (`ln -sf build/compile_commands.json .`) to give clangd, and any
+editor or agent that speaks to it, the real flags. Without it, every module's
 headers look missing, because each one owns its own include directory.
 
 ## Citing
 
 [`CITATION.cff`](CITATION.cff). Licence: MIT; [`LICENSE`](LICENSE) and
 [`NOTICE`](NOTICE) give the scope and credit what is not mine.
+
+## References
+
+Every result any of this implements is cited in the code by a key into
+[`references.md`](references.md), which holds the full annotated
+bibliography. The complexity results framing the undertaking: J. Håstad,
+*Tensor rank is NP-complete*, J. Algorithms 11 (1990),
+[`[hastad1990]`](references.md); M. Schaefer and D. Štefankovič, *The
+complexity of tensor rank*, Theory Comput. Syst. 62 (2018),
+[`[schaefer2018]`](references.md); C. J. Hillar and L.-H. Lim, *Most tensor
+problems are NP-hard*, J. ACM 60 (2013), [`[hillar2013]`](references.md).
+The exhaustive search implements [`[bdez2012]`](references.md), the
+isomorph-free generation follows [`[mckay1998]`](references.md), and the
+binary SAT encoding shares its idea with [`[heule2021]`](references.md).
