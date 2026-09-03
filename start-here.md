@@ -56,12 +56,26 @@ decide-rank my.tensor              # the rank itself, small problems only
 decide-rank my.tensor --target 2   # one question: do 2 multiplications suffice?
 ```
 
-Yes arrives with a recipe verified before it is printed, no with a proof, and
-out of time says so honestly. On the file above the second line answers no,
-because Karatsuba's 3 is the rank. `--target` asks about that exact count, so
-ask at or below what you hope for. In a script: yes is exit 0, a proved no is
-1, giving up is 3, and none of the three is a crash. Read
-[`OPTIONS.md`](OPTIONS.md) before `set -e`.
+Yes means a recipe was found and checked against your map before the verdict
+prints, no comes with a proof, and out of time says so honestly. On the file
+above the second line answers no, because Karatsuba's 3 is the rank.
+`--target` asks about that exact count, so ask at or below what you hope for.
+In a script: yes is exit 0, a proved no is 1, giving up is 3, and none of the
+three is a crash. Read [`OPTIONS.md`](OPTIONS.md) before `set -e`.
+
+**`decide-rank` proves the count and writes no files; the recipe files come
+from the finders.** So when you want the best recipe you can hold in your
+hands, ask the sharper finder and watch one number:
+
+```sh
+tighten-rank-bound my.tensor --emit-operators out
+```
+
+It starts from `minimise-rank`'s answer and searches below it. The line it
+prints ends in a gap: **`gap 0` means the count reached meets a proven floor,
+so the files written are a best possible recipe**, no exhaustive search
+needed. A larger gap is the space still open between what was found and what
+is proven, and only `decide-rank` can close it.
 
 ## "I don't have a tensor file"
 
