@@ -1,6 +1,6 @@
 # What `podman build` must not be handed as context. Without this file the
-# daemon receives the whole working directory — half a gigabyte of build
-# trees, agent worktrees and .git for an image that needs none of it — and
+# daemon receives the whole working directory, half a gigabyte of build
+# trees, agent worktrees and .git for an image that needs none of it, and
 # `COPY . /src` bakes all of it into a published reproduction image.
 #
 # The list is .gitignore's directories plus .git itself: everything here is

@@ -24,7 +24,7 @@ MatrixOver<Field> transpose(const MatrixOver<Field>& matrix) {
 
 /// The product `left * right`. **The shapes must already agree**:
 /// `left.columns() == right.rows()` is assumed, not checked, and a mismatch
-/// reads past `right`'s storage — matrix.h says why nothing here checks. Every
+/// reads past `right`'s storage; matrix.h says why nothing here checks. Every
 /// caller in this repository multiplies operators whose shapes a reader has
 /// already refused or a decomposition has already fixed.
 template <class Field>

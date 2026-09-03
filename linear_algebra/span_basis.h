@@ -25,7 +25,7 @@ public:
     /// Reduce a vector against the rows held. What remains is zero exactly when
     /// the vector was already in the span. The vector must be as wide as this
     /// span was built (`entries.size() == width`): assumed, not checked, for
-    /// the reason matrix.h gives — this is the innermost question both
+    /// the reason matrix.h gives; this is the innermost question both
     /// searches ask.
     void reduce(std::vector<Element>& entries) const {
         for (std::size_t index = 0; index < rows_.size(); ++index) {

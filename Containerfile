@@ -71,7 +71,7 @@ RUN kissat --version && command -v drat-trim
 WORKDIR /src
 COPY . /src
 
-# A host's build/ never reaches the COPY — `.containerignore` keeps it and the
+# A host's build/ never reaches the COPY: `.containerignore` keeps it and the
 # rest of the working tree's generated files out of the context, so this image
 # is built from what a fresh clone carries. The rm is the backstop for a build
 # driven from a context that ignored that file: a stale CMakeCache.txt names

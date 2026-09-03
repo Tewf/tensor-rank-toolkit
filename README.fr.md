@@ -6,8 +6,8 @@
 
 > [Read in English](README.md)
 
-> **Nouveau ici, pour une seule chose** — une décomposition, un rang, moins
-> d'additions — sans le vocabulaire du domaine ?
+> **Nouveau ici, pour une seule chose** (une décomposition, un rang, moins
+> d'additions), **sans le vocabulaire du domaine ?**
 > **[start-here.md](start-here.md)** (en anglais) : des mots simples, les
 > lignes exactes à taper, cinq minutes.
 
@@ -141,7 +141,7 @@ en-têtes de **Boost** :
 sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-dev
 ```
 
-Givaro et Boost sont les seules bibliothèques liées : Boost n'est nécessaire
+Givaro et Boost sont les seules bibliothèques liées. Boost n'est nécessaire
 qu'à [`vendor/permlib/`](vendor/permlib/README.md), pour `boost::next` et
 `boost::shared_ptr`, et aucun en-tête hors de cette bibliothèque embarquée ne
 l'inclut. `libgmp-dev` est sur la ligne parce que `libgivaro-dev` apporte
@@ -159,8 +159,8 @@ ctest --test-dir build -LE slow   # sans les recherches coûteuses
 cmake --install build --prefix ~/.local   # les treize outils, sur le PATH
 ```
 
-**Chaque ligne de commande documentée écrit son outil nu** — `minimise-rank …`
-— ce qui suppose l'installation ci-dessus. Sans elle, les mêmes binaires se
+**Chaque ligne de commande documentée écrit son outil nu**, `minimise-rank …`,
+ce qui suppose l'installation ci-dessus. Sans elle, les mêmes binaires se
 trouvent sous le module qui possède chacun, `build/descent_search/minimise-rank`
 et ainsi de suite, et les lignes s'exécutent avec ce préfixe. Les trois
 instruments et la coquille `list-solvers` ne s'installent volontairement pas ;

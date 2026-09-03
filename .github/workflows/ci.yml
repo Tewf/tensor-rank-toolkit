@@ -101,8 +101,8 @@ jobs:
 
       # The console, driven over HTTP against the binaries just built. It is not
       # registered with ctest on purpose, so until now it ran on a developer
-      # machine and nowhere else: the checks - the run itself counts them and holds
-      # the README to the count - including the one that a
+      # machine and nowhere else: the checks (the run itself counts them and
+      # holds the README to the count), including the one that a
       # spent budget reaches a reader as undecided rather than as a refutation,
       # and the catalogue asserted against every flag the build prints. Nine
       # seconds, standard library only, and it needs the build, which is why it
@@ -124,8 +124,8 @@ jobs:
         run: python3 reproduce/quoted_numbers.py
 
       # NOTICE promises its MIT list is every directory CMakeLists.txt adds.
-      # That promise was kept by hand and drifted twice - four directories
-      # missing until 2026-08-20, two more until 2026-09-03 - and a licence
+      # That promise was kept by hand and drifted twice: four directories
+      # missing until 2026-08-20, two more until 2026-09-03. A licence
       # file is the one place a stale list is a legal claim, not a typo.
       - name: The licence file claims every directory the build adds
         if: always()

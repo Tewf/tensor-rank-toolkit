@@ -132,7 +132,7 @@ int main(int argc, char** argv) try {
 } catch (const cli::ArgumentError& problem) {
     // A word that could not be read: the run never started, so Usage, the way
     // every command leaves. Until 2026-09-03 refuse() escaped to
-    // std::terminate here - the one binary that aborted on a typo, and
+    // std::terminate here, the one binary that aborted on a typo, and
     // web_interface/limits.py shells out to this one.
     cli::note() << "show-limits: " << problem.what();
     return cli::exit_status(cli::ExitCode::Usage);

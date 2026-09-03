@@ -42,8 +42,8 @@ class ArgumentError : public std::runtime_error {
 /// The fault this header removes has a quieter form than a missing value:
 /// `--anchor --json` is a value that is the next flag, and a command taking the
 /// word as given searches from an anchor named `--json` and reports nothing. A
-/// lone `-` is a filename — one every command here refuses with its usage,
-/// because nothing reads stdin — and `-1` is a number, so neither counts as a
+/// lone `-` is a filename (one every command here refuses with its usage,
+/// because nothing reads stdin) and `-1` is a number, so neither counts as a
 /// flag.
 inline bool looks_like_flag(const std::string& word) {
     if (word.size() < 2 || word.front() != '-') return false;

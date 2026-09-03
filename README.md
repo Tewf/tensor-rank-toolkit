@@ -6,9 +6,9 @@
 
 > [Lire en français](README.fr.md)
 
-> **New here, wanting one thing** — a decomposition, a rank, fewer additions —
-> without the field's vocabulary? **[start-here.md](start-here.md)**: plain
-> words, the exact lines to type, five minutes.
+> **New here, wanting one thing** (a decomposition, a rank, fewer additions)
+> **without the field's vocabulary?** **[start-here.md](start-here.md)**:
+> plain words, the exact lines to type, five minutes.
 
 **Exact tensor and bilinear rank over finite fields.** The rank of a bilinear
 map is how many multiplications it needs. Strassen's seven-instead-of-eight for
@@ -127,7 +127,7 @@ Needs a C++20 compiler, CMake ≥ 3.22 with `pkg-config`, **Givaro** and
 sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-dev
 ```
 
-Givaro and Boost are the only libraries anything links — Boost is needed by
+Givaro and Boost are the only libraries anything links. Boost is needed by
 [`vendor/permlib/`](vendor/permlib/README.md) alone, for `boost::next` and
 `boost::shared_ptr`, and no header outside that vendored library includes it.
 `libgmp-dev` is on the line because `libgivaro-dev` pulls GMP's runtime but not
@@ -144,7 +144,7 @@ ctest --test-dir build -LE slow   # skip the expensive searches
 cmake --install build --prefix ~/.local   # the thirteen tools, onto PATH
 ```
 
-**Every documented command line types its tool bare** — `minimise-rank …` —
+**Every documented command line types its tool bare**, `minimise-rank …`,
 which assumes the install above. Without it the same binaries sit under the
 module that owns each, `build/descent_search/minimise-rank` and so on, and the
 lines run with that prefix instead. The three instruments and the
