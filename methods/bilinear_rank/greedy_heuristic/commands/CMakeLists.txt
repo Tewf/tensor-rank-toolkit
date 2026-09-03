@@ -8,11 +8,4 @@ target_link_libraries(minimise-rank PRIVATE greedy_heuristic exhaustive
                                             orbit_reduction flip_graph formats cli
                                             project_warnings)
 
-# The inverse of `minimise-rank --emit-operators`, so it sits beside it: one
-# writes the ⟨L,R,P⟩ triple the surrounding ecosystem reads, the other reads the
-# triple that ecosystem publishes. Both are `algorithm_recovery.h`'s convention,
-# which is why neither belongs in formats/.
-add_executable(operators-to-tensor operators_to_tensor_main.cpp)
-target_link_libraries(operators-to-tensor PRIVATE greedy_heuristic formats cli project_warnings)
-
-install(TARGETS minimise-rank operators-to-tensor)
+install(TARGETS minimise-rank)

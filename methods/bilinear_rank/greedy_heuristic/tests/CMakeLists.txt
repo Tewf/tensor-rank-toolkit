@@ -37,7 +37,8 @@ add_test(NAME operators_to_tensor
 # cannot see the order they are passed in, which is the whole of the interface.
 add_test(NAME operators_to_tensor_command
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_operators_to_tensor.sh
-                 $<TARGET_FILE:operators-to-tensor> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:operators-to-tensor> ${PROJECT_SOURCE_DIR}/fixtures
+                 $<TARGET_FILE:minimise-rank>)
 set_tests_properties(operators_to_tensor_command PROPERTIES TIMEOUT 60)
 
 add_executable(test_candidate_pool test_candidate_pool.cpp)

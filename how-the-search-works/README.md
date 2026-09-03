@@ -9,7 +9,7 @@ table says which, and on what condition the third one is.
 | piece | in `decide-rank` | where it is |
 |---|---|---|
 | **orbit quotient** | yes, on `-s` | [`../orbit_reduction/orbit_search.h`](../methods/bilinear_rank/orbit_reduction/orbit_search.h) |
-| **odometer / addressed pool** | yes, automatic | [`../descent_search/candidate_pool.h`](../methods/bilinear_rank/greedy_heuristic/candidate_pool.h) |
+| **odometer / addressed pool** | yes, automatic | [`../descent_search/candidate_pool.h`](../methods/bilinear_rank/candidate_pool.h) |
 | **McKay canonical augmentation** | **no** | [`../oracle_guided_search/`](../methods/bilinear_rank/canonical_augmentation/README.md), reached by `enumerate-subspaces` and `factor-over-canonical-basis --route canonical` |
 | **`SortedSpan`** | **no**, and it belongs in the descent rather than here | [`../descent_search/sorted_span.h`](../methods/bilinear_rank/greedy_heuristic/sorted_span.h) |
 | **GPU leaf** | **only where `CUDAToolkit_FOUND`**: there `decide-rank` links the registration and `--device auto` sends a leaf past the 8 192 floor to the card; in a build without the toolkit the seam is null | [`../gpu_leaf/`](../infrastructure/gpu_leaf/README.md) |

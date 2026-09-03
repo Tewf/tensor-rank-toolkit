@@ -74,7 +74,7 @@ expensive form:
   `--symmetry matmul` takes the *addressed* pool and still returns a genuine NO.
 
 So `require_room` was added in front of the addressed pool's two vector lists
-(`methods/bilinear_rank/greedy_heuristic/candidate_pool.cpp`) and the factored orbit action
+(`methods/bilinear_rank/candidate_pool.cpp`) and the factored orbit action
 (`methods/bilinear_rank/orbit_reduction/pool_orbits.cpp`), and **all three of those test files failed
 within the minute**. The guards were correct about the arithmetic (at the 25x25
 slices of `⟨5,5,5⟩` those lists really are 7.5 GB a side) and wrong about the

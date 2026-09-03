@@ -11,7 +11,7 @@ Source: *Finding Optimal Formulae for Bilinear Maps*, WAIFI 2012,
 
 The identification is not a guess: the generator-set sizes `#G` in their tables
 are **961, 1785, 1905 and 4732**, which are exactly the pool sizes
-[`all_rank_one_maps`](candidate_pool.h) builds for our four fixtures.
+[`all_rank_one_maps`](../candidate_pool.h) builds for our four fixtures.
 
 | Fixture | Their row | This repository claims | They report |
 |---|---|---|---|

@@ -16,7 +16,7 @@ target_include_directories(orbit_reduction PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # PRIVATE where only a .cpp does. A static library propagates even a private
 # dependency as a link requirement, which is what is wanted here: the link
 # works, the include directories stay off consumers' path.
-target_link_libraries(orbit_reduction PUBLIC linear_algebra run_limits exhaustive
+target_link_libraries(orbit_reduction PUBLIC bilinear_rank linear_algebra run_limits exhaustive
                                       PRIVATE greedy_heuristic map_construction
                                               project_warnings)
 

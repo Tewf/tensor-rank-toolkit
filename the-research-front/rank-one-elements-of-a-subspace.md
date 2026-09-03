@@ -20,7 +20,7 @@ is therefore the affine cone over `P(V) ∩ Segre`, a **linear section** of the
 Segre variety, and `deficit(V) == 0` asks whether that section spans `V`.
 
 **The pool is the point set, exactly.** `normalised_vectors` in
-[`../descent_search/candidate_pool.cpp`](../methods/bilinear_rank/greedy_heuristic/candidate_pool.cpp)
+[`../descent_search/candidate_pool.cpp`](../methods/bilinear_rank/candidate_pool.cpp)
 builds vectors with leading entry 1, one per point of `PG(m−1, q)`, and
 `RankOnePool::at` takes outer products, so the pool holds one matrix per point
 of the Segre variety and `|pool| = ((q^m−1)/(q−1)) · ((q^n−1)/(q−1))`, which is

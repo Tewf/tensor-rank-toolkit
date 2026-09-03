@@ -23,7 +23,7 @@ target_include_directories(canonical_augmentation PUBLIC ${CMAKE_CURRENT_SOURCE_
 # nothing in `satisfiability` or `orbit_reduction` knows this exists. That is the
 # same arrangement `satisfiability/commands` documents, moved into a library so a
 # test can link it.
-target_link_libraries(canonical_augmentation PRIVATE permlib
+target_link_libraries(canonical_augmentation PUBLIC bilinear_rank PRIVATE permlib
                                           PUBLIC satisfiability orbit_reduction
                                                   greedy_heuristic exhaustive
                                                   run_limits

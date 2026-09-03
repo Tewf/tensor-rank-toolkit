@@ -22,8 +22,8 @@ Every claim below is one of the four earning or failing to earn its keep.
 | [`fewest_products.*`](../exhaustive/fewest_products.h) | Inherits the exact search's: sweep, bisection, or from the flattening bound | Which `k` to ask it about |
 | [`rank_one_basis.*`](../exhaustive/rank_one_basis.h) | The question at every leaf of both searches: has this subspace a basis of rank-one maps? | |
 | [`span_enumeration.*`](span_enumeration.h) | | Walking the `p^k` elements of a map's span |
-| [`algorithm_recovery.*`](algorithm_recovery.h) |  | Turns either answer into the algorithm ⟨L, R, P⟩ it stands for |
-| [`candidate_pool.*`](candidate_pool.h) · [`map_construction.*`](../map_construction/map_construction.h) |  | The rank-one maps to search over, and the maps to search on |
+| [`algorithm_recovery.*`](../algorithm_recovery.h) |  | Turns either answer into the algorithm ⟨L, R, P⟩ it stands for |
+| [`candidate_pool.*`](../candidate_pool.h) · [`map_construction.*`](../map_construction/map_construction.h) |  | The rank-one maps to search over, and the maps to search on |
 
 ## The tools
 

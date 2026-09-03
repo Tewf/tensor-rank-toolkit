@@ -45,7 +45,7 @@ retracted; it was simply a good derivation.
 [`[bdez2012]`](../../../references.md) ran this same algorithm on this same map and
 reports rank = 13 over a complete run: 27 solution subspaces, 9.65×10⁹ tests,
 2.28×10⁵ s. Their `#G` of 961 is exactly the pool
-[`all_rank_one_maps`](candidate_pool.h) builds, so the row is certainly this
+[`all_rank_one_maps`](../candidate_pool.h) builds, so the row is certainly this
 fixture. The two halves meet: **the rank is exactly 13**, and the heuristic's 14
 is not optimal.
 

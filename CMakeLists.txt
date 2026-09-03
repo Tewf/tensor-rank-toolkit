@@ -50,6 +50,7 @@ add_subdirectory(infrastructure/testing)
 add_subdirectory(infrastructure/run_limits)
 add_subdirectory(linear_algebra)
 add_subdirectory(formats)
+add_subdirectory(methods/bilinear_rank)
 add_subdirectory(methods/bilinear_rank/map_construction)
 add_subdirectory(methods/bilinear_rank/greedy_heuristic)
 # Before exhaustive, because `decide-rank` asks it whether a two-slice

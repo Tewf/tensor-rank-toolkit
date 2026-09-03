@@ -94,7 +94,7 @@ refuses 2 "only one file is read" \
 # it did not know and left green. measure-leaf exists only where nvcc did, so
 # it joins where it was built; absent, there is no binary to ask.
 everything="methods/bilinear_rank/greedy_heuristic/minimise-rank \
-    methods/bilinear_rank/greedy_heuristic/operators-to-tensor \
+    methods/bilinear_rank/operators-to-tensor \
     methods/bilinear_rank/exhaustive/decide-rank \
     methods/bilinear_rank/flip_graph/walk-scheme \
     methods/bilinear_rank/map_construction/make-tensor \

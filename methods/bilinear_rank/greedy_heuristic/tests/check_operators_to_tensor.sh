@@ -98,7 +98,7 @@ fi
 # writing the two out the wrong way round is invisible there. Here L is 5x2 and R
 # is 5x3, and five products still decide instantly.
 echo "and what --emit-operators writes reads back as the map it was written from"
-minimise=$(dirname "$command")/minimise-rank
+minimise=${3:?minimise-rank, passed by the add_test registration}
 if [ ! -x "$minimise" ]; then
     echo "  FAIL  $minimise is not built, so the loop cannot be closed"
     failures=$((failures + 1))

@@ -34,7 +34,7 @@ this repository is, and the front is much closer to us:
   *pool*: `all_rank_one_maps` materialises it where it fits, 4.3e9 maps at
   `⟨4,4,4⟩` where it does not. Yang walks it with an in-place odometer
   instead, and that iterator now exists here:
-  [`methods/bilinear_rank/greedy_heuristic/candidate_pool.h`](../methods/bilinear_rank/greedy_heuristic/candidate_pool.h)'s
+  [`methods/bilinear_rank/candidate_pool.h`](../methods/bilinear_rank/candidate_pool.h)'s
   `RankOnePool` is `[yang2025]`'s odometer, and `decide-rank` takes it
   wherever the materialised pool would be refused. So the whole difference
   was the pool, and the iterator closed it.
