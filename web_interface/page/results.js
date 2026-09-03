@@ -190,5 +190,5 @@ function plinoptNote(card) {
     "multiplication, or MMchecker for matrix multiplication: handing one to the " +
     "other fails exactly as a bad operator would, and -q with no modulus makes a " +
     "correct GF(" + field + ") algorithm fail too. " +
-    "formats/interchange/four-false-failures.md."});
+    "core/formats/interchange/four-false-failures.md."});
 }

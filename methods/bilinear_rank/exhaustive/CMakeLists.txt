@@ -13,7 +13,7 @@ target_include_directories(exhaustive PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # so by the repository's own import-proximity rule it belongs at a common
 # ancestor. That would be `linear_algebra`, which is header-only by design and
 # cannot host `candidate_pool.cpp`. Moving it needs that decision revisited, so
-# it joins the layering items in `positioning/`.
+# it joins the layering items in `writeup/positioning/`.
 target_link_libraries(exhaustive PUBLIC bilinear_rank linear_algebra run_limits greedy_heuristic
                                         PRIVATE project_warnings)
 

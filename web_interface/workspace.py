@@ -9,7 +9,7 @@ written out under the repository rather than piped through a temporary that
 disappears.
 
 The second is that `sparsify-operator` picks its reader by the literal four
-characters `.sms`, which `formats/interchange/four-false-failures.md`
+characters `.sms`, which `core/formats/interchange/four-false-failures.md`
 records as a way to make that layer look broken when it is not: any other name
 silently gets the dense reader. So the suffix is chosen here from what the file
 actually contains, and the choice is reported to the caller rather than made
@@ -37,7 +37,7 @@ def operator_suffix(text):
     comment before the header, so the scan cannot start at line one.
 
     This reads three fields of one line to choose a reader. It does not parse the
-    file: `formats/sms_file.h` and `formats/dense_matrix_file.h` do that, and
+    file: `core/formats/sms_file.h` and `core/formats/dense_matrix_file.h` do that, and
     whichever one runs will refuse what it does not understand in its own words.
     """
     for line in text.splitlines():

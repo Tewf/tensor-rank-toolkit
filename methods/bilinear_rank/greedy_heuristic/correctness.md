@@ -1,7 +1,7 @@
 # Which guarantees a test would catch
 
 The guarantees themselves, with their proofs, are in
-[`../article/bilinear-rank.pdf`](../../../article/bilinear-rank.pdf). They are stated
+[`../article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf). They are stated
 once, there, so that a proof is corrected in one place.
 
 What belongs here instead is a property of this repository rather than of the
@@ -50,9 +50,9 @@ its rank is 7, which is a fact about the neighbourhood and not a defect.
 
 ## What a run of it looks like
 
-`minimise-rank fixtures/f2_5x5.tensor --steps 3` prints, verbatim:
+`minimise-rank evidence/fixtures/f2_5x5.tensor --steps 3` prints, verbatim:
 
-    fixtures/f2_5x5.tensor
+    evidence/fixtures/f2_5x5.tensor
       naive: 25 multiplications, 9 slices, 0 s cumulative
       step 1: 16 multiplications, 9 slices, 0.000107719 s cumulative
       step 2: 14 multiplications, 11 slices, 0.00126404 s cumulative

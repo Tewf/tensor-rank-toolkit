@@ -16,8 +16,8 @@ and beating it is not the job.
 One of the two baselines, run here on the smallest fixture, taking neither step:
 
 ```sh
-minimise-rank fixtures/matmul_2x2x2.tensor --steps 3 -s matmul 2 2 2
-fixtures/matmul_2x2x2.tensor
+minimise-rank evidence/fixtures/matmul_2x2x2.tensor --steps 3 -s matmul 2 2 2
+evidence/fixtures/matmul_2x2x2.tensor
   naive: 8 multiplications, 4 slices, 0 s cumulative
   step 1: 8 multiplications, 4 slices, 3.2592e-05 s cumulative
   step 2: 8 multiplications, 4 slices, 8.0161e-05 s cumulative

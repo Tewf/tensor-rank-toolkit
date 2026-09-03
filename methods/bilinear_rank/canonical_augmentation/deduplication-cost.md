@@ -57,7 +57,7 @@ contribution rather than the augmentation scheme built on top of it.
 taking the least code. [`pool_set_canon.h`](pool_set_canon.h) names the same
 orbits by least image under a prescribed permutation group, `[linton2004]` through
 `[permlib]`, and the parent test asks it instead. Measured on
-`enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2`,
+`enumerate-subspaces evidence/fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2`,
 both routes back to back on an idle machine:
 
 | route | distinct | nodes | wall |

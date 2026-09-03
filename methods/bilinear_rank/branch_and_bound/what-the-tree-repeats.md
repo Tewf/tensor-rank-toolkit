@@ -17,7 +17,7 @@ run without it.
 
 The flag, run rather than read off the table below:
 
-    lower-the-bound fixtures/matmul_2x2x2.tensor --span-census
+    lower-the-bound evidence/fixtures/matmul_2x2x2.tensor --span-census
 
     GF(2), start: 8 products over 4 dimensions
     best: 8 products, rank bound 6, gap 2, verified

@@ -1,7 +1,7 @@
 /* The map: where one comes from, and what the box says it holds.
 
    The reading under the box restates the two header lines and judges nothing.
-   `formats/tensor_file.h` is the authority on whether a map is well formed, and
+   `core/formats/tensor_file.h` is the authority on whether a map is well formed, and
    its refusal is what a run shows, so a second opinion written here could only
    ever disagree with the one that counts. */
 
@@ -26,7 +26,7 @@ function showReading() {
     $("reading").textContent =
       "Says field " + field + ", " + shape[0] + " slices of " + shape[1] +
       " by " + shape[2] + ". That is a restatement of two lines in the box and " +
-      "not a check: formats/tensor_file.h is the authority, and its refusal is " +
+      "not a check: core/formats/tensor_file.h is the authority, and its refusal is " +
       "what you will see if it disagrees.";
   } else {
     $("reading").textContent =

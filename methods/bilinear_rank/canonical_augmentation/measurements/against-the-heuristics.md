@@ -15,7 +15,7 @@ in 300 s while the greedy returns a verified 10-product algorithm in 18.9 s.
 `walk-scheme` reaching the table's `⟨2,2,2⟩` row, on this run of the binary:
 
 ```sh
-walk-scheme fixtures/matmul_2x2x2.tensor
+walk-scheme evidence/fixtures/matmul_2x2x2.tensor
 GF(2), naive scheme: 8 products
   seed 1: 7 products after 1020 flips and 1 reductions, 0.0062886 s
 best over 8 seeds: 7 products, rank bound 6, gap 1

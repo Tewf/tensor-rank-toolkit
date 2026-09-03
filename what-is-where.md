@@ -8,8 +8,8 @@ Each method folder holds the code, its `tests/`, and where it has an entry point
 a `commands/`.
 
 ```
-linear_algebra/          exact arithmetic over GF(p) and over Q, shared by everything
-formats/                 tensor, dense matrix, SMS, DIMACS and SMT-LIB files
+core/linear_algebra/          exact arithmetic over GF(p) and over Q, shared by everything
+core/formats/                 tensor, dense matrix, SMS, DIMACS and SMT-LIB files
 infrastructure/cli/                     what every command shares: clock, exit codes, argument
                          grammar, the stdout/stderr split, removing a scratch
                          file when a run is interrupted, the tunables
@@ -35,31 +35,31 @@ methods/bilinear_rank/branch_and_bound/        the exact search's tree cut by wh
                          rather than by a target: upper bounds, and an answer
                          whenever it is stopped
 methods/bilinear_rank/canonical_augmentation/    fixed-k search, tree refutation, canonical augmentation
-canonical_factorisation/ the rank as A B, with the receipt that checks it
-pencil_rank/             two slices, where the answer is read off a canonical
+methods/canonical_factorisation/ the rank as A B, with the receipt that checks it
+methods/pencil_rank/             two slices, where the answer is read off a canonical
                          form instead of searched for
-rank_metric_bound/       two lower bounds from the dimension and the least rank
+methods/rank_metric_bound/       two lower bounds from the dimension and the least rank
                          of a slice space, and from nothing else
-matrix_sparsification/   fewest nonzeros in an operator
-satisfiability/          the same rank question put to a SAT or SMT solver
-curve_bounds/            bounds from interpolation on an algebraic curve
-integer_programme/       the linear and integer programme layer the curve strand uses
-fixtures/                the maps and operators everything is run on; its
+methods/matrix_sparsification/   fewest nonzeros in an operator
+methods/satisfiability/          the same rank question put to a SAT or SMT solver
+methods/curve_bounds/            bounds from interpolation on an algebraic curve
+methods/integer_programme/       the linear and integer programme layer the curve strand uses
+evidence/fixtures/                the maps and operators everything is run on; its
                          plinopt/ is thirteen of PLinOpt's own, under CeCILL-B,
                          so the interoperability is tested against his bytes
-famous_tensors/          the tensors the literature argues about, and where each
+evidence/benchmark_tensors/          the tensors the literature argues about, and where each
                          search stops on them
-reproduce/               regenerates every published number, with its provenance
+evidence/reproduce/               regenerates every published number, with its provenance
 references.md            every paper cited anywhere here, by the keys the code uses
-how-the-search-works/    the exact search in pseudocode, every parameter, all
+writeup/how-the-search-works/    the exact search in pseudocode, every parameter, all
                          five pieces composed, and the verdict on wiring each
-the-research-front/      where the research front is, and which parts of it
+writeup/the-research-front/      where the research front is, and which parts of it
                          are here
-positioning/             what this library adds to it, and what it does not
+writeup/positioning/             what this library adds to it, and what it does not
 MEASURING.md             how a timing here was taken, and what it does not mean
 OPTIONS.md               every flag of every tool, its default, and what
                          measured that default; links OPTIONS/ for the tables
-article/                 the write-up: definitions, theorems, proofs, negative results
+writeup/article/                 the write-up: definitions, theorems, proofs, negative results
 site/                    the stylesheet, the hand-drawn charts and the shared
                          navigation index.html is assembled from
 web_interface/           a browser console for every tool here, and the

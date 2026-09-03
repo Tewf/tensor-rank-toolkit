@@ -9,14 +9,14 @@ this page is only the shape of the line.
 
 | You want | The line |
 |---|---|
-| an upper bound in milliseconds | `minimise-rank fixtures/f2_5x5.tensor` |
-| the same, without the expensive third step | `minimise-rank fixtures/f2_5x5.tensor --steps 2` |
-| is there an algorithm this small, decided | `decide-rank fixtures/matmul_2x2x2.tensor --target 7` |
-| and is one product fewer impossible | `decide-rank fixtures/matmul_2x2x2.tensor --target 6` |
-| the rank itself, no target, sweeping | `decide-rank fixtures/f2_2x3.tensor` |
-| the same refutation, quotiented | `decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2` |
-| an answer with a receipt to multiply out | `factor-over-canonical-basis fixtures/f2_2x3.tensor` |
-| two slices, read off rather than searched | `decide-rank-by-pencil fixtures/pencil_split_f3_3.tensor` |
+| an upper bound in milliseconds | `minimise-rank evidence/fixtures/f2_5x5.tensor` |
+| the same, without the expensive third step | `minimise-rank evidence/fixtures/f2_5x5.tensor --steps 2` |
+| is there an algorithm this small, decided | `decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 7` |
+| and is one product fewer impossible | `decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6` |
+| the rank itself, no target, sweeping | `decide-rank evidence/fixtures/f2_2x3.tensor` |
+| the same refutation, quotiented | `decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2` |
+| an answer with a receipt to multiply out | `factor-over-canonical-basis evidence/fixtures/f2_2x3.tensor` |
+| two slices, read off rather than searched | `decide-rank-by-pencil evidence/fixtures/pencil_split_f3_3.tensor` |
 
 **`--target k` is the difference between two questions.** With it the tool asks
 whether `k` products suffice and answers yes or no; without it, it sweeps and
@@ -26,7 +26,7 @@ on a pool too large to materialise.
 ## A refutation somebody else can check
 
 ```sh
-decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 6 --proof six.drat
+decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor --target 6 --proof six.drat
 #   k = 6 [kissat]: NO, rank is more than 6  (…s), refutation verified
 ```
 
@@ -70,10 +70,10 @@ decide-rank map.tensor --target k     # or any tool: it is a map like any other
 ```
 
 The shipped example: PLinOpt's own Strassen triple in
-[`../fixtures/plinopt/`](../fixtures/plinopt/README.md) rebuilds
-`fixtures/matmul_2x2x2.tensor` entry for entry, which the test suite asserts.
+[`../fixtures/plinopt/`](../evidence/fixtures/plinopt/README.md) rebuilds
+`evidence/fixtures/matmul_2x2x2.tensor` entry for entry, which the test suite asserts.
 The whole flow, and the differences that bite:
-[`../formats/interchange/bringing-an-algorithm-in.md`](../formats/interchange/bringing-an-algorithm-in.md).
+[`../formats/interchange/bringing-an-algorithm-in.md`](../core/formats/interchange/bringing-an-algorithm-in.md).
 
 ## Timing one choice against another on one question
 

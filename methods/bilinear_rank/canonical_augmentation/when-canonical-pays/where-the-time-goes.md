@@ -22,7 +22,7 @@ a setwise stabiliser is a pool scan.
 | `<3,3,3>` | 1 | **97%** | 0.1% | 3.3% | 2.4 |
 
 On the shipped `<2,2,3>` fixture at two levels, `price-canonical-route
-fixtures/matmul_2x2x3.tensor -s matmul 2 2 3 --target 8` reports a price ratio of
+evidence/fixtures/matmul_2x2x3.tensor -s matmul 2 2 3 --target 8` reports a price ratio of
 `101.467` against a saving ratio of `28.35`, the same `<2,2,3>` row this table
 breaks into pool scans, canonical images and the setwise stabiliser.
 

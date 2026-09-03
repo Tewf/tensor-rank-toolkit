@@ -10,7 +10,7 @@ Ruling `k` out means visiting the whole tree, and it is the same tree whoever
 visits it (**whoever, but not in whatever order**): under the orbit quotient the
 count depends on the pool's order, measured at 648 against 711 on `⟨2,2,2⟩`
 ([`../orbit_reduction/what-the-quotient-costs.md`](../orbit_reduction/what-the-quotient-costs.md)).
-Threads do not change it, and that is what this section is about. `decide-rank fixtures/f2_5x5.tensor --target 11` is **459 239 nodes at
+Threads do not change it, and that is what this section is about. `decide-rank evidence/fixtures/f2_5x5.tensor --target 11` is **459 239 nodes at
 1, 2, 4, 6, 8 and 12 threads**, three runs each.
 
 Finding a witness stops the search, and by then the other workers have dispatched
@@ -28,7 +28,7 @@ will not win are still nodes spent. With a tight limit that is not a slower yes,
 it is a different verdict:
 
 ```
-decide-rank fixtures/matmul_2x2x2.tensor --target 7 --node-limit 20000
+decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 7 --node-limit 20000
   --threads 1   ->  7 436 nodes, FOUND 7 products, exit 0
   --threads 4   -> 20 000 nodes, GAVE UP,          exit 3
 ```

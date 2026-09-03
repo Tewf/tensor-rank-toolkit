@@ -106,7 +106,7 @@ TOOLS = [
              "note": "Step 3 enumerates the full pool. Across the four "
                      "polynomial fixtures it improved the answer in two of "
                      "four cases and cost one to two orders of magnitude "
-                     "more than steps 1 and 2 together: fixtures/README.md."},
+                     "more than steps 1 and 2 together: evidence/fixtures/README.md."},
             {"flag": "--emit-operators", "kind": "emit_operators",
              "label": "write the operators (L, R, P as SMS)",
              "note": "Three .sms files in the format PLinOpt reads."},
@@ -295,7 +295,7 @@ TOOLS = [
     },
     {
         "name": "decide-rank-by-sat",
-        "binary": "satisfiability/decide-rank-by-sat",
+        "binary": "methods/satisfiability/decide-rank-by-sat",
         "input": "tensor",
         "asks": "The same question, put to somebody else's solver.",
         "answers": "With no range it sweeps upward and the first k it can "
@@ -383,7 +383,7 @@ TOOLS = [
     },
     {
         "name": "decide-rank-by-pencil",
-        "binary": "pencil_rank/decide-rank-by-pencil",
+        "binary": "methods/pencil_rank/decide-rank-by-pencil",
         "input": "tensor",
         "asks": "Two slices: what does the Kronecker canonical form say?",
         # The one shape limit any tool here has, declared rather than left to
@@ -411,7 +411,7 @@ TOOLS = [
     },
     {
         "name": "factor-over-canonical-basis",
-        "binary": "canonical_factorisation/factor-over-canonical-basis",
+        "binary": "methods/canonical_factorisation/factor-over-canonical-basis",
         "input": "tensor",
         "asks": "The rank as the factorisation it is, with a receipt.",
         "answers": "A over the canonical basis with every row a rank-one "
@@ -501,7 +501,7 @@ TOOLS = [
     },
     {
         "name": "sparsify-operator",
-        "binary": "matrix_sparsification/sparsify-operator",
+        "binary": "methods/matrix_sparsification/sparsify-operator",
         "input": "operator",
         "asks": "How few nonzero entries can one operator be written with?",
         "answers": "The fewest any change of basis can leave, which the matroid "
@@ -553,7 +553,7 @@ TOOLS = [
     },
     {
         "name": "curve-bounds",
-        "binary": "curve_bounds/curve-bounds",
+        "binary": "methods/curve_bounds/curve-bounds",
         "input": "none",
         "asks": "What does interpolation on an algebraic curve bound?",
         "answers": "An envelope, not a bound on mu_sym_q(m): nothing here "

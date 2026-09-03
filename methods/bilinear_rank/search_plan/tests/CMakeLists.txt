@@ -11,5 +11,5 @@ add_test(NAME search_plan COMMAND test_search_plan)
 # processes, the way infrastructure/cli/ asserts its tunables against the built command.
 add_test(NAME plan_reaches_a_run
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_the_plan_reaches_a_run.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 set_tests_properties(plan_reaches_a_run PROPERTIES TIMEOUT 300)

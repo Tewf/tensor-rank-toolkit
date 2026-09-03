@@ -73,9 +73,9 @@ which is the section below.
 packed leaf later the same day.** `is_rank_one` and the carried residual both
 landed on 2026-08-20, after which the scan never forms an element at all:
 **3.3 ns** an element in the search and **3.9 ns** on the walk
-([`../how-the-search-works/what-the-rewrites-were-worth.md`](../../how-the-search-works/what-the-rewrites-were-worth.md)),
+([`../how-the-search-works/what-the-rewrites-were-worth.md`](../../writeup/how-the-search-works/what-the-rewrites-were-worth.md)),
 and **1.16 ns** for the residual change alone in a harness
-([`../how-the-search-works/what-to-wire.md`](../../how-the-search-works/what-to-wire.md)).
+([`../how-the-search-works/what-to-wire.md`](../../writeup/how-the-search-works/what-to-wire.md)).
 Against the card's 0.24 ns that is roughly 5x to 14x, not the 544x
 [`README.md`](README.md)'s verdict quotes, which is why that verdict is
 **suspended** rather than retracted: every row here is true of the leaf it names

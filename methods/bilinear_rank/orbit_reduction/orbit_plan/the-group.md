@@ -52,7 +52,7 @@ not of the slice tuple: the search only ever reads `span(T)`, so any change of
 basis among the slices is free.
 
 At `⟨2,2,2⟩` over GF(2) this `Stab(T)` has 216 elements, reached by
-`decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2`
+`decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2`
 ([`../group_construction.h`](../group_construction.h)).
 
 ## Why it is sound, and why `row_space_representatives` is not

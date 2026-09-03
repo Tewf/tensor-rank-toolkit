@@ -32,7 +32,7 @@ In this folder:
 Example of use:
 
 ```sh
-deflate-strictly fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+deflate-strictly evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
 #   candidate 4: refuted, 0.592915 s
 #   k = 6: every candidate refuted, so the rank is above 6, 3.12693 s, kissat
 ```

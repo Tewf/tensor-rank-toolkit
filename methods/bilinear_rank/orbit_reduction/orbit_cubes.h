@@ -50,7 +50,7 @@ namespace bilinear_rank {
 /// `left_variables` and `right_variables` are the consumer's variable numbers
 /// for the operand vectors, laid out `left[term * rows * inner + coordinate]`
 /// and `right[term * inner * columns + coordinate]`, which is the layout
-/// `satisfiability/binary_encoding.h` builds. Pass the whole arrays: only the
+/// `methods/satisfiability/binary_encoding.h` builds. Pass the whole arrays: only the
 /// first term is pinned, and the offset arithmetic lives here so that no
 /// consumer repeats it. A positive literal asserts the coordinate is one, a
 /// negative literal that it is zero, which is the DIMACS convention and needs no

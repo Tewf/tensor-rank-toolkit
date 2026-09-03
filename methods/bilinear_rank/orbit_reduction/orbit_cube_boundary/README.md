@@ -1,7 +1,7 @@
 # The orbit cube boundary
 
 Two modules meet here and this folder is the whole contract. `methods/bilinear_rank/orbit_reduction/`
-supplies representatives; `satisfiability/` consumes them. Written while they were
+supplies representatives; `methods/satisfiability/` consumes them. Written while they were
 on separate branches and kept after the merge, because they are still compiled
 apart and the contract is still what holds them together.
 

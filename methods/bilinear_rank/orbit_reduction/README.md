@@ -57,7 +57,7 @@ knowing a command line exists.
 ## What it is worth, measured
 
 The quotient removes 39.2x the nodes on a `⟨2,2,2⟩` refutation
-(`decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2`) and
+(`decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2`) and
 2.35x on a satisfiable question (the same command at `--target 7`), and since
 `least_in_orbit` charges only about 1.2x a node,
 the time follows: **about 30x** and **about 2.1x**, quoted that way because the

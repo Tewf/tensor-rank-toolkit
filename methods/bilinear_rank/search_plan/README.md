@@ -17,7 +17,7 @@ In this folder:
 Example of use:
 
 ```sh
-decide-rank fixtures/f2_2x2.tensor --plan-out plan.txt
+decide-rank evidence/fixtures/f2_2x2.tensor --plan-out plan.txt
 head -6 plan.txt
 # A search plan, from decide-rank --plan-out. --plan-in replays it.
 # `name value`, one per line; # starts a comment. Every field is written,
@@ -26,5 +26,5 @@ head -6 plan.txt
 # leaf_route auto
 # device cpu
 
-decide-rank fixtures/f2_2x2.tensor --plan-in plan.txt   # the same choices, replayed
+decide-rank evidence/fixtures/f2_2x2.tensor --plan-in plan.txt   # the same choices, replayed
 ```

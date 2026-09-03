@@ -44,7 +44,7 @@ like an answer.
 The same firing, on a fixture small enough to run end to end: the descent's own
 seed is already the answer, so the root itself is where the bound cuts.
 
-    lower-the-bound fixtures/gf4_multiplication.tensor
+    lower-the-bound evidence/fixtures/gf4_multiplication.tensor
 
     GF(2), start: 3 products over 3 dimensions
     best: 3 products, rank bound 3, gap 0, verified
@@ -67,7 +67,7 @@ heuristic, and it is what the exhaustive search drops.
 ## What can be started from a known algorithm, and what cannot
 
 **Can**: sparsify its operators, which is
-[`../matrix_sparsification/`](../../../matrix_sparsification/README.md) and needs only
+[`../matrix_sparsification/`](../../matrix_sparsification/README.md) and needs only
 the `⟨L, R, P⟩` triple. That is where a published scheme is genuinely useful input
 here.
 

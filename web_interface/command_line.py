@@ -11,7 +11,7 @@ this reason: `--target abc` reported as `stoull` names neither the flag nor the
 word, and there are five numeric flags it could have been.
 
 What this file deliberately does not do is decide whether a map is well formed.
-The readers in `formats/` are the authority on that and their messages already
+The readers in `core/formats/` are the authority on that and their messages already
 name what is wrong, so a malformed tensor reaches the binary and comes back as
 that binary's own refusal rather than as a second opinion written here.
 """

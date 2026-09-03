@@ -12,7 +12,7 @@ add_test(NAME report COMMAND test_report)
 
 # Why this one forks is in the file's own header comment. It is also the only
 # caller `interrupt_cleanup.h` has: the scratch files it exists for are named in
-# satisfiability/solver_process.cpp, which is where the registration belongs and
+# methods/satisfiability/solver_process.cpp, which is where the registration belongs and
 # is not this strand's to edit.
 add_executable(test_interrupt_cleanup test_interrupt_cleanup.cpp)
 target_link_libraries(test_interrupt_cleanup PRIVATE cli project_warnings testing)
@@ -29,14 +29,14 @@ add_test(NAME tunables COMMAND test_tunables ${PROJECT_SOURCE_DIR})
 # processes.
 add_test(NAME argument_grammar
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_argument_grammar.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures
                  ${CMAKE_BINARY_DIR})
 set_tests_properties(argument_grammar PROPERTIES TIMEOUT 120)
 
 # That a file bounds a real run, which the check above cannot see, for the reason
-# its own header comment gives. This one spends a process, the way satisfiability/
+# its own header comment gives. This one spends a process, the way methods/satisfiability/
 # asserts the exit codes against the built commands rather than describing them.
 add_test(NAME tunables_bound_a_run
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_tunables_bound_a_run.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 set_tests_properties(tunables_bound_a_run PROPERTIES TIMEOUT 120)

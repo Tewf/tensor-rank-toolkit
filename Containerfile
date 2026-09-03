@@ -36,7 +36,7 @@ FROM ubuntu:24.04
 # rather than the branch.
 #
 # The kissat commit is tag rel-4.0.4, which is the version every solver timing in
-# this repository was taken with; satisfiability/results.json names it. Change it
+# this repository was taken with; methods/satisfiability/results.json names it. Change it
 # and the numbers in that file stop being the ones this image reproduces.
 ARG KISSAT_COMMIT=8af8e56f174b778aef3aa45af9f739b2a5f492c2
 ARG DRAT_TRIM_COMMIT=2e3b2dc0ecf938addbd779d42877b6ed69d9a985

@@ -11,7 +11,7 @@ the two new ones are the two written here.
 
 ## (a) Cores: two `parallel_for`s nobody could reach, and one that aborted
 
-**`decide-rank-by-sat` gained `--threads`.** `satisfiability/rank_question.cpp`
+**`decide-rank-by-sat` gained `--threads`.** `methods/satisfiability/rank_question.cpp`
 has run its cubes through `parallel_for` since cube-and-conquer arrived, with the
 measurement in the comment beside it: five cubes of `matmul_2x2x2 --target 6`,
 3.36 s sequentially against 0.982 s together, **3.42x**. Nothing on that command
@@ -71,9 +71,9 @@ kill is not.
 | where | what it asked for | reachable by |
 |---|---|---|
 | `methods/bilinear_rank/branch_and_bound/level_lowering_moves.cpp` | `p^r` vectors | `lower-the-bound --summand-rank r`, which took any count |
-| `curve_bounds/interpolation_programme.cpp` | an `O(degree²)` frontier, twice | `curve-bounds --degree`, which took any whole number: 100 000 asks for about 240 GB |
-| `pencil_rank/sumi_bound.cpp` | `x^p - x`, linear in `p` | **the tensor file**, whose header is checked for primality and not for size: `field 2147483647` asks for 17 GB |
-| `matrix_sparsification/combinations.cpp` | `C(total, size)` subsets | `sparsify-operator` on anything larger than the 7x4 operators shipped: `C(47, 23)` ≈ 1.6e13 on a `⟨4,4,4⟩` operator, which `minimise-rank --emit-operators` invites |
+| `methods/curve_bounds/interpolation_programme.cpp` | an `O(degree²)` frontier, twice | `curve-bounds --degree`, which took any whole number: 100 000 asks for about 240 GB |
+| `methods/pencil_rank/sumi_bound.cpp` | `x^p - x`, linear in `p` | **the tensor file**, whose header is checked for primality and not for size: `field 2147483647` asks for 17 GB |
+| `methods/matrix_sparsification/combinations.cpp` | `C(total, size)` subsets | `sparsify-operator` on anything larger than the 7x4 operators shipped: `C(47, 23)` ≈ 1.6e13 on a `⟨4,4,4⟩` operator, which `minimise-rank --emit-operators` invites |
 | `methods/bilinear_rank/map_construction/map_construction.cpp` | `(rows·inner·columns)²` entries, and `length³` | `make-tensor --matmul 2 100 100 100`, which is 7.2 TiB |
 
 Each count is computed with its own overflow checked, and where the product of

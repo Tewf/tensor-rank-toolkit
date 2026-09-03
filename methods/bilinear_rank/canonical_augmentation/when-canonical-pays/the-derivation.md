@@ -95,7 +95,7 @@ Counted separately, that is 5, 5, 5, 10 and 13 orbits against node counts of
 6, 6, 6, 11 and 14.
 
 On the shipped `<2,2,2>` fixture, `price-canonical-route
-fixtures/matmul_2x2x2.tensor -s matmul 2 2 2 --target 5` prints `orbits of the
+evidence/fixtures/matmul_2x2x2.tensor -s matmul 2 2 2 --target 5` prints `orbits of the
 pool: 5, sum of squared sizes 10773`, the exact row this section counts by hand.
 
 So the one-level break-even is between two **roots**, written out:

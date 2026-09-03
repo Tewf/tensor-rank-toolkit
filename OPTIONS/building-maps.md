@@ -58,4 +58,4 @@ are not one algorithm leave as exit 5 with `inner dimension mismatch`, his own
 words for it, and so does an entry whose denominator vanishes at `p`, which is a
 real answer about a rational algorithm and not a defect, since his checkers
 reject the same triple at the same primes. The page for whoever has such files is
-[`../formats/interchange/exchanging-files.md`](../formats/interchange/exchanging-files.md).
+[`../formats/interchange/exchanging-files.md`](../core/formats/interchange/exchanging-files.md).

@@ -18,12 +18,12 @@ flag that was given always overwrites what the file said, and a flag that was
 not leaves the file's number standing. Deleting the file changes nothing,
 because every value it ships is the number compiled in.
 
-The chain in one run, on `fixtures/matmul_2x2x2.tensor --target 6`: a
+The chain in one run, on `evidence/fixtures/matmul_2x2x2.tensor --target 6`: a
 `tunables.conf` holding `search_node_limit = 100` (compiled default
 `5000000`) leaves the file's number standing:
 
 ```sh
-$ decide-rank fixtures/matmul_2x2x2.tensor --target 6
+$ decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6
   100 nodes in 0.00021733 s
   GAVE UP: the node limit was reached, so nothing is decided.
            Raise --node-limit to search further.
@@ -33,7 +33,7 @@ Giving `--node-limit 5000000` on the command line, same directory and same
 file, overwrites it and the search runs to its exhaustive answer:
 
 ```sh
-$ decide-rank fixtures/matmul_2x2x2.tensor --target 6 --node-limit 5000000
+$ decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6 --node-limit 5000000
   25399 nodes in 0.0330047 s
   NO: there is no algorithm with 6 products. The search was exhaustive.
 ```

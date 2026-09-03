@@ -9,7 +9,7 @@ exclusion rather than settling anything.
 **Point it at matrix multiplication instead.** ⟨2,2,2⟩ has the sandwich
 symmetries and the cyclic one: order in the hundreds over `F₂`, against a
 225-element pool. That is where orbits collapse a search rather than trim it,
-and [`famous_tensors/`](../../../../famous_tensors/README.md) is where the open
+and [`evidence/benchmark_tensors/`](../../../../evidence/benchmark_tensors/README.md) is where the open
 questions are.
 
 ## The heuristic is a separate question
@@ -46,7 +46,7 @@ finding [`../../exhaustive_search/what-threads-change.md`](../../exhaustive/what
 made about the plain search applies here unchanged, and so does its mitigation.
 `expand_up_to_impl` tests the shared `found` flag before it consumes a node.
 
-**Measured**, on `decide-rank fixtures/matmul_2x2x3.tensor --target 9 -s matmul
+**Measured**, on `decide-rank evidence/fixtures/matmul_2x2x3.tensor --target 9 -s matmul
 2 2 3 --node-limit 400000`, which fixes the node count so the rows compare like
 for like, under [`../../MEASURING.md`](../../../../MEASURING.md):
 

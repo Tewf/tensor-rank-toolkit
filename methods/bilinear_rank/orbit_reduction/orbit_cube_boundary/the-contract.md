@@ -53,7 +53,7 @@ on the supplying side so that no consumer repeats it:
     left_variables [term * rows  * inner   + coordinate]
     right_variables[term * inner * columns + coordinate]
 
-which is the layout `satisfiability/binary_encoding.h` already builds. A positive
+which is the layout `methods/satisfiability/binary_encoding.h` already builds. A positive
 literal asserts the coordinate is one, a negative literal that it is zero: the
 DIMACS convention, so the encoder needs to hand over no header to honour it.
 

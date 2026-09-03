@@ -29,4 +29,4 @@ head -4 my.tensor
 The four spellings and what refuses an impossible size:
 [`../OPTIONS/building-maps.md`](../../../OPTIONS/building-maps.md). Reading a
 published algorithm in instead:
-[`../formats/interchange/bringing-an-algorithm-in.md`](../../../formats/interchange/bringing-an-algorithm-in.md).
+[`../formats/interchange/bringing-an-algorithm-in.md`](../../../core/formats/interchange/bringing-an-algorithm-in.md).

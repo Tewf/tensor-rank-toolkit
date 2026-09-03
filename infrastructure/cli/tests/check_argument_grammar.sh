@@ -98,15 +98,15 @@ everything="methods/bilinear_rank/greedy_heuristic/minimise-rank \
     methods/bilinear_rank/exhaustive/decide-rank \
     methods/bilinear_rank/flip_graph/walk-scheme \
     methods/bilinear_rank/map_construction/make-tensor \
-    matrix_sparsification/sparsify-operator \
-    satisfiability/decide-rank-by-sat \
-    curve_bounds/curve-bounds \
+    methods/matrix_sparsification/sparsify-operator \
+    methods/satisfiability/decide-rank-by-sat \
+    methods/curve_bounds/curve-bounds \
     methods/bilinear_rank/branch_and_bound/lower-the-bound \
     methods/bilinear_rank/canonical_augmentation/deflate-strictly \
     methods/bilinear_rank/canonical_augmentation/enumerate-subspaces \
     methods/bilinear_rank/canonical_augmentation/price-canonical-route \
-    pencil_rank/decide-rank-by-pencil \
-    canonical_factorisation/factor-over-canonical-basis \
+    methods/pencil_rank/decide-rank-by-pencil \
+    methods/canonical_factorisation/factor-over-canonical-basis \
     infrastructure/run_limits/show-limits"
 if [ -x "$binaries/infrastructure/gpu_leaf/measure-leaf" ]; then
     everything="$everything infrastructure/gpu_leaf/measure-leaf"
@@ -161,8 +161,8 @@ refuses 2 "unrecognised option: --bogus" "$binaries/infrastructure/run_limits/sh
 # name what to type instead. Silence would be worse than the old command, because
 # `list-solvers | grep gurobi` going quiet reads as "no backends installed".
 echo "a retired spelling names its replacement rather than going quiet"
-refuses 2 "curve-bounds --solvers" "$binaries/integer_programme/list-solvers"
-refuses 2 "curve-bounds --solvers" "$binaries/integer_programme/list-solvers" --help
+refuses 2 "curve-bounds --solvers" "$binaries/methods/integer_programme/list-solvers"
+refuses 2 "curve-bounds --solvers" "$binaries/methods/integer_programme/list-solvers" --help
 
 if [ "$failures" -ne 0 ]; then
     echo "argument grammar: $failures failed"

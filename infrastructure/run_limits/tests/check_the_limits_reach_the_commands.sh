@@ -37,11 +37,11 @@ binaries=${3:?the build root, passed by the add_test registration}
 minimise=$binaries/methods/bilinear_rank/greedy_heuristic/minimise-rank
 lower=$binaries/methods/bilinear_rank/branch_and_bound/lower-the-bound
 walk=$binaries/methods/bilinear_rank/flip_graph/walk-scheme
-sparsify=$binaries/matrix_sparsification/sparsify-operator
-pencil=$binaries/pencil_rank/decide-rank-by-pencil
-curve=$binaries/curve_bounds/curve-bounds
+sparsify=$binaries/methods/matrix_sparsification/sparsify-operator
+pencil=$binaries/methods/pencil_rank/decide-rank-by-pencil
+curve=$binaries/methods/curve_bounds/curve-bounds
 maker=$binaries/methods/bilinear_rank/map_construction/make-tensor
-sat=$binaries/satisfiability/decide-rank-by-sat
+sat=$binaries/methods/satisfiability/decide-rank-by-sat
 
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
@@ -95,7 +95,7 @@ operator=$fixtures/strassen_u.matrix
 # **`decide-rank` is deliberately not in this list, either way round.** A budget
 # that holds nothing does not refuse `--target k`: the pool goes addressed and the
 # search runs, which is what `methods/bilinear_rank/search_plan/tests/check_the_plan_reaches_a_run.sh`
-# asserts and what `satisfiability/tests/check_exit_codes.sh` asserts the exit
+# asserts and what `methods/satisfiability/tests/check_exit_codes.sh` asserts the exit
 # code of. **`--max-memory` is two things in this repository**: a ceiling on one
 # allocation, and the knob that chooses the cheaper representation. Wherever a
 # cheaper representation exists, the second meaning wins. The sweep, which has no

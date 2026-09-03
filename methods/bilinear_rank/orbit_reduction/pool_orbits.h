@@ -62,7 +62,7 @@ FactoredAction factored_action(const Field& field, const std::vector<Automorphis
 ///
 /// **GPU note.** This is the one lookup an accelerated leaf would need per
 /// candidate, and it is branch-free, allocation-free and reads two small tables
-/// every thread can share. See `positioning/hardware-and-parallelism.md`.
+/// every thread can share. See `writeup/positioning/hardware-and-parallelism.md`.
 class PoolAction {
    public:
     PoolAction(const Field& field, const std::vector<Automorphism>& group, std::size_t rows,

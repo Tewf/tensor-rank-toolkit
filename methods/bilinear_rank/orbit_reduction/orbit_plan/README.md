@@ -14,7 +14,7 @@ as work outstanding. Its four items landed here as:
 What it says about the heuristic being a separate question, and about the pool
 having to be closed under the action, still governs.
 
-What it built to, concretely: `decide-rank fixtures/matmul_2x2x2.tensor
+What it built to, concretely: `decide-rank evidence/fixtures/matmul_2x2x2.tensor
 --target 6 -s matmul 2 2 2` visits 648 nodes where the unquotiented walk visits
 25 399, [`../what-the-quotient-costs.md`](../what-the-quotient-costs.md)'s
 table.

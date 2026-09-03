@@ -40,7 +40,7 @@ Two premises this run corrected:
   not `plateau_search`'s, which is a timing from one tool sitting beside a claim
   about the other. Both do cross, and what each costs is now published rather than
   quoted: [`../../flip_graph/results.json`](../../flip_graph/results.json), which
-  `reproduce/measure.py --check` re-derives.
+  `evidence/reproduce/measure.py --check` re-derives.
 
   The part worth carrying away is what `plateau_search` needs to get there.
   `--plateau 2 --plateau-states 380` reaches 7 having visited 386 subspaces; at

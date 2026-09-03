@@ -13,7 +13,7 @@ canonical form is a function of the **whole** set, so `PoolCosets` reduces every
 pool element at every node whatever the depth.
 
 On the shipped `<2,2,2>` fixture at two levels, `price-canonical-route
-fixtures/matmul_2x2x2.tensor -s matmul 2 2 2 --target 6` ends `verdict: the nodes
+evidence/fixtures/matmul_2x2x2.tensor -s matmul 2 2 2 --target 6` ends `verdict: the nodes
 the group removes do not cover the parent tests they cost`, this section's
 argument in the tool's own words.
 

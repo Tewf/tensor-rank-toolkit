@@ -1,0 +1,59 @@
+# Matrix multiplication <2,2,2> over GF(2), embedded in a larger space: the
+# same tensor with one dependent row, two dependent columns and three dependent
+# slices appended. Every flattening is rank 4 against sizes 5, 6 and 7, so the
+# tensor is not concise and its rank is still 7.
+#
+# Written out entry by entry, like every other fixture here, rather than by a
+# generator that could drift from it. What it is, exactly: index 4 of the rows is
+# rows 0+1, indices 4 and 5 of the columns are columns 0+3 and 1+2+3, and indices
+# 4, 5 and 6 of the slices are slices 0+1, 1+2+3 and 0+3. The first four indices
+# of every axis are untouched, so compressing this to its concise core gives
+# evidence/fixtures/matmul_2x2x2.tensor back byte for byte, and that identity is what
+# core/linear_algebra/tests/test_tensor_compression.cpp checks the round trip against.
+#
+# It exists because every other tensor fixture here is already concise, so a test
+# of the compression over them would only ever exercise the identity map.
+field 2
+shape 7 5 6
+
+1 0 0 0 1 0
+0 0 1 0 0 1
+0 0 0 0 0 0
+0 0 0 0 0 0
+1 0 1 0 1 1
+
+0 1 0 0 0 1
+0 0 0 1 1 1
+0 0 0 0 0 0
+0 0 0 0 0 0
+0 1 0 1 1 0
+
+0 0 0 0 0 0
+0 0 0 0 0 0
+1 0 0 0 1 0
+0 0 1 0 0 1
+0 0 0 0 0 0
+
+0 0 0 0 0 0
+0 0 0 0 0 0
+0 1 0 0 0 1
+0 0 0 1 1 1
+0 0 0 0 0 0
+
+1 1 0 0 1 1
+0 0 1 1 1 0
+0 0 0 0 0 0
+0 0 0 0 0 0
+1 1 1 1 0 1
+
+0 1 0 0 0 1
+0 0 0 1 1 1
+1 1 0 0 1 1
+0 0 1 1 1 0
+0 1 0 1 1 0
+
+1 0 0 0 1 0
+0 0 1 0 0 1
+0 1 0 0 0 1
+0 0 0 1 1 1
+1 0 1 0 1 1

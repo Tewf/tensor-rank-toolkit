@@ -32,7 +32,7 @@ In this folder:
 Example of use:
 
 ```sh
-decide-rank fixtures/matmul_2x2x2.tensor --target 7
+decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 7
 #   FOUND: 7 products, rank bound 6, gap 1
 #   verified: they compute the map
 ```
@@ -40,4 +40,4 @@ decide-rank fixtures/matmul_2x2x2.tensor --target 7
 A first session in plain words: [`../start-here.md`](../../../start-here.md). Every flag:
 [`../OPTIONS/searching-for-rank.md`](../../../OPTIONS/searching-for-rank.md). The
 algorithm in pseudocode:
-[`../how-the-search-works/`](../../../how-the-search-works/README.md).
+[`../how-the-search-works/`](../../../writeup/how-the-search-works/README.md).

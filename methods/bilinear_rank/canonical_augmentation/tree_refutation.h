@@ -20,7 +20,7 @@
 /// **What can be refreshed has been, and what cannot is said rather than left to
 /// look current.** The unpinned pair is retaken and both its ends are published:
 /// the tree is **0.0291 s** against kissat's **0.339 s**, both read out of the one
-/// row of `satisfiability/results.json` that carries the pair, so the two are not
+/// row of `methods/satisfiability/results.json` that carries the pair, so the two are not
 /// *comparable*, which this comment used to say, and it is the tree that is ahead
 /// by **11.7x**. Both ends come from that row rather than one from each file
 /// because the same question is timed in two of them, and a ratio assembled from

@@ -19,14 +19,14 @@ built for questions of that shape. Precedence and `BILINEAR_TUNABLES`:
 | `--probe N` | `0`, off | **Unmeasured.** The argument is that cost concentrates just below the rank, so a probe that exhausts a small budget is itself evidence of being there. No table prices it. |
 | `--timeout N` | `sat_timeout_seconds`, `300` | **Nothing.** An argument: this machine has 16 GB and long searches share it. |
 | `--max-memory` | `sat_memory_megabytes`, `2G` | **Nothing**, same argument. The memory cap matters as much as the clock; a solver that takes the box down has answered nothing. On `decide-rank-by-sat`, this caps the **child solver's address space** via `RLIMIT_AS`, which is NOT the same as the bulk-allocation budget (`set_memory_budget`) on every other command, a known overload of one spelling, catalogued in [`one-idea-several-spellings.md`](one-idea-several-spellings.md). |
-| `--threads N` | `1` | **Nothing measured the default**, which is the reproducibility default `infrastructure/run_limits/parallel.h` sets everywhere. What *is* measured is what the flag buys: `-s matmul` splits the question into one independent solver process per orbit of the first term, and five cubes of `matmul_2x2x2 --target 6` are **3.42x** together (3.36 s sequentially against 0.982 s, ideal 4.25x), recorded in `satisfiability/rank_question.cpp`. Each worker's `--max-memory` is the shared cap divided by the workers, so the aggregate ceiling stays the number the flag names. A refutation is the same at any count; a yes may come back from a different cube. |
+| `--threads N` | `1` | **Nothing measured the default**, which is the reproducibility default `infrastructure/run_limits/parallel.h` sets everywhere. What *is* measured is what the flag buys: `-s matmul` splits the question into one independent solver process per orbit of the first term, and five cubes of `matmul_2x2x2 --target 6` are **3.42x** together (3.36 s sequentially against 0.982 s, ideal 4.25x), recorded in `methods/satisfiability/rank_question.cpp`. Each worker's `--max-memory` is the shared cap divided by the workers, so the aggregate ceiling stays the number the flag names. A refutation is the same at any count; a yes may come back from a different cube. |
 | `-s, --symmetry matmul` | `none` | Measured: the `⟨3,3,3⟩` first-term pool collapses from 261 121 to **13 orbits**. GF(2) and matrix multiplication only, and `auto` is refused here because these orbits are the closed-form ones of `⟨n,m,k⟩`. |
 
 ## The search schedule, which has no flag
 
 Only one is implemented: linear UNSAT-SAT, walking up from the floor. It was
 **measured against four others** on seven fixtures
-([`../satisfiability/search/`](../satisfiability/bracket/README.md)), and it **lost**
+([`../satisfiability/search/`](../methods/satisfiability/bracket/README.md)), and it **lost**
 on the only expensive one, coming fourth of five on GF(16): floor 108.461 s,
 ascending 112.533, descending 110.421, bisection 113.614, gallop up 110.399,
 gallop down **110.094**. The whole choice of schedule is worth about **three

@@ -29,11 +29,11 @@ if [ "$got" -ne 0 ]; then
     echo "  FAIL  left as $got: $(head -1 "$scratch/err")"
     failures=$((failures + 1))
 elif ! diff -q "$scratch/theirs" "$scratch/ours" >/dev/null; then
-    echo "  FAIL  the tensor differs from fixtures/matmul_2x2x2.tensor"
+    echo "  FAIL  the tensor differs from evidence/fixtures/matmul_2x2x2.tensor"
     diff "$scratch/ours" "$scratch/theirs" | head -8
     failures=$((failures + 1))
 else
-    echo "  ok    identical to fixtures/matmul_2x2x2.tensor, comments aside"
+    echo "  ok    identical to evidence/fixtures/matmul_2x2x2.tensor, comments aside"
 fi
 
 # Exit code, and a refusal that names what is wrong with the files rather than

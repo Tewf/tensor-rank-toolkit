@@ -11,7 +11,7 @@ it can only ever produce upper bounds, and it never runs out of moves.
 
 ## The command
 
-    walk-scheme fixtures/f3_3x6.tensor --from 10 --flips 20000
+    walk-scheme evidence/fixtures/f3_3x6.tensor --from 10 --flips 20000
 
 `--from k` walks from the heuristic's scheme at `k` products rather than from the
 naive one, and refuses when the heuristic cannot reach `k`. That refusal matters:
@@ -19,7 +19,7 @@ walking from a bad start is what makes a flip walk look worse than it is.
 
 ## The published numbers
 
-[`results.json`](results.json) holds them, and `reproduce/measure.py --check`
+[`results.json`](results.json) holds them, and `evidence/reproduce/measure.py --check`
 re-derives every count in it on each CI run. Five rows: the `⟨2,2,2⟩` plateau
 crossing at a 380-state budget and its negative control at 370, and the flip
 walk on `⟨2,2,2⟩`, GF(16) and `⟨3,3,3⟩`.
@@ -44,4 +44,4 @@ A walk gives upper bounds only, and a plateau crossing is not a proof of
 anything. Nothing here decides a rank; that is
 [`../exhaustive_search/`](../exhaustive/README.md). And the published flip-graph
 results are far ahead of this implementation, which
-[`../positioning/`](../../../positioning/README.md) states with the numbers.
+[`../positioning/`](../../../writeup/positioning/README.md) states with the numbers.

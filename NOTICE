@@ -2,20 +2,20 @@ NOTICE: scope of the MIT licence, and credit for material that is not mine
 ==========================================================================
 
 The MIT LICENSE in this repository covers **my own work only**: the C++ in
-linear_algebra/, formats/, infrastructure/cli/, infrastructure/testing/,
+core/linear_algebra/, core/formats/, infrastructure/cli/, infrastructure/testing/,
 infrastructure/run_limits/, methods/bilinear_rank/map_construction/, methods/bilinear_rank/greedy_heuristic/, methods/bilinear_rank/exhaustive/, methods/bilinear_rank/orbit_reduction/, methods/bilinear_rank/flip_graph/,
-methods/bilinear_rank/branch_and_bound/, integer_programme/, matrix_sparsification/,
-satisfiability/, curve_bounds/, rank_metric_bound/, methods/bilinear_rank/canonical_augmentation/,
-pencil_rank/, canonical_factorisation/ and methods/bilinear_rank/search_plan/, the CUDA in
-infrastructure/gpu_leaf/, the Python in web_interface/ and reproduce/,
+methods/bilinear_rank/branch_and_bound/, methods/integer_programme/, methods/matrix_sparsification/,
+methods/satisfiability/, methods/curve_bounds/, methods/rank_metric_bound/, methods/bilinear_rank/canonical_augmentation/,
+methods/pencil_rank/, methods/canonical_factorisation/ and methods/bilinear_rank/search_plan/, the CUDA in
+infrastructure/gpu_leaf/, the Python in web_interface/ and evidence/reproduce/,
 together with the fixtures and the site. One directory of fixtures is the exception and is not
-mine: fixtures/plinopt/, below.
+mine: evidence/fixtures/plinopt/, below.
 
 The list is every directory CMakeLists.txt adds, and it is written out rather
 than summarised because a folder missing from it is a folder whose licence this
 file does not state. Four were missing until 2026-08-20, and two more,
 methods/bilinear_rank/branch_and_bound/ and methods/bilinear_rank/search_plan/, until 2026-09-03; a list that drifted twice
-by hand is now compared against CMakeLists.txt by reproduce/notice_scope.py,
+by hand is now compared against CMakeLists.txt by evidence/reproduce/notice_scope.py,
 in CI.
 
 It does **not** cover, and this repository does **not** redistribute, the
@@ -34,8 +34,8 @@ it implements without guessing.
 
 One credit belongs here rather than only in a bibliography, because it is
 **unpublished and was given directly**: the determinant-polynomial feasibility
-test in matrix_sparsification/pattern_feasibility.h, and the operator in
-fixtures/dumas_counterexample_l.matrix, are from a Maple worksheet by
+test in methods/matrix_sparsification/pattern_feasibility.h, and the operator in
+evidence/fixtures/dumas_counterexample_l.matrix, are from a Maple worksheet by
 **Jean-Guillaume Dumas** (cex_poldet, 27 May 2024), supplied by him. The
 construction is his; the C++ and the tests are mine. The fixture keeps his name
 because the name is the credit.
@@ -81,7 +81,7 @@ and reproduce anywhere; timings are not, and are not claimed to.
 
 PLinOpt's operators
 -------------------
-fixtures/plinopt/ is thirteen `.sms` matrices copied unmodified from the `data/`
+evidence/fixtures/plinopt/ is thirteen `.sms` matrices copied unmodified from the `data/`
 directory of **PLinOpt**, by Jean-Guillaume Dumas, Bruno Grenet, Clément Pernet
 and Alexandre Sedoglavic, https://github.com/jgdumas/plinopt. **CeCILL-B**, whose
 Article 5.3.1 asks that a copy of the agreement and the warranty and liability
@@ -91,7 +91,7 @@ that directory, as PermLib's is in its own.
 They are the interoperability, not decoration: the exchange with the reference
 toolchain is exercised by the test suite against his bytes rather than against
 something written here to resemble them. What each file carries is
-fixtures/plinopt/README.md.
+evidence/fixtures/plinopt/README.md.
 
 PermLib
 -------

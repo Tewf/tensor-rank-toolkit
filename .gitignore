@@ -13,14 +13,14 @@ __pycache__/
 *.pyc
 
 # LaTeX intermediates. The PDF is committed; everything else regenerates.
-article/*.aux
-article/*.log
-article/*.out
-article/*.fls
-article/*.fdb_latexmk
-article/*.bbl
-article/*.blg
-article/*.synctex.gz
+writeup/article/*.aux
+writeup/article/*.log
+writeup/article/*.out
+writeup/article/*.fls
+writeup/article/*.fdb_latexmk
+writeup/article/*.bbl
+writeup/article/*.blg
+writeup/article/*.synctex.gz
 
 # What the browser console writes while it runs: one directory per run, holding
 # the command, the output and any operators the tool emitted. Generated, and

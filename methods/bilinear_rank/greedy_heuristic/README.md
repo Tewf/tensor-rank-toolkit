@@ -8,7 +8,7 @@ general is open.
 There are four ways to go at it here, and the folder names say which is which:
 this one descends, [`../exhaustive_search/`](../exhaustive/README.md) decides,
 [`../flip_graph/`](../flip_graph/README.md) moves a decomposition sideways, and
-[`../integer_programme/`](../../../integer_programme/README.md) hands the question to somebody
+[`../integer_programme/`](../../integer_programme/README.md) hands the question to somebody
 else's solver. [`../orbit_reduction/`](../orbit_reduction/README.md) quotients the first
 three by symmetry. Each guarantees something different, and each folder says what.
 Every claim below is one of the four earning or failing to earn its keep.
@@ -28,14 +28,14 @@ Every claim below is one of the four earning or failing to earn its keep.
 ## The tools
 
 ```sh
-minimise-rank  fixtures/f3_3x6.tensor              # heuristic: make it better
-decide-rank    fixtures/f2_5x5.tensor --target 11  # exact: is there one this small?
-walk-scheme    fixtures/f3_3x6.tensor --from 10    # walk on from the heuristic's answer
+minimise-rank  evidence/fixtures/f3_3x6.tensor              # heuristic: make it better
+decide-rank    evidence/fixtures/f2_5x5.tensor --target 11  # exact: is there one this small?
+walk-scheme    evidence/fixtures/f3_3x6.tensor --from 10    # walk on from the heuristic's answer
 ```
 
 Every flag and its default: [`../OPTIONS.md`](../../../OPTIONS.md). What the descent
 guarantees, proved rather than measured:
-[`../article/bilinear-rank.pdf`](../../../article/bilinear-rank.pdf), with
+[`../article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf), with
 [`correctness.md`](correctness.md) for which of those a test would catch.
 ## What the heuristic reaches
 
@@ -63,7 +63,7 @@ the same thing for this problem in particular. The `16, 19, 19, 12` are the
 minima over all bases of those spans and no tie-break changes them. What is
 heuristic is the *constraint* that the answer be a basis of `span(T)` at all,
 which is what steps 2 and 3 relax. Proofs:
-[`../article/bilinear-rank.pdf`](../../../article/bilinear-rank.pdf).
+[`../article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf).
 
 ## What makes a result trustworthy
 
@@ -74,7 +74,7 @@ map it came from, and the recovered ⟨L, R, P⟩ is rebuilt and compared.
 ## Beyond polynomial multiplication
 
 The same two searches on the tensors the complexity literature argues about:
-**[`../famous_tensors/`](../../../famous_tensors/README.md)**. No single rank-one map
+**[`../famous_tensors/`](../../../evidence/benchmark_tensors/README.md)**. No single rank-one map
 strictly improves a matrix multiplication tensor, so the step 3 shortlist is 0 of
 225 on `⟨2,2,2⟩` and this descent cannot take a first step. A walk that may cross
 equal-cost maps reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/README.md)).

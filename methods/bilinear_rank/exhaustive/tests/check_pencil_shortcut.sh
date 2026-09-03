@@ -32,7 +32,7 @@ echo "$said" | grep -q 'rank: 3 (exact'; report "and reports the rank the pencil
 # has always returned and the pencil has none to give: it reads a rank off a
 # canonical form and never builds one. The rank becomes the target instead, so
 # the sweep asks one question at the value already proved rather than climbing
-# to it. `reproduce/measure.py` caught the version that returned the number.
+# to it. `evidence/reproduce/measure.py` caught the version that returned the number.
 echo "$said" | grep -q 'FOUND: 3 products'; report "and still returns the decomposition" $?
 echo "$said" | grep -q 'verified'; report "which is verified against the map" $?
 

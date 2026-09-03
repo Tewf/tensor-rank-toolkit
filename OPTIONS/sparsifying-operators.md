@@ -16,8 +16,8 @@ can beat it. The comparison is still what the default output is for. Precedence 
 | `--max-memory N` | derived | As `minimise-rank` ([`searching-for-rank.md`](searching-for-rank.md)): an eighth of what the machine reports. The scan is priced by what it may *walk*, `C(b, (b−r+1)/2 + 1)`, not by what it allocates: about ten megabytes on a 23×9 operator and 1.4 PiB on a 49×16 one, which is why the second is refused in milliseconds instead of running for half an hour. |
 
 ```sh
-$ sparsify-operator fixtures/strassen_u.matrix --show
-fixtures/strassen_u.matrix
+$ sparsify-operator evidence/fixtures/strassen_u.matrix --show
+evidence/fixtures/strassen_u.matrix
   as given: 12 nonzeros, 12 operations, 7x4
   exact, matroid greedy over Q: 10 nonzeros, 10 operations, 0.000193219 s
 0 0 0 1
@@ -34,13 +34,13 @@ fixtures/strassen_u.matrix
 | Route | What is measured |
 |---|---|
 | `exact, matroid greedy over Q` (default) | **The minimum** over every invertible `V`, by Rado-Edmonds. 10 on all three fixtures; 43 / 42 / 43 on the operators of a rank-23 `⟨3,3,3⟩` scheme, in about a third of a second each. |
-| `by linear programming` (`--simplex`) | The same counts, four to fifteen times faster on anything large enough to time, and the **only** route that answers `4x4x4_49_156_L`, which the search refuses. An upper bound rather than a proof: see [`../matrix_sparsification/method/answering-without-searching.md`](../matrix_sparsification/method/answering-without-searching.md). |
+| `by linear programming` (`--simplex`) | The same counts, four to fifteen times faster on anything large enough to time, and the **only** route that answers `4x4x4_49_156_L`, which the search refuses. An upper bound rather than a proof: see [`../matrix_sparsification/method/answering-without-searching.md`](../methods/matrix_sparsification/method/answering-without-searching.md). |
 | `greedy, by rescaling` (`--operations`) | Reaches 10 nonzeros **and 10 operations** on the alternative-basis operator, which is the cost the article minimises. The only route here answering that question, and the reason speed does not order it against the others. |
 
 **Three routes, not five.** The row-basis heuristic and `[beniamini2020]`'s two
 oracles reached the same counts 88x to 343x more slowly and moved on 2026-08-22
 to the archive branch `rejected-experiments` (`retired/dominated_sparsifiers/`):
-[`../matrix_sparsification/dominated.md`](../matrix_sparsification/dominated.md)
+[`../matrix_sparsification/dominated.md`](../methods/matrix_sparsification/dominated.md)
 has the measurement and says where to find them.
 
 **The rescaling greedy's win is real and the reported column hides it.** Every
@@ -48,9 +48,9 @@ route reaches 10 nonzeros on the alternative-basis operator, so the nonzero coun
 separates nothing; what separates them is `nnz + nns`, the cost the article
 minimises, where the oracles leave all ten entries as ninths (twenty operations)
 and the greedy leaves ten signs (ten). The counts are asserted in
-[`../matrix_sparsification/tests/test_sparsify.cpp`](../matrix_sparsification/tests/test_sparsify.cpp)
+[`../matrix_sparsification/tests/test_sparsify.cpp`](../methods/matrix_sparsification/tests/test_sparsify.cpp)
 and tabulated in
-[`../matrix_sparsification/README.md`](../matrix_sparsification/README.md).
+[`../matrix_sparsification/README.md`](../methods/matrix_sparsification/README.md).
 The command prints nonzeros only, so it shows them tying.
 
 The greedy method is a heuristic bounded by a heuristic: the article's line 4 is

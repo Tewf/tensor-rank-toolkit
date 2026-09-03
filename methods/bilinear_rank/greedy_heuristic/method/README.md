@@ -1,8 +1,8 @@
 # The method, exactly
 
-Notation: [`../../linear_algebra/README.md`](../../../../linear_algebra/README.md). The
+Notation: [`../../linear_algebra/README.md`](../../../../core/linear_algebra/README.md). The
 cost of each primitive:
-[`../../linear_algebra/costs.md`](../../../../linear_algebra/costs.md). Here `p` is the
+[`../../linear_algebra/costs.md`](../../../../core/linear_algebra/costs.md). Here `p` is the
 characteristic, `k` the number of slices, `n × m` their shape, `w = n·m`, and `d`
 the dimension of the span.
 
@@ -28,6 +28,6 @@ Karatsuba's five products for a four-coefficient product is.
 
 ## One number this strand measures
 
-`minimise-rank` takes the naive 25 multiplications of `fixtures/f2_5x5.tensor`
+`minimise-rank` takes the naive 25 multiplications of `evidence/fixtures/f2_5x5.tensor`
 down to 14, [`../results.json`](../results.json). A real run of it, command
 and printed output: [`what-it-reaches.md`](../what-it-reaches.md).

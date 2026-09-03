@@ -3,13 +3,13 @@
 add_executable(test_exhaustive_search test_exhaustive_search.cpp)
 target_link_libraries(test_exhaustive_search PRIVATE exhaustive greedy_heuristic
                                                      formats testing project_warnings)
-add_test(NAME exhaustive COMMAND test_exhaustive_search ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME exhaustive COMMAND test_exhaustive_search ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 set_tests_properties(exhaustive PROPERTIES TIMEOUT 900)
 
 # The other half of `12 <= rank(F2 5x5)`: 459 239 nodes, about 77 seconds. The
 # 9 and 10 exclusions cost nothing and stay in the test above.
 add_test(NAME f2_5x5_has_no_11_products
-         COMMAND test_exhaustive_search ${PROJECT_SOURCE_DIR}/fixtures 11)
+         COMMAND test_exhaustive_search ${PROJECT_SOURCE_DIR}/evidence/fixtures 11)
 set_tests_properties(f2_5x5_has_no_11_products PROPERTIES LABELS slow TIMEOUT 900)
 
 # That a trace says what the search did and costs it nothing. Both searches are
@@ -18,7 +18,7 @@ set_tests_properties(f2_5x5_has_no_11_products PROPERTIES LABELS slow TIMEOUT 90
 # being built.
 add_test(NAME trace_is_a_tree
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_trace_is_a_tree.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 
 # Why the branch and bound has no per-node bound: it would be the free test.
 # The header says what degrades and why; this pins the arithmetic so the day a
@@ -26,7 +26,7 @@ add_test(NAME trace_is_a_tree
 add_executable(test_bound_at_a_node test_bound_at_a_node.cpp)
 target_link_libraries(test_bound_at_a_node PRIVATE exhaustive greedy_heuristic
                                                    formats testing project_warnings)
-add_test(NAME bound_at_a_node COMMAND test_bound_at_a_node ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME bound_at_a_node COMMAND test_bound_at_a_node ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 
 # The table route and the on-demand route must produce the same element. A
 # disagreement is a wrong answer nothing downstream catches: both feed the same
@@ -34,7 +34,7 @@ add_test(NAME bound_at_a_node COMMAND test_bound_at_a_node ${PROJECT_SOURCE_DIR}
 add_executable(test_packed_generation test_packed_generation.cpp)
 target_link_libraries(test_packed_generation PRIVATE exhaustive greedy_heuristic
                                                      formats testing project_warnings)
-add_test(NAME packed_generation COMMAND test_packed_generation ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME packed_generation COMMAND test_packed_generation ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 
 
 # The GF(2) pool scan carries a reduction along a Gray code instead of asking
@@ -45,7 +45,7 @@ add_test(NAME packed_generation COMMAND test_packed_generation ${PROJECT_SOURCE_
 add_executable(test_residual_scan test_residual_scan.cpp)
 target_link_libraries(test_residual_scan PRIVATE exhaustive greedy_heuristic
                                                  formats testing project_warnings)
-add_test(NAME residual_scan COMMAND test_residual_scan ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME residual_scan COMMAND test_residual_scan ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 set_tests_properties(residual_scan PROPERTIES TIMEOUT 900)
 
 # The GF(2) subspace walk carries one combination along a Gray code instead of
@@ -57,7 +57,7 @@ set_tests_properties(residual_scan PROPERTIES TIMEOUT 900)
 add_executable(test_gf2_subspace_walk test_gf2_subspace_walk.cpp)
 target_link_libraries(test_gf2_subspace_walk PRIVATE exhaustive greedy_heuristic
                                                      formats testing project_warnings)
-add_test(NAME gf2_subspace_walk COMMAND test_gf2_subspace_walk ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME gf2_subspace_walk COMMAND test_gf2_subspace_walk ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 set_tests_properties(gf2_subspace_walk PROPERTIES TIMEOUT 900)
 
 # And the leaf built on it, against the rebuild it replaced, on the same span
@@ -67,7 +67,7 @@ set_tests_properties(gf2_subspace_walk PROPERTIES TIMEOUT 900)
 add_executable(test_gray_walk_leaf test_gray_walk_leaf.cpp)
 target_link_libraries(test_gray_walk_leaf PRIVATE exhaustive greedy_heuristic
                                                   formats testing project_warnings)
-add_test(NAME gray_walk_leaf COMMAND test_gray_walk_leaf ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME gray_walk_leaf COMMAND test_gray_walk_leaf ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 
 # And the one test the leaf now rests on: `is_rank_one` is the only thing that
 # says yes to an element, so it is held against the elimination it replaced over
@@ -81,4 +81,4 @@ add_test(NAME rank_one_predicate COMMAND test_rank_one_predicate)
 # asserted is a routing decision `main` makes: which of two modules answers.
 add_test(NAME pencil_shortcut
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_pencil_shortcut.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures)

@@ -43,7 +43,7 @@ out, which proves nothing. The last is the pipeline below.
 
 1. **The map.** Type it, paste it, load one of the repository's fixtures, open a
    file, or build one with `make-tensor`. The format is the one that already
-   exists, `formats/tensor_file.h`, and nothing new was invented. The fixtures
+   exists, `core/formats/tensor_file.h`, and nothing new was invented. The fixtures
    the chosen tool cannot read are greyed rather than hidden.
 **What bounds a run is on the same screen**, shut by default, in the run pane
 above the button: the machine as the kernel reports it, the ceilings derived from
@@ -83,10 +83,10 @@ run's directory first, and that path is what the line then names.
 ## The first two starters, end to end
 
 ```
-build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 7
+build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 7
 exit 0, FOUND: 7 products, rank bound 6, gap 1;  verified: they compute the map
 
-build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6
+build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6
 exit 1, NO:    there is no algorithm with 6 products. The search was exhaustive.
 ```
 

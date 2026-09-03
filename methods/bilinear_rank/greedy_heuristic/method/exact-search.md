@@ -60,10 +60,10 @@ run anchoring at the map, which costs `C(|pool|, k − dim T)` nodes.
 | F2 5×5 | is there an 11? **no** | 459 239 | 77 s |
 | F2 5×5 | is there a 12? **no** | 146 402 553 | 535.59 s |
 
-`decide-rank fixtures/f2_2x2.tensor` reproduces the first row; this run's own
+`decide-rank evidence/fixtures/f2_2x2.tensor` reproduces the first row; this run's own
 printed output was
 
-    fixtures/f2_2x2.tensor
+    evidence/fixtures/f2_2x2.tensor
       rank bound: rank is at least 3
       pool: 9 rank-one maps of shape 2x2
       leaf: GF(2), one bit per entry

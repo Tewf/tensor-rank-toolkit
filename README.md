@@ -20,7 +20,7 @@ over counts of nonzeros gives a different answer when it is nearly right, so
 nothing here is ever a float. Every count below is asserted by the test
 suite; timings are not, and are not claimed to be
 ([`MEASURING.md`](MEASURING.md) states the protocol,
-[`reproduce/`](reproduce/README.md) regenerates every published number with
+[`evidence/reproduce/`](evidence/reproduce/README.md) regenerates every published number with
 its provenance).
 
 ## Repository layout
@@ -33,27 +33,27 @@ The ten method strands, one directory each. Method and caveats, per strand:
 | [descent](methods/bilinear_rank/greedy_heuristic/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
 | [exhaustion](methods/bilinear_rank/exhaustive/README.md) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
 | [incumbent](methods/bilinear_rank/branch_and_bound/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
-| [rank sums](linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
-| [pencils](pencil_rank/README.md) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
-| [factorisation](canonical_factorisation/README.md) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
-| [satisfiability](satisfiability/README.md) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
+| [rank sums](core/linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
+| [pencils](methods/pencil_rank/README.md) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
+| [factorisation](methods/canonical_factorisation/README.md) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
+| [satisfiability](methods/satisfiability/README.md) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
 | [symmetry](methods/bilinear_rank/orbit_reduction/README.md) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
 | [isomorph-free](methods/bilinear_rank/canonical_augmentation/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
-| [sparsification](matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
+| [sparsification](methods/matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 The shared infrastructure and the documentation:
 
 | Path | Holds |
 |---|---|
-| [`linear_algebra/`](linear_algebra/README.md), [`formats/`](formats/README.md) | exact arithmetic; tensor, SMS, DIMACS and SMT-LIB files |
+| [`core/linear_algebra/`](core/linear_algebra/README.md), [`core/formats/`](core/formats/README.md) | exact arithmetic; tensor, SMS, DIMACS and SMT-LIB files |
 | [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`methods/bilinear_rank/search_plan/`](methods/bilinear_rank/search_plan/README.md) | the shared command grammar and exit codes; what a run may take from the machine; the choices a run records and replays |
-| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | building the maps; the maps everything runs on; where each search stops on the tensors the literature argues about |
-| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | one consumer GPU priced on the leaf test; bounds from algebraic curves; a walk that moves schemes sideways; two search-free lower bounds; the LP and ILP layer |
-| [`reproduce/`](reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | every published count re-derived in CI; the shared assertion helper; the backend comparison script |
+| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`evidence/fixtures/`](evidence/fixtures/README.md), [`evidence/benchmark_tensors/`](evidence/benchmark_tensors/README.md) | building the maps; the maps everything runs on; where each search stops on the tensors the literature argues about |
+| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`methods/curve_bounds/`](methods/curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`methods/rank_metric_bound/`](methods/rank_metric_bound/README.md), [`methods/integer_programme/`](methods/integer_programme/README.md) | one consumer GPU priced on the leaf test; bounds from algebraic curves; a walk that moves schemes sideways; two search-free lower bounds; the LP and ILP layer |
+| [`evidence/reproduce/`](evidence/reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | every published count re-derived in CI; the shared assertion helper; the backend comparison script |
 | [`web_interface/`](web_interface/README.md) | the tools driven from a browser, on Python's standard library alone |
 | [`start-here.md`](start-here.md) | a first session in plain words, for a reader without the field's vocabulary |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | the reasoned map; every flag with the measurement behind its default; the bibliography, keyed from the code |
-| [`article/`](article/README.md), [`positioning/`](positioning/README.md), [`the-research-front/`](the-research-front/README.md) | the write-up with definitions, theorems and negative results; what this library adds; where the field stands |
+| [`writeup/article/`](writeup/article/README.md), [`writeup/positioning/`](writeup/positioning/README.md), [`writeup/the-research-front/`](writeup/the-research-front/README.md) | the write-up with definitions, theorems and negative results; what this library adds; where the field stands |
 
 Why thirteen command-line tools rather than eight, and the one question each
 answers that no other does:
@@ -87,7 +87,7 @@ enumerates the full pool of rank-one maps. Across the four polynomial
 fixtures it improved the answer in **two of four cases**, by one product
 each, at a cost **one to two orders of magnitude** above the first two steps
 together. A continuation that only accelerates step 3 optimises the part
-that mostly does not pay; [`fixtures/README.md`](fixtures/README.md) holds
+that mostly does not pay; [`evidence/fixtures/README.md`](evidence/fixtures/README.md) holds
 that finding still.
 
 ## One pipeline
@@ -95,7 +95,7 @@ that finding still.
 The rank search recovers ⟨L, R, P⟩; sparsification is what they are for.
 
 ```sh
-minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
+minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
 sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
 ```
 
@@ -125,7 +125,7 @@ PMchecker out_L.sms out_R.sms out_P.sms -q 2                # ours, checked else
 ```
 
 Both directions and the differences that bite, on one page:
-[`formats/interchange/exchanging-files.md`](formats/interchange/exchanging-files.md).
+[`core/formats/interchange/exchanging-files.md`](core/formats/interchange/exchanging-files.md).
 
 ## Two branches
 

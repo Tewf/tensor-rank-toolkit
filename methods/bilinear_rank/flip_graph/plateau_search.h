@@ -20,7 +20,7 @@
 /// empty shortlist stays empty however it is grouped.
 ///
 /// Yet `⟨2,2,2⟩` has a 7-product algorithm, and the exact search finds it in
-/// 0.0126 s (famous_tensors/decided-exactly.md; a fifth of a second before the
+/// 0.0126 s (evidence/benchmark_tensors/decided-exactly.md; a fifth of a second before the
 /// GF(2) leaf). Strassen's seven are reachable from the naive eight only
 /// by passing through maps that cost the same. A strictly descending walk cannot
 /// enter such a state by construction: this is a structural limit of the

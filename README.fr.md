@@ -22,7 +22,7 @@ autre réponse quand elle est presque juste, donc rien ici n'est jamais un
 flottant. Chaque compte ci-dessous est vérifié par la suite de tests ; les
 temps de calcul, eux, non, et rien ne le prétend
 ([`MEASURING.md`](MEASURING.md) donne le protocole,
-[`reproduce/`](reproduce/README.md) régénère chaque nombre publié avec sa
+[`evidence/reproduce/`](evidence/reproduce/README.md) régénère chaque nombre publié avec sa
 provenance).
 
 ## Organisation du dépôt
@@ -36,27 +36,27 @@ reste de la documentation technique.
 | [descente](methods/bilinear_rank/greedy_heuristic/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
 | [exhaustion](methods/bilinear_rank/exhaustive/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
 | [titulaire](methods/bilinear_rank/branch_and_bound/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
-| [sommes de rangs](linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
-| [faisceaux](pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
-| [factorisation](canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
-| [satisfiabilité](satisfiability/README.md) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
+| [sommes de rangs](core/linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
+| [faisceaux](methods/pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
+| [factorisation](methods/canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
+| [satisfiabilité](methods/satisfiability/README.md) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
 | [symétrie](methods/bilinear_rank/orbit_reduction/README.md) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
 | [sans isomorphes](methods/bilinear_rank/canonical_augmentation/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
-| [creusement](matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
+| [creusement](methods/matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
 L'infrastructure partagée et la documentation :
 
 | Chemin | Contenu |
 |---|---|
-| [`linear_algebra/`](linear_algebra/README.md), [`formats/`](formats/README.md) | l'arithmétique exacte ; les fichiers tensor, SMS, DIMACS et SMT-LIB |
+| [`core/linear_algebra/`](core/linear_algebra/README.md), [`core/formats/`](core/formats/README.md) | l'arithmétique exacte ; les fichiers tensor, SMS, DIMACS et SMT-LIB |
 | [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`methods/bilinear_rank/search_plan/`](methods/bilinear_rank/search_plan/README.md) | la grammaire de commande et les codes de sortie partagés ; ce qu'un calcul peut prendre à la machine ; les choix qu'un calcul écrit et rejoue |
-| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | construire les applications ; les jeux d'essai de tout le reste ; où chaque recherche s'arrête sur les tenseurs dont la littérature débat |
-| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
-| [`reproduce/`](reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | chaque compte publié re-dérivé en CI ; l'assertion partagée des tests ; le script de comparaison des moteurs |
+| [`methods/bilinear_rank/map_construction/`](methods/bilinear_rank/map_construction/README.md), [`evidence/fixtures/`](evidence/fixtures/README.md), [`evidence/benchmark_tensors/`](evidence/benchmark_tensors/README.md) | construire les applications ; les jeux d'essai de tout le reste ; où chaque recherche s'arrête sur les tenseurs dont la littérature débat |
+| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`methods/curve_bounds/`](methods/curve_bounds/README.md), [`methods/bilinear_rank/flip_graph/`](methods/bilinear_rank/flip_graph/README.md), [`methods/rank_metric_bound/`](methods/rank_metric_bound/README.md), [`methods/integer_programme/`](methods/integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
+| [`evidence/reproduce/`](evidence/reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | chaque compte publié re-dérivé en CI ; l'assertion partagée des tests ; le script de comparaison des moteurs |
 | [`web_interface/`](web_interface/README.md) | les outils pilotés depuis un navigateur, sur la seule bibliothèque standard de Python |
 | [`start-here.md`](start-here.md) | une première session en mots simples, pour un lecteur sans le vocabulaire du domaine (en anglais) |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | la carte raisonnée ; chaque option avec la mesure derrière sa valeur par défaut ; la bibliographie, citée par clé depuis le code |
-| [`article/`](article/README.md), [`positioning/`](positioning/README.md), [`the-research-front/`](the-research-front/README.md) | la rédaction avec définitions, théorèmes et résultats négatifs ; ce que cette bibliothèque apporte ; où en est le domaine |
+| [`writeup/article/`](writeup/article/README.md), [`writeup/positioning/`](writeup/positioning/README.md), [`writeup/the-research-front/`](writeup/the-research-front/README.md) | la rédaction avec définitions, théorèmes et résultats négatifs ; ce que cette bibliothèque apporte ; où en est le domaine |
 
 Pourquoi treize outils en ligne de commande plutôt que huit, et la question
 que chacun est seul à traiter :
@@ -91,7 +91,7 @@ quatre jeux d'essai polynomiaux elle a amélioré le résultat dans **deux cas
 sur quatre**, d'un produit chaque fois, pour un coût supérieur d'**un à deux
 ordres de grandeur** à celui des deux premières étapes réunies. Toute suite
 qui se contenterait d'accélérer l'étape 3 optimiserait la partie qui, le plus
-souvent, ne paie pas ; [`fixtures/README.md`](fixtures/README.md) existe pour
+souvent, ne paie pas ; [`evidence/fixtures/README.md`](evidence/fixtures/README.md) existe pour
 maintenir ce constat.
 
 ## Une seule chaîne
@@ -100,7 +100,7 @@ La recherche de rang reconstruit les opérateurs ⟨L, R, P⟩ ; le creusement e
 ce à quoi ils servent.
 
 ```sh
-minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 multiplications
+minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 multiplications
 sparsify-operator out_L.sms                                 # 31 -> 27 coefficients non nuls
 ```
 
@@ -133,7 +133,7 @@ PMchecker out_L.sms out_R.sms out_P.sms -q 2                # le nôtre, vérifi
 ```
 
 Les deux directions et les différences qui mordent, sur une seule page :
-[`formats/interchange/exchanging-files.md`](formats/interchange/exchanging-files.md).
+[`core/formats/interchange/exchanging-files.md`](core/formats/interchange/exchanging-files.md).
 
 ## Deux branches
 

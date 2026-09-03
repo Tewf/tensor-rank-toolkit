@@ -111,4 +111,4 @@ in the only way a test can: two sabotages sit beside the verdict, and either of
 them (withholding the orbit statistics, or making the baseline's orbit test 100x
 cheaper) takes `<3,3,3>` back off the canonical route. What that row measures is
 the baseline, and what to do about it is in
-[`../../how-the-search-works/what-to-wire.md`](../../../../how-the-search-works/what-to-wire.md).
+[`../../how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).

@@ -76,6 +76,6 @@ one of these holds:
   more than the work, which is what [`../device.h`](../device.h)'s
   `launch_floor` exists to say.
 
-[`../../positioning/hardware-and-parallelism.md`](../../../positioning/hardware-and-parallelism.md)
+[`../../positioning/hardware-and-parallelism.md`](../../../writeup/positioning/hardware-and-parallelism.md)
 argued the same for the tree and the solver before either seam existed, and it
 stands. This page is the sweep it never did over every other strand.

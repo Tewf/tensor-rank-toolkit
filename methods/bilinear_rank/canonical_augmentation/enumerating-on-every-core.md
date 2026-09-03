@@ -24,7 +24,7 @@ preserve.
 
 ## What it is worth, and the disappointment in it
 
-`enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2`,
+`enumerate-subspaces evidence/fixtures/matmul_2x2x2.tensor --target 7 -s matmul 2 2 2`,
 best of three under [`../MEASURING.md`](../../../MEASURING.md), no throttle events on
 either route:
 

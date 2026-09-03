@@ -20,7 +20,7 @@ The canonical route quotienting `⟨2,2,2⟩`'s own pool, for scale against the 
 sizes above:
 
 ```sh
-enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2 --canonical
+enumerate-subspaces evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2 --canonical
   pool: 225 rank-one maps, group: 6 elements
   canonical: 0 distinct subspaces from 0 paths, 58 nodes, 0 group visits, 0.0105228 s
 ```

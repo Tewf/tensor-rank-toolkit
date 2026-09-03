@@ -23,13 +23,13 @@ variables come after every operand variable.
 **Which maps the cubes even apply to**, because it is easy to assume more. These
 representatives are `⟨n,m,k⟩`'s orbits and nothing else, so `orbit_cubes`
 *refuses* every fixture that is not that product, and the known-rank fixtures in
-`fixtures/` are polynomial and field multiplication maps. Only `matmul_2x2x2`
+`evidence/fixtures/` are polynomial and field multiplication maps. Only `matmul_2x2x2`
 (rank exactly 7, decided here) and `matmul_2x2x3` (rank 11 published, `≥ 9` here)
 are cube-validatable today. On `f2_5x5`, `f3_3x6`, `f2_3x8` and `f2_4x7`, a
 constrained run validates the **ordering** constraint alone; their ranks and how
 far each is safe to quote are in [`known_ranks.md`](../../greedy_heuristic/known_ranks.md).
 
 This is what closed the last unchecked row of
-[`satisfiability/correctness.md`](../../../../satisfiability/correctness.md), *"a cube split
+[`methods/satisfiability/correctness.md`](../../../satisfiability/correctness.md), *"a cube split
 is complete ... not checked here"*. The row needed the test to be in the same tree
 as the claim, which it now is.

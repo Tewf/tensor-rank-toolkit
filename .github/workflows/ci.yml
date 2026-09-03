@@ -97,7 +97,7 @@ jobs:
       # last wrong number in this repository got in by being typed into a
       # results file rather than measured. --check reads counts only.
       - name: The published counts still reproduce
-        run: python3 reproduce/measure.py --build build --check
+        run: python3 evidence/reproduce/measure.py --build build --check
 
       # The console, driven over HTTP against the binaries just built. It is not
       # registered with ctest on purpose, so until now it ran on a developer
@@ -117,11 +117,11 @@ jobs:
       # makes it a copy. It needs no build, so it runs whatever else fails.
       - name: The front page agrees with the results files
         if: always()
-        run: python3 reproduce/front_page.py
+        run: python3 evidence/reproduce/front_page.py
 
       - name: The prose agrees with the tests that assert the counts
         if: always()
-        run: python3 reproduce/quoted_numbers.py
+        run: python3 evidence/reproduce/quoted_numbers.py
 
       # NOTICE promises its MIT list is every directory CMakeLists.txt adds.
       # That promise was kept by hand and drifted twice: four directories
@@ -129,10 +129,10 @@ jobs:
       # file is the one place a stale list is a legal claim, not a typo.
       - name: The licence file claims every directory the build adds
         if: always()
-        run: python3 reproduce/notice_scope.py
+        run: python3 evidence/reproduce/notice_scope.py
 
       # The GF(16) exhaustion, 105 600 301 nodes: 247.118 s on the reference core
-      # (satisfiability/results.json, re-measured 2026-08-23) and
+      # (methods/satisfiability/results.json, re-measured 2026-08-23) and
       # longer on a shared runner, which is more than every other question in the
       # driver put together. On every push that would be a fivefold slowdown to
       # re-derive a deterministic count, and one slow runner from a red tick that
@@ -141,27 +141,27 @@ jobs:
       # its `_not_reproducible` key used to do.
       - name: The expensive count, weekly and on demand
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        run: python3 reproduce/measure.py --build build --check --slow
+        run: python3 evidence/reproduce/measure.py --build build --check --slow
 
       # The two strands are one pipeline: the rank search emits the encoding
       # operators, and the sparsification is what those are for.
       - name: The pipeline, end to end
         run: |
-          ./build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f2_5x5.tensor --steps 2 \
+          ./build/methods/bilinear_rank/greedy_heuristic/minimise-rank evidence/fixtures/f2_5x5.tensor --steps 2 \
             --emit-operators /tmp/f2_5x5
-          ./build/matrix_sparsification/sparsify-operator /tmp/f2_5x5_L.sms
-          ./build/matrix_sparsification/sparsify-operator /tmp/f2_5x5_R.sms
+          ./build/methods/matrix_sparsification/sparsify-operator /tmp/f2_5x5_L.sms
+          ./build/methods/matrix_sparsification/sparsify-operator /tmp/f2_5x5_R.sms
 
       # The exact search on maps whose answers are known independently:
       # Karatsuba, a 2x3 product, GF(4), GF(8), and Strassen.
       - name: The exact search reaches the classical answers
         run: |
-          ./build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_2x2.tensor
-          ./build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_2x3.tensor
+          ./build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/f2_2x2.tensor
+          ./build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/f2_2x3.tensor
           ./build/methods/bilinear_rank/map_construction/make-tensor --field 2 1 1 1 > /tmp/gf4.tensor
           ./build/methods/bilinear_rank/exhaustive/decide-rank /tmp/gf4.tensor
-          ./build/methods/bilinear_rank/exhaustive/decide-rank fixtures/gf8_multiplication.tensor
-          ./build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 7
+          ./build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/gf8_multiplication.tensor
+          ./build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 7
 
       # The two routes that do not search a pool for their answer. Both are new
       # and neither was exercised here, so a break in either would have shown up
@@ -171,17 +171,17 @@ jobs:
           # Exit 0 because this pencil is diagonalisable over GF(3), so the
           # closure bound is the rank. Exit 3 on the next one because it is not,
           # and a bound reported as a rank is the mistake being avoided.
-          ./build/pencil_rank/decide-rank-by-pencil fixtures/pencil_split_f3_3.tensor
-          if ./build/pencil_rank/decide-rank-by-pencil \
-               fixtures/pencil_irreducible_f2_4.tensor; then
+          ./build/methods/pencil_rank/decide-rank-by-pencil evidence/fixtures/pencil_split_f3_3.tensor
+          if ./build/methods/pencil_rank/decide-rank-by-pencil \
+               evidence/fixtures/pencil_irreducible_f2_4.tensor; then
             echo "a pencil whose bound is not tight reported success"; exit 1
           fi
           # Karatsuba as a factorisation, both routes, each checked by
           # multiplying C A out against the tensor before it is printed.
-          ./build/canonical_factorisation/factor-over-canonical-basis \
-            fixtures/f2_2x2.tensor --route exhaustive
-          ./build/canonical_factorisation/factor-over-canonical-basis \
-            fixtures/f2_2x2.tensor --route sat
+          ./build/methods/canonical_factorisation/factor-over-canonical-basis \
+            evidence/fixtures/f2_2x2.tensor --route exhaustive
+          ./build/methods/canonical_factorisation/factor-over-canonical-basis \
+            evidence/fixtures/f2_2x2.tensor --route sat
 
       # A run that does not fit says so and stops, rather than reaching the
       # allocator. The pool for 4x4 matrix multiplication is 4.3e9 rank-one
@@ -198,10 +198,10 @@ jobs:
       # decomposes, and the encoding is checked by writing the question out.
       - name: Tensor rank and satisfiability are the same problem
         run: |
-          ./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+          ./build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor \
             --target 7 --emit-cnf /tmp/strassen_k7.cnf
           head -1 /tmp/strassen_k7.cnf
-          ./build/satisfiability/decide-rank-by-sat fixtures/f3_3x6.tensor \
+          ./build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/f3_3x6.tensor \
             --target 10 --backend smt --emit-cnf /tmp/f3_k10.smt2
           head -3 /tmp/f3_k10.smt2
 
@@ -220,14 +220,14 @@ jobs:
       # answers yes, so exiting non-zero can only be the refusal.
       - name: A rank from a tensor alone, with the refusal verified
         run: |
-          ./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+          ./build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor \
             --break-symmetry --plain-cnf --proof /tmp/strassen.drat | tee /tmp/strassen.txt
           grep -Eq "refutations? verified" /tmp/strassen.txt || {
             echo "no refutation was verified: kissat writes the proof and drat-trim checks it"
             exit 1
           }
           test -s /tmp/strassen.drat || { echo "--proof wrote no refutation"; exit 1; }
-          if ./build/satisfiability/decide-rank-by-sat fixtures/f2_2x2.tensor --target 3 \
+          if ./build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/f2_2x2.tensor --target 3 \
                --solver cryptominisat --proof /tmp/never_written.drat; then
             echo "a proof was asked of a solver that writes none, and not refused"; exit 1
           fi
@@ -242,9 +242,9 @@ jobs:
       - name: The orbit quotient agrees with no quotient
         run: |
           ctest --test-dir build --output-on-failure -R '^symmetry_agreement$'
-          whole=$(./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+          whole=$(./build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor \
                     --break-symmetry --plain-cnf | tail -1)
-          cubes=$(./build/satisfiability/decide-rank-by-sat fixtures/matmul_2x2x2.tensor \
+          cubes=$(./build/methods/satisfiability/decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor \
                     --break-symmetry --plain-cnf --symmetry matmul 2 2 2 | tail -1)
           echo "whole formula: $whole"
           echo "orbit cubes:   $cubes"
@@ -257,9 +257,9 @@ jobs:
       # the heuristic for a starting point and refuses when it cannot reach one.
       - name: A walk on the flip graph reaches the classical answer
         run: |
-          ./build/methods/bilinear_rank/flip_graph/walk-scheme fixtures/f2_2x2.tensor --flips 2000 | tee /tmp/walk.txt
+          ./build/methods/bilinear_rank/flip_graph/walk-scheme evidence/fixtures/f2_2x2.tensor --flips 2000 | tee /tmp/walk.txt
           grep -q "best over 8 seeds: 3 products" /tmp/walk.txt
-          ./build/methods/bilinear_rank/flip_graph/walk-scheme fixtures/f3_3x6.tensor --flips 2000 --seeds 2 --from 10
+          ./build/methods/bilinear_rank/flip_graph/walk-scheme evidence/fixtures/f3_3x6.tensor --flips 2000 --seeds 2 --from 10
 
       # The curve strand, which had no entry point at all until it got one. The
       # two answers asserted here are the two the unit test computes by hand, so
@@ -268,22 +268,22 @@ jobs:
       # from the supply at any published price.
       - name: Bounds from curves, step 3 of the roadmap
         run: |
-          ./build/curve_bounds/curve-bounds --solvers
-          ./build/curve_bounds/curve-bounds --table
+          ./build/methods/curve_bounds/curve-bounds --solvers
+          ./build/methods/curve_bounds/curve-bounds --table
           # Every route on the same two questions, because the point of having
           # three is that they agree. The two numbers are the ones the unit test
           # computes by hand, so this checks the command against the library
           # rather than re-deriving anything.
           for route in enumeration built-in chain; do
-            ./build/curve_bounds/curve-bounds --degree 5 --points 1:8 --route $route \
+            ./build/methods/curve_bounds/curve-bounds --degree 5 --points 1:8 --route $route \
               | tee /tmp/rational.txt
             grep -q "mu_sym_2(m) <= 5" /tmp/rational.txt
-            ./build/curve_bounds/curve-bounds --degree 5 --points 1:1 --points 2:4 \
+            ./build/methods/curve_bounds/curve-bounds --degree 5 --points 1:1 --points 2:4 \
               --route $route | tee /tmp/mixed.txt
             grep -q "mu_sym_2(m) <= 7" /tmp/mixed.txt
           done
           # A degree no supply can assemble is a real answer, and exits 1.
-          if ./build/curve_bounds/curve-bounds --degree 20 --points 11:5; then
+          if ./build/methods/curve_bounds/curve-bounds --degree 20 --points 11:5; then
             echo "an unpriceable supply was not refused"; exit 1
           fi
           # And nothing of ours is left running after the chain has been used,
@@ -297,8 +297,8 @@ jobs:
       - name: Show the results the README quotes
         run: |
           for fixture in f2_5x5 f2_3x8 f2_4x7 f3_3x6; do
-            ./build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/$fixture.tensor
+            ./build/methods/bilinear_rank/greedy_heuristic/minimise-rank evidence/fixtures/$fixture.tensor
           done
           for operator in strassen_u strassen_v alternative_basis_u; do
-            ./build/matrix_sparsification/sparsify-operator fixtures/$operator.matrix
+            ./build/methods/matrix_sparsification/sparsify-operator evidence/fixtures/$operator.matrix
           done

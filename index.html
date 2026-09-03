@@ -99,14 +99,14 @@
   <h2>The other half of the cost</h2>
   <p>A fast algorithm costs multiplications and additions both, and the additions are set by how many nonzero entries its operators carry. Fewer nonzeros means fewer additions, the cost the multiplication count does not capture.</p>
 
-  <figure><div id="nonzeros"></div><figcaption>Nonzero entries in the encoding operators, before and after. The bar is the proved minimum over every change of basis. Source: <code>matrix_sparsification/results.json</code>.</figcaption></figure>
+  <figure><div id="nonzeros"></div><figcaption>Nonzero entries in the encoding operators, before and after. The bar is the proved minimum over every change of basis. Source: <code>methods/matrix_sparsification/results.json</code>.</figcaption></figure>
 
   <p>Strassen's two encoding operators go from <strong>12 nonzeros to 10</strong>, and an alternative-basis operator from <strong>21 to 10</strong>, in milliseconds. Ten is not merely the best found: it is the <strong>least any change of basis can leave</strong>, because choosing the sparsest basis of a subspace is a matroid problem and the greedy returns a minimum-weight basis of any matroid.</p>
 
   <p>On the operators of a published rank-23 <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme, that is <strong>221 nonzeros to 128</strong>, and the 128 is the proved minimum there too, over every invertible change of basis. Where the trade used to be speed it no longer is: the run costs about a third of a second, against roughly five hundred before the methods that could not say their answer was minimal were retired to a branch.</p>
 
   <table>
-    <caption>Sparsifying one published <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme at rank 23. One core, fastest of three. Source: <code>matrix_sparsification/results.json</code>, which carries both columns rather than re-deriving either, because the three operators ship nowhere here.</caption>
+    <caption>Sparsifying one published <span class="nowrap">&#10216;3,3,3&#10217;</span> scheme at rank 23. One core, fastest of three. Source: <code>methods/matrix_sparsification/results.json</code>, which carries both columns rather than re-deriving either, because the three operators ship nowhere here.</caption>
     <thead><tr><th>Operator</th><th class="n">As given</th><th class="n">Minimum</th></tr></thead>
     <tbody>
       <tr data-operator="L"><td><code>L</code> 23&times;9</td><td class="n">69</td><td class="n"><strong>43</strong></td></tr>
@@ -122,7 +122,7 @@
 
   <h2>One pipeline, not two halves</h2>
   <p>A decomposition is not the deliverable; the algorithm is, and an algorithm is three operators: <code>L</code> and <code>R</code> encoding the two operands, <code>P</code> combining the products. The rank search recovers them from the decomposition it finds and writes them out; the sparsification is what they are for.</p>
-  <pre><code>minimise-rank fixtures/f2_5x5.tensor --emit-operators out   # 25 -&gt; 14 multiplications
+  <pre><code>minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out   # 25 -&gt; 14 multiplications
 sparsify-operator out_L.sms                                 # 31 -&gt; 27 nonzeros</code></pre>
   <p>Fewer multiplications, then fewer additions, from one map, in two commands. The same two run in that order from a browser, as the <a href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/web_interface/README.md">console</a>'s <code>decompose-then-sparsify</code> flow: one press, four runs, each an ordinary run with its own command, its own card and its own exit code. It is local, on the loopback address, and needs Python 3's standard library and nothing else.</p>
 
@@ -217,7 +217,7 @@ try {
 }
 
 try {
-  const sparsification = await load('matrix_sparsification/results.json');
+  const sparsification = await load('methods/matrix_sparsification/results.json');
   beforeAfter(document.getElementById('nonzeros'), {
     rows: sparsification.fixtures.map((fixture) => ({
       label: mapLabel(fixture.name),
@@ -230,7 +230,7 @@ try {
     unit: ' nonzeros',
   });
 } catch (unreachable) {
-  explain('nonzeros', 'Chart needs matrix_sparsification/results.json, which a file:// page cannot fetch.');
+  explain('nonzeros', 'Chart needs methods/matrix_sparsification/results.json, which a file:// page cannot fetch.');
 }
 </script>
 </body>

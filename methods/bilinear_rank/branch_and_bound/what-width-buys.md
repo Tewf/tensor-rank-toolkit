@@ -7,7 +7,7 @@ is why this search only ever exhibits a decomposition and never refutes one.
 
 One row of the table below, run rather than read:
 
-    lower-the-bound fixtures/matmul_2x2x2.tensor --width 8
+    lower-the-bound evidence/fixtures/matmul_2x2x2.tensor --width 8
 
     GF(2), start: 8 products over 4 dimensions
     best: 7 products, rank bound 6, gap 1, verified

@@ -54,7 +54,7 @@ What they were, for the record:
 | number | what it was really a measurement of |
 |---|---|
 | `budget = 2 GiB` | the comment said it: *"leaves room on a 16 GB desktop for a browser and an editor"* |
-| `sat_memory_megabytes = 2048` | the same 16 GB, divided by the worker count in `satisfiability/rank_question.cpp`. The division was always right; the dividend was this machine's |
+| `sat_memory_megabytes = 2048` | the same 16 GB, divided by the worker count in `methods/satisfiability/rank_question.cpp`. The division was always right; the dividend was this machine's |
 
 ## Measured on 2026-08-22, and left where it was on purpose
 
@@ -62,7 +62,7 @@ What they were, for the record:
 and in `infrastructure/cli/tunables.h` until the crossing it bounds was priced. **It is
 measured now**, and the pair is published in
 [`../../flip_graph/results.json`](../../../methods/bilinear_rank/flip_graph/results.json), where
-`reproduce/measure.py --check` re-derives both rows on every push: `⟨2,2,2⟩`
+`evidence/reproduce/measure.py --check` re-derives both rows on every push: `⟨2,2,2⟩`
 crosses to 7 at a **380-state budget**, visiting 386 subspaces, and stays at the
 naive 8 at 370, visiting 376. The negative row is why the boundary itself is
 checked and not just the success.
@@ -92,8 +92,8 @@ is measured it can be chosen rather than guessed.
 | `handles(): 4, 5, 9, 16` | `infrastructure/gpu_leaf/leaf_backend.cpp`, `span_ranks.cu` | the four shapes a kernel is instantiated at. A fact about the template list. |
 | `kRowsPerLaunch = 2048` | `infrastructure/gpu_leaf/pool_scan.cu` | keeps the grid under CUDA's **65 535** second-dimension ceiling, which is a CUDA limit and not a card's. |
 | `survivor_capacity = 1 << 16`, `kHalvingsAllowed = 6` | `infrastructure/gpu_leaf/leaf_backend.cpp` | 512 KB of device buffer, with a documented halving fallback if it overflows. Sized against the answer, not against the card. |
-| `maximum_pinned_order() = 8` | `matrix_sparsification/pattern_feasibility.cpp` | a ceiling on `Θ(order!)`. |
-| `budget = 10'000'000` variables | `satisfiability/binary_encoding.cpp` | a ceiling on the encoding, in variables. |
+| `maximum_pinned_order() = 8` | `methods/matrix_sparsification/pattern_feasibility.cpp` | a ceiling on `Θ(order!)`. |
+| `budget = 10'000'000` variables | `methods/satisfiability/binary_encoding.cpp` | a ceiling on the encoding, in variables. |
 
 ## Policy: chosen, not measured
 

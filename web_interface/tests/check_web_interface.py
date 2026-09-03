@@ -187,7 +187,7 @@ def checks(port, build):
                       "fixture": "matmul_2x2x2.tensor"}}
     _, seen = ask(port, "POST", "/api/preview", body)
     wanted = ("build/methods/bilinear_rank/exhaustive/decide-rank "
-              "fixtures/matmul_2x2x2.tensor --target 7")
+              "evidence/fixtures/matmul_2x2x2.tensor --target 7")
     check("the preview is the retypable line", seen["command"] == wanted)
     _, card = run(port, "decide-rank", {"--target": "7"}, "matmul_2x2x2.tensor")
     check("and the run shows the same line", card["command"] == wanted)
@@ -323,7 +323,7 @@ def checks(port, build):
                       {"tool": "decide-rank", "options": {}, "input": {"text": "  "}})
     check("an empty box is refused", status == 400 and "nothing in the box" in why["refused"])
     status, why = ask(port, "GET", "/api/fixture?name=../../etc/passwd")
-    check("a fixture outside fixtures/ is refused", status == 404)
+    check("a fixture outside evidence/fixtures/ is refused", status == 404)
 
     print("\nstopping, and leaving nothing running")
     body = {"tool": "enumerate-subspaces",

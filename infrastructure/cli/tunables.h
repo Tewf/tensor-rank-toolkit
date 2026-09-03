@@ -71,7 +71,7 @@ struct Tunables {
 
     /// Nodes the built-in branch and bound may open. Fills
     /// `curve_bounds::set_solver_node_limit`
-    /// (`curve_bounds/interpolation_by_solver.h`), from `curve-bounds
+    /// (`methods/curve_bounds/interpolation_by_solver.h`), from `curve-bounds
     /// --node-limit`. It bounds the built-in only, whichever route asks.
     std::size_t ilp_node_limit = 200'000;
 
@@ -87,11 +87,11 @@ struct Tunables {
     /// from the machine**, an eighth of what it has, which is the 2048 this
     /// repository has always used on a 16 GB laptop; `auto` in the file asks for
     /// the same derivation and a number pins one.
-    /// `satisfiability/rank_question.cpp` then divides it by the worker count,
+    /// `methods/satisfiability/rank_question.cpp` then divides it by the worker count,
     /// so the dividend is the machine's rather than this chassis's. Fills
     /// `SolveOptions::memory_megabytes` and `::timeout_seconds`
-    /// (`satisfiability/rank_question.h`), which `run_solver`
-    /// (`satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
+    /// (`methods/satisfiability/rank_question.h`), which `run_solver`
+    /// (`methods/satisfiability/solver_process.h`) is handed, from `decide-rank-by-sat
     /// --max-memory` and `--timeout`, and from the same two flags on
     /// `deflate-strictly`.
     std::size_t sat_memory_megabytes = run_limits::suggested_memory_budget() >> 20;
@@ -99,7 +99,7 @@ struct Tunables {
 
     /// What an outside integer programme solver may take, per programme. Fills
     /// `integer_programme::set_solver_time_limit`
-    /// (`integer_programme/solver_chain.h`), from `curve-bounds
+    /// (`methods/integer_programme/solver_chain.h`), from `curve-bounds
     /// --solver-timeout`. It does not reach the built-in, which has no clock.
     std::size_t ilp_time_limit_seconds = 300;
 
@@ -115,7 +115,7 @@ struct Tunables {
     /// because it is the strongest on unsatisfiable instances, and an
     /// unsatisfiable instance is where a lower bound lives. Fills
     /// `SolveOptions::solver_order`, which `find_sat_solver`
-    /// (`satisfiability/solver_process.h`) walks. `--solver <name>` pins one
+    /// (`methods/satisfiability/solver_process.h`) walks. `--solver <name>` pins one
     /// outright and so overrides the order rather than reordering it.
     std::vector<std::string> sat_solver_order{"kissat", "cryptominisat", "cadical"};
 
@@ -123,7 +123,7 @@ struct Tunables {
     /// built-in trails because it is the slowest, and it is also the only one
     /// whose `infeasible` is believed without being checked against the model.
     /// Fills `integer_programme::set_backend_order`
-    /// (`integer_programme/solver_chain.h`), from `curve-bounds`, whose
+    /// (`methods/integer_programme/solver_chain.h`), from `curve-bounds`, whose
     /// `--solvers` prints the order that would actually run.
     std::vector<std::string> ilp_backend_order{"gurobi", "cbc", "glpk", "lp_solve", "built-in"};
 

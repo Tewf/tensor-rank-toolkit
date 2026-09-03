@@ -16,7 +16,7 @@ point of the method, and also its wall. Peak memory is essentially the largest
 (including a 4.6 MB baseline process, measured with `--steps 1`.)
 
 The measured column's F3 3×6 row comes from `minimise-rank
-fixtures/f3_3x6.tensor --steps 1`. Its own printed line is real and
+evidence/fixtures/f3_3x6.tensor --steps 1`. Its own printed line is real and
 reproducible:
 
     step 1: 12 multiplications, 8 slices, 0.00262942 s cumulative

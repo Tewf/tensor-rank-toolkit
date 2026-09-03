@@ -12,7 +12,7 @@ weaker algorithm rather than no answer.
 | [`cost_first_search.h`](cost_first_search.h) | the branch and bound, its bound, and why the bound is admissible |
 | [`level_lowering_moves.h`](level_lowering_moves.h) | the moves, generated from `V` in closed form instead of scanned out of the pool |
 
-    lower-the-bound fixtures/cyclic_f2_7.tensor --from descent --width 4
+    lower-the-bound evidence/fixtures/cyclic_f2_7.tensor --from descent --width 4
 
 ## The tree is `[bdez2012]`, and only the stopping rule is new here
 
@@ -50,12 +50,12 @@ generated move set that never forms the pool.
 It proves nothing. `cost(V) > b` refutes nothing at all
 ([`sorted_span.h`](../greedy_heuristic/sorted_span.h) has the counterexample), so
 no run here is ever a lower bound, and the floors quoted beside every count come
-from [`rank_lower_bound.h`](../../../linear_algebra/rank_lower_bound.h) and not from
+from [`rank_lower_bound.h`](../../../core/linear_algebra/rank_lower_bound.h) and not from
 this search.
 
 **It is not a rival to a flip graph.** Every recent record in the field came
 from rewriting a decomposition that already works
-([`../the-research-front/upper-bounds.md`](../../../the-research-front/upper-bounds.md)),
+([`../the-research-front/upper-bounds.md`](../../../writeup/the-research-front/upper-bounds.md)),
 and a walk never runs out of moves where this is bounded by
 `C(|pool|, best − dim span T)` before any beam is imposed. What it has instead is
 a starting point the walk does not: it begins at the minimum-weight basis, which

@@ -43,7 +43,7 @@ Neither a node limit nor a timeout exists here.
 and quotiented by `-s matmul` instead:
 
 ```sh
-$ deflate-strictly fixtures/matmul_2x2x2.tensor --target 6 --refuter tree -s matmul 2 2 2
+$ deflate-strictly evidence/fixtures/matmul_2x2x2.tensor --target 6 --refuter tree -s matmul 2 2 2
   candidate 0: refuted, 0.00324674 s, 45 nodes
   candidate 1: refuted, 0.000665064 s, 45 nodes
   candidate 2: refuted, 0.000659531 s, 72 nodes
@@ -56,7 +56,7 @@ $ deflate-strictly fixtures/matmul_2x2x2.tensor --target 6 --refuter tree -s mat
 fact stated the other way: no rank-6 subspace exists to enumerate.
 
 ```sh
-$ enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+$ enumerate-subspaces evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
   pool: 225 rank-one maps, group: 6 elements
   plain: 0 distinct subspaces from 0 paths, 25399 nodes, 0 group visits, 0.404418 s
   canonical: 0 distinct subspaces from 0 paths, 58 nodes, 0 group visits, 0.00844161 s

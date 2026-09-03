@@ -8,7 +8,7 @@ shape `<n,m,k>`, the pool size `|P|`, the factored degree `a+b`, the group order
 `|G|` and the generator count.
 
 What the route is and how it was wired:
-[`../../canonical_factorisation/canonical-augmentation.md`](../../../../canonical_factorisation/canonical-augmentation.md).
+[`../../canonical_factorisation/canonical-augmentation.md`](../../../canonical_factorisation/canonical-augmentation.md).
 What deduplicating up to the group is worth when the question is a **count**
 rather than a decision: [`../deduplication-cost.md`](../deduplication-cost.md).
 
@@ -37,7 +37,7 @@ are written out instead:
 can be argued with rather than merely obeyed.
 
 Run directly on the shipped `<2,2,3>` fixture, `price-canonical-route
-fixtures/matmul_2x2x3.tensor -s matmul 2 2 3 --target 7` reports `group 6048, 6
+evidence/fixtures/matmul_2x2x3.tensor -s matmul 2 2 3 --target 7` reports `group 6048, 6
 generators` and `price ratio 78.45`, ending `verdict: one level of augmentation:
 the orbits of this pool are small enough that naming them one element at a time
 still costs less than a pool pass a leaf`.
@@ -71,5 +71,5 @@ The predicate now gets **all ten** swept rows, including the one it used to miss
 It says the route pays at exactly one of them, `<3,3,3>` at 10. **Nothing
 consults it, deliberately**, because the margin there is a quadratic in the
 baseline's orbit test rather than anything canonical augmentation does:
-[`../../how-the-search-works/what-to-wire.md`](../../../../how-the-search-works/what-to-wire.md)
+[`../../how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md)
 carries that verdict and the 99x it points at instead.

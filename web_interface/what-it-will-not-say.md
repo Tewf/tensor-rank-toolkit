@@ -77,13 +77,13 @@ real binary, then asserts that the exit 3 case is undecided and is not reported
 as a refutation, and that the four land on found, proved, nothing proved and
 nothing proved. Asserting that against a table of codes would pass whatever the
 interface did with them, so it is asserted against
-`decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000`, which really
+`decide-rank evidence/fixtures/f2_5x5.tensor --target 13 --node-limit 1000`, which really
 does run out of nodes.
 
 Run against this build, that line ends:
 
 ```
-build/methods/bilinear_rank/exhaustive/decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000
+build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/f2_5x5.tensor --target 13 --node-limit 1000
 exit 3, GAVE UP: the node limit was reached, so nothing is decided. 1000 nodes.
 ```
 

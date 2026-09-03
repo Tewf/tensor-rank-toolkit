@@ -7,7 +7,7 @@ are measurable, and the second is the half that decides when to ask for it.
 
 Node counts do not depend on the machine, the load or the clock, so they are
 what this page argues from. `⟨2,2,2⟩` over GF(2),
-`decide-rank fixtures/matmul_2x2x2.tensor -s matmul 2 2 2`, the default, at
+`decide-rank evidence/fixtures/matmul_2x2x2.tensor -s matmul 2 2 2`, the default, at
 `--target 6` and `--target 7`:
 
 | question | plain | quotiented | nodes removed | seconds |

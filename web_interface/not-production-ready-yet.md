@@ -31,10 +31,10 @@ quotient turns 25 399 nodes into 648; run against this build, the same map
 ends both ways:
 
 ```
-build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6
+build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6
 exit 1, NO: there is no algorithm with 6 products. The search was exhaustive. 25399 nodes.
 
-build/methods/bilinear_rank/exhaustive/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+build/methods/bilinear_rank/exhaustive/decide-rank evidence/fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
 exit 1, NO: there is no algorithm with 6 products. The search was exhaustive. 648 nodes, quotiented.
 ```
 
@@ -42,7 +42,7 @@ Both proved, and the worked example's own number is what this build reaches too.
 
 ## Things it deliberately does not do
 
-**It does not validate a map itself.** The readers in `formats/` already refuse
+**It does not validate a map itself.** The readers in `core/formats/` already refuse
 what they do not understand and their messages name the line, so a malformed
 tensor reaches the binary and comes back as that binary's refusal. A second
 opinion written in Python could disagree with the authority, and the only thing

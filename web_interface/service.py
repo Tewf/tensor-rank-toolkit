@@ -40,7 +40,7 @@ def _slices_in(text):
 
     The same two words `map_box.js` restates under the box, read here so the
     warning and the reading cannot disagree. It judges nothing else:
-    `formats/tensor_file.h` is the authority on whether a map is well formed and
+    `core/formats/tensor_file.h` is the authority on whether a map is well formed and
     its refusal is what a run shows.
     """
     for raw in (text or "").split("\n"):
@@ -244,7 +244,7 @@ class Service:
 
         An unmodified fixture is run where it already is, so the command under
         the answer is the same line the repository's own documents and
-        `reproduce/questions.py` use, and the answer can be set beside a
+        `evidence/reproduce/questions.py` use, and the answer can be set beside a
         published one without a reader having to believe two paths hold the same
         bytes. Anything else is written out, because a map that was pasted has to
         exist somewhere before it can be reproduced.

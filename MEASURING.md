@@ -40,7 +40,7 @@ products on ⟨2,2,2⟩
 ([`methods/bilinear_rank/orbit_reduction/what-the-quotient-costs.md`](methods/bilinear_rank/orbit_reduction/what-the-quotient-costs.md)),
 what ordering the terms is worth to a solver, and what one solver is worth
 against another on GF(16) at nine
-([`satisfiability/results.json`](satisfiability/results.json)).
+([`methods/satisfiability/results.json`](methods/satisfiability/results.json)).
 
 **A ratio whose smaller end is under a millisecond is quoted as an order of
 magnitude and not to two digits.** The band above is a percentage of the run, so
@@ -77,8 +77,8 @@ The heuristic is unaffected and adopts the same candidates in the same order.
 
 **A published node count above 5 000 000 means a non-default `--node-limit` was
 used, and the row records the flag.** The GF(16) row of
-`satisfiability/results.json` has 105 600 301 exhaustive nodes at `--node-limit
-200000000`, which `reproduce/measure.py` reads back out of `exhaustive_command`
+`methods/satisfiability/results.json` has 105 600 301 exhaustive nodes at `--node-limit
+200000000`, which `evidence/reproduce/measure.py` reads back out of `exhaustive_command`
 rather than rebuilding. That search costs 4.1 minutes of one core, so the default
 run carries the count, `--slow` re-derives it, and a SKIPPED line prices it.
 

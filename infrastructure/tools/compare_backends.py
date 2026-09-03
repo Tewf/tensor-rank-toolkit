@@ -8,7 +8,7 @@ what this measures, and it measures it on the same tensors with the same targets
 
 A fourth instrument was here and is not: the rank as a MILP lost by two to three
 orders of magnitude on every row and was retired. Why, with the numbers:
-the-research-front/rank-as-a-milp.md.
+writeup/the-research-front/rank-as-a-milp.md.
 
 **The orbit reduction is a column, not a separate backend.** The whole claim of
 this repository's symmetry work is that quotienting a search by the map's own
@@ -37,7 +37,7 @@ from pathlib import Path
 
 # (tensor, target, matmul shape or None, the answer). One row either side of every
 # known rank, so a wrong verdict is visible rather than merely slow. Ranks are
-# from methods/bilinear_rank/greedy_heuristic/README.md and fixtures/README.md.
+# from methods/bilinear_rank/greedy_heuristic/README.md and evidence/fixtures/README.md.
 QUESTIONS = [
     ("f2_2x2", 3, None, "yes"),
     ("f2_2x2", 2, None, "no"),
@@ -70,8 +70,8 @@ QUESTIONS = [
 # ordering, which is a different reduction and composes with the cubes.
 BACKENDS = [
     ("tree search", "methods/bilinear_rank/exhaustive/decide-rank", [], "any"),
-    ("SAT", "satisfiability/decide-rank-by-sat", [], "matmul"),
-    ("SAT + term ordering", "satisfiability/decide-rank-by-sat", ["--break-symmetry"], "matmul"),
+    ("SAT", "methods/satisfiability/decide-rank-by-sat", [], "matmul"),
+    ("SAT + term ordering", "methods/satisfiability/decide-rank-by-sat", ["--break-symmetry"], "matmul"),
 ]
 
 

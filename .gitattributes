@@ -1,7 +1,7 @@
 # Language statistics
 #
-# The work in this repository is the C++ under linear_algebra/, formats/,
-# methods/bilinear_rank/greedy_heuristic/, methods/bilinear_rank/exhaustive/ and matrix_sparsification/, plus
+# The work in this repository is the C++ under core/linear_algebra/, core/formats/,
+# methods/bilinear_rank/greedy_heuristic/, methods/bilinear_rank/exhaustive/ and methods/matrix_sparsification/, plus
 # gets two things wrong here without help.
 
 # scores the whole file as "Jupyter Notebook". It is Julia, and it is real work.
@@ -13,6 +13,6 @@
 /404.html                               linguist-documentation=true
 
 # Fixtures are data, not source: dense matrices of 0s and 1s.
-fixtures/*.tensor                       linguist-generated=true
+evidence/fixtures/*.tensor                       linguist-generated=true
 
 *.html linguist-detectable=false

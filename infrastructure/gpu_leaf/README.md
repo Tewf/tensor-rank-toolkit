@@ -1,6 +1,6 @@
 # What one consumer GPU is worth on the leaf test
 
-[`../positioning/what-a-gpu-would-take.md`](../../positioning/what-a-gpu-would-take.md)
+[`../positioning/what-a-gpu-would-take.md`](../../writeup/positioning/what-a-gpu-would-take.md)
 named the leaf test as the one part of this repository shaped for a card, and
 said exactly what would decide it: a kernel over the pool index, regenerating
 each candidate from that index, timed against the leaf that already exists. This
@@ -93,7 +93,7 @@ took a scan element to **3.3 ns** in the search and 1.16 ns in a harness. Agains
 the card's 0.24 ns that is 5x to 14x rather than 544x, so **the verdict here is
 suspended, not retracted**, until `measure-leaf` re-takes it against the leaf
 that ships: [`what-the-card-did.md`](what-the-card-did.md) and
-[`../how-the-search-works/what-to-wire.md`](../../how-the-search-works/what-to-wire.md).
+[`../how-the-search-works/what-to-wire.md`](../../writeup/how-the-search-works/what-to-wire.md).
 
 **One whole `⟨4,4,4⟩` leaf is 1.02 s on the card against 9.2 minutes of one core
 at the packed leaf's rate**, not the 67 minutes this said until the host caught
@@ -101,7 +101,7 @@ up, and about 14 seconds at the rate the scan runs at now. Only the 1.02 s was
 timed; the other two are arithmetic on a rate.
 
 **It is compute bound, and the prior that said otherwise was wrong.**
-[`../positioning/what-a-gpu-would-take.md`](../../positioning/what-a-gpu-would-take.md)
+[`../positioning/what-a-gpu-would-take.md`](../../writeup/positioning/what-a-gpu-would-take.md)
 expected "a 256-bit exclusive-or reduce is likely bandwidth bound" and made the
 middle band the prior. Nothing streams. The scan reads four bytes per element
 from a 262 KB table that never leaves L2, which is 17 GB/s against 272 GB/s of
@@ -120,7 +120,7 @@ spending on, and not a memory system.
 - **That the win is the card.** 7.3x of the 3962x is not: it is deriving the
   candidate with two shifts instead of 256 Givaro multiplications, and that is
   available on one core today, in this repository, for no new hardware.
-- **Anything about the tree.** [`../positioning/hardware-and-parallelism.md`](../../positioning/hardware-and-parallelism.md)
+- **Anything about the tree.** [`../positioning/hardware-and-parallelism.md`](../../writeup/positioning/hardware-and-parallelism.md)
   stands: the depth-first walk above the leaf diverges at every node and is the
   wrong shape for a warp. A leaf is one second and the tree above it has a node
   count nothing here bounds, so a card does not finish `⟨4,4,4⟩` either.

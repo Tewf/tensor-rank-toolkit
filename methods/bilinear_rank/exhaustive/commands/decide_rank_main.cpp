@@ -264,7 +264,7 @@ int run(int argc, char** argv) {
             // canonical form and never builds a decomposition. Returning here
             // would answer a different question from the one `decide-rank`
             // without `--target` has always answered, which is what
-            // `reproduce/measure.py` caught on `gf4_multiplication`.
+            // `evidence/reproduce/measure.py` caught on `gf4_multiplication`.
             //
             // So the rank becomes the target instead. The sweep that would have
             // climbed from the flattening floor now asks one question, at the

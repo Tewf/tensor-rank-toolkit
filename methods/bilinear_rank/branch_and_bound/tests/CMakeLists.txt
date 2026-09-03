@@ -4,7 +4,7 @@
 add_executable(test_cost_first_search test_cost_first_search.cpp)
 target_link_libraries(test_cost_first_search PRIVATE branch_and_bound formats testing
                                                      project_warnings)
-add_test(NAME cost_first_search COMMAND test_cost_first_search ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME cost_first_search COMMAND test_cost_first_search ${PROJECT_SOURCE_DIR}/evidence/fixtures)
 
 # The quotiented move set against the whole one, on every fixture where both
 # finish. A group that does not stabilise the node's span removes the move that
@@ -12,4 +12,4 @@ add_test(NAME cost_first_search COMMAND test_cost_first_search ${PROJECT_SOURCE_
 # which is the one mistake nothing downstream catches.
 add_executable(test_orbit_moves test_orbit_moves.cpp)
 target_link_libraries(test_orbit_moves PRIVATE branch_and_bound formats testing project_warnings)
-add_test(NAME orbit_moves COMMAND test_orbit_moves ${PROJECT_SOURCE_DIR}/fixtures)
+add_test(NAME orbit_moves COMMAND test_orbit_moves ${PROJECT_SOURCE_DIR}/evidence/fixtures)

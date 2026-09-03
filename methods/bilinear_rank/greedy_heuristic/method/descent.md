@@ -55,7 +55,7 @@ minimise_rank(T, G):
 the branch that wins.** That line is what `SortedSpan` was written for: the
 filtration answers `cost` without assembling a basis, so a basis is built only
 where one is adopted. Verdict and price:
-[`../../how-the-search-works/what-to-wire.md`](../../../../how-the-search-works/what-to-wire.md).
+[`../../how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).
 
 `improving_candidates` has the same shape but never updates `T`; it just
 collects the candidates that would individually pay, as a pre-filter.
@@ -86,10 +86,10 @@ fixtures, which is what the tool reports.
 
 ## One pass over `f3_3x6`, printed
 
-`minimise-rank fixtures/f3_3x6.tensor --steps 3` runs the pseudocode above
+`minimise-rank evidence/fixtures/f3_3x6.tensor --steps 3` runs the pseudocode above
 twice, once per step, and prints:
 
-    fixtures/f3_3x6.tensor
+    evidence/fixtures/f3_3x6.tensor
       naive: 18 multiplications, 8 slices, 0 s cumulative
       step 1: 12 multiplications, 8 slices, 0.00262942 s cumulative
       step 2: 11 multiplications, 9 slices, 0.0266886 s cumulative

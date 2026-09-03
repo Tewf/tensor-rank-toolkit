@@ -12,7 +12,7 @@ add_test(NAME parallel COMMAND test_parallel)
 # See check_the_limits_reach_the_commands.sh for why this test exists.
 add_test(NAME limits_reach_the_commands
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_the_limits_reach_the_commands.sh
-                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures
                  ${CMAKE_BINARY_DIR})
 # 174 s idle on an i5-12450H, so 300 was a ceiling fitted to a quiet machine and
 # this test is the one that exists to catch exactly that. It timed out at load

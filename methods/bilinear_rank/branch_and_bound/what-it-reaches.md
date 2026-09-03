@@ -14,8 +14,8 @@ emitted `.sms` files and rebuilding the tensor in a few lines of Python.
 
 `start` is `descend_from_own_basis`, which is steps 1 and 2 and nothing
 exponential. `step 3` is the descent's full pool scan, from
-[`../fixtures/README.md`](../../../fixtures/README.md) and
-[`../fixtures/published-targets.md`](../../../fixtures/published-targets.md).
+[`../fixtures/README.md`](../../../evidence/fixtures/README.md) and
+[`../fixtures/published-targets.md`](../../../evidence/fixtures/published-targets.md).
 
 | Fixture | floor | start | step 3 | **here** | nodes | children | published |
 |---|---|---|---|---|---|---|---|
@@ -64,9 +64,9 @@ different mechanism and not more of this one, which is worth knowing before
 anybody rents a machine to run it wider.
 
 The 13 was checked outside the search that found it: the emitted `⟨L, R, P⟩` were
-read back by [`operators-to-tensor`](../../../formats/README.md) and rebuilt the fixture's 125
+read back by [`operators-to-tensor`](../../../core/formats/README.md) and rebuilt the fixture's 125
 entries exactly. `PMchecker` is the wrong checker here and says so:
-[`four-false-failures.md`](../../../formats/interchange/four-false-failures.md)
+[`four-false-failures.md`](../../../core/formats/interchange/four-false-failures.md)
 covers that case: it checks polynomial multiplication, and this is multiplication
 in GF(32).
 

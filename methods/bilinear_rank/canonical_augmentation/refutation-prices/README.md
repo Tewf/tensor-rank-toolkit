@@ -8,7 +8,7 @@ The tree route on that same question, run just now from `build/` against the
 shipped fixture:
 
 ```
-$ build/methods/bilinear_rank/canonical_augmentation/deflate-strictly fixtures/matmul_2x2x2.tensor \
+$ build/methods/bilinear_rank/canonical_augmentation/deflate-strictly evidence/fixtures/matmul_2x2x2.tensor \
     --target 6 --refuter tree -s matmul 2 2 2 --break-symmetry
   candidate 0: refuted, 0.000661804 s, 45 nodes
   candidate 1: refuted, 0.000635864 s, 45 nodes

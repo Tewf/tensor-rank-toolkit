@@ -14,7 +14,7 @@ before it was made on anything else.
 | WebAssembly, the tools compiled to the browser | Emscripten, a second build of everything | none | anywhere, but it is a second implementation |
 | A terminal interface | none | none | no paste of a multi-line map, no file drop |
 
-Python 3 already runs here: `reproduce/measure.py` regenerates every published
+Python 3 already runs here: `evidence/reproduce/measure.py` regenerates every published
 number with it, so a machine that can reproduce a result can serve this. The
 standard library has `http.server`, `subprocess` and `json`, which is all of it.
 A browser is the one graphical toolkit that is already installed everywhere,
@@ -30,7 +30,7 @@ That claim is checked rather than assumed. Read straight from `build/`, the same
 binary the checks use:
 
 ```
-build/methods/bilinear_rank/greedy_heuristic/minimise-rank fixtures/f2_5x5.tensor
+build/methods/bilinear_rank/greedy_heuristic/minimise-rank evidence/fixtures/f2_5x5.tensor
 exit 0, algorithm: 14 products, rank bound 12, gap 2
 ```
 
