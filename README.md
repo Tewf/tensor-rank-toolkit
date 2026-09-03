@@ -25,14 +25,14 @@ its provenance).
 
 ## Repository layout
 
-The ten method strands, one directory each. Method and caveats, per strand:
+The ten method strands. Method and caveats, per strand:
 [`what-it-computes.md`](what-it-computes.md).
 
 | Strand | Asks | Headline |
 |---|---|---|
-| [descent](methods/bilinear_rank/greedy_heuristic/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
+| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
 | [exhaustion](methods/bilinear_rank/exhaustive/README.md) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
-| [incumbent](methods/bilinear_rank/branch_and_bound/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
+| [branch and bound](methods/bilinear_rank/branch_and_bound/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](core/linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
 | [pencils](methods/pencil_rank/README.md) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
 | [factorisation](methods/canonical_factorisation/README.md) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
@@ -60,9 +60,10 @@ answers that no other does:
 
 ## Methods
 
-The descent is a matroid-greedy **heuristic**: exact for the basis its first
-step picks, polynomial-time throughout, and offering no optimality guarantee
-past that step, which its correctness note states precisely. The exhaustive
+The greedy **heuristic** descends rank by matroid-greedy steps: exact for the
+basis its first step picks, polynomial-time throughout, and offering no
+optimality guarantee past that step, which its correctness note states
+precisely. The exhaustive
 search is a **complete decision procedure** after
 [`[bdez2012]`](references.md), exponential as the NP-completeness of the
 problem leads one to expect; the isomorph-free strand generates one candidate
@@ -81,7 +82,7 @@ term gone rather than reduced, and the pool scan carries a residual. Same
 verdicts, same node counts, one consumer card priced against both:
 [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md).
 
-**A negative result on the expensive step.** Step 3 of the descent heuristic
+**A negative result on the expensive step.** Step 3 of the greedy heuristic
 enumerates the full pool of rank-one maps. Across the four polynomial
 fixtures it improved the answer in **two of four cases**, by one product
 each, at a cost **one to two orders of magnitude** above the first two steps
@@ -95,7 +96,7 @@ The rank search recovers ⟨L, R, P⟩; sparsification is what they are for.
 
 ```sh
 minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products
-sparsify-operator out_L.sms                                 # 31 -> 27 nonzeros
+sparsify-operator out_L.sms                                          # 31 -> 27 nonzeros
 ```
 
 The browser console runs those two lines in order, once per operator, as a

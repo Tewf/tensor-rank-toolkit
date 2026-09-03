@@ -27,15 +27,15 @@ provenance).
 
 ## Organisation du dépôt
 
-Les dix axes de méthode, un répertoire chacun. La méthode et les réserves de
+Les dix axes de méthode. La méthode et les réserves de
 chacun : [`what-it-computes.md`](what-it-computes.md), en anglais comme le
 reste de la documentation technique.
 
 | Axe | Question | Résultat |
 |---|---|---|
-| [descente](methods/bilinear_rank/greedy_heuristic/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
+| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
 | [exhaustion](methods/bilinear_rank/exhaustive/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
-| [titulaire](methods/bilinear_rank/branch_and_bound/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
+| [séparation et évaluation](methods/bilinear_rank/branch_and_bound/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](core/linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
 | [faisceaux](methods/pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
 | [factorisation](methods/canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
@@ -63,8 +63,8 @@ que chacun est seul à traiter :
 
 ## Méthodes
 
-La descente est une **heuristique** gloutonne sur matroïde : exacte pour la
-base que choisit sa première étape, en temps polynomial de bout en bout, et
+L'**heuristique** gloutonne descend le rang par pas gloutons sur matroïde :
+exacte pour la base que choisit sa première étape, polynomiale de bout en bout, et
 sans garantie d'optimalité au-delà, ce que sa note de correction énonce
 précisément. La recherche exhaustive est une **procédure de décision
 complète** d'après [`[bdez2012]`](references.md), exponentielle comme la
@@ -84,8 +84,8 @@ en dimension ayant disparu plutôt que diminué, et le balayage du vivier
 transporte un résidu. Mêmes verdicts, mêmes comptes de nœuds, et une carte
 grand public tarifée contre les deux : [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md).
 
-**Un résultat négatif sur l'étape coûteuse.** L'étape 3 de l'heuristique de
-descente énumère le vivier complet des applications de rang un. Sur les
+**Un résultat négatif sur l'étape coûteuse.** L'étape 3 de l'heuristique
+gloutonne énumère le vivier complet des applications de rang un. Sur les
 quatre jeux d'essai polynomiaux elle a amélioré le résultat dans **deux cas
 sur quatre**, d'un produit chaque fois, pour un coût supérieur d'**un à deux
 ordres de grandeur** à celui des deux premières étapes réunies. Toute suite
