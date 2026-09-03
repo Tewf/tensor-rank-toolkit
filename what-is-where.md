@@ -10,12 +10,12 @@ a `commands/`.
 ```
 linear_algebra/          exact arithmetic over GF(p) and over Q, shared by everything
 formats/                 tensor, dense matrix, SMS, DIMACS and SMT-LIB files
-cli/                     what every command shares: clock, exit codes, argument
+infrastructure/cli/                     what every command shares: clock, exit codes, argument
                          grammar, the stdout/stderr split, removing a scratch
                          file when a run is interrupted, the tunables
 tunables.conf            the numbers a run is bounded by, in a file not in code
-testing/                 the assertion helper every module's tests use
-run_limits/              how much memory, how many cores, and which processor
+infrastructure/testing/                 the assertion helper every module's tests use
+infrastructure/run_limits/              how much memory, how many cores, and which processor
                          one run may take; adapting-to-the-machine/ audits
                          every strand against all three
 search_plan/             the seven choices a run makes about how it will be
@@ -27,7 +27,7 @@ descent_search/          rank from above, by descent
 exhaustive_search/       rank decided outright, and what that costs
 map_construction/        building the maps every method runs on
 orbit_reduction/         quotienting all three searches by symmetry
-gpu_leaf/                what one consumer GPU is worth on the leaf test,
+infrastructure/gpu_leaf/                what one consumer GPU is worth on the leaf test,
                          measured; built only where nvcc is present, and called
                          by nothing else here
 flip_graph/              moving a decomposition sideways instead of building one
@@ -64,7 +64,7 @@ site/                    the stylesheet, the hand-drawn charts and the shared
                          navigation index.html is assembled from
 web_interface/           a browser console for every tool here, and the
                          commands behind it
-tools/                   scripts that are not part of the build: one asks every
+infrastructure/tools/                   scripts that are not part of the build: one asks every
                          backend the same question and tabulates the cost
 ```
 

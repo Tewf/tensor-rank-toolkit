@@ -6,7 +6,7 @@ never reaches the argv, and no value is passed through unread. No shell is
 involved anywhere, so there is no quoting to get wrong.
 
 The refusals here are worded the way the toolkit's own are, naming the flag and
-quoting the word, because `cli/arguments.h` established that grammar for exactly
+quoting the word, because `infrastructure/cli/arguments.h` established that grammar for exactly
 this reason: `--target abc` reported as `stoull` names neither the flag nor the
 word, and there are five numeric flags it could have been.
 
@@ -21,7 +21,7 @@ import catalogue
 
 COUNT = re.compile(r"\A[0-9]+\Z")
 WHOLE = re.compile(r"\A-?[0-9]+\Z")
-MEMORY = re.compile(r"\A[0-9]+[KkMmGg]?\Z")       # cli/size_argument.h
+MEMORY = re.compile(r"\A[0-9]+[KkMmGg]?\Z")       # infrastructure/cli/size_argument.h
 SOLVER_NAME = re.compile(r"\A[A-Za-z0-9_.+-]{1,64}\Z")  # a name looked up on PATH
 POINT = re.compile(r"\A[0-9]+:[0-9]+\Z")
 
@@ -70,7 +70,7 @@ def _words_for(option, value):
 
 
 def _symmetry_words(flag, value):
-    """`-s none`, `-s auto` or `-s matmul <n> <m> <k>`, as `cli/symmetry_argument.h`
+    """`-s none`, `-s auto` or `-s matmul <n> <m> <k>`, as `infrastructure/cli/symmetry_argument.h`
     reads them. The three dimensions are refused when one is missing rather than
     passed on short, because a short line there is read as a different shape."""
     mode = str(value.get("mode", "none")) if isinstance(value, dict) else str(value)

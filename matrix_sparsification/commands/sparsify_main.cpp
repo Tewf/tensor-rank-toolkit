@@ -97,7 +97,7 @@ void report(const AnyField& field, const std::string& method,
 
 /// The tool proper. main only turns a thrown refusal into a line.
 int run(int argc, char** argv) {
-    // Walked by `cli/arguments.h` rather than by hand. What the hand-rolled two
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand. What the hand-rolled two
     // lines did instead: `--show` was read at argv[2] and nowhere else, so
     // `sparsify-operator m.matrix junk --show` printed no matrix and said nothing
     // about why; every other word on the line was dropped without a message, so a

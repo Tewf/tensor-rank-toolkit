@@ -78,7 +78,7 @@ scans, falling with the pool, and 1.4 is the value taken.
 ## Where the constants live, and why not in `tunables.conf`
 
 In `CanonicalPrices`, in code, for the reason
-[`../../run_limits/device.cpp`](../../run_limits/device.cpp) keeps its crossover
+[`../../run_limits/device.cpp`](../../infrastructure/run_limits/device.cpp) keeps its crossover
 table in code and puts only `device_launch_floor` in the file: **a measured table is
 not a knob.** What a reader may want to move is the decision; what they must not
 silently move is the measurement.

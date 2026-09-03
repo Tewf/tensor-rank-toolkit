@@ -128,7 +128,7 @@ the reasoning that measurement overturned to get there:
 [`choices/`](choices/README.md).
 
 The driver that puts one question to every backend at once and tabulates what
-each cost is [`tools/compare_backends.py`](../tools/compare_backends.py). It is
+each cost is [`infrastructure/tools/compare_backends.py`](../infrastructure/tools/compare_backends.py). It is
 what makes a row here comparable with a tree-search row at all: the instruments
 count in different currencies, nodes against conflicts, and wall clock on one
 machine is the only one they share.

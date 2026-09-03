@@ -1,6 +1,6 @@
 # What this interface will not say
 
-`cli/exit_code.h` states the rule every tool here keeps: **a question that was
+`infrastructure/cli/exit_code.h` states the rule every tool here keeps: **a question that was
 not answered is not a question answered no.** A budget running out proves
 nothing, and folding it into a refusal turns giving up into a lower bound. That
 mistake has been published from this repository once already, which is why half

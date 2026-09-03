@@ -2,7 +2,7 @@
 # That the plan a run prints is the plan it carried out, and that a file replays it.
 #
 # The checks beside this one read `search_plan.h` on both sides, which is the
-# failure `cli/tests/check_tunables_bound_a_run.sh` was written to end: a rule
+# failure `infrastructure/cli/tests/check_tunables_bound_a_run.sh` was written to end: a rule
 # asserted against itself passes while nothing calls it. So this one spends
 # processes. It asserts the printed lines outright, so the rules are pinned to a
 # tensor and a target rather than left to be inferred; it asserts that a flag

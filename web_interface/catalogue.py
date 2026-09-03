@@ -24,7 +24,7 @@ the number compiled in.
 
 `verdicts` is the one place a tool's own reading of exit 0 and exit 1 is
 recorded, because the tools do not all answer the same question with them and
-`cli/exit_code.h`'s sentence is the standing claim rather than the tool's
+`infrastructure/cli/exit_code.h`'s sentence is the standing claim rather than the tool's
 wording. `budget` marks a flag that bounds the run: the interface passes its own
 wall clock through those where a tool has one, so the limit is named in the
 command a reader can retype rather than imposed invisibly from outside.
@@ -113,7 +113,7 @@ TOOLS = [
             {"flag": "--plateau", "kind": "count", "label": "equal-cost steps",
              "note": "The crossing runs on one core whatever the thread count "
                      "says, and the arithmetic is in "
-                     "run_limits/adapting-to-the-machine/what-was-closed.md."},
+                     "infrastructure/run_limits/adapting-to-the-machine/what-was-closed.md."},
             {"flag": "--plateau-states", "kind": "count",
              "label": "states per plateau crossing", "budget": True,
              "note": "From plateau_state_budget, 200000. Measured and left "

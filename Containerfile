@@ -78,11 +78,11 @@ COPY . /src
 # paths that do not exist in here, and configuring on top of it fails in a way
 # that reads as a broken image rather than as a stale cache.
 #
-# There is no CUDA in this image and none is wanted. gpu_leaf/ is built only
+# There is no CUDA in this image and none is wanted. infrastructure/gpu_leaf/ is built only
 # where CMake finds nvcc, so the configure below skips it and the suite that runs
 # is the 95 tests a machine without a card has. That is the point of the image:
 # it is the reproduction that does not depend on the hardware the numbers in
-# gpu_leaf/what-the-card-did.md were taken on. Those are reproduced by the
+# infrastructure/gpu_leaf/what-the-card-did.md were taken on. Those are reproduced by the
 # hardware or not at all, which MEASURING.md states rather than hides.
 RUN rm -rf /src/build \
  && cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \

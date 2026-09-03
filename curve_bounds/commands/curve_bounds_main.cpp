@@ -160,7 +160,7 @@ int run(int argc, char** argv) {
                                  unrecognised + "'");
     }
 
-    // Walked by `cli/arguments.h` rather than by hand, so `--degree abc` names the
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand, so `--degree abc` names the
     // flag and the word rather than leaving as 5 saying `stoll`. `--points d:n`
     // keeps its own parser and its own exit code: an unreadable supply is not a
     // flag this command failed to recognise.

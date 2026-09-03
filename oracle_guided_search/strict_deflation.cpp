@@ -35,7 +35,7 @@ std::vector<Matrix> candidates_of(const Field& field, const std::vector<std::siz
 /// sits for the three commands that do, so it is asked for here. Without it the
 /// tree route built 4x4 representatives for a tensor of 4x6 slices and died in
 /// the allocator: `free(): invalid pointer`, exit 134, which is not in
-/// `cli/exit_code.h`'s vocabulary at all.
+/// `infrastructure/cli/exit_code.h`'s vocabulary at all.
 void require_shape_or_nothing(const formats::Tensor& tensor,
                               const std::vector<std::size_t>& shape) {
     if (shape.size() != 3) return;

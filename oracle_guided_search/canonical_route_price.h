@@ -82,7 +82,7 @@ namespace bilinear_rank {
 /// What the operations cost here, measured by `price-canonical-route`.
 ///
 /// In code rather than in `tunables.conf` for the reason
-/// [`run_limits/device.cpp`](../run_limits/device.cpp) keeps its crossover table in
+/// [`infrastructure/run_limits/device.cpp`](../run_limits/device.cpp) keeps its crossover table in
 /// code and only the floor that *decides* in the file: a measured table is not a
 /// knob, and the command that produced it ships beside it. Picoseconds where a
 /// nanosecond would round to zero.

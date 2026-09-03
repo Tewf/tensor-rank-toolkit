@@ -70,7 +70,7 @@ void write_divisors(const std::vector<pencil_rank::ElementaryDivisor>& divisors)
 
 int main(int argc, char** argv) {
     try {
-        // Walked by `cli/arguments.h`, which is where the hand-written test for a
+        // Walked by `infrastructure/cli/arguments.h`, which is where the hand-written test for a
         // flag where the tensor belongs went: the walker knows a flag from a
         // filename, so `--route bogus` is refused as a flag this command does not
         // have rather than reported as a file it cannot open, and `--help` reaches

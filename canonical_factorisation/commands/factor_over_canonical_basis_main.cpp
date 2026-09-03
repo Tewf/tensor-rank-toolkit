@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
     try {
         canonical_factorisation::FactorisationSettings settings;
         settings.node_limit = cli::tunables().search_node_limit;
-        // Walked by `cli/arguments.h` rather than by hand. The walker is also
+        // Walked by `infrastructure/cli/arguments.h` rather than by hand. The walker is also
         // where the hand-written test for a flag where the tensor belongs went,
         // and the file is read after the line is understood rather than before:
         // `--help` cannot open a tensor, and `--route bogus` names the flag to fix

@@ -15,7 +15,7 @@ any file on the machine.
 **A flow that has been stopped starts nothing else.** The step is begun under
 the same lock the stop takes, so a flow cannot slip a run past
 `registry.stop_everything` between two of its steps: that run is exactly the
-orphan `run_limits/child_process.h` was written about, one level up again.
+orphan `infrastructure/run_limits/child_process.h` was written about, one level up again.
 """
 import threading
 import time

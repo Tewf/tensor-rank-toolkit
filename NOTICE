@@ -2,13 +2,13 @@ NOTICE: scope of the MIT licence, and credit for material that is not mine
 ==========================================================================
 
 The MIT LICENSE in this repository covers **my own work only**: the C++ in
-linear_algebra/, formats/, cli/, testing/, run_limits/, map_construction/,
-descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
+linear_algebra/, formats/, infrastructure/cli/, infrastructure/testing/,
+infrastructure/run_limits/, map_construction/, descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
 incumbent_search/, integer_programme/, matrix_sparsification/,
 satisfiability/, curve_bounds/, rank_metric_bound/, oracle_guided_search/,
 pencil_rank/, canonical_factorisation/ and search_plan/, the CUDA in
-gpu_leaf/, the Python in web_interface/ and reproduce/, together with the
-fixtures and the site. One directory of fixtures is the exception and is not
+infrastructure/gpu_leaf/, the Python in web_interface/ and reproduce/,
+together with the fixtures and the site. One directory of fixtures is the exception and is not
 mine: fixtures/plinopt/, below.
 
 The list is every directory CMakeLists.txt adds, and it is written out rather

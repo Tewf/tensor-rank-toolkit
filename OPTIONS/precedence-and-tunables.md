@@ -43,7 +43,7 @@ compiled default rather than to something else: where a default is a reading of
 the machine, `auto` is how the file asks for that reading instead of pinning a
 number over it. It is refused on a tunable that has no machine reading behind it,
 by name, rather than accepted and ignored. Which tunables have one is
-`machine_read_tunables()` in `cli/tunables.h`, and `show-limits` prints what each
+`machine_read_tunables()` in `infrastructure/cli/tunables.h`, and `show-limits` prints what each
 resolved to here.
 
 The rule the code keeps to make that work: **a library never opens the file.**
@@ -54,7 +54,7 @@ nothing still gets.
 
 ## `BILINEAR_TUNABLES`
 
-`cli/tunables.h` looks for the file in one of two places:
+`infrastructure/cli/tunables.h` looks for the file in one of two places:
 
 - the path named by `$BILINEAR_TUNABLES`, if that is set. **A file named there
   and missing is an error**, because it was asked for by name;
@@ -77,11 +77,11 @@ different numbers in one run.
 | `ilp_backend_order` | `curve-bounds` | none; `--route built-in` sidesteps it, `--solvers` prints it |
 
 **`lower-the-bound` reaches no row**, and that is a fact about it rather than an
-omission here: its main does not include `cli/tunables.h` at all, so `--nodes`,
+omission here: its main does not include `infrastructure/cli/tunables.h` at all, so `--nodes`,
 `--width`, `--summand-rank` and `--rounds` are compiled defaults the file cannot
 move. A run of it is bounded by what is on the line and nothing else.
 
 A name the file spells wrongly is refused rather than ignored, and the refusal
 leaves as exit 2. That is asserted end to end in
-[`../cli/tests/check_tunables_bound_a_run.sh`](../cli/tests/check_tunables_bound_a_run.sh),
+[`../cli/tests/check_tunables_bound_a_run.sh`](../infrastructure/cli/tests/check_tunables_bound_a_run.sh),
 against the built command rather than against the parser.

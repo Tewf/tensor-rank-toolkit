@@ -405,7 +405,7 @@ int run(int argc, char** argv) {
         cli::note() << "wrote " << operator_stem << "_{L,R,P}.sms";
     }
     // `Undecided` and never `No`: a `--below` run that ran out has exhausted a
-    // budget and refuted nothing, which is the distinction `cli/exit_code.h`
+    // budget and refuted nothing, which is the distinction `infrastructure/cli/exit_code.h`
     // exists to keep. The answer it still holds was printed and verified above.
     if (limits.below != 0 && !report.reached_below) {
         return cli::exit_status(cli::ExitCode::Undecided);

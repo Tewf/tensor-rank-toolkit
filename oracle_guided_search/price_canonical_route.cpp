@@ -9,7 +9,7 @@
 /// `commands/`.** What it prints is nanoseconds, and
 /// [`../MEASURING.md`](../MEASURING.md)'s line is that counts reproduce anywhere
 /// and timings do not: a reader arriving with a bilinear map has no question
-/// this answers. `measure-leaf` sits exactly here relative to `gpu_leaf/`, and
+/// this answers. `measure-leaf` sits exactly here relative to `infrastructure/gpu_leaf/`, and
 /// [`../OPTIONS/one-question-per-command.md`](../OPTIONS/one-question-per-command.md)
 /// is where the twelve that *are* tools are each given their one question.
 ///

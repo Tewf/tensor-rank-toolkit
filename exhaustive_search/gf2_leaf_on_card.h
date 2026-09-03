@@ -8,7 +8,7 @@
 
 /// How a card offers to answer a GF(2) leaf, and how the search asks it to.
 ///
-/// The seam is here rather than in [`gpu_leaf/`](../gpu_leaf/gpu_leaf.h) for the
+/// The seam is here rather than in [`infrastructure/gpu_leaf/`](../gpu_leaf/gpu_leaf.h) for the
 /// reason [`../run_limits/device.h`](../run_limits/device.h)'s is in
 /// `run_limits`: the search must be able to ask on a machine that has no card
 /// and a build that has no kernels, and get "no" rather than a link error. A

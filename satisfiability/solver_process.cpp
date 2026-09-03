@@ -88,7 +88,7 @@ class ScratchFile {
 /// fork behind. One leak per worker is what a parallel cube split multiplies, so
 /// this is a prerequisite for one rather than a tidy-up.
 ///
-/// `run_limits/child_process.h` is now the one launcher in this repository. The
+/// `infrastructure/run_limits/child_process.h` is now the one launcher in this repository. The
 /// shell goes with it: the command is a vector, so nothing here has to quote a
 /// path, `ulimit -v` becomes `setrlimit`, and `2>/dev/null` becomes
 /// `merge_stderr` false, because this route parses the log and a solver's

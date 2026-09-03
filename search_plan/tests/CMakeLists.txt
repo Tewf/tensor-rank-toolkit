@@ -8,7 +8,7 @@ add_test(NAME search_plan COMMAND test_search_plan)
 # And that the plan a run prints is the plan it carried out, which the check
 # above cannot see: both its sides come from search_plan.h, so it would pass
 # throughout a period when no command read a plan at all. This one spends
-# processes, the way cli/ asserts its tunables against the built command.
+# processes, the way infrastructure/cli/ asserts its tunables against the built command.
 add_test(NAME plan_reaches_a_run
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_the_plan_reaches_a_run.sh
                  $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)

@@ -198,7 +198,7 @@ int run(int argc, char** argv) {
     long long given_ceiling = -1;
     std::string emit_to;
 
-    // Walked by `cli/arguments.h` rather than by hand. Five of these are numeric
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand. Five of these are numeric
     // and every one of them used to leave as 5 saying `stoll`, which names the
     // function that threw and none of the five flags it could have been. The
     // hand-written test for a flag where the file belongs goes with the loop: the
@@ -275,7 +275,7 @@ int run(int argc, char** argv) {
     // and one per solver log, and it gained a `-<n>` suffix while this was being
     // written; a name predicted from out here would have silently matched nothing
     // and reported a cleanup that never happened, which is worse than the leak.
-    // The mechanism is `cli/interrupt_cleanup.h`, and the whole fix is
+    // The mechanism is `infrastructure/cli/interrupt_cleanup.h`, and the whole fix is
     // `cli::remove_when_interrupted(file.string())` beside each `scratch_file`
     // call, in the file that knows the name.
     const formats::Tensor tensor = formats::read_tensor_file(path);

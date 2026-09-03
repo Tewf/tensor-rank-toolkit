@@ -51,7 +51,7 @@ and that claim rests on code that now lives on a branch rather than in `main`.
 removed methods, which materialised every column subset of a size before looking
 at any of them; the method that stayed walks them lazily and allocates almost
 nothing, so there was nothing left to refuse and
-`run_limits/tests/check_the_limits_reach_the_commands.sh` caught it.
+`infrastructure/run_limits/tests/check_the_limits_reach_the_commands.sh` caught it.
 
 Restoring the old behaviour would have been the wrong repair. **The scan is now
 priced by what it may walk rather than by what it allocates**, which is the thing

@@ -8,7 +8,7 @@ binary's own `--help` prints is either an option in the catalogue or on
 `NOT_OFFERED` with its reason. Anything else is drift and fails loudly.
 
 **The flags are read off the binaries rather than transcribed.** `--help` is run
-and its output parsed, for the reason `cli/tests/check_argument_grammar.sh` gives
+and its output parsed, for the reason `infrastructure/cli/tests/check_argument_grammar.sh` gives
 for asking the commands themselves: a table of flags kept beside a table of flags
 agrees with itself whatever either one says about the tools. This costs twelve
 processes that print a usage block and stop.
@@ -35,7 +35,7 @@ NOT_TOOLS = {
     # counts reproduce anywhere and timings do not. `measure-leaf` is its model
     # and is CUDA-only, so it is usually not in the build tree at all.
     "oracle_guided_search/price-canonical-route",
-    "gpu_leaf/measure-leaf",
+    "infrastructure/gpu_leaf/measure-leaf",
     # Retired into `curve-bounds --solvers`. It prints the line to type and
     # leaves as 2, so offering it here would offer a refusal.
     "integer_programme/list-solvers",
@@ -50,7 +50,7 @@ NOT_TOOLS = {
     # working directory bound a run to. The console shows its output in the run
     # pane instead of offering it as a tool, because there is no question to ask
     # it and nothing to choose.
-    "run_limits/show-limits",
+    "infrastructure/run_limits/show-limits",
 }
 
 # Two flags every usage block prints that no tool's panel carries, for reasons
@@ -60,7 +60,7 @@ EVERY_COMMAND = {
     # offering it would be offering a refusal: the argument that took
     # `list-solvers` off the tool list above, one level down.
     "--help": "prints the usage and leaves as 2, so offering it offers a refusal",
-    # `cli/symmetry_argument.h` reads one flag under two spellings. The
+    # `infrastructure/cli/symmetry_argument.h` reads one flag under two spellings. The
     # catalogue offers `-s` and `command_line.py` builds `-s`, so offering the
     # long one too would put one idea in the panel twice.
     "--symmetry": "the long spelling of -s, which is what the panel offers",
@@ -166,7 +166,7 @@ def _flags_printed_by(binary):
     """The flags one command's own usage block names.
 
     `--help` leaves as exit 2 and writes to stderr, both asserted for every
-    command in `cli/tests/check_argument_grammar.sh`, so neither is re-asserted
+    command in `infrastructure/cli/tests/check_argument_grammar.sh`, so neither is re-asserted
     here and stdout is not read.
     """
     said = subprocess.run([str(binary), "--help"], capture_output=True,

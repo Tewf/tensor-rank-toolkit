@@ -11,7 +11,7 @@ can reach it; `--host` is there for a deliberate exception and says so when used
 
 Ctrl-C stops every run that is still going before the process leaves, because a
 console that exits over the top of a running search is the orphan problem
-`run_limits/child_process.h` was written about.
+`infrastructure/run_limits/child_process.h` was written about.
 """
 import argparse
 import http.server

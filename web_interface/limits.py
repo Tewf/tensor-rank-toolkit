@@ -21,7 +21,7 @@ import subprocess
 
 import repository
 
-INSTRUMENT = "run_limits/show-limits"
+INSTRUMENT = "infrastructure/run_limits/show-limits"
 
 
 def resolved(build, timeout_seconds=10):

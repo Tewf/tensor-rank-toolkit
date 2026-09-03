@@ -56,7 +56,7 @@ timing is taken under, and this is not it, which every card says.
 ## Closed since, and what each one left standing
 
 **A killed run could leave one solver behind without saying so.**
-`run_limits/child_process.h` starts a solver in a process group of its own, so
+`infrastructure/run_limits/child_process.h` starts a solver in a process group of its own, so
 killing the tool's group does not reach it; what ends it is the `alarm` it
 carries, set from the tool's own timeout. The interface fills that flag in with
 its own wall clock, which closes the window, and clearing it or raising it

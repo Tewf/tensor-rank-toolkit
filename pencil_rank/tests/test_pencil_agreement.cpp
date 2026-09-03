@@ -28,7 +28,7 @@ namespace {
 /// A spent budget is reported as 0 rather than as a rank, so the caller can
 /// tell "no algorithm that small" from "did not finish". Silently returning the
 /// next k up would turn giving up into an answer, which is the mistake
-/// `cli/exit_code.h` exists to keep out of this repository.
+/// `infrastructure/cli/exit_code.h` exists to keep out of this repository.
 long long fewest_products_by_search(const bilinear_rank::Field& field,
                                     const formats::Tensor& tensor, std::size_t ceiling) {
     const std::vector<bilinear_rank::Matrix> pool =

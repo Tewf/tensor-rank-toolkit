@@ -22,7 +22,7 @@ indentation removed.
 PLAN_PREFIXES = (
     "pool:",             # decide-rank, enumerate-subspaces: size, shape, held or addressed
     "leaf:",             # decide-rank: which leaf implementation applies
-    "device:",           # decide-rank, from run_limits/device.h
+    "device:",           # decide-rank, from infrastructure/run_limits/device.h
     "route:",            # factor-over-canonical-basis: which of the four routes ran
     "symmetry:",         # factor-over-canonical-basis: the quotient, if any
     "tensor:",           # factor-over-canonical-basis: field and shape, as read

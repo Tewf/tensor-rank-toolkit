@@ -12,10 +12,10 @@ distinguishable and are not reported here as a ratio.
 
 **`--help` is the one flag every command shares**, the three instruments included.
 It prints the usage and leaves as **exit 2**: a line asking for help asked no
-question, and `cli/exit_code.h` has one code for a line that did not parse. It is
+question, and `infrastructure/cli/exit_code.h` has one code for a line that did not parse. It is
 not repeated in the tables below, and it is asserted against every built binary
 rather than described, in
-[`cli/tests/check_argument_grammar.sh`](cli/tests/check_argument_grammar.sh).
+[`infrastructure/cli/tests/check_argument_grammar.sh`](infrastructure/cli/tests/check_argument_grammar.sh).
 
 **A word to script authors before `set -e`.** Nonzero here is an answer, not a
 failure: a proved refutation is **1**, `--help` is **2**, and a budget that ran

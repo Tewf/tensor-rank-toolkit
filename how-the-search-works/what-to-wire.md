@@ -22,7 +22,7 @@ a card at 0.24 ns that is under 5x, which is this page's own "not worth it" band
 Nothing here is retracted; it is suspended until the comparison is re-taken with
 `measure-leaf`, which now times the leaf that ships.
 
-The seam is [`../run_limits/device.h`](../run_limits/device.h) and it is already
+The seam is [`../run_limits/device.h`](../infrastructure/run_limits/device.h) and it is already
 the right shape: a fixed ranking, a probe for availability, a host that always
 answers. What decides whether a leaf reaches the card is `launch_floor()`, and
 that number was **measured at 8 192 on 2026-08-21** by `measure-leaf floor`: the
@@ -30,7 +30,7 @@ smallest count at which every route on every compiled shape beat one core, timed
 against the card's wall clock and not its kernel clock. It was `PROVISIONAL` at
 100 000 when this page was written, a conventional launch cost times a rate taken
 from a kernel that was not wired in. The per-route table is in
-[`../run_limits/device.cpp`](../run_limits/device.cpp) and the walks cross at
+[`../run_limits/device.cpp`](../infrastructure/run_limits/device.cpp) and the walks cross at
 4 096 except 5x5's at 8 192.
 
 That floor decides every shape here at once. A leaf's work is `min(p^dim, |P|)`:
@@ -53,7 +53,7 @@ Two things the wiring must respect, both already provided for:
 re-runs in chunks rather than reading them, and the survivors are sorted before
 the host greedy walks them, which is what makes the answer bit-identical to the
 sequential leaf
-([`../gpu_leaf/why-the-answer-is-the-same.md`](../gpu_leaf/why-the-answer-is-the-same.md)).
+([`../gpu_leaf/why-the-answer-is-the-same.md`](../infrastructure/gpu_leaf/why-the-answer-is-the-same.md)).
 
 ## `SortedSpan`: it has three possible homes and two of them are closed
 

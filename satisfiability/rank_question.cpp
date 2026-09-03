@@ -214,7 +214,7 @@ Answer decide_rank(const formats::Tensor& tensor, std::size_t products,
     // so every cube is asked, and the report lands in the same order. On a
     // satisfiable question `found` lets a cube not yet started skip, and the
     // witness may then come from a different cube than the sequential walk would
-    // have returned. Both are decompositions; `run_limits/parallel.h` already
+    // have returned. Both are decompositions; `infrastructure/run_limits/parallel.h` already
     // documents that threads change *which* one a search hands back.
     std::vector<Answer> pieces(approach.cubes.size());
     std::vector<char> answered(approach.cubes.size(), 0);

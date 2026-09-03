@@ -153,8 +153,8 @@ inline std::size_t rank_sum_work(std::size_t characteristic, std::size_t length)
 /// already returns by value, and it is paid only by a caller who asked for cores.
 ///
 /// It stays on the host at any thread count. It is the closest thing in this
-/// repository to the shape `run_limits/device.h` describes, and
-/// `run_limits/adapting-to-the-machine/the-audit.md` says why it still gets no
+/// repository to the shape `infrastructure/run_limits/device.h` describes, and
+/// `infrastructure/run_limits/adapting-to-the-machine/the-audit.md` says why it still gets no
 /// kernel: it is the general-field path, and that field has none of the bit
 /// arithmetic the two kernels are made of.
 template <class Field>

@@ -49,10 +49,10 @@ L'infrastructure partagée et la documentation :
 | Chemin | Contenu |
 |---|---|
 | [`linear_algebra/`](linear_algebra/README.md), [`formats/`](formats/README.md) | l'arithmétique exacte ; les fichiers tensor, SMS, DIMACS et SMT-LIB |
-| [`cli/`](cli/README.md), [`run_limits/`](run_limits/README.md), [`search_plan/`](search_plan/README.md) | la grammaire de commande et les codes de sortie partagés ; ce qu'un calcul peut prendre à la machine ; les choix qu'un calcul écrit et rejoue |
+| [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`search_plan/`](search_plan/README.md) | la grammaire de commande et les codes de sortie partagés ; ce qu'un calcul peut prendre à la machine ; les choix qu'un calcul écrit et rejoue |
 | [`map_construction/`](map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | construire les applications ; les jeux d'essai de tout le reste ; où chaque recherche s'arrête sur les tenseurs dont la littérature débat |
-| [`gpu_leaf/`](gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`flip_graph/`](flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
-| [`reproduce/`](reproduce/README.md), [`testing/`](testing/README.md), [`tools/`](tools/README.md) | chaque compte publié re-dérivé en CI ; l'assertion partagée des tests ; le script de comparaison des moteurs |
+| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`flip_graph/`](flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | une carte grand public tarifée sur le test de feuille ; des bornes par courbes algébriques ; une marche qui déplace des schémas ; deux bornes inférieures sans recherche ; la couche LP et ILP |
+| [`reproduce/`](reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | chaque compte publié re-dérivé en CI ; l'assertion partagée des tests ; le script de comparaison des moteurs |
 | [`web_interface/`](web_interface/README.md) | les outils pilotés depuis un navigateur, sur la seule bibliothèque standard de Python |
 | [`start-here.md`](start-here.md) | une première session en mots simples, pour un lecteur sans le vocabulaire du domaine (en anglais) |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | la carte raisonnée ; chaque option avec la mesure derrière sa valeur par défaut ; la bibliographie, citée par clé depuis le code |
@@ -83,7 +83,7 @@ deux routes n'y forme plus d'élément : le parcours avance en code de Gray
 réfléchi sur GF(2) comme sur GF(p), **2,52x par élément sur GF(3)**, le terme
 en dimension ayant disparu plutôt que diminué, et le balayage du vivier
 transporte un résidu. Mêmes verdicts, mêmes comptes de nœuds, et une carte
-grand public tarifée contre les deux : [`gpu_leaf/`](gpu_leaf/README.md).
+grand public tarifée contre les deux : [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md).
 
 **Un résultat négatif sur l'étape coûteuse.** L'étape 3 de l'heuristique de
 descente énumère le vivier complet des applications de rang un. Sur les

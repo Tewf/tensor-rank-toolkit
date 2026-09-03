@@ -162,7 +162,7 @@ function drawPlan(node, card) {
 
 function spoken(commentary) {
   /* The commentary with its comment character taken off, which is what the tool
-     would have said on a terminal. cli/report.h puts the `#` there so a run's
+     would have said on a terminal. infrastructure/cli/report.h puts the `#` there so a run's
      stdout can be piped straight into a reader; it is not part of the sentence. */
   return commentary.split("\n").map((line) => line.replace(/^#\s?/, ""))
                    .filter((line) => line.trim()).join("\n");

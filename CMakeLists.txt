@@ -45,9 +45,9 @@ enable_testing()
 # vendor/permlib/README.md says what it is and why it is not nauty.
 add_subdirectory(vendor/permlib)
 
-add_subdirectory(cli)
-add_subdirectory(testing)
-add_subdirectory(run_limits)
+add_subdirectory(infrastructure/cli)
+add_subdirectory(infrastructure/testing)
+add_subdirectory(infrastructure/run_limits)
 add_subdirectory(linear_algebra)
 add_subdirectory(formats)
 add_subdirectory(map_construction)
@@ -73,11 +73,11 @@ add_subdirectory(canonical_factorisation)
 # module that owns one.
 add_subdirectory(search_plan)
 
-# Read unconditionally, and guarded inside instead. gpu_leaf/README.md is a
+# Read unconditionally, and guarded inside instead. infrastructure/gpu_leaf/README.md is a
 # measurement that stands on its own and the directory builds nothing the rest of
 # the repository links, so a machine without nvcc still loses a number rather
 # than a capability. What it must not lose is the compiler: guarded out here,
 # `measure_leaf.cpp` spent 2026-08-20 failing to compile against a constructor
 # that had gained an argument, on every machine, with CI green throughout. A
 # directory nothing compiles is a directory that drifts.
-add_subdirectory(gpu_leaf)
+add_subdirectory(infrastructure/gpu_leaf)

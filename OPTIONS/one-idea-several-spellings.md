@@ -46,7 +46,7 @@ independent walks, not a seed value; each walk's seed is its index.
 
 ## What a bad value gets you
 
-`cli/arguments.h` exists so that a refusal names the flag and quotes the word:
+`infrastructure/cli/arguments.h` exists so that a refusal names the flag and quotes the word:
 `--target abc` reported as `stoull` names neither, and there are five numeric
 flags it could have been. Its typed parsers keep that promise. **It has no helper
 for an enum-like value**, and the ten flags that take one hand-roll the branch
@@ -72,7 +72,7 @@ fixed in `decide_rank_main.cpp` (beside the comment naming the first as the
 fault it declined to copy) without the page being sent back to check.
 `--device`, which is right, never reached it at all. What is left is `--from`,
 `--backend` and the three that reprint a usage block, and the fix for all five is
-one helper in `cli/arguments.h` rather than five more hand-rolled branches. The
+one helper in `infrastructure/cli/arguments.h` rather than five more hand-rolled branches. The
 console refuses all ten from `catalogue.py`'s `values` before starting anything,
 so this is a terminal wart and not a browser one.
 

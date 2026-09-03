@@ -59,7 +59,7 @@ int run(int argc, char** argv) {
     cli::Symmetry symmetry;
     long long target = -1;
 
-    // Walked by `cli/arguments.h` rather than by hand, so `--target abc` names the
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand, so `--target abc` names the
     // flag and the word rather than leaving as 5 saying `stoll`, and the file is
     // read after the line is understood rather than before: `--help` cannot open
     // a tensor, and a flag where the path belongs is not a missing file.

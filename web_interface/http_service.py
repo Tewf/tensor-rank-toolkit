@@ -61,7 +61,7 @@ def make_handler(service, allowed_hosts):
 
         def refuse(self, status, why):
             """Every refusal is a sentence naming what is wrong, because that is
-            the grammar `cli/arguments.h` set for the commands themselves."""
+            the grammar `infrastructure/cli/arguments.h` set for the commands themselves."""
             self.send(status, {"refused": str(why)})
 
         def read_request(self):

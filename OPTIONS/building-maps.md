@@ -10,7 +10,7 @@ Precedence and `BILINEAR_TUNABLES`:
 
 Its four flags are **modes rather than settings**: exactly one is given, each
 takes its own positional arguments, and none has a default to measure. That is
-why this is the one command not walked by `cli/arguments.h`, which reads flags
+why this is the one command not walked by `infrastructure/cli/arguments.h`, which reads flags
 and one positional filename: the words after `--matmul` are the argument. Its
 numbers still go through that header's refusals, so `--matmul abc 2 2 2` names
 the mode and the word and leaves as **exit 2**; it used to terminate on an

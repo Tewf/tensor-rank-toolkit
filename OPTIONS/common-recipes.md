@@ -48,7 +48,7 @@ default, and is worth at least 76x on a question expected to answer no.
 | a solver that gives the core back | `decide-rank-by-sat <map> --target k --timeout 60` |
 
 All three leave as **exit 3**, which is not exit 1: a budget that ran out proves
-nothing in either direction. `cli/exit_code.h` is where that is stated and
+nothing in either direction. `infrastructure/cli/exit_code.h` is where that is stated and
 [`../web_interface/what-it-will-not-say.md`](../web_interface/what-it-will-not-say.md)
 is a front end keeping it.
 

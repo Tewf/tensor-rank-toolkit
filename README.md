@@ -46,10 +46,10 @@ The shared infrastructure and the documentation:
 | Path | Holds |
 |---|---|
 | [`linear_algebra/`](linear_algebra/README.md), [`formats/`](formats/README.md) | exact arithmetic; tensor, SMS, DIMACS and SMT-LIB files |
-| [`cli/`](cli/README.md), [`run_limits/`](run_limits/README.md), [`search_plan/`](search_plan/README.md) | the shared command grammar and exit codes; what a run may take from the machine; the choices a run records and replays |
+| [`infrastructure/cli/`](infrastructure/cli/README.md), [`infrastructure/run_limits/`](infrastructure/run_limits/README.md), [`search_plan/`](search_plan/README.md) | the shared command grammar and exit codes; what a run may take from the machine; the choices a run records and replays |
 | [`map_construction/`](map_construction/README.md), [`fixtures/`](fixtures/README.md), [`famous_tensors/`](famous_tensors/README.md) | building the maps; the maps everything runs on; where each search stops on the tensors the literature argues about |
-| [`gpu_leaf/`](gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`flip_graph/`](flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | one consumer GPU priced on the leaf test; bounds from algebraic curves; a walk that moves schemes sideways; two search-free lower bounds; the LP and ILP layer |
-| [`reproduce/`](reproduce/README.md), [`testing/`](testing/README.md), [`tools/`](tools/README.md) | every published count re-derived in CI; the shared assertion helper; the backend comparison script |
+| [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`curve_bounds/`](curve_bounds/README.md), [`flip_graph/`](flip_graph/README.md), [`rank_metric_bound/`](rank_metric_bound/README.md), [`integer_programme/`](integer_programme/README.md) | one consumer GPU priced on the leaf test; bounds from algebraic curves; a walk that moves schemes sideways; two search-free lower bounds; the LP and ILP layer |
+| [`reproduce/`](reproduce/README.md), [`infrastructure/testing/`](infrastructure/testing/README.md), [`infrastructure/tools/`](infrastructure/tools/README.md) | every published count re-derived in CI; the shared assertion helper; the backend comparison script |
 | [`web_interface/`](web_interface/README.md) | the tools driven from a browser, on Python's standard library alone |
 | [`start-here.md`](start-here.md) | a first session in plain words, for a reader without the field's vocabulary |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | the reasoned map; every flag with the measurement behind its default; the bibliography, keyed from the code |
@@ -80,7 +80,7 @@ routes forms an element any more: the walk steps in reflected Gray order over
 GF(2) and GF(p) alike, **2.52x an element over GF(3)** with the dimension
 term gone rather than reduced, and the pool scan carries a residual. Same
 verdicts, same node counts, one consumer card priced against both:
-[`gpu_leaf/`](gpu_leaf/README.md).
+[`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md).
 
 **A negative result on the expensive step.** Step 3 of the descent heuristic
 enumerates the full pool of rank-one maps. Across the four polynomial

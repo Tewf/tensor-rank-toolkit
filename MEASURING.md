@@ -61,8 +61,8 @@ measuring a different thing, so **the changed flag belongs beside the number**.
 
 | Flag | Default | Set by |
 |---|---|---|
-| `--threads` | 1 | `run_limits/parallel.h` |
-| `--max-memory` | an eighth of the machine, 2 GiB here | `run_limits/memory_budget.h`, `run_limits/machine.h` |
+| `--threads` | 1 | `infrastructure/run_limits/parallel.h` |
+| `--max-memory` | an eighth of the machine, 2 GiB here | `infrastructure/run_limits/memory_budget.h`, `infrastructure/run_limits/machine.h` |
 | `--node-limit` | 5 000 000 | `search_node_limit` in `tunables.conf` |
 | `--timeout` | 300 s | `sat_timeout_seconds` in `tunables.conf` |
 
@@ -113,7 +113,7 @@ has to be quoted at one core and at twelve, the first launch is discarded, the
 `Containerfile` cannot reproduce any of it, and the survivor sets are compared
 against the CPU's before a single second is reported. Five rules, one per way
 this goes wrong, in
-[`gpu_leaf/measuring-on-the-card.md`](gpu_leaf/measuring-on-the-card.md).
+[`infrastructure/gpu_leaf/measuring-on-the-card.md`](infrastructure/gpu_leaf/measuring-on-the-card.md).
 
 ## One run at a time
 

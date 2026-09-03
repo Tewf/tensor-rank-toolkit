@@ -73,7 +73,7 @@ panel.
 4. **The answer.** Three things, in this order: **how it ended**, as the tool's
    own word and as one of found, proved and nothing proved; **the plan the tool
    printed**, its pool, its leaf, its device and its quotient, lifted out of the
-   stream; then both streams kept apart as `cli/report.h` splits them, and any
+   stream; then both streams kept apart as `infrastructure/cli/report.h` splits them, and any
    file the run wrote.
 
 An unmodified fixture is run where it lies, so the line under the answer is the
@@ -99,7 +99,7 @@ not one `MEASURING.md` would accept.
 It will not turn a budget that ran out into a proof, and
 [`what-it-will-not-say.md`](what-it-will-not-say.md) is how that is kept. It
 will not leave a search running when you stop it, which is
-`run_limits/child_process.h`'s rule applied one level up. What is not finished is
+`infrastructure/run_limits/child_process.h`'s rule applied one level up. What is not finished is
 in [`not-production-ready-yet.md`](not-production-ready-yet.md) rather than left
 to be discovered.
 

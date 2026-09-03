@@ -130,7 +130,7 @@ class Service:
         """What is worth knowing before pressing Run, and nothing that is not.
 
         One thing, and it is the one `not-production-ready-yet.md` records. A
-        solver started by `run_limits/child_process.h` is in a process group of
+        solver started by `infrastructure/run_limits/child_process.h` is in a process group of
         its own, so stopping this run does not reach it; what ends it is the
         alarm it carries, set from the tool's own timeout. This interface fills
         that flag in with the console's wall clock, which closes the window, and

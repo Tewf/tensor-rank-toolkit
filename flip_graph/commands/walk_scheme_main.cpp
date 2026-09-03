@@ -85,7 +85,7 @@ int run(int argc, char** argv) {
     std::size_t flips = 20000;
     std::size_t seeds = 8;
     long long from = -1;
-    // Walked by `cli/arguments.h` rather than by hand. This loop's `std::stoul`
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand. This loop's `std::stoul`
     // was the worst of the copies: `--flips abc` left as 5 printing a bare
     // `stoul`, with no flag, no word and not even the program's name in front of
     // it, since the handler below had none either.

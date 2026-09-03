@@ -6,7 +6,7 @@ question for the exhaustive **tree** (warp divergence) and the **solver** route
 anybody asks about. This page does, and it corrects a number.
 
 **The leaf part is now built and measured**, in
-[`../gpu_leaf/README.md`](../gpu_leaf/README.md), on the RTX 4060 Laptop this page
+[`../gpu_leaf/README.md`](../infrastructure/gpu_leaf/README.md), on the RTX 4060 Laptop this page
 was written beside. The two other parts below stay forecasts, and are marked as
 such. This paragraph said "nothing here is built" until 2026-08-19; what changed
 is one directory of CUDA, guarded so that a machine without `nvcc` builds and
@@ -50,7 +50,7 @@ heap allocation** for an object that is 256 bits.
 
 **The forecast here was 20 to 80 ns for a packed `at(i)`. It is 129.1 ns** on one
 core and 19.2 on twelve
-([`../gpu_leaf/what-the-card-did.md`](../gpu_leaf/what-the-card-did.md)), so the
+([`../gpu_leaf/what-the-card-did.md`](../infrastructure/gpu_leaf/what-the-card-did.md)), so the
 guess was 1.6x optimistic about the baseline it was arguing about and fell inside
 its band only against a row it was not forecasting.
 
@@ -83,9 +83,9 @@ against a basis in constant memory. The bands were **50x worth wiring in, 10x
 real and insufficient, under 5x the bandwidth wall**, and the card clears 50x
 against every host baseline, including all twelve threads running the kernel's
 own arithmetic. **One whole `<4,4,4>` leaf is 1.02 s.** The tables:
-[`../gpu_leaf/what-the-card-did.md`](../gpu_leaf/what-the-card-did.md).
+[`../gpu_leaf/what-the-card-did.md`](../infrastructure/gpu_leaf/what-the-card-did.md).
 That verdict was taken against the host leaf of its day:
-[`../gpu_leaf/README.md`](../gpu_leaf/README.md) now prices the same
+[`../gpu_leaf/README.md`](../infrastructure/gpu_leaf/README.md) now prices the same
 comparison at 5x to 14x after the host leaf's later rewrites, and holds its
 verdict suspended, not retracted, until `measure-leaf` re-takes it.
 

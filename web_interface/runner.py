@@ -1,7 +1,7 @@
 """One run: started in its own process group, bounded, stoppable, and leaving
 nothing of ours behind when it ends.
 
-`run_limits/child_process.h` is the launcher inside the toolkit and it exists
+`infrastructure/run_limits/child_process.h` is the launcher inside the toolkit and it exists
 because orphaned solvers once held cores and corrupted every measurement taken
 afterwards. This module is the same problem one level up, so it keeps the same
 two rules.
@@ -11,7 +11,7 @@ solver leaves it behind when only its parent is signalled, which is the same
 leak with an extra step. `start_new_session` puts the child in a group of its
 own with no terminal attached, and the signal goes to the group.
 
-**SIGTERM first, then SIGKILL.** `cli/interrupt_cleanup.h` catches SIGINT,
+**SIGTERM first, then SIGKILL.** `infrastructure/cli/interrupt_cleanup.h` catches SIGINT,
 SIGTERM and SIGHUP to unlink the scratch CNF a killed sweep would otherwise
 leave in /tmp, then restores the default and re-raises, so a terminated run
 still dies of the signal it was sent. SIGKILL cannot be caught, so opening with
@@ -19,7 +19,7 @@ it would leave those files behind. The grace period is short because the handler
 only calls `unlink`.
 
 **What this still cannot reach, stated rather than glossed.** A solver started
-by `run_limits/child_process.h` calls `setpgid(0, 0)` and is therefore in a
+by `infrastructure/run_limits/child_process.h` calls `setpgid(0, 0)` and is therefore in a
 group of its own, not in the tool's, so killing the tool's group does not reach
 it. What ends it is the `alarm` it carries, set from the tool's own timeout, so
 it holds a core for up to that many seconds after a stop. Set the tool's budget

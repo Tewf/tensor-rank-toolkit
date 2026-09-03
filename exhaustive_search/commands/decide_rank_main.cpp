@@ -128,7 +128,7 @@ int run(int argc, char** argv) {
     std::string trace_out;
     std::string plan_in;
 
-    // Walked by `cli/arguments.h` rather than by hand, so `--target abc` names the
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand, so `--target abc` names the
     // flag and the word instead of leaving as 5 saying `stoll`, and `--target`
     // with nothing after it is a missing value rather than a misspelt flag.
     cli::Arguments arguments(argc, argv);

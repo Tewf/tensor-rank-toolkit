@@ -60,7 +60,7 @@ void usage() {
                    "  --plateau N               allow N equal-cost steps. The crossing runs\n"
                    "                            on one core whatever --threads says; the\n"
                    "                            arithmetic that says why is in\n"
-                   "                            run_limits/adapting-to-the-machine/\n"
+                   "                            infrastructure/run_limits/adapting-to-the-machine/\n"
                    "  --plateau-states N        distinct subspaces one crossing may visit,\n"
                    "                            from plateau_state_budget in tunables.conf\n"
                    "                            when this is not given, 200000. Measured\n"
@@ -84,7 +84,7 @@ int run(int argc, char** argv) {
     // flag existed the number was a literal at the two call sites and no run had
     // ever tried another value.
     std::size_t plateau_states = cli::tunables().plateau_state_budget;
-    // Walked by `cli/arguments.h` rather than by hand. The loop this replaces
+    // Walked by `infrastructure/cli/arguments.h` rather than by hand. The loop this replaces
     // carried both faults that header exists to remove: `--steps abc` left as 5
     // saying `stoi`, which names the function that threw and not the flag, and
     // `--steps` with nothing after it was reported as an unrecognised option

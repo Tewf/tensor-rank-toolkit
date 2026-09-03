@@ -1,4 +1,4 @@
-"""What a run's ending means, in the vocabulary of `cli/exit_code.h`.
+"""What a run's ending means, in the vocabulary of `infrastructure/cli/exit_code.h`.
 
 That header states the distinction this whole file exists to keep: **a question
 that was not answered is not a question answered no.** A budget running out
@@ -99,7 +99,7 @@ def of_exit_status(status, tool_verdicts):
     return {"verdict": "unknown", "badge": "unknown",
             "decides": NOTHING_PROVED,
             "standing": "The tool left with status " + str(status) +
-                        ", which is not one of the six codes in cli/exit_code.h. "
+                        ", which is not one of the six codes in infrastructure/cli/exit_code.h. "
                         "Nothing is decided.",
             "means": "no verdict"}
 

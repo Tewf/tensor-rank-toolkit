@@ -80,7 +80,7 @@ jobs:
 
       # The one count on the front page that no results file holds. The page
       # says a machine without a card compiles and passes the same N tests, and
-      # this runner is that machine: no CUDA toolkit, so `gpu_leaf/` returns
+      # this runner is that machine: no CUDA toolkit, so `infrastructure/gpu_leaf/` returns
       # before it registers its own tests, and every other `add_test` here is
       # unconditional. So the number is exactly checkable, and only here. It
       # reads the phrase rather than a line number, and an empty match is a
