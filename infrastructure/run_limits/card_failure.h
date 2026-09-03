@@ -6,11 +6,12 @@
 ///
 /// **Every seam that offers work to a card needs this, and there is one card**,
 /// so it is one record rather than one per seam:
-/// [`../exhaustive_search/gf2_leaf_on_card.h`](../exhaustive_search/gf2_leaf_on_card.h)
-/// for a leaf and [`span_ranks_on_card.h`](span_ranks_on_card.h) for a span's
-/// ranks both write here. It sits in this module because that is the one both
-/// can reach: `exhaustive_search` links `descent_search` and not the other way
-/// round.
+/// [`../../methods/bilinear_rank/exhaustive/gf2_leaf_on_card.h`](../../methods/bilinear_rank/exhaustive/gf2_leaf_on_card.h)
+/// for a leaf and
+/// [`../../methods/bilinear_rank/greedy_heuristic/span_ranks_on_card.h`](../../methods/bilinear_rank/greedy_heuristic/span_ranks_on_card.h)
+/// for a span's ranks both write here. It sits in this module because that is
+/// the one both can reach: `exhaustive` links `greedy_heuristic` and not the
+/// other way round.
 ///
 /// **A failed CUDA call is never an answer that changed.** Every backend catches
 /// it, notes it here and returns false, and the host answers the same question

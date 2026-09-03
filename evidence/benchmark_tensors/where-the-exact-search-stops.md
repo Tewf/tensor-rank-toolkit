@@ -46,7 +46,7 @@ exhaustion and now returned in milliseconds, and cyclic 5's floor improves from
 the 8 the run proved to **9**. `F₂ 5×5` at 11 joined them on 2026-08-19, when the
 Griesmer floor moved that map from 10 to 12 and a 77 second refutation stopped
 being a run at all. All of it is recorded under `retired_by_the_bounds` in
-[`../descent_search/results.json`](../../methods/bilinear_rank/greedy_heuristic/results.json), and
+[`../../methods/bilinear_rank/greedy_heuristic/results.json`](../../methods/bilinear_rank/greedy_heuristic/results.json), and
 **retirement is the better result**: a floor in milliseconds beats a tree walked
 to the end for a minute, and reading it the other way round is how a repository
 ends up attached to its slowest proof.

@@ -6,7 +6,7 @@ singular blocks, indexed by **minimal indices**, and a regular block, described 
 its **elementary divisors**. That those four data settle the pencil up to strict
 equivalence is `[gantmacher1959, Ch. XII §5, Thm. 5]`, and the canonical form
 itself is `[gantmacher1959, Ch. XII §4, (30)]`, restated as `[sumi2009, Lem.
-2.1]`; keys are [`../references.md`](../../references.md). Both halves are computed
+2.1]`; keys are [`../../references.md`](../../references.md). Both halves are computed
 here by exact linear algebra over GF(p), in polynomial time and with no
 candidate pool at all.
 

@@ -8,10 +8,10 @@
 
 /// The same minimisation, handed to a solver instead of enumerated.
 ///
-/// `integer_programme.h` says this in its own opening paragraph: *"the
-/// interpolation bound of the curve strand is an integer programme written out by
-/// hand. This is the model they can be handed to instead."* So this is that
-/// module's documented purpose being taken up, not a new idea.
+/// `integer_programme.h` says this in its own opening paragraph: *"the curve
+/// strand's interpolation bound is stated here now and enumerated only as a
+/// fallback and a cross-check."* So this is that module's documented purpose
+/// being taken up, not a new idea.
 ///
 /// **Why a suboptimal solve is safe here, and would not be in a rank
 /// refutation.** `[rambaud2014, Thm. 2]` reads

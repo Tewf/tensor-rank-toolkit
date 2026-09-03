@@ -27,7 +27,7 @@
 /// compiled default.** A command reads these into its settings before it walks
 /// its arguments, so a flag that was given always overwrites what the file said,
 /// and a flag that was not leaves it standing. The whole table, per tool, is
-/// [`OPTIONS.md`](../OPTIONS.md).
+/// [`OPTIONS.md`](../../OPTIONS.md).
 ///
 /// Every default here is the number that was compiled in before, so a machine
 /// with no file behaves exactly as it did. That is deliberate: a config file

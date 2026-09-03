@@ -2,7 +2,7 @@
 
 The leaf was rewritten three times in a day and the canonical route four. This
 is what that came to on whole questions rather than on per-element rates, taken
-under [`../MEASURING.md`](../../MEASURING.md): one core, fastest of three, the lock
+under [`../../MEASURING.md`](../../MEASURING.md): one core, fastest of three, the lock
 held, load below 1.0 at the start of each set.
 
 **Every node count below is unchanged.** That is the first thing to check and
@@ -61,5 +61,5 @@ launch floor)"*.
 Two thirds of the gap closed, and it still loses: at this shape it cannot win,
 since the parent test costs more per node than a 53x node saving is worth. What
 moved is where the crossover sits, and that
-[`../canonical_factorisation/canonical-augmentation.md`](../../methods/canonical_factorisation/canonical-augmentation.md)
+[`../../methods/canonical_factorisation/canonical-augmentation.md`](../../methods/canonical_factorisation/canonical-augmentation.md)
 now states without a fitted intercept that was never there.

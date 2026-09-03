@@ -2,7 +2,7 @@
 
 Håstad proved it in 1990: deciding the rank of a three-dimensional tensor is
 **NP-complete over every finite field**, and NP-hard over the rationals
-(`[hastad1990]`; keys are [`../references.md`](../../references.md)). That has two
+(`[hastad1990]`; keys are [`../../references.md`](../../references.md)). That has two
 directions, and this folder runs both.
 
 | | |
@@ -10,9 +10,11 @@ directions, and this folder runs both.
 | **Rank is at least as hard as SAT** | [`formula_to_tensor.h`](formula_to_tensor.h) turns a 3SAT formula into a tensor of rank `4n + 2m` exactly when it is satisfiable |
 | **Rank is no harder than SAT** | the encoders turn `rank(T) ≤ r` into a formula, and a solver answers it |
 
-The second is why this exists, and **the advantage grows with the instance**,
-up to twenty-one times against [the exhaustive
-search](../bilinear_rank/exhaustive/exhaustive_search.h) on GF(16). Where both finish they
+The second is why this exists, and **the advantage grows with the instance**:
+2.30x against [the exhaustive
+search](../bilinear_rank/exhaustive/exhaustive_search.h) on GF(16), a slope
+and not a cliff, measured in [`measurements.md`](measurements.md) after the
+larger figure this page once quoted was retracted there. Where both finish they
 agree, on every fixture, in both directions, which is what makes them worth
 keeping together: a disagreement would mean one of them is wrong, and neither
 can check a "no" after the fact on its own. Numbers in

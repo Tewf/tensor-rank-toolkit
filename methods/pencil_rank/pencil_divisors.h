@@ -39,7 +39,7 @@ struct PencilDivisors {
 /// `GF(p)[x]` is Euclidean, which is what makes the diagonalisation
 /// terminate on degrees alone; the classical normal form it is the first half
 /// of is `[gantmacher1959, Vol. 1, Ch. VI §3, Thm. 3]`, and keys are
-/// [`../references.md`](../references.md).
+/// [`../../references.md`](../../references.md).
 ///
 /// The finite half is the prime powers of the diagonal entries of `first + x
 /// second`. The singular blocks of the Kronecker form contribute nothing to it,

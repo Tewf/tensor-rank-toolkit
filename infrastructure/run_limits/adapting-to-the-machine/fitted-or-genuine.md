@@ -38,9 +38,8 @@ names: `set_worker_count(0)` asks `hardware_concurrency()` and no number from an
 chassis appears in it.
 
 The physical figure is rounded **up** to a power of two before the eighth is
-taken, because firmware and the kernel keep some of what a machine is sold with
-and this one reports 15.3 GiB, so a fraction of the raw number is a fraction of
-an arbitrary one. An eighth of 16 GiB is exactly the 2 GiB and the 2048 that were
+taken, for the reason [`../machine.h`](../machine.h) gives: firmware and the
+kernel keep some of what a machine is sold with. An eighth of 16 GiB is exactly the 2 GiB and the 2048 that were
 written here before, so **every published refusal still names the same figure**
 and the change is invisible on this machine and visible on any other: 512 MiB on
 a 4 GB box, 64 GiB on a 512 GB server, clamped at both ends.

@@ -47,7 +47,7 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
     // answer and every node it spends is spent against the shared budget. The
     // plain search learnt this the expensive way: without the test the extra
     // subtrees exhausted the budget and turned a proof into an undecided.
-    // `../exhaustive_search/what-threads-change.md` carries the measurement.
+    // `../exhaustive/what-threads-change.md` carries the measurement.
     if (found_elsewhere != nullptr && found_elsewhere->load(std::memory_order_relaxed)) return false;
     if (!budget.try_consume_node()) return false;
 
@@ -270,7 +270,7 @@ bool expand_up_to_symmetry_over(const Field& field, const std::vector<Matrix>& s
     std::iota(residual.begin(), residual.end(), std::uint32_t(0));
 
     // The GF(2) leaf, built once for the whole search, as
-    // [`../exhaustive_search/exhaustive_search.cpp`](../exhaustive_search/exhaustive_search.cpp)
+    // [`../exhaustive/exhaustive_search.cpp`](../exhaustive/exhaustive_search.cpp)
     // builds it. Both routes below read `rank_one_basis_of`'s two defaults
     // instead, so every leaf here took the general path and no leaf could be
     // stopped.

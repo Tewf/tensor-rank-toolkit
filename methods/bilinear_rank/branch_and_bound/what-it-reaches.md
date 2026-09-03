@@ -127,7 +127,7 @@ scaling limit of this file.
 **What one of those ranks costs moved on 2026-08-22, and the `p^dim` factor did
 not.** Over GF(2) the walk now holds a matrix as bits in machine words rather
 than as one `int64_t` an entry:
-[`../descent_search/gf2_span_walk.h`](../greedy_heuristic/gf2_span_walk.h). On the
+[`../greedy_heuristic/gf2_span_walk.h`](../greedy_heuristic/gf2_span_walk.h). On the
 `cyclic_f2_7` row of the table above that is **19.0x at the same 22 nodes and
 the same 17 371 children**, and on `gf64_multiplication` five nodes of the
 width-4 search cost 112.95 s on the path these runs were taken on against

@@ -22,7 +22,7 @@ Adds two.
 | parameter | what it is | what it decides |
 |---|---|---|
 | `group` | `vector<Automorphism>`, **generators** | the quotient. Empty means no quotient, and the search is the one above. Generators, never the enumerated group: `least_in_orbit` walks an orbit, and an orbit needs generators |
-| `spread_over_cores` | bool | whether the top level is split across workers. A refutation's node count does not depend on it; a satisfiable search's does, measured in [`../exhaustive_search/what-threads-change.md`](../../methods/bilinear_rank/exhaustive/what-threads-change.md) |
+| `spread_over_cores` | bool | whether the top level is split across workers. A refutation's node count does not depend on it; a satisfiable search's does, measured in [`../../methods/bilinear_rank/exhaustive/what-threads-change.md`](../../methods/bilinear_rank/exhaustive/what-threads-change.md) |
 
 ## `rank_one_basis_of(field, span, pool, needed, scratch, budget, binary)`
 
@@ -51,7 +51,7 @@ The leaf.
 | `--target k` | none, sweeps | the question |
 | `--anchor map\|heuristic` | `map` | the `subspace` the search starts from. From the map the answer is the true minimum; from the heuristic's own result it is the minimum only among algorithms containing that subspace |
 | `-s, --symmetry` | `none` | the group above. `matmul n m k` is the closed form and needs no group built |
-| `--orbit-test full\|generators` | `full` | which rule `least_in_orbit` applies at a quotiented node: the exact one, or the cheap partial one that tests the generator images only. Read only when `-s` is given, same verdict either way, and what the duplication costs is counted in [`../orbit_reduction/what-partial-rejection-leaves.md`](../../methods/bilinear_rank/orbit_reduction/what-partial-rejection-leaves.md) |
+| `--orbit-test full\|generators` | `full` | which rule `least_in_orbit` applies at a quotiented node: the exact one, or the cheap partial one that tests the generator images only. Read only when `-s` is given, same verdict either way, and what the duplication costs is counted in [`../../methods/bilinear_rank/orbit_reduction/what-partial-rejection-leaves.md`](../../methods/bilinear_rank/orbit_reduction/what-partial-rejection-leaves.md) |
 | `--leaf-route` | `auto` | the leaf route above |
 | `--general-leaf` | off | forces the general field path, so the packed leaf can be timed against it |
 | `--node-limit` | 5 000 000 | nodes before exit 3 |
@@ -66,4 +66,4 @@ scratch costs `C(|pool|, k − dim T)` nodes, which is what every measured
 question in [`README.md`](README.md) runs.
 
 Every flag of every tool, each with the measurement that chose its default:
-[`../OPTIONS.md`](../../OPTIONS.md).
+[`../../OPTIONS.md`](../../OPTIONS.md).

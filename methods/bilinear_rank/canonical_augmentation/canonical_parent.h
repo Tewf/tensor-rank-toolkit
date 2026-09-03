@@ -14,7 +14,7 @@
 /// **group-invariant or worthless**: if the choice of parent depended on how the
 /// object was built, two members of one orbit could choose differently and both
 /// survive. So nothing here looks at the walk's history. Keys are
-/// [references.md](../references.md).
+/// [references.md](../../../references.md).
 namespace bilinear_rank {
 
 /// Whether an augmentation is the canonical one, and what deciding it cost.

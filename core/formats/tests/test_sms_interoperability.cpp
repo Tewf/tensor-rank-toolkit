@@ -15,13 +15,13 @@
 /// reader could not get past: it took the header with `input >> rows`, so the
 /// hash ended the read before the matrix began.
 ///
-/// The checks below the round trip are the four places where his reader and this
-/// one were compared line by line rather than assumed to agree, each one run
+/// The checks below the round trip are the four places where PLinOpt's reader and
+/// this one were compared line by line rather than assumed to agree, each one run
 /// against `plinopt/bin/sms2pretty` on the same bytes before it was written
 /// down: a value that does not end its line, an entry that is not a rational, a
 /// file holding more than one matrix, and the field, which the file does not
 /// carry at all. `../interchange/where-the-conventions-differ.md` is the
-/// table, with the file and line on his side of each row.
+/// table, with the file and line on PLinOpt's side of each row.
 #include <cstdio>
 #include <fstream>
 #include <sstream>
@@ -178,9 +178,9 @@ int main(int argc, char** argv) {
     // Two triples on one line, which the reader used to take as two triples and
     // LinBox takes as one number. `plinopt/bin/sms2pretty` on exactly these
     // bytes prints `[ 5327 0]` and reports one nonzero, with no warning, so a
-    // reader that accepted them would hold a different matrix from his out of
-    // the same file. Splitting a triple across lines stays legal, because his
-    // reader accepts that: only the value is greedy, and only to end of line.
+    // reader that accepted them would hold a different matrix from LinBox's out
+    // of the same file. Splitting a triple across lines stays legal, because
+    // LinBox accepts that: only the value is greedy, and only to end of line.
     check::text("two triples on one line are refused", refusal("3 2 R\n1 1 5 3 2 7\n0 0 0\n"),
                 "SMS value '5' is not the last word on its line, and LinBox would read it "
                 "together with what follows as a single number");
@@ -188,7 +188,7 @@ int main(int argc, char** argv) {
                  first_entry("3 2 R\n1 1\n5\n2 2 7\n0 0 0\n"), 5);
 
     // Entries are not always rationals. `sms2pretty` opens a stream over a
-    // polynomial ring, and three of his 153 matrices use it: the `-X` family
+    // polynomial ring, and three of PLinOpt's 153 matrices use it: the `-X` family
     // from the accuracy paper, checked with `-P "X^2-3"`. Refusing them by
     // name beats reporting a digit that was not found.
     check::text("an indeterminate is named rather than reported as a bad digit",
@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
                 "here live in Q or in GF(p); PLinOpt's -P family does not");
 
     // One file may hold several matrices, and `4o4o4_F32_Montgomery_P.sms` holds
-    // four. His checkers read the first and stop, and so does this; only
+    // four. PLinOpt's checkers read the first and stop, and so does this; only
     // `sms2pretty` loops with `newmatrix()`. What must not happen is reading on
     // past the terminator and mixing two matrices into one.
     check::equal("a file of several matrices yields the first and none of the second",

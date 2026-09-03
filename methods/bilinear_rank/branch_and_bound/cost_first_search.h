@@ -12,7 +12,7 @@
 /// back an algorithm.
 ///
 /// **The tree is not new.** It is `[bdez2012]` Algorithm 2, which
-/// [`../exhaustive_search/exhaustive_search.h`](../exhaustive_search/exhaustive_search.h)
+/// [`../exhaustive/exhaustive_search.h`](../exhaustive/exhaustive_search.h)
 /// already implements: a node is a subspace `V` containing `span(T)`, a child is
 /// `V + <g>` for a rank-one `g`, and the same tree is `[yang2025]`'s Theorem 1.
 /// What differs is the question asked of a node and the reason it stops.
@@ -35,12 +35,12 @@
 /// algorithm: take a minimum-weight basis of `V`, split each element into its
 /// rank-one pieces, and those `cost(V)` rank-one maps span something containing
 /// `span(T)`. `cost(V) > b` says nothing at all, which
-/// [`../descent_search/sorted_span.h`](../descent_search/sorted_span.h) states with
+/// [`../greedy_heuristic/sorted_span.h`](../greedy_heuristic/sorted_span.h) states with
 /// the counterexample. So a run that exhausts its tree has proved no lower bound
 /// and this file never claims one.
 ///
 /// **Where it sits beside the two searches next door.** The descent
-/// ([`../descent_search/minimise_rank.h`](../descent_search/minimise_rank.h))
+/// ([`../greedy_heuristic/minimise_rank.h`](../greedy_heuristic/minimise_rank.h))
 /// adopts a candidate only when it makes the map strictly cheaper and stops when
 /// no single one does, which on `cyclic_f2_7` is 0 candidates out of 16 129. The
 /// plateau crossing
@@ -129,7 +129,7 @@ struct IncumbentLimits {
 };
 
 /// What the search spent, and what it found. Counts, not seconds: they are exact
-/// whatever else the machine is doing, which [`../MEASURING.md`](../MEASURING.md)
+/// whatever else the machine is doing, which [`../MEASURING.md`](../../../MEASURING.md)
 /// requires of anything published.
 struct IncumbentReport {
     std::size_t nodes = 0;         ///< subspaces expanded
@@ -171,9 +171,9 @@ struct IncumbentReport {
 ///
 /// Returns a minimum-weight basis of the cheapest subspace reached, so its ranks
 /// sum to `report.best` and
-/// [`rank_one_candidates`](../descent_search/candidate_pool.h) turns it into that
+/// [`rank_one_candidates`](../candidate_pool.h) turns it into that
 /// many products. `start` is the incumbent as well as the root: seeding it from
-/// [`descend_from_own_basis`](../descent_search/minimise_rank.h) is what keeps
+/// [`descend_from_own_basis`](../greedy_heuristic/minimise_rank.h) is what keeps
 /// the bound tight enough to cut anything.
 /// `ambient` is the group to take each node's stabiliser from, and is read only
 /// where `IncumbentLimits::quotient_moves` is set. It is the **ambient** group

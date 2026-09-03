@@ -49,7 +49,7 @@ which returns the minimum over every invertible `V` rather than a good answer,
 and the greedy by rescaling, which minimises `nnz + nns` instead and is the only
 one that does. Three others reached the same counts 88x to 343x more slowly and
 moved to a branch: [`dominated.md`](dominated.md). Keys are
-[`../references.md`](../../references.md).
+[`../../references.md`](../../references.md).
 
 The operators do not have to be typed in. [The rank
 search](../bilinear_rank/greedy_heuristic/README.md) emits them, which is the whole pipeline: 25

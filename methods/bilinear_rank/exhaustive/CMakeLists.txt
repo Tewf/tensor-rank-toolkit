@@ -9,7 +9,7 @@ target_include_directories(exhaustive PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # accessor shims both searches walk their candidates through.
 #
 # The dependency is the wrong way round and is recorded rather than hidden: a
-# pool of rank-one maps is not a descent's concept, and four modules now use it,
+# pool of rank-one maps is not greedy_heuristic's concept, and four modules now use it,
 # so by the repository's own import-proximity rule it belongs at a common
 # ancestor. That would be `linear_algebra`, which is header-only by design and
 # cannot host `candidate_pool.cpp`. Moving it needs that decision revisited, so

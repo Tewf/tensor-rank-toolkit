@@ -193,7 +193,7 @@ int run(int argc, char** argv) {
     // The format is inferred from the file extension: `.sms` files use the
     // sparse reader, others use the dense reader. The cost is that an SMS file
     // under any other name silently gets the dense reader, which is one of the
-    // failures listed in ../../formats/interchange/ and is
+    // failures listed in ../../../core/formats/interchange/ and is
     // waiting on the CLI work.
     const Matrix operator_matrix =
         is_sms ? formats::read_sms_file(path)

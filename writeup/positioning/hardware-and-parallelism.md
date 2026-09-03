@@ -45,7 +45,7 @@ membership test is an exclusive or, not a loop of Givaro calls on `int64_t`, and
 
 That prediction was a ratio of storage widths, 648 bytes of `int64_t` against 16
 bytes of bitset at 9x9, quoted onward as if something had timed it. Nothing had.
-Measured under [`../MEASURING.md`](../../MEASURING.md), one core, fastest of three,
+Measured under [`../../MEASURING.md`](../../MEASURING.md), one core, fastest of three,
 each question asked twice with and without `decide-rank --general-leaf`, which
 forces the general path over GF(2) so both columns are the same tree:
 
@@ -80,7 +80,7 @@ the incumbent search lives, and it is the same shape of loop over the same
 field: `tighten-rank-bound` costs one `minimum_weight_basis_with` per child, and
 each of those walks a span taking the rank of a matrix at every element. So the
 same representation went there on 2026-08-22,
-[`../descent_search/gf2_span_walk.h`](../../methods/bilinear_rank/greedy_heuristic/gf2_span_walk.h), and
+[`../../methods/bilinear_rank/greedy_heuristic/gf2_span_walk.h`](../../methods/bilinear_rank/greedy_heuristic/gf2_span_walk.h), and
 was measured the same way, each question asked twice with and without
 `tighten-rank-bound --general-span`:
 
@@ -111,7 +111,7 @@ rather than by the walk, and the protocol caveat, are in the header linked
 above. **Three of its seven rows are protocol numbers and four are not.** The
 three were re-taken on 2026-08-23 at load 0.98 and 43 C, fastest of three under
 the measurement lock. The other four were taken the day before at load 2.5 to
-5.0, which [`../MEASURING.md`](../../MEASURING.md) abandons, so their seconds are
+5.0, which [`../../MEASURING.md`](../../MEASURING.md) abandons, so their seconds are
 upper bounds.
 
 **The re-take is the useful part, because it says which half was fragile.** Every
@@ -129,12 +129,12 @@ knowing here: pool generation is 4% of a `⟨3,3,3⟩` run and almost all of a
 second.
 
 **That one part has since been built and measured**, and the leaf really is worth
-a card: [`../gpu_leaf/README.md`](../../infrastructure/gpu_leaf/README.md). It changes nothing on
+a card: [`../../infrastructure/gpu_leaf/README.md`](../../infrastructure/gpu_leaf/README.md). It changes nothing on
 this page, which is about the tree above the leaf and stands.
 
 **The sweep this page never did**, over every other strand and over cores and
 memory as well as the card, is
-[`../run_limits/adapting-to-the-machine/`](../../infrastructure/run_limits/adapting-to-the-machine/README.md).
+[`../../infrastructure/run_limits/adapting-to-the-machine/`](../../infrastructure/run_limits/adapting-to-the-machine/README.md).
 Its finding is that the card was the least of the three: two seams cover every
 GPU-shaped loop there is, and what was actually missing was `--threads` and
 `require_room` on strands nobody had asked the question of.

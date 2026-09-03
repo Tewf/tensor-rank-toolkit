@@ -35,7 +35,7 @@ measured losing, on 37% and 21% of those two families. What separated them was
 cost.
 
 Timings are one core, fastest of three, per
-[`../../MEASURING.md`](../../../MEASURING.md).
+[`../../../MEASURING.md`](../../../MEASURING.md).
 
 **Where it stops is combinatorial.** On `4x4x4_49_156_L`, a 16-dimensional space
 in `Q^49`, the greedy holds 9 of 16 vectors at weight 4 in 5 s and needs weight 6
@@ -48,7 +48,7 @@ by not searching.
 ## Where each column came from
 
 **The two right-hand columns are runs of this repository, on this machine, under
-[`../../MEASURING.md`](../../../MEASURING.md).** Sparsity is trivial to improve by
+[`../../../MEASURING.md`](../../../MEASURING.md).** Sparsity is trivial to improve by
 returning a different matrix, so the answers were re-checked outside the tool in
 exact rational arithmetic: for each of the three, rank 9 before, rank 9 after,
 and rank 9 when the two are stacked, so the space is the one it was given.

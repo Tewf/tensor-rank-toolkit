@@ -31,7 +31,7 @@ target_link_libraries(canonical_augmentation PUBLIC bilinear_rank PRIVATE permli
 
 # The prices `canonical_route_price.cpp` above decides from, measured rather than
 # guessed. It is here and not in `commands/` because it is an instrument and not
-# a tool: what it prints is nanoseconds, and `../MEASURING.md`'s line is that
+# a tool: what it prints is nanoseconds, and `../../../MEASURING.md`'s line is that
 # counts reproduce anywhere and timings do not. `measure-leaf` sits exactly here
 # relative to `device_launch_floor`, which is the precedent the file's own header
 # cites. A constant whose measurement cannot be repeated is a constant nobody can

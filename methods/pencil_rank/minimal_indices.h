@@ -19,7 +19,7 @@
 /// That is what licenses computing the four counts and never assembling the
 /// form. The canonical form itself is `[gantmacher1959, Ch. XII §4, (30)]`,
 /// restated modernly as `[sumi2009, Lem. 2.1]`. Keys are
-/// [`../references.md`](../references.md); [`README.md`](README.md) is what the
+/// [`../../references.md`](../../references.md); [`README.md`](README.md) is what the
 /// rank formula then does with them.
 namespace pencil_rank {
 

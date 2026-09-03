@@ -27,7 +27,7 @@
 ///
 /// GF(2) only. `[heule2021]` is the same idea, and the method that actually
 /// found new ways to multiply 3×3 matrices; keys are
-/// [references.md](../references.md).
+/// [references.md](../../references.md).
 namespace satisfiability {
 
 /// The formula, and which variable stands for what, so that a solver's answer

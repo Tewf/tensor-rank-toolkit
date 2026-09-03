@@ -6,7 +6,7 @@ fast matrix multiplication comes from, and finding such decompositions in
 general is open.
 
 There are four ways to go at it here, and the folder names say which is which:
-this one descends, [`../exhaustive_search/`](../exhaustive/README.md) decides,
+this one descends, [`../exhaustive/`](../exhaustive/README.md) decides,
 [`../flip_graph/`](../flip_graph/README.md) moves a decomposition sideways, and
 [`../integer_programme/`](../../integer_programme/README.md) hands the question to somebody
 else's solver. [`../orbit_reduction/`](../orbit_reduction/README.md) quotients the first
@@ -17,7 +17,7 @@ Every claim below is one of the four earning or failing to earn its keep.
 |---|---|---|
 | [`minimum_weight_basis.*`](minimum_weight_basis.h) | Step 1, and provably optimal for the basis it chooses: a matroid greedy (see below) | `[nakatsukasa2017]` §2, Algorithm 1 and Theorem 2.1. The `GF(p)` instantiation is new here; the algorithm and its proof are not |
 | [`minimise_rank.*`](minimise_rank.h) | Steps 2 and 3. None. First-improvement, irreversible pruning | New here |
-| [`gf2_span_walk.*`](gf2_span_walk.h) | Step 1's representation over GF(2), a bit an entry rather than an `int64_t`: the same span in the same order, and asserted to be the same answer | New here. The representation is [`../exhaustive_search/gf2_leaf.h`](../exhaustive/gf2_leaf.h)'s, applied to the loop the incumbent search lives in |
+| [`gf2_span_walk.*`](gf2_span_walk.h) | Step 1's representation over GF(2), a bit an entry rather than an `int64_t`: the same span in the same order, and asserted to be the same answer | New here. The representation is [`../exhaustive/gf2_leaf.h`](../exhaustive/gf2_leaf.h)'s, applied to the loop the incumbent search lives in |
 | [`exhaustive_search.*`](../exhaustive/exhaustive_search.h) | Complete. A "no" that ran to exhaustion is a fact about the problem | An implementation of a pre-existing published algorithm |
 | [`fewest_products.*`](../exhaustive/fewest_products.h) | The exact search's sweep upward, starting at the flattening bound | Which `k` to ask it about |
 | [`rank_one_basis.*`](../exhaustive/rank_one_basis.h) | The question at every leaf of both searches: has this subspace a basis of rank-one maps? | |
@@ -33,9 +33,9 @@ decide-rank    evidence/fixtures/f2_5x5.tensor --target 11  # exact: is there on
 walk-scheme    evidence/fixtures/f3_3x6.tensor --from 10    # walk on from the heuristic's answer
 ```
 
-Every flag and its default: [`../OPTIONS.md`](../../../OPTIONS.md). What the descent
+Every flag and its default: [`../../../OPTIONS.md`](../../../OPTIONS.md). What the descent
 guarantees, proved rather than measured:
-[`../article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf), with
+[`../../../writeup/article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf), with
 [`correctness.md`](correctness.md) for which of those a test would catch.
 ## What the heuristic reaches
 
@@ -51,7 +51,7 @@ these published numbers, and how far each is safe to quote, is in
 
 Small maps outright, with proof: Karatsuba's 3, the classical 3 and 6 for GF(4)
 and GF(8), **rank ⟨2,2,2⟩ = 7** in half a second, and the refutation at 12 that
-[`../incumbent_search/`](../branch_and_bound/README.md)'s 13 completes into
+[`../branch_and_bound/`](../branch_and_bound/README.md)'s 13 completes into
 **rank(F2 5x5) = 13**. Costs, and what a spent budget does and does not mean:
 [`../exhaustive/what-it-decides.md`](../exhaustive/what-it-decides.md).
 
@@ -60,12 +60,12 @@ and GF(8), **rank ⟨2,2,2⟩ = 7** in half a second, and the refutation at 12 t
 Choosing a basis of `span(T)` with the least total rank is a **matroid** problem,
 so greedy-by-ascending-weight gives a minimum-weight basis (Rado-Edmonds):
 `[oxley, Prop. 1.1.1]` for the matroid and `[oxley, Lem. 1.8.3]` for the greedy,
-keys in [`../references.md`](../../../references.md); the table above says who states
+keys in [`../../../references.md`](../../../references.md); the table above says who states
 the same thing for this problem in particular. The `16, 19, 19, 12` are the
 minima over all bases of those spans and no tie-break changes them. What is
 heuristic is the *constraint* that the answer be a basis of `span(T)` at all,
 which is what steps 2 and 3 relax. Proofs:
-[`../article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf).
+[`../../../writeup/article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf).
 
 ## What makes a result trustworthy
 
@@ -76,7 +76,7 @@ map it came from, and the recovered ⟨L, R, P⟩ is rebuilt and compared.
 ## Beyond polynomial multiplication
 
 The same two searches on the tensors the complexity literature argues about:
-**[`../famous_tensors/`](../../../evidence/benchmark_tensors/README.md)**. No single rank-one map
+**[`../../../evidence/benchmark_tensors/`](../../../evidence/benchmark_tensors/README.md)**. No single rank-one map
 strictly improves a matrix multiplication tensor, so the step 3 shortlist is 0 of
 225 on `⟨2,2,2⟩` and this descent cannot take a first step. A walk that may cross
 equal-cost maps reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/README.md)).

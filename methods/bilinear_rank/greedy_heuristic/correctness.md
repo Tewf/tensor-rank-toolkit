@@ -1,7 +1,7 @@
 # Which guarantees a test would catch
 
 The guarantees themselves, with their proofs, are in
-[`../article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf). They are stated
+[`../../../writeup/article/bilinear-rank.pdf`](../../../writeup/article/bilinear-rank.pdf). They are stated
 once, there, so that a proof is corrected in one place.
 
 What belongs here instead is a property of this repository rather than of the

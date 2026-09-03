@@ -9,7 +9,11 @@ the reason is ours to give rather than the survey's to have missed.
 | Bisection (fewest calls, finishes last) | 113.614 |
 | Gallop down (wins) | 110.094 |
 
-Source: [`the-five-schedules.md`](../bracket/the-five-schedules.md).
+Source: [`the-five-schedules.md`](../bracket/the-five-schedules.md). That
+comparison predates a stronger lower bound merged since, `[yang2025]`'s rank
+sums joined to the flattening bound, and [`rank_question.h`](../rank_question.h)
+flags it as wanting re-measurement: the numbers above are what was measured
+under the old bound, not necessarily what a rerun would show.
 
 The exponential-versus-linear gap is in the *size of the cost range*, which for
 MaxSAT is exponential in the number of soft clauses. Here the range is

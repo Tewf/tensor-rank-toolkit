@@ -60,7 +60,7 @@ general decomposition has `k` independent decoding rows and no such grouping, so
 there is nothing to convert: the information the search's state carries is
 strictly less than a decomposition, in exactly the direction that matters.
 
-This is the same relaxation [`../descent_search/minimum_weight_basis.h`](../greedy_heuristic/minimum_weight_basis.h)
+This is the same relaxation [`../greedy_heuristic/minimum_weight_basis.h`](../greedy_heuristic/minimum_weight_basis.h)
 already names: requiring the answer to be a basis of `span(T)` at all is the
 heuristic, and it is what the exhaustive search drops.
 
@@ -71,7 +71,7 @@ heuristic, and it is what the exhaustive search drops.
 the `⟨L, R, P⟩` triple. That is where a published scheme is genuinely useful input
 here.
 
-**Can**: refute `k − 1` with [`../exhaustive_search/`](../exhaustive/what-a-node-cannot-tell-you.md)
+**Can**: refute `k − 1` with [`../exhaustive/`](../exhaustive/what-a-node-cannot-tell-you.md)
 or the solver, neither of which needs a seed, both of which need the tree to be
 reachable. At `⟨3,4,5⟩` the pool is `(2^12 − 1)(2^20 − 1) = 4 293 914 625` and it
 is not.

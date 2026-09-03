@@ -18,7 +18,7 @@
 /// IBM's own `[oslmps]` sends the reader on to the MPSX/370 reference for the
 /// format, and MPSX/370's MIP option is where that lineage puts them. What the
 /// markers here are checked against is `[oslmps]` itself. Keys are
-/// [`../references.md`](../references.md), which says of each what was read.
+/// [`../../references.md`](../../references.md), which says of each what was read.
 ///
 /// Free-form MPS was the first choice and does not survive contact: CBC parses
 /// the `BOUNDS` section by character position whatever the rest of the file

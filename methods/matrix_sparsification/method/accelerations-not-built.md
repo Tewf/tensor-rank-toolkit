@@ -1,11 +1,9 @@
 # Two accelerations that were priced and not built
 
 The wall is [`where-the-scan-stops.md`](where-the-scan-stops.md). Both of these
-would have made the walk cheaper and neither was written, and the reasons are
-measurements rather than taste, which is why they are here instead of nowhere.
-
-Both were real candidates and both were rejected by measurement rather than by
-taste, which is why they are written down here instead of quietly dropped.
+would have made the walk cheaper, and both were real candidates, but both were
+rejected by measurement rather than by taste, which is why they are written down
+here instead of quietly dropped.
 
 **A covering-design restriction of the enumeration.** Partition the columns into
 blocks and take one from each: any codeword lighter than the smallest block has a

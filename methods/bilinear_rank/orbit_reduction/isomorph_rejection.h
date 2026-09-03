@@ -31,7 +31,7 @@
 /// what practical systems use, and `[katsirelos2010]` is the paper that insists
 /// the residual duplication be **counted** rather than assumed small, together
 /// with the finding that a stronger break is not thereby a faster one. Keys are
-/// [`../references.md`](../references.md).
+/// [`../references.md`](../../../references.md).
 ///
 /// **Counted here, and it does not pay**: 5.10x and 17.96x the nodes on the two
 /// refutations measured, against a per-node surcharge for exactness that was

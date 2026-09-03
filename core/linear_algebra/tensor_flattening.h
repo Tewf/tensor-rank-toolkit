@@ -20,7 +20,7 @@
 /// **That is derived above and not cited, deliberately.** A rank-one tensor has
 /// rank-one flattenings and rank is subadditive, which is the whole proof, so
 /// there is no algorithm here from a paper to name; the definition it rests on
-/// is `[brockett1978]`'s and keys are [`../references.md`](../references.md).
+/// is `[brockett1978]`'s and keys are [`../../references.md`](../../references.md).
 /// A search for an earlier owner of the inequality itself found the bound
 /// treated as folklore everywhere it appears, so nothing is claimed for it.
 ///
@@ -33,7 +33,7 @@
 /// **Conciseness.** When a flattening is rank deficient the tensor is not
 /// concise: it genuinely lives in a smaller space, and every axis can be
 /// compressed to its flattening rank without changing the rank. Jason Yang's
-/// search (`[yang2025]`; keys are [`../references.md`](../references.md)) does
+/// search (`[yang2025]`; keys are [`../../references.md`](../../references.md)) does
 /// this at *every node* of its recursion, which is a large part of why it is
 /// fast. `is_concise` detects it here; compressing the tensor and carrying a
 /// decomposition of the compressed one back is

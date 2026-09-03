@@ -37,7 +37,7 @@ bool (*gpu_probe)() = nullptr;
 /// measurement because nothing measured it.
 ///
 /// Between 4 096 and 8 192 three of the routes would win by 1.0x to 1.9x, and
-/// [`../MEASURING.md`](../MEASURING.md) does not report ratios that small on
+/// [`../../MEASURING.md`](../../MEASURING.md) does not report ratios that small on
 /// this chassis: 13% of thermal spread covers most of that band. So the floor
 /// costs nothing anybody could measure and buys a rule that holds everywhere.
 ///

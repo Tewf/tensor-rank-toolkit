@@ -14,5 +14,5 @@ contradicted an argument that sounded right. The numbers behind them are
 | [`the-question-order.md`](the-question-order.md) | the fourth choice, which a paper had already answered |
 
 Where the rank sits between the bounds, and the prices:
-[`../search/README.md`](../bracket/README.md). What the field had settled:
+[`../bracket/README.md`](../bracket/README.md). What the field had settled:
 [`../search-in-the-literature/README.md`](../search-in-the-literature/README.md).

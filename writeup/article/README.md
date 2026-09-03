@@ -15,4 +15,4 @@ latexmk -C                         # remove the intermediates
 
 Which of the theorems a test would catch if it stopped being true is a property
 of this repository rather than of the mathematics, so it is recorded beside the
-code, in [`../descent_search/correctness.md`](../../methods/bilinear_rank/greedy_heuristic/correctness.md).
+code, in [`../../methods/bilinear_rank/greedy_heuristic/correctness.md`](../../methods/bilinear_rank/greedy_heuristic/correctness.md).

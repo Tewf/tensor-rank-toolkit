@@ -16,7 +16,7 @@
 /// their decisions.
 ///
 /// **`name value`, one per line, `#` starts a comment.** That is
-/// [`../cli/tunables.h`](../cli/tunables.h)'s format without the `=`, and for
+/// [`../../../infrastructure/cli/tunables.h`](../../../infrastructure/cli/tunables.h)'s format without the `=`, and for
 /// the same reasons: this repository has no JSON reader, a plan is seven
 /// flat values, and a format a person can diff is worth more here than one a
 /// library can nest. Every field is always written, so the file documents the

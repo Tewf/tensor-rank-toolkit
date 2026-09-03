@@ -21,7 +21,7 @@ namespace {
 /// `V + <g>` depends on `g` only through this, so two candidates with the same
 /// residue are one child and the second is skipped. Measured at the root of
 /// `matmul_2x2x2` in
-/// [`../exhaustive_search/generating-candidates-from-the-span.md`](../exhaustive_search/generating-candidates-from-the-span.md):
+/// [`../exhaustive/generating-candidates-from-the-span.md`](../exhaustive/generating-candidates-from-the-span.md):
 /// 225 candidates, 198 children.
 std::vector<Element> residue_of(const Field& field, const ReducedBasis& span, const Matrix& map) {
     std::vector<Element> entries(map.data(), map.data() + map.entry_count());
@@ -162,7 +162,7 @@ struct Ascent {
         // `--threads`, and the `stable_sort` below sees the same vector, which
         // is what makes this the one search here that threads without an argument
         // about node counts. It is the same trade
-        // [`../descent_search/minimise_rank.cpp`](../descent_search/minimise_rank.cpp)
+        // [`../greedy_heuristic/minimise_rank.cpp`](../greedy_heuristic/minimise_rank.cpp)
         // already makes with the identical call.
         const ReducedBasis span = linear_algebra::span_of(field, basis);
         std::set<std::vector<Element>> reached;

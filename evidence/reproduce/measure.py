@@ -32,7 +32,7 @@ beside the committed `provenance` rather than over it, so neither claims the
 other's run. Without it, the only way to correct a drifted count is a rewrite
 that overwrites protocol-grade timings with whatever the machine gives today.
 
-Three files are covered, and every section of them that publishes a count:
+Four files are covered, and every section of them that publishes a count:
 `fixtures`, and the `exact_search` and `famous_tensors` blocks of the descent's
 file, which `--check` did not look at until it was caught not looking. Thirty-odd
 counts lived there unchecked, and seven had gone stale, one of them during the

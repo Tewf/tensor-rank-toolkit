@@ -10,7 +10,7 @@
 /// Solving the relaxation and branching on a fractional variable is
 /// `[landdoig1960, §3]`, which is a prose description of a procedure and
 /// carries no numbered results to cite. Keys are
-/// [`../references.md`](../references.md).
+/// [`../../references.md`](../../references.md).
 ///
 /// **What runs here is the dichotomy and that is not theirs.** Land and Doig
 /// branch on *equalities*, `x = ⌊v⌋` and `x = ⌊v⌋ + 1`, stepping outward to

@@ -22,7 +22,7 @@ namespace linear_algebra {
 /// against one field operation per column per basis row: `Θ(d·w/64)` word
 /// operations for `Θ(d·w)` calls into Givaro. That ratio, on the leaf test of
 /// the exact search, is what
-/// [`../positioning/hardware-and-parallelism.md`](../positioning/hardware-and-parallelism.md)
+/// [`../../writeup/positioning/hardware-and-parallelism.md`](../../writeup/positioning/hardware-and-parallelism.md)
 /// measures.
 ///
 /// The rows are one flat block rather than a vector per row, so reducing walks

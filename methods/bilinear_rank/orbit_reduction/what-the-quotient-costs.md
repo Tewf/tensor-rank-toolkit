@@ -73,7 +73,7 @@ refutations, which are where a sweep spends its time.
 
 Nothing here says a *better* order exists or how to find one. What it says is
 that the search has a knob it does not know it has, and that
-[`../exhaustive_search/what-threads-change.md`](../exhaustive/what-threads-change.md)'s
+[`../exhaustive/what-threads-change.md`](../exhaustive/what-threads-change.md)'s
 "it is the same tree whoever visits it" is true of workers and not of orders.
 
 ## What that leaves

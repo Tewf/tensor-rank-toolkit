@@ -2,7 +2,7 @@
 ///
 /// The ranking is only ever read to decide what `curve-bounds --route chain`
 /// will reach, so it moved beside that flag rather than standing as a command of
-/// its own; [`../../OPTIONS/one-question-per-command.md`](../../OPTIONS/one-question-per-command.md)
+/// its own; [`../../../OPTIONS/one-question-per-command.md`](../../../OPTIONS/one-question-per-command.md)
 /// is the audit that says so.
 ///
 /// This file is what is left, and it is here rather than deleted for one reason:

@@ -3,7 +3,7 @@
 ///
 /// The general leaf in [`../subspace_walk.h`](../subspace_walk.h) puts every
 /// element of every subspace it walks through
-/// [`is_rank_one`](../../linear_algebra/measures.h) and through nothing else, so
+/// [`is_rank_one`](../../../../core/linear_algebra/measures.h) and through nothing else, so
 /// that predicate *is* the leaf's verdict and a wrong answer from it is a wrong
 /// rank. Neither direction of error announces itself: a false no drops a
 /// rank-one map and refutes a decomposition that exists, and a false yes offers

@@ -108,7 +108,7 @@ struct Answer {
 /// question asked and is the wrong thing to publish a table from: a sweep over
 /// candidates needs to know *which* one paid and what the rest cost. Nullable and
 /// filled in cube order, following `OrbitReport` in
-/// [`orbit_heuristic.h`](../orbit_reduction/orbit_heuristic.h), which exists for
+/// [`orbit_heuristic.h`](../bilinear_rank/orbit_reduction/orbit_heuristic.h), which exists for
 /// the same reason.
 struct CubeReport {
     std::vector<Verdict> verdict;
@@ -157,12 +157,12 @@ struct RankBounds {
 /// they are the cheap ones far from the rank.
 ///
 /// **Measured against descending, bisection and the two gallops**, on seven
-/// fixtures at one ceiling each, in [`search/`](search/README.md). It wins on the
+/// fixtures at one ceiling each, in [`bracket/`](bracket/README.md). It wins on the
 /// cheap ones and **lost on the only expensive one, coming fourth of five on
 /// GF(16)**, where the floor was five short so it walked through a 3.7 s question
 /// no other schedule asks. That handicap is gone: the floor there is now 8 rather
 /// than 4, since `[yang2025]`'s rank sums joined the flattenings in
-/// [`rank_lower_bound.h`](../linear_algebra/rank_lower_bound.h), so the schedule
+/// [`rank_lower_bound.h`](../../core/linear_algebra/rank_lower_bound.h), so the schedule
 /// comparison predates the bound it depended on and wants re-measuring. It ties
 /// the two mandatory questions on the four fixtures where the bound already
 /// equals the rank. What it keeps
@@ -193,9 +193,9 @@ RankBounds find_rank(const formats::Tensor& tensor, const SolveOptions& approach
 ///
 /// **It is not the default anywhere, and the measurement says why.** Producing
 /// the bracket costs more than knowing it saves on every fixture in
-/// [`search/`](search/README.md): a sweep buys a yes at every `k` from the naive
+/// [`bracket/`](bracket/README.md): a sweep buys a yes at every `k` from the naive
 /// ceiling down, while the walk buys the one or two questions `rank_lower_bound`
-/// leaves it. See [`what-decides-it.md`](search/what-decides-it.md) for the
+/// leaves it. See [`what-decides-it.md`](bracket/what-decides-it.md) for the
 /// seven numbers. The seam is here for the caller that already holds a checked
 /// decomposition, from a heuristic or from a previous run, and should not have to
 /// buy it again.

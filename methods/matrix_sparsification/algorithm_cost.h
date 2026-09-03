@@ -16,7 +16,7 @@
 ///
 /// `[beniamini2019, Claim 2.11]` for the additive complexities and
 /// `[beniamini2019, Claim 3.9]` for what they add up to. Keys are
-/// [references.md](../references.md).
+/// [references.md](../../references.md).
 namespace matrix_sparsification {
 
 /// The additive complexity of an encoding operator, `nnz + nns - rows`.

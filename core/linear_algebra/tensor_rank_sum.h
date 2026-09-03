@@ -15,7 +15,7 @@
 ///
 /// One table, two bounds, and neither dominates the other. Both start from the
 /// same observation and both come from `[yang2025]`'s family of pruners; keys are
-/// [`../references.md`](../references.md).
+/// [`../../references.md`](../../references.md).
 ///
 /// **The one inequality underneath.** Fix an axis `d` and suppose `T` has a
 /// rank-`R` decomposition whose factor matrix on that axis is `A`. Contracting by

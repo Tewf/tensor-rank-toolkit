@@ -1,6 +1,6 @@
 # Where each side of the break-even comes from
 
-Keys are [`../../references.md`](../../../../references.md). Write `s = dim span(T)`,
+Keys are [`../../../../references.md`](../../../../references.md). Write `s = dim span(T)`,
 `L = target - s` for the levels of augmentation, `n = a + b` for the factored
 degree, `k` for the size of the cell set a call is made about.
 

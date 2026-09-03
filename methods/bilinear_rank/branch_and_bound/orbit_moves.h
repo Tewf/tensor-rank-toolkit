@@ -12,7 +12,7 @@
 /// **Why a node's moves may be quotiented at all.** If `σ` maps `span(V)` to
 /// itself then `σ(V + <g>) = V + <σg>`, and `σ` preserves the rank of every form
 /// and of every subspace (`[covanov2019, Prop. 9]`; keys are
-/// [`../references.md`](../references.md)), so the two children cost the same and
+/// [`../references.md`](../../../references.md)), so the two children cost the same and
 /// `σ` carries the whole subtree above one onto the whole subtree above the
 /// other. Whatever cost is reachable through `g` is reachable through `σg`, so
 /// entering one of each orbit loses nothing the search was looking for. That is

@@ -21,7 +21,7 @@
 /// of size `dim R[r]`. It therefore accepted exactly `dim R[r] - dim R[r-1]`
 /// elements of rank exactly `r`. Rado-Edmonds makes that basis minimum-weight,
 /// and `[nakatsukasa2017, Thm. 2.1]` states the same exactness for this problem;
-/// keys are [`../references.md`](../references.md). So this is not an
+/// keys are [`../../../references.md`](../../../references.md). So this is not an
 /// approximation of `minimum_weight_basis` but the same number by another route,
 /// which [`tests/test_sorted_span.cpp`](tests/test_sorted_span.cpp) asserts on
 /// every fixture rather than leaving to the argument above.
@@ -36,14 +36,14 @@
 /// **What it is not for.** Building it still visits `p^dim` elements, so it turns
 /// a memory refusal into a time cost and not into an answer. Whether that is the
 /// cheaper side is the crossover
-/// [`../exhaustive_search/rank_one_basis.h`](../exhaustive_search/rank_one_basis.h)
+/// [`../exhaustive/rank_one_basis.h`](../exhaustive/rank_one_basis.h)
 /// already decides per call: `p^dim` against `|pool|`.
 ///
 /// **It is not the exact search's leaf**, which is the reading `has_rank_one_basis`
 /// invites. That leaf's walk route visits the same elements, stops at `dim V` of
 /// them, and asks a rank-one test where this asks a Gaussian rank; and at a *node*
 /// the cost identity was measured not to fire. Both verdicts, and the one place
-/// this does belong: [`../how-the-search-works/what-to-wire.md`](../how-the-search-works/what-to-wire.md).
+/// this does belong: [`../../../writeup/how-the-search-works/what-to-wire.md`](../../../writeup/how-the-search-works/what-to-wire.md).
 namespace bilinear_rank {
 
 class SortedSpan {
@@ -78,7 +78,7 @@ class SortedSpan {
     /// search *can* reach its target's cost before it reaches its target's
     /// dimension, which is the one way this could shorten a branch. What it was
     /// measured never to do is fall far enough, soon enough:
-    /// [`../exhaustive_search/what-a-node-cannot-tell-you.md`](../exhaustive_search/what-a-node-cannot-tell-you.md).
+    /// [`../exhaustive/what-a-node-cannot-tell-you.md`](../exhaustive/what-a-node-cannot-tell-you.md).
     std::size_t cost() const;
 
     /// Whether the span is covered by its own rank-one elements, which is the

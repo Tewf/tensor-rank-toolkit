@@ -15,12 +15,12 @@ the `(i+1) x (i+1)` minors, so the rank stratification of a matrix space is a
 chain of secant varieties and nothing else.
 
 `ones(V)` in
-[`../exhaustive_search/generating-candidates-from-the-span.md`](../../methods/bilinear_rank/exhaustive/generating-candidates-from-the-span.md)
+[`../../methods/bilinear_rank/exhaustive/generating-candidates-from-the-span.md`](../../methods/bilinear_rank/exhaustive/generating-candidates-from-the-span.md)
 is therefore the affine cone over `P(V) ∩ Segre`, a **linear section** of the
 Segre variety, and `deficit(V) == 0` asks whether that section spans `V`.
 
 **The pool is the point set, exactly.** `normalised_vectors` in
-[`../descent_search/candidate_pool.cpp`](../../methods/bilinear_rank/candidate_pool.cpp)
+[`../../methods/bilinear_rank/candidate_pool.cpp`](../../methods/bilinear_rank/candidate_pool.cpp)
 builds vectors with leading entry 1, one per point of `PG(m−1, q)`, and
 `RankOnePool::at` takes outer products, so the pool holds one matrix per point
 of the Segre variety and `|pool| = ((q^m−1)/(q−1)) · ((q^n−1)/(q−1))`, which is
@@ -65,15 +65,15 @@ a finite field, in FPT with respect to `R` and `|F|`.
 
 **This repository reaches the leaf by enumeration**, scanning the pool or
 walking the subspace, whichever
-[`../exhaustive_search/rank_one_basis.h`](../../methods/bilinear_rank/exhaustive/rank_one_basis.h)
+[`../../methods/bilinear_rank/exhaustive/rank_one_basis.h`](../../methods/bilinear_rank/exhaustive/rank_one_basis.h)
 prices cheaper per call. No ideal is ever formed:
-[`../satisfiability/`](../../methods/satisfiability/README.md) hands a solver the *whole*
+[`../../methods/satisfiability/README.md`](../../methods/satisfiability/README.md) hands a solver the *whole*
 rank question in one encoding, never the leaf.
 
 **Whether solving would beat enumerating at these shapes is not settled, and
 nothing above is a verdict.** What would settle it is the Hilbert series of
 `[bardet2025]` evaluated at the parameters these leaves actually have, `r = 1`
-and the dimensions in [`../fixtures/README.md`](../../evidence/fixtures/README.md), and
+and the dimensions in [`../../evidence/fixtures/README.md`](../../evidence/fixtures/README.md), and
 nobody has computed it. Against any hope from that direction sits the hypothesis
 both complexity papers state for themselves: their bounds are for **generic**
 instances, and a matrix multiplication tensor is the least generic object in the

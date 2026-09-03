@@ -36,8 +36,8 @@ around every refusal it asserts.
   type, one per question, each running against a shipped fixture.
 - [**One idea, several spellings**](OPTIONS/one-idea-several-spellings.md):
   where two tools spell one idea differently, where one spelling means two
-  things, and what each of the ten enum-like flags does with a bad value —
-  which is four different things.
+  things, and what each of the ten enum-like flags does with a bad value:
+  four different things.
 
 ## The tables, one page per question
 
@@ -61,6 +61,6 @@ the `--descend` and `--pretest-ceiling` flags; the numbers that retired it are i
 `find-at-rank` had a flag of that name and so does `decide-rank-by-deflation`, which
 still accepts it and is documented in
 [`OPTIONS/committing-to-candidates.md`](OPTIONS/committing-to-candidates.md).
-Checked against the branch rather than guessed —
+Checked against the branch rather than guessed:
 `rejected-experiments:methods/bilinear_rank/canonical_augmentation/commands/find_at_rank_main.cpp`
 parses its own.

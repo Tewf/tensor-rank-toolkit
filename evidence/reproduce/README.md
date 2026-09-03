@@ -17,7 +17,7 @@ It re-derives every published **count** and compares; it does not look at
 timings, and why it must not is the first thing
 [`measure.py`](measure.py)'s own header explains, along with the other three
 invocations (full rewrite, `--counts`, `--slow`). The protocol a timing was
-taken under is [`../MEASURING.md`](../../MEASURING.md).
+taken under is [`../../MEASURING.md`](../../MEASURING.md).
 
 Five files, one role each, and each says its own rules at the top:
 

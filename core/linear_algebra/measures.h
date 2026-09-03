@@ -59,7 +59,7 @@ std::size_t rank(const Field& field, const MatrixOver<Field>& matrix) {
 /// the only nonzero scalar is 1, so "a scalar multiple of the first nonzero row"
 /// degenerates to "equal to it" and the cross-multiplication collapses into a
 /// word comparison. Both refuse the zero matrix, and
-/// [`../exhaustive_search/tests/test_rank_one_predicate.cpp`](../exhaustive_search/tests/test_rank_one_predicate.cpp)
+/// [`../../methods/bilinear_rank/exhaustive/tests/test_rank_one_predicate.cpp`](../../methods/bilinear_rank/exhaustive/tests/test_rank_one_predicate.cpp)
 /// holds this one against `rank` over every small matrix rather than trusting
 /// the argument above.
 template <class Field>

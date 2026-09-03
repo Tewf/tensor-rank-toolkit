@@ -21,7 +21,7 @@
 /// slice space, their Def. 2.1 being the span of the slices; their `k` is that
 /// space's dimension and their `d` its minimum rank distance, both fixed by their
 /// Def. 5.3. So the two symbols mean here exactly what they mean there. Key in
-/// [`../references.md`](../references.md).
+/// [`../../references.md`](../../references.md).
 ///
 /// **Whose bound it is, stated as carefully as it was checked.** Byrne and
 /// Cotardo attribute it to J. B. Kruskal, *Three-way arrays: rank and uniqueness
@@ -42,7 +42,7 @@
 /// word is zero has a zero contraction; the image is then a linear block code of
 /// length `R`, dimension exactly `k`, and minimum Hamming weight at least `d`.
 /// That is `[bnrs2019, Cor. 4.14(2)]`, and the key is now in
-/// [`../references.md`](../references.md). Any linear `[R, k, >= d]` code obeys
+/// [`../../references.md`](../../references.md). Any linear `[R, k, >= d]` code obeys
 /// Griesmer, so
 ///
 /// > `rank(T) >= sum_{j=0}^{k-1} ceil(d / |F|^j)`
@@ -73,7 +73,7 @@
 /// reading a 1977 paper about the reals correctly.
 ///
 /// **`|F|` below is the characteristic**, and that is the same number only
-/// because [`field.h`](../linear_algebra/field.h)'s `is_prime` restricts every
+/// because [`field.h`](../../core/linear_algebra/field.h)'s `is_prime` restricts every
 /// rank claim in this repository to `GF(p)`. Griesmer's base is the *cardinality*:
 /// over `GF(4)` the code below would count `k` in `F_2` steps and divide by 2,
 /// which returns a number **larger** than Griesmer permits, and so a false
@@ -85,11 +85,12 @@
 /// exactly a set of `R` independent rank-one matrices whose span contains `S`:
 /// `[byrne2021, Lem. 2.7]`, Bürgisser-Clausen-Shokrollahi Prop. 14.45, the same
 /// statement [`../canonical_factorisation/`](../canonical_factorisation/README.md)
-/// is built on and [`../exhaustive_search/`](../exhaustive_search/) searches.
+/// is built on and
+/// [`../bilinear_rank/exhaustive/`](../bilinear_rank/exhaustive/README.md) searches.
 ///
 /// **What they cost.** `d` is a minimum over the whole slice space, so it costs
 /// the `|F|^n_d` contraction ranks of one axis: the table
-/// [`tensor_rank_sum.h`](../linear_algebra/tensor_rank_sum.h) already builds for
+/// [`tensor_rank_sum.h`](../../core/linear_algebra/tensor_rank_sum.h) already builds for
 /// Laskowski's bound and re-reads for the line bound. Given that table both
 /// bounds here are one linear scan, which is why the per-axis functions take the
 /// table rather than the tensor. A caller already paying for the rank sums pays

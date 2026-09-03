@@ -44,7 +44,7 @@ inline bool same_maps(const std::vector<bilinear_rank::Matrix>& left,
 /// The maps a pool scan would have kept, from the survivor indices alone.
 ///
 /// The `found.size() + (pool_.size() - index) < needed` break of
-/// [`Gf2Leaf::by_scanning_the_pool`](../exhaustive_search/gf2_leaf.h) is
+/// [`Gf2Leaf::by_scanning_the_pool`](../../methods/bilinear_rank/exhaustive/gf2_leaf.h) is
 /// reproduced rather than ignored: it can only fire once what is left of the
 /// pool is shorter than what is still needed, so testing it at each survivor
 /// stops on the same survivor the sequential loop stops before.

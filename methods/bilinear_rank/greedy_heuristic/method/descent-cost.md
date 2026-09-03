@@ -22,7 +22,7 @@ reproducible:
     step 1: 12 multiplications, 8 slices, 0.00262942 s cumulative
 
 The table adds the peak RSS around that same call, taken the way
-[`../../MEASURING.md`](../../../../MEASURING.md) specifies.
+[`../../../../MEASURING.md`](../../../../MEASURING.md) specifies.
 
 So the scaling limit is not time, it is memory, and it is exponential in a
 quantity the search deliberately increases. Enumerating the span is the honest

@@ -14,7 +14,7 @@
 ///
 /// Every choice here already existed and each was made somewhere different: the
 /// pool in `decide_rank_main.cpp`, the leaf route inside `rank_one_basis.cpp`,
-/// the device in [`../run_limits/device.h`](../run_limits/device.h) with nothing
+/// the device in [`../../../infrastructure/run_limits/device.h`](../../../infrastructure/run_limits/device.h) with nothing
 /// calling it at all, and the remaining four in the argument loop. Scattered,
 /// they could not be reported together, could not be overridden together, and
 /// could not be written down and replayed somewhere else, which is exactly what
@@ -22,15 +22,15 @@
 ///
 /// **No rule moved and none of them is restated here.** `chosen_plan` asks the
 /// module that owns each one: `subspace_elements`
-/// ([`../exhaustive_search/rank_one_basis.h`](../exhaustive_search/rank_one_basis.h))
+/// ([`../exhaustive/rank_one_basis.h`](../exhaustive/rank_one_basis.h))
 /// for the leaf route, `bytes_per_matrix` against `memory_budget`
-/// ([`../run_limits/memory_budget.h`](../run_limits/memory_budget.h)) for the
+/// ([`../../../infrastructure/run_limits/memory_budget.h`](../../../infrastructure/run_limits/memory_budget.h)) for the
 /// pool, `chosen_device` for the device. What is new is that one struct holds
 /// all seven answers, one function explains them in the sentences a run prints,
 /// and [`plan_file.h`](plan_file.h) round-trips them through a file.
 ///
 /// **Precedence, strongest first: an explicit flag, then a plan file, then the
-/// rule.** That is the precedence [`../cli/tunables.h`](../cli/tunables.h)
+/// rule.** That is the precedence [`../../../infrastructure/cli/tunables.h`](../../../infrastructure/cli/tunables.h)
 /// already sets out for the numbers, and a second one would be a second thing to
 /// remember.
 namespace bilinear_rank {

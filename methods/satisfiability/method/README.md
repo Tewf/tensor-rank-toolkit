@@ -21,3 +21,7 @@ written for a different solver.
 What any of it costs: [`../measurements.md`](../measurements.md). Which backend,
 solver and flags it runs with, and why:
 [`../choices/README.md`](../choices/README.md).
+
+For scale: `⟨3,3,3⟩` at Laderman's rank of 23 already comes to 19 251 variables
+and 56 619 clauses under the GF(2) encoding, a CNF file of about a megabyte
+(measured in [`gf2-as-cnf.md`](gf2-as-cnf.md)).

@@ -6,7 +6,7 @@ are one child. Nothing refuses two **nodes** that arrive at one subspace by
 adjoining the same moves in a different order. McKay canonical augmentation
 (`[mckay1998]`) is the standard answer to exactly that, and this file used to be
 answered by pointing at
-[`../oracle_guided_search/deduplication-cost.md`](../canonical_augmentation/deduplication-cost.md),
+[`../canonical_augmentation/deduplication-cost.md`](../canonical_augmentation/deduplication-cost.md),
 which measures a **different search**. This is the measurement of this one.
 
 Taken 2026-08-23 with `--span-census`, which names each span by
@@ -108,7 +108,7 @@ inverting the augmentation is free. That is the shape McKay is built for.
 
 ## The verdict, priced
 
-[`../oracle_guided_search/canonical_route_price.h`](../canonical_augmentation/canonical_route_price.h)
+[`../canonical_augmentation/canonical_route_price.h`](../canonical_augmentation/canonical_route_price.h)
 states the trade: it pays when `rho > pi`, `pi` being one canonical node over one
 plain one, and `pi >= 1` by construction. **`rho <= 1.39` here caps the entire
 prize at 39% of a run, and it is 10% to 16% on most rows.** Three things then
@@ -142,14 +142,14 @@ hyperplane `W` is a **legal** parent of `X` means generating
 `level_lowering_moves(W)`, which needs `span_element_ranks(W)`: a `p^(dim−1)`
 rank sweep. On `cyclic_f2_7` at the dimension the search reaches that is 4 096
 ranks, against the **187** one `minimum_weight_basis_with` costs on this fixture
-([`../descent_search/minimum_weight_basis.h`](../greedy_heuristic/minimum_weight_basis.h)).
+([`../greedy_heuristic/minimum_weight_basis.h`](../greedy_heuristic/minimum_weight_basis.h)).
 **One candidate parent costs 22x the child it might cancel**, and a node at that
 depth has 15 hyperplanes above the root to choose the canonical one among. This
 is the structural difference from the enumerator next door, where a parent is a
 set minus an element and inversion is free.
 
 **Three, the memory that makes a parent test preferable to a seen-set is not at
-stake.** [`../oracle_guided_search/canonical_augmentation.h`](../canonical_augmentation/canonical_augmentation.h)
+stake.** [`../canonical_augmentation/canonical_augmentation.h`](../canonical_augmentation/canonical_augmentation.h)
 reaches for McKay because a seen-set costs one code per object and its objects
 number 1.9 million at `<2,2,2>` alone. The largest run above holds 1 077 947
 distinct spans of 13 rows by 25 bits: 44 MB stored whole over GF(2), less hashed.
@@ -176,6 +176,6 @@ quotient at one node in cost.
 - **A fixture with a group this repository will build.** Everything counted here
   is subspaces that are *equal*. Duplication up to `Aut(T)` is a different and
   larger number, bounded by `|G|` rather than by 1.4, and it is the question
-  `oracle_guided_search` already answers at 247x to 22 778x.
+  `canonical_augmentation` already answers at 247x to 22 778x.
 - **10^8 children in one run**, where a seen-set stops fitting and a memoryless
   test regains its reason to exist. Nothing here is within three orders of that.

@@ -14,11 +14,12 @@
 /// does for the two leaf routes.
 ///
 /// The question this answers is
-/// [`span_element_ranks`](../descent_search/minimum_weight_basis.h)'s, and it has
-/// the shape the leaf kernels have: `2^slices` independent computations, each on
-/// a small matrix a thread rebuilds from its own index by exclusive-or, nothing
-/// transferred per element. What it does not have is their size, which is why
-/// [`../descent_search/span_ranks_on_card.h`](../descent_search/span_ranks_on_card.h)
+/// [`span_element_ranks`](../../methods/bilinear_rank/greedy_heuristic/minimum_weight_basis.h)'s,
+/// and it has the shape the leaf kernels have: `2^slices` independent
+/// computations, each on a small matrix a thread rebuilds from its own index by
+/// exclusive-or, nothing transferred per element. What it does not have is their
+/// size, which is why
+/// [`span_ranks_on_card.h`](../../methods/bilinear_rank/greedy_heuristic/span_ranks_on_card.h)
 /// says the host will usually and correctly answer instead.
 namespace gpu_leaf {
 

@@ -1,7 +1,7 @@
 # The four operations, priced on this machine
 
 `price-canonical-route <tensor> -s matmul n m k --target t` times each of them,
-fastest of the calls it is given, under [`../../MEASURING.md`](../../../../MEASURING.md).
+fastest of the calls it is given, under [`../../../../MEASURING.md`](../../../../MEASURING.md).
 Measured 2026-08-21, the lock held, on a machine that was not idle: every
 absolute number below is therefore an over-estimate and the shape-to-shape
 *scaling*, which is what the predicate uses, is what survives that.
@@ -78,7 +78,7 @@ scans, falling with the pool, and 1.4 is the value taken.
 ## Where the constants live, and why not in `tunables.conf`
 
 In `CanonicalPrices`, in code, for the reason
-[`../../run_limits/device.cpp`](../../../../infrastructure/run_limits/device.cpp) keeps its crossover
+[`../../../../infrastructure/run_limits/device.cpp`](../../../../infrastructure/run_limits/device.cpp) keeps its crossover
 table in code and puts only `device_launch_floor` in the file: **a measured table is
 not a knob.** What a reader may want to move is the decision; what they must not
 silently move is the measurement.

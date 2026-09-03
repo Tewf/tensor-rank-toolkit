@@ -17,7 +17,7 @@
 /// [`../gpu_leaf/register_the_card.cpp`](../gpu_leaf/register_the_card.cpp)
 /// registers the kernels and the probe; a build without the toolkit registers
 /// nothing and every question here answers `cpu`, which is the shape
-/// [`../integer_programme/solver_chain.h`](../integer_programme/solver_chain.h)
+/// [`../../methods/integer_programme/solver_chain.h`](../../methods/integer_programme/solver_chain.h)
 /// already uses for solvers: the ranking is fixed, the availability is not, a
 /// machine with nothing installed still answers, and an absent backend is a
 /// state reported here rather than an error discovered downstream.
@@ -27,7 +27,7 @@
 /// materialised at `<3,3,3>`, and the whole orbit machinery there costs 1.2 ms,
 /// which is 0.04% of a 3.12 s run: an Amdahl ceiling of 1.0004x, so a kernel for
 /// either would be unmeasurable. The leaf is 90% or more of a run, and
-/// [`../exhaustive_search/gf2_leaf.h`](../exhaustive_search/gf2_leaf.h) is where
+/// [`../../methods/bilinear_rank/exhaustive/gf2_leaf.h`](../../methods/bilinear_rank/exhaustive/gf2_leaf.h) is where
 /// it asks `chosen_device` with its own element count.
 ///
 /// **Which leaf goes where is decided per leaf and not per run.** A search poses

@@ -22,9 +22,9 @@ head -6 plan.txt
 # A search plan, from decide-rank --plan-out. --plan-in replays it.
 # `name value`, one per line; # starts a comment. Every field is written,
 # so a plan says what it chose and never what it left to a rule.
-# pool materialised
-# leaf_route auto
-# device cpu
+pool materialised
+leaf_route auto
+device cpu
 
 decide-rank evidence/fixtures/f2_2x2.tensor --plan-in plan.txt   # the same choices, replayed
 ```

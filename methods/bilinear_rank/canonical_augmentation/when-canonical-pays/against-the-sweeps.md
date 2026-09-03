@@ -48,7 +48,7 @@ then either.
 
 **Node counts are exact and machine independent. Seconds are not, and these were
 not taken on a quiet machine**: `/proc/loadavg` ran 1.2 to 4.4 while other work
-shared the box, which [`../../MEASURING.md`](../../../../MEASURING.md) says is grounds
+shared the box, which [`../../../../MEASURING.md`](../../../../MEASURING.md) says is grounds
 for abandoning a timing. They are kept because both routes of a row ran back to
 back against the same background, so a *ratio within a row* is evidence where an
 absolute is not. `<2,3,3>` at 7 is now 1.23x, close enough to the 13% thermal band
@@ -111,4 +111,4 @@ in the only way a test can: two sabotages sit beside the verdict, and either of
 them (withholding the orbit statistics, or making the baseline's orbit test 100x
 cheaper) takes `<3,3,3>` back off the canonical route. What that row measures is
 the baseline, and what to do about it is in
-[`../../how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).
+[`../../../../writeup/how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).

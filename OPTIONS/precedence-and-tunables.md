@@ -83,5 +83,5 @@ move. A run of it is bounded by what is on the line and nothing else.
 
 A name the file spells wrongly is refused rather than ignored, and the refusal
 leaves as exit 2. That is asserted end to end in
-[`../cli/tests/check_tunables_bound_a_run.sh`](../infrastructure/cli/tests/check_tunables_bound_a_run.sh),
+[`../infrastructure/cli/tests/check_tunables_bound_a_run.sh`](../infrastructure/cli/tests/check_tunables_bound_a_run.sh),
 against the built command rather than against the parser.

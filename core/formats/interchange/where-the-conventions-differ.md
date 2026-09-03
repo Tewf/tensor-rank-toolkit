@@ -32,7 +32,7 @@ files put through `sms2pretty`: **149 print identically, entry for entry**.
 - `2x2x2_7_DPS-accurate-X_{L,R,P}.sms` are the three refused, for the
   indeterminate.
 
-Reading the other way, his published triples rebuild maps this repository
+Reading the other way, PLinOpt's published triples rebuild maps this repository
 constructs from their definitions: Strassen and Winograd give `matmul_2x2x2`,
 `3x3x3_JS` and `3x3x3_23_55` give `matmul_3x3x3`, Karatsuba gives `f2_2x2`,
 Toom-3 gives `f5_3x3`, and `3x4x7_63_rational` gives ⟨3,4,7⟩ over GF(3), GF(5)

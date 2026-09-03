@@ -1,8 +1,8 @@
 /// The pencil formula against the exhaustive search, on every two-slice tensor
 /// in `evidence/fixtures/`.
 ///
-/// This is how a new instrument earns trust here, and it has already been worth
-/// it: the closure bound was shipped as an exact rank until this test refused
+/// This is how a new method earns trust here, and it has already been worth
+/// it: the closure bound was shipped as an exact rank until this test refuted
 /// `pencil_irreducible_f2_4`, where the search proves 6 against the formula's 4.
 /// The two share no code, one enumerating rank-one maps and walking a tree to
 /// its end, the other diagonalising a polynomial matrix and counting factors.

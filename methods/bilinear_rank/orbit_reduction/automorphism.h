@@ -9,8 +9,8 @@
 ///
 /// `[covanov2019]` §3, itself an unpublished improvement by Barbulescu and
 /// Zimmermann to the framework [the exact
-/// search](../exhaustive_search/exhaustive_search.h) implements; keys are
-/// [`../references.md`](../references.md). In one line: an invertible change of
+/// search](../exhaustive/exhaustive_search.h) implements; keys are
+/// [`../references.md`](../../../references.md). In one line: an invertible change of
 /// coordinates on each of the two operands preserves rank
 /// (`[covanov2019, Prop. 9]`, for a single form and for a subspace), so if it
 /// also maps the target subspace to itself then it maps solutions to solutions,
@@ -63,7 +63,7 @@ Automorphism inverse(const Field& field, const Automorphism& sigma);
 ///
 /// Breadth first, deduplicated by the entries themselves. Refused past the
 /// memory budget rather than attempted: a group is perfectly capable of being
-/// larger than the machine, and `(GL_3)³` at 14 million is already too large to
+/// larger than the machine, and `(GL_3)³` at 4 741 632 is already too large to
 /// hold this way.
 std::vector<Automorphism> group_closure(const Field& field,
                                         const std::vector<Automorphism>& generators);

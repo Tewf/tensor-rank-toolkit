@@ -21,7 +21,7 @@ namespace {
 /// element, a copy per row of it and an elimination that ran to the end of a
 /// question already settled. `is_rank_one` allocates nothing and stops at the
 /// first entry that disagrees; the verdicts are the same ones, since it is the
-/// same predicate as [`rank`](../linear_algebra/measures.h) `== 1` and is held
+/// same predicate as [`rank`](../../../core/linear_algebra/measures.h) `== 1` and is held
 /// against it over every small matrix in
 /// [`tests/test_rank_one_predicate.cpp`](tests/test_rank_one_predicate.cpp).
 bool keep_if_rank_one(const Field& field, const std::vector<Element>& combination,

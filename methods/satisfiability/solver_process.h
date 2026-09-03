@@ -23,7 +23,7 @@
 /// arrangement buys in exchange is that each question is a separate
 /// deterministic process, so its cost does not depend on the order it was
 /// reached in, and that is what makes the schedule pricing in
-/// [`search/`](search/README.md) exact rather than indicative. Whether the trade is
+/// [`bracket/`](bracket/README.md) exact rather than indicative. Whether the trade is
 /// still the right one is open and remains unsettled here.
 ///
 /// Three are looked for, each for a reason:

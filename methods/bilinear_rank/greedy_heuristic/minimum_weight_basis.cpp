@@ -230,7 +230,7 @@ RankFloor floor_under_the_unranked(const Field& field, const Elements& walk, std
 /// registered, which is every build without `nvcc`; a field that is not GF(2),
 /// where the bit-packed arithmetic a kernel does is not this arithmetic; a shape
 /// no kernel was compiled for; a span too small to be worth a launch, which
-/// [`../run_limits/device.h`](../run_limits/device.h) decides and not this
+/// [`../../../infrastructure/run_limits/device.h`](../../../infrastructure/run_limits/device.h) decides and not this
 /// function; or the backend itself declining. On this machine the fourth is what
 /// almost always answers, and that is the correct answer:
 /// [`span_ranks_on_card.h`](span_ranks_on_card.h) says why the seam exists

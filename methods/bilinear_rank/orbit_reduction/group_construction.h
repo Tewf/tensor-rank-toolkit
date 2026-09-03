@@ -11,7 +11,7 @@
 ///
 /// The same division as [`map_construction.h`](../map_construction/map_construction.h), which builds
 /// the maps: this builds the groups worth quotienting them by. Keys are
-/// [`../references.md`](../references.md). Two sources.
+/// [`../references.md`](../../../references.md). Two sources.
 /// Brute force enumerates every invertible pair and works only on small shapes;
 /// the closed form for matrix multiplication works at any size but has to be
 /// derived correctly.
@@ -23,7 +23,7 @@
 /// pin the closed form, is the third route against the second: closing
 /// `matrix_multiplication_symmetry_generators` must give
 /// `matrix_multiplication_symmetries` exactly, element for element, and
-/// [`../oracle_guided_search/tests/test_canonical_augmentation.cpp`](../oracle_guided_search/tests/test_canonical_augmentation.cpp)
+/// [`../canonical_augmentation/tests/test_canonical_augmentation.cpp`](../canonical_augmentation/tests/test_canonical_augmentation.cpp)
 /// asserts that on `⟨2,2,2⟩`, 216 both ways.
 namespace bilinear_rank {
 

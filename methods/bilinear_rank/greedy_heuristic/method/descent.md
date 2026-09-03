@@ -55,7 +55,7 @@ minimise_rank(T, G):
 the branch that wins.** That line is what `SortedSpan` was written for: the
 filtration answers `cost` without assembling a basis, so a basis is built only
 where one is adopted. Verdict and price:
-[`../../how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).
+[`../../../../writeup/how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).
 
 `improving_candidates` has the same shape but never updates `T`; it just
 collects the candidates that would individually pay, as a pre-filter.

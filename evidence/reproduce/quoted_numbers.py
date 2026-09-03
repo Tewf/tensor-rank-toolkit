@@ -7,7 +7,7 @@ silently. It is guarded here now: a LaTeX tabular carries no sentence to match,
 but the row is a string like any other once the emphasis is dropped, and
 `flattened` says how.
 
-The oracle-guided speedup is quoted in nine documents, the published front page
+The canonical augmentation speedup is quoted in nine documents, the published front page
 among them, none of which is generated, and it sat at 22 779x while the test
 beside it asserted 1 890 601 and 83 nodes, whose quotient is 22 778.3. Nothing
 was wrong with the measurement; the rounding went up from a number ending in

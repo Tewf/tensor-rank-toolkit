@@ -12,7 +12,7 @@
 ///
 /// This is an implementation of a pre-existing published algorithm, complete
 /// and exponential for the question it asks, in contrast to the
-/// [heuristic descent methods](../descent_search/minimise_rank.h) which offer
+/// [greedy heuristic methods](../greedy_heuristic/minimise_rank.h) which offer
 /// no optimality guarantee.
 ///
 /// **What it decides, precisely.** Given a subspace `W` already containing the
@@ -115,7 +115,7 @@ struct SearchBudget {
 /// Templated on where the candidates come from. A `std::vector<Matrix>` already
 /// satisfies the two methods this needs, `size()` and `operator[]`, so every
 /// existing caller passes one unchanged; `Addressed` in
-/// [`candidate_pool.h`](../descent_search/candidate_pool.h) satisfies them by
+/// [`candidate_pool.h`](../candidate_pool.h) satisfies them by
 /// building each map on demand. Instantiated for exactly those two in the source.
 ///
 /// `budget` bounds the scan, and `nullptr` leaves it unbounded for the callers

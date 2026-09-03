@@ -1,8 +1,8 @@
 # The method, exactly
 
-Notation: [`../../linear_algebra/README.md`](../../../core/linear_algebra/README.md).
+Notation: [`../../../core/linear_algebra/README.md`](../../../core/linear_algebra/README.md).
 The cost of each primitive:
-[`../../linear_algebra/costs.md`](../../../core/linear_algebra/costs.md).
+[`../../../core/linear_algebra/costs.md`](../../../core/linear_algebra/costs.md).
 Here `U` is the operator, `r × c`, over `Q`. The search works on `Uᵀ`, written
 `a × b` with `a = c` and `b = r`, because on that side the question becomes
 "replace a row by a sparser vector spanning the same space".

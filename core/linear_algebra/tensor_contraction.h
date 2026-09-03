@@ -26,7 +26,7 @@
 /// reports a *count of surviving terms*, and counting those across many `v` at
 /// once is exactly what Jason Yang's rank-sum bound does
 /// ([`tensor_rank_sum.h`](tensor_rank_sum.h), `[yang2025]`; keys are
-/// [`../references.md`](../references.md)).
+/// [`../../references.md`](../../references.md)).
 namespace linear_algebra {
 
 /// The length of `axis`: rows for axis 0, columns for axis 1, the number of

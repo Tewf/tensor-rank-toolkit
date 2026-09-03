@@ -240,7 +240,7 @@ void expand_one(Walk& walk, const std::vector<Matrix>& root, const Branch& node,
 /// plain exact search shares a `SearchBudget` and races to a witness, so workers
 /// dispatch subtrees a sequential walk never reaches and a tight `--node-limit`
 /// can turn a proof into an undecided
-/// ([`what-threads-change.md`](../exhaustive_search/what-threads-change.md)).
+/// ([`what-threads-change.md`](../exhaustive/what-threads-change.md)).
 /// Here there is no witness, no early exit and no shared budget: every subtree is
 /// visited whatever the thread count, so `emitted`, `distinct`, `nodes` and
 /// `group_visits` are identical at one thread and at twelve, which

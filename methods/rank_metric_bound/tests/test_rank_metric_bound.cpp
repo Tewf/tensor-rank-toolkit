@@ -27,7 +27,7 @@
 /// The elapsed time per fixture is printed and never asserted. It is what
 /// [`../what-each-is-worth.md`](../what-each-is-worth.md)'s cost column was
 /// measured with, under
-/// [`../../MEASURING.md`](../../MEASURING.md), and CI reads it as noise.
+/// [`../../../MEASURING.md`](../../../MEASURING.md), and CI reads it as noise.
 #include <algorithm>
 #include <cstddef>
 #include <iomanip>

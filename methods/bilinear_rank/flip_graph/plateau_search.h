@@ -9,7 +9,7 @@
 /// A walk that is allowed to cross plateaus: a plateau-crossing search.
 ///
 /// This method is distinct from the [descent heuristic steps 2 and 3]
-/// (../descent_search/minimise_rank.h) and published baseline methods because it guarantees
+/// (../greedy_heuristic/minimise_rank.h) and published baseline methods because it guarantees
 /// something different and its results should never be confused with theirs.
 ///
 /// The reason it exists is a measurement. Steps 2 and 3 adopt a candidate only

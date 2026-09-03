@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
         // the whole tree whoever walks it, so the total is exact. A satisfiable
         // question stops early and the subtrees in flight when it stops are a
         // race, so its total is an upper bound and asserting it would be
-        // asserting a race. `../../exhaustive_search/what-threads-change.md` is
+        // asserting a race. `../../exhaustive/what-threads-change.md` is
         // where that distinction was measured on the plain search; this is the
         // same claim for this one.
         for (const std::size_t workers : {std::size_t(2), std::size_t(4), std::size_t(6),

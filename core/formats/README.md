@@ -35,26 +35,23 @@ recovered operators straight to the sparsification.
 ## SMS, and why it is here
 
 `.sms` is what the surrounding ecosystem reads: LinBox and Givaro, the exact
-linear algebra libraries this repository builds on, both speak it. This
-implementation reads and writes it, enabling direct handoff to external solvers.
-Reading is by extension, so
-`sparsify-operator operator.sms` needs no flag.
+linear algebra libraries this repository builds on, both speak it. Reading is by
+extension, so `sparsify-operator operator.sms` needs no flag.
 
 Entries are one-based `row column value` triples after a `rows columns type`
 header, and `0 0 0` terminates. The terminator's value is ignored, as the
-format's own writers vary on it. One triple per line, which is not a style rule:
-LinBox reads a second one on the same line into the first one's value. Which
-letter the type is, and how little it turns out to matter, is
+format's own writers vary on it. One triple per line: why a second on the same
+line is refused rather than tolerated, and which letter the type is, is
 [`sms_file.h`](sms_file.h).
 
 **The file does not carry its field**, so reading over `GF(p)` takes the field as
 a parameter, exactly as PLinOpt's checkers take it as `-q`. Three of them are an
 algorithm: `operators-to-tensor` reads a ⟨L,R,P⟩ triple back into the `.tensor`
-above, which is how somebody else's published algorithm becomes an input here.
+above, which is how a published algorithm becomes an input here.
 
-It is worth exchanging files with somebody only if you have checked that you can.
-Both directions have been run against PLinOpt's own binaries: his checker
+It is worth exchanging files with another tool only if you have checked that you
+can. Both directions have been run against PLinOpt's own binaries: its checker
 confirms the published 14 products on `f2_5x5` and 10 on `f3_3x6` from our
-operators alone, and his published Strassen operators rebuild our `⟨2,2,2⟩`
+operators alone, and its published Strassen operators rebuild our `⟨2,2,2⟩`
 fixture entry for entry:
 [`interchange/`](interchange/README.md).

@@ -4,8 +4,8 @@ Every number here comes from [`results.json`](results.json), which
 `evidence/reproduce/measure.py` last rewrote from a clean tree on **2026-08-23**, on one
 core of an i5-12450H, at the commands each row records. The counts are re-derived
 on every push; the seconds are not, for the reason
-[`../MEASURING.md`](../../MEASURING.md) gives. The searches compared against are in
-[`../exhaustive_search/`](../bilinear_rank/exhaustive/README.md), on the same fixtures. How the
+[`../../MEASURING.md`](../../MEASURING.md) gives. The searches compared against are in
+[`../bilinear_rank/exhaustive/`](../bilinear_rank/exhaustive/README.md), on the same fixtures. How the
 encodings work is [`method/`](method/README.md); this is only what they cost.
 
 ## The rank itself, not one `k` at a time
@@ -32,7 +32,7 @@ the flags are most of the figure.** The same sweep at the defaults costs
 symmetry breaking is off by default and off for an argument rather than for a
 measurement: an over-strong constraint would turn a satisfiable instance
 unsatisfiable, which is a false lower bound
-([`../OPTIONS/asking-a-sat-solver.md`](../../OPTIONS/asking-a-sat-solver.md)).
+([`../../OPTIONS/asking-a-sat-solver.md`](../../OPTIONS/asking-a-sat-solver.md)).
 
 ## What it costs against the exhaustive search
 
@@ -82,7 +82,7 @@ find 9 was 36.19 s against 0.287 s. Solver by solver, per column, in
 
 `⟨2,2,3⟩` at 8 is retired rather than measured: the bounds refuse it before the
 search opens a node. Under `retired_by_the_bounds` in
-[`../descent_search/results.json`](../bilinear_rank/greedy_heuristic/results.json).
+[`../bilinear_rank/greedy_heuristic/results.json`](../bilinear_rank/greedy_heuristic/results.json).
 
 The last row is open on both sides, and the earlier version of it was wrong in
 this repository's worst way: it gave the exhaustive column "146 402 553 nodes,
@@ -91,7 +91,7 @@ column was an extrapolation from `methods/bilinear_rank/greedy_heuristic/method/
 at `C(961,3)` and about seven hours and is labelled extrapolated, and it arrived
 here as a time and a node count in a table headed "Measured". What this repository
 proves by itself is **rank = 13**, with 12 refused here and 13 exhibited by
-[`../incumbent_search/`](../bilinear_rank/branch_and_bound/README.md); it was 13 ≤ rank ≤ 14
+[`../bilinear_rank/branch_and_bound/`](../bilinear_rank/branch_and_bound/README.md); it was 13 ≤ rank ≤ 14
 until 2026-08-21, the heuristic reaching only 14. Eleven went first: an exhaustion of 459 239 nodes and 77 s until
 2026-08-19, when the Griesmer floor moved this map to 12 and returned that
 refusal in milliseconds. Twelve then went by exhaustion, 146 402 553 nodes. The

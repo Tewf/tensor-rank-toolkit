@@ -1,5 +1,5 @@
 # The group, the orbits, the rule that rejects a repeat, and each consumer of
-# them are separate jobs, which is why this is seven files and not one; the
+# them are separate jobs, which is why this is eight files and not one; the
 # mathematical rationale is `README.md`'s.
 # `subspace_canon.cpp` came from `canonical_augmentation` on 2026-08-23. It names a
 # subspace so that two can be compared and a whole orbit has one name, which is

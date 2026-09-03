@@ -6,7 +6,7 @@ objection: a predicate measured as *right* about `<3,3,3>` and then consulted by
 nobody looks like a result being ignored.
 
 The verdict it feeds is one row of
-[`../../how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).
+[`../../../../writeup/how-the-search-works/what-to-wire.md`](../../../../writeup/how-the-search-works/what-to-wire.md).
 
 Run directly on the shipped `<3,3,3>` fixture, `price-canonical-route
 evidence/fixtures/matmul_3x3x3.tensor -s matmul 3 3 3 --target 10` prints `orbits of the

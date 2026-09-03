@@ -1,8 +1,7 @@
 # core/
 
 What everything stands on: the exact arithmetic and the file formats. No
-search lives here; both members are linked by every strand and reach into
-none of them.
+search lives here; both members are linked by every strand.
 
 In this group:
 
@@ -14,8 +13,9 @@ In this group:
   documenting the exchange with PLinOpt and the FMM catalogue, asserted by
   tests against PLinOpt's own bytes.
 
-How to use: these are libraries; the worked example at the top of each
-header is the contract, and
+How to use: these are libraries; the documentation comment at the top of
+each header is the contract, and
 [`linear_algebra/README.md`](linear_algebra/README.md) carries a compilable
 snippet with the measured cost of the one call both searches spend their
-time in.
+time in (from 29.8 seconds to 11.3 on F3 3×6, measured in
+[`linear_algebra/costs.md`](linear_algebra/costs.md)).

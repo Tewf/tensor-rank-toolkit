@@ -6,7 +6,7 @@ whole, and whichever solver this machine has to answer it.
 ## Whose work this is
 
 None of the mathematics is new here. Keys are
-[`../references.md`](../../references.md), which says for each what was read.
+[`../../references.md`](../../references.md), which says for each what was read.
 
 | Result | What rests on it |
 |---|---|
@@ -29,7 +29,7 @@ relaxation rather than an integer answer.
 here as a MILP so a third instrument could answer beside the SAT solvers and the
 tree search; it was measured, it lost by two to three orders of magnitude, and it
 is retired. The numbers and the argument:
-[`../the-research-front/rank-as-a-milp.md`](../../writeup/the-research-front/rank-as-a-milp.md).
+[`../../writeup/the-research-front/rank-as-a-milp.md`](../../writeup/the-research-front/rank-as-a-milp.md).
 So this folder is a layer the
 curve strand uses and not a strand of its own.
 

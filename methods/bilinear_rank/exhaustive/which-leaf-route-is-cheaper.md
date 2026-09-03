@@ -40,7 +40,7 @@ The fourth it sends to the walk, against a pool of the same size, and the walk
 wins. A rule that only ever picked one route would be indistinguishable from
 this one on three questions out of four.
 
-The bottom row is milliseconds, so by [`../MEASURING.md`](../../../MEASURING.md) it is
+The bottom row is milliseconds, so by [`../../../MEASURING.md`](../../../MEASURING.md) it is
 a correctness control and not speed evidence. It is used here for its direction
 only, and the direction is the claim.
 

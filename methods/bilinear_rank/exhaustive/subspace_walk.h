@@ -30,7 +30,7 @@ namespace bilinear_rank {
 /// **This is the route that ships.** Consecutive elements differ by one basis
 /// row added or subtracted, so forming one costs `O(width)` field additions and
 /// no multiplication, against `O(dim * width)` multiply-accumulates to rebuild
-/// it from the digits. See [`reflected_gray_walk.h`](../descent_search/reflected_gray_walk.h) for
+/// it from the digits. See [`reflected_gray_walk.h`](../reflected_gray_walk.h) for
 /// the order and for why its successor is loop-free.
 ///
 /// **The order of the elements changed when this replaced the rebuild, so the
@@ -50,7 +50,7 @@ namespace bilinear_rank {
 /// came in.
 ///
 /// **What the order is worth.** One core, `taskset -c 2`, fastest of three, the
-/// protocol of [`../MEASURING.md`](../MEASURING.md), with the two routes
+/// protocol of [`../../../MEASURING.md`](../../../MEASURING.md), with the two routes
 /// alternated inside one process on one span so that they meet the same machine:
 ///
 /// | span | elements | rebuild | Gray walk |
@@ -76,7 +76,7 @@ namespace bilinear_rank {
 /// to the last row of a question settled at the second), which both routes paid
 /// in full and neither reduced. Neither is formed now. The element is tested
 /// where it already lies, in the combination buffer, by
-/// [`is_rank_one`](../linear_algebra/measures.h), which allocates nothing and
+/// [`is_rank_one`](../../../core/linear_algebra/measures.h), which allocates nothing and
 /// stops at the first entry that disagrees, and a `Matrix` is built only for an
 /// element that is kept, which almost none are.
 ///

@@ -13,7 +13,7 @@
 ///
 /// The group is `[covanov2019, Def. 7]`'s action and the orbits are lossless to
 /// quotient by because it preserves rank, `[covanov2019, Prop. 9]`; keys are
-/// [`../references.md`](../references.md).
+/// [`../references.md`](../../../references.md).
 ///
 /// The pool is every outer product `u·vᵀ` of a normalised left vector with a
 /// normalised right vector, so it is a grid: `(p^rows − 1)/(p−1)` by

@@ -43,7 +43,7 @@ moves the two rows the descent cannot: **`cyclic_f2_7` reaches the published 13
 in 22 nodes**, and `gf32_multiplication` reaches 13 in 1 873. Both counts are
 verified in the tool and again outside this repository, from the emitted `.sms`
 operators. Node counts per fixture:
-[`../incumbent_search/what-it-reaches.md`](../../methods/bilinear_rank/branch_and_bound/what-it-reaches.md).
+[`../../methods/bilinear_rank/branch_and_bound/what-it-reaches.md`](../../methods/bilinear_rank/branch_and_bound/what-it-reaches.md).
 
 **The floor is one product short of the published rank on all three that the
 descent can finish**, from `rank_lower_bound` alone and in under a millisecond.
@@ -59,7 +59,7 @@ this repository records for every matrix multiplication tensor, which is that th
 descent cannot take a first step on them. Steps 1 and 2 move none of the three.
 
 Timings are omitted deliberately. The counts above were taken while the machine
-was running a browser at load 5.8, which [`../MEASURING.md`](../../MEASURING.md)
+was running a browser at load 5.8, which [`../../MEASURING.md`](../../MEASURING.md)
 refuses for a published second and does not care about for an exact count.
 
 Shape is `slices rows cols`, the file's own header line, and every one is over
@@ -87,7 +87,7 @@ first property.
 on. `mu_2(n)` is the bilinear complexity of `F_{2^n}` over `F_2`, and the values
 published for `n` up to 6 are 3, 6, 9, 13, 15. The first three of those are
 `gf4`, `gf8` and `gf16`, and each is settled here by
-[`../exhaustive_search/`](../../methods/bilinear_rank/exhaustive/README.md) rather than taken on trust.
+[`../../methods/bilinear_rank/exhaustive/`](../../methods/bilinear_rank/exhaustive/README.md) rather than taken on trust.
 
 **13 and 15 are the two numbers on this page with no key beside them**, and that
 is deliberate rather than an omission to fill in later. They are widely quoted,
@@ -95,7 +95,7 @@ they are not settled here, and no table stating them was read while these
 fixtures were built, so they stand as targets and appear nowhere as a rank this
 repository holds. `rank_metric_bound`'s soundness column carries 25 and 36 for
 these two, the naive algorithm, for the same reason. Anyone who traces them to a
-paper should add the key to [`../references.md`](../../references.md) and change
+paper should add the key to [`../../references.md`](../../references.md) and change
 both places at once.
 
 **The other four are `[wang2026]`, and the version has to be cited with them**,
@@ -105,7 +105,7 @@ the polynomial and cyclic convolution bounds arrive later still. The numbers
 above are v10, of 30 July 2026, which gives `⟨2,3,4⟩ ≥ 19`, `⟨3,3,4⟩ ≥ 25`,
 `⟨3,4,4⟩ ≥ 29` and length-7 cyclic convolution `≥ 13` over F₂, against best known
 upper bounds of 20, 29, 38 and 13. Key and full entry in
-[`../references.md`](../../references.md).
+[`../../references.md`](../../references.md).
 
 **`cyclic_f2_7` is therefore the one that is closed**: 13 from both sides, so
 the length-7 cyclic convolution over `F2` has rank exactly 13. Its neighbour
@@ -117,5 +117,5 @@ settled, which is what makes the pair worth having.
 No search here reaches any of these six targets, and none of them is in the
 descent table [`README.md`](README.md) publishes. The bounds do run on all six,
 pinned and priced in
-[`../rank_metric_bound/`](../../methods/rank_metric_bound/what-each-is-worth.md), and they
+[`../../methods/rank_metric_bound/`](../../methods/rank_metric_bound/what-each-is-worth.md), and they
 land far below: that gap is what these fixtures exist to make visible.

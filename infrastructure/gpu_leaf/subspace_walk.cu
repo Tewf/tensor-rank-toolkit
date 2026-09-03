@@ -7,7 +7,8 @@
 /// The subspace walk on the card: one thread per subspace element, tested for
 /// rank one.
 ///
-/// This is the other of the two routes [`rank_one_basis.h`](../exhaustive_search/rank_one_basis.h)
+/// This is the other of the two routes
+/// [`rank_one_basis.h`](../../methods/bilinear_rank/exhaustive/rank_one_basis.h)
 /// chooses between, and the one the bit-packed leaf gained most on, 39.6x where
 /// the pool scan gained 6x to 23x. It is also the only route the shapes with
 /// known answers take, so leaving it out would mean the card never runs where an
@@ -40,7 +41,7 @@ __device__ inline std::uint64_t row_of(const std::uint64_t* element, int row) {
 /// selects, then the rank-one test.
 ///
 /// Over GF(2) a nonzero matrix has rank one exactly when its nonzero rows are
-/// all the same row, which is [`gf2_is_rank_one`](../linear_algebra/gf2_bits.h).
+/// all the same row, which is [`gf2_is_rank_one`](../../core/linear_algebra/gf2_bits.h).
 /// Written here without the early returns that version takes, because a warp
 /// pays for every branch any of its threads takes: the rows are or-ed together
 /// and then each nonzero row is compared against that, which is the same test

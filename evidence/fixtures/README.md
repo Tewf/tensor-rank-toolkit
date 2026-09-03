@@ -37,7 +37,7 @@ orders of magnitude more than the first two steps together to do it.** The
 computed range is 36 to 189 times, and it is deliberately not quoted that way:
 steps 1 and 2 now finish in 0.9 ms to 23.8 ms, and a hand run moved one fixture's
 ratio from 189 to 85 with nothing changed in the code, which is the rule
-[`../MEASURING.md`](../../MEASURING.md) states for a denominator that small. On
+[`../../MEASURING.md`](../../MEASURING.md) states for a denominator that small. On
 `f2_5x5` it
 spent 0.0985 seconds to confirm the 14 that step 2 already had; on `f2_4x7`,
 0.397 seconds to confirm 16. Where it did pay, it paid by one product: 16 to

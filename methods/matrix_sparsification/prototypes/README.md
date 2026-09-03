@@ -4,7 +4,7 @@ Five Python scripts that established
 [`../method/answering-without-searching.md`](../method/answering-without-searching.md).
 They are kept because a finding whose evidence is deleted is indistinguishable
 from a claim, which is the rule the rank strand already follows in
-[`../../oracle_guided_search/measurements/`](../../bilinear_rank/canonical_augmentation/measurements/README.md).
+[`../../bilinear_rank/canonical_augmentation/measurements/`](../../bilinear_rank/canonical_augmentation/measurements/README.md).
 
 **The C++ they specified now exists**:
 [`../lightest_vector_by_simplex.h`](../lightest_vector_by_simplex.h), reached by

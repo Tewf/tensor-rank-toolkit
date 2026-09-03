@@ -96,7 +96,7 @@ which the classical formula gets wrong, are tabulated in
 [`methods/pencil_rank/README.md`](methods/pencil_rank/README.md).
 
 **[The rank as a factorisation](methods/canonical_factorisation/README.md).** Take `B`, the
-canonical basis of the slice space — the `nm` matrices with a single 1 — and find
+canonical basis of the slice space (the `nm` matrices with a single 1), and find
 the shortest `A` whose rows, read back through `B`, span a space containing the
 slices. `B` contributes nothing, and saying so is the useful part: every list of
 matrices is `A B` for some `A`, so the whole content is the constraint that

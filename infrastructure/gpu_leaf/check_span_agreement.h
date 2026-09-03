@@ -34,7 +34,7 @@ namespace gpu_leaf {
 
 /// The span as the kernel reads it, from the slices the search holds.
 ///
-/// The packing is [`gf2_pack`](../linear_algebra/gf2_bits.h)'s and the slice
+/// The packing is [`gf2_pack`](../../core/linear_algebra/gf2_bits.h)'s and the slice
 /// order is the caller's, which is what makes index `i` here the same element as
 /// index `i` there.
 inline SpanQuestion packed_span(const std::vector<bilinear_rank::Matrix>& slices) {

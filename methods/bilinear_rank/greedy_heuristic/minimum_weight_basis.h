@@ -8,7 +8,7 @@
 ///
 /// Choosing a basis of `span(T)` whose ranks sum to the least is a **matroid**
 /// problem, and none of that is new here. Keys are
-/// [`../references.md`](../references.md).
+/// [`../../../references.md`](../../../references.md).
 ///
 /// In general: linear independence of vectors over a field is a matroid,
 /// `[oxley, Prop. 1.1.1]`, and the greedy returns a maximum-weight basis of any
@@ -53,7 +53,7 @@ namespace bilinear_rank {
 ///
 /// `cost` takes the answer's cost, which is the sum of the ranks the greedy
 /// picked and is therefore already known when the basis is handed back.
-/// [`multiplication_count`](../linear_algebra/measures.h) recovers the same
+/// [`multiplication_count`](../../../core/linear_algebra/measures.h) recovers the same
 /// number by ranking every basis element again, and stays the right call for
 /// anyone holding only matrices; a caller of this function is not one of those.
 std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<Matrix>& slices,
@@ -89,7 +89,7 @@ std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vec
 /// out before, entry for entry, whatever sequence filled it. Every caller reads
 /// it by index too: [`minimum_weight_basis`](minimum_weight_basis.h) above as
 /// `ranks_without_last`, `SortedSpan` as its filtration, and
-/// [`level_lowering_moves`](../incumbent_search/level_lowering_moves.h) as a
+/// [`level_lowering_moves`](../branch_and_bound/level_lowering_moves.h) as a
 /// filter on which elements are cheap enough to split. Where a routine instead
 /// *consumes* elements in order (a greedy taking the first that pays), this
 /// order is not available and the fix is to collect and sort back, as

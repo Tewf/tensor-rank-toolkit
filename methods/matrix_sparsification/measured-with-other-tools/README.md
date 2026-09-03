@@ -5,7 +5,7 @@ route, sparse QLUP elimination and a coefficient search bounded to four rows of
 support with a set of eleven coefficients. Its published operators are inputs
 this repository reads, and its subexpression pass is the only instrument on this
 machine that can price model (c). Keys are
-[`../../references.md`](../../../references.md).
+[`../../../references.md`](../../../references.md).
 
 These pages record what those runs measured, so that a number quoted anywhere
 else has a page saying where it came from. They are a record and not a

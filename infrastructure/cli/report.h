@@ -19,7 +19,7 @@
 /// output that is readable by external tools is the point of this layer, and
 /// this is the half of it that costs one character.
 ///
-/// The writers in [`core/formats/`](../formats/) have always done this, commenting
+/// The writers in [`core/formats/`](../../core/formats/) have always done this, commenting
 /// every header line they emit (`sms_file.cpp`, `tensor_file.cpp`,
 /// `dense_matrix_file.cpp`). The commands did not: `minimise-rank` split the
 /// streams and wrote its commentary bare, and that half was the fault. Merging

@@ -44,9 +44,10 @@ minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out
 PMchecker out_L.sms out_R.sms out_P.sms -q 2
 ```
 
-`SUCCESS` from an outside checker is an independent confirmation: it derives the
-`4o4o8` degree label from the matrix dimensions alone, with no knowledge of the
-fixture. Use `MMchecker` for a matrix-multiplication map and `PMchecker` for a
+`SUCCESS` from an outside checker is an independent confirmation; why the degree
+label it derives makes it one is
+[`checking-ours-with-another-tool.md`](checking-ours-with-another-tool.md).
+Use `MMchecker` for a matrix-multiplication map and `PMchecker` for a
 polynomial one: handing a `matmul_*` result to the wrong one fails exactly as a
 bad operator would, which is the first of
 [four false failures](four-false-failures.md).
@@ -54,7 +55,7 @@ bad operator would, which is the first of
 ## Known differences
 
 The field-by-field comparison, with the file and line on both sides, is
-[`where-the-conventions-differ.md`](where-the-conventions-differ.md). The four that will bite you:
+[`where-the-conventions-differ.md`](where-the-conventions-differ.md). The four that cause failures in practice:
 
 - **One triple per line, and the value last on it.** Two triples on a line are
   read by LinBox as one number. Refused here rather than accepted, so the
@@ -69,6 +70,6 @@ The field-by-field comparison, with the file and line on both sides, is
   the accuracy paper carries polynomials in an indeterminate. Refused by name.
 
 Thirteen of those files are vendored so this is exercised by the test suite and not
-only by hand: [`../../fixtures/plinopt/`](../../../evidence/fixtures/plinopt/README.md), and
+only by hand: [`evidence/fixtures/plinopt/`](../../../evidence/fixtures/plinopt/README.md), and
 what the suite can and cannot carry is
 [`what-is-checked-automatically.md`](what-is-checked-automatically.md).

@@ -6,7 +6,7 @@ there. It is true and it is the least informative true thing available, because
 lower bound that flattens the difference.
 
 Schaefer and Štefankovič settled the shape of it (`[schaefer2018]`; keys are
-[`../references.md`](../../references.md)): **tensor rank over a field `F` is
+[`../../references.md`](../../references.md)): **tensor rank over a field `F` is
 polynomial-time equivalent to the existential theory of `F`.** One theorem, and
 every case falls out of it.
 

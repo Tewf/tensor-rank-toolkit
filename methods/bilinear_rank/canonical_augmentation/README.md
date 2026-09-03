@@ -38,6 +38,6 @@ decide-rank-by-deflation evidence/fixtures/matmul_2x2x2.tensor --target 6 -s mat
 ```
 
 Which questions these answer that `decide-rank` does not:
-[`../OPTIONS/one-question-per-command.md`](../../../OPTIONS/one-question-per-command.md).
+[`../../../OPTIONS/one-question-per-command.md`](../../../OPTIONS/one-question-per-command.md).
 Their flags:
-[`../OPTIONS/committing-to-candidates.md`](../../../OPTIONS/committing-to-candidates.md).
+[`../../../OPTIONS/committing-to-candidates.md`](../../../OPTIONS/committing-to-candidates.md).

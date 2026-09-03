@@ -13,7 +13,7 @@
 /// to another, so a solution can always be moved until its first term is an
 /// orbit representative. That last step is `[covanov2019, Prop. 14]`: a
 /// decomposition meeting the orbit `φ ∘ Stab(T)` at all is equivalent to one
-/// that contains `φ` itself. Keys are [`../references.md`](../references.md).
+/// that contains `φ` itself. Keys are [`../references.md`](../../../references.md).
 /// For `⟨3,3,3⟩` that is thirteen choices instead of 261 121, and for `⟨4,4,4⟩`
 /// twenty-six instead of 4 294 836 225.
 ///

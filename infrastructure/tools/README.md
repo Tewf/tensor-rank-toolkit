@@ -7,7 +7,7 @@ In this folder:
 - [`compare_backends.py`](compare_backends.py): asks every backend the same
   rank question and tabulates what each one cost, in the only currency they
   share, wall-clock on one machine, under
-  [`../MEASURING.md`](../../MEASURING.md)'s protocol. Its own header says what
+  [`MEASURING.md`](../../MEASURING.md)'s protocol. Its own header says what
   it measures and what it refuses to conclude.
 
 Example of use:
@@ -40,6 +40,6 @@ options:
 
 A full run is timing-sensitive, so it is not reproduced here; the rows this
 script produces are already measured, under the same protocol, in
-[`../satisfiability/measurements.md`](../../methods/satisfiability/measurements.md):
+[`methods/satisfiability/measurements.md`](../../methods/satisfiability/measurements.md):
 ruling out 6 products on `⟨2,2,2⟩`, the tree search beats the solver by
 **11.7x**; ruling out 8 on GF(16), the solver beats the tree by **2.30x**.

@@ -13,20 +13,20 @@
 /// over GF(2), each on a small matrix a thread rebuilds from its own index:
 /// nothing is transferred per element, every thread reads the same few kilobytes
 /// of slices, and the arithmetic is branch-free. That is the same shape as
-/// [`../gpu_leaf/pool_scan.cu`](../gpu_leaf/pool_scan.cu).
+/// [`../../../infrastructure/gpu_leaf/pool_scan.cu`](../../../infrastructure/gpu_leaf/pool_scan.cu).
 ///
 /// **What holds it back is the shape list and not the launch floor**, and this
 /// file said the opposite until 2026-08-22. The spans are well past the floor:
 /// `tighten-rank-bound` on `<3,4,5>` prints *"start: 60 products over 15
 /// dimensions"*, and a node's dimension only climbs, so every span it ranks is
 /// `2^15 = 32 768` elements against the 8 192 in
-/// [`../run_limits/device.h`](../run_limits/device.h); `gf32_multiplication`
+/// [`../../../infrastructure/run_limits/device.h`](../../../infrastructure/run_limits/device.h); `gf32_multiplication`
 /// reaches dimension 13, which is 8 192 exactly and which
-/// [`../incumbent_search/cost_first_search.cpp`](../incumbent_search/cost_first_search.cpp)
+/// [`../branch_and_bound/cost_first_search.cpp`](../branch_and_bound/cost_first_search.cpp)
 /// already records. `chosen_device` passes both.
 ///
 /// What declines them is `handles`. `span_ranks_handle` in
-/// [`../gpu_leaf/span_ranks.cu`](../gpu_leaf/span_ranks.cu) carries four
+/// [`../../../infrastructure/gpu_leaf/span_ranks.cu`](../../../infrastructure/gpu_leaf/span_ranks.cu) carries four
 /// **square** shapes, 4x4, 5x5, 9x9 and 16x16, because those are the shapes the
 /// leaf kernels were instantiated at. `<3,4,5>`'s operands are 12x20, so it is
 /// refused on shape while being four times the size the floor asks for. Adding it
@@ -40,15 +40,15 @@
 /// nothing could test it: [`tests/test_span_ranks_seam.cpp`](tests/test_span_ranks_seam.cpp)
 /// now exercises all five gates with a fake backend and no toolkit at all.
 ///
-/// The seam is here and not in [`../gpu_leaf/`](../gpu_leaf/README.md) for the
-/// reason [`../exhaustive_search/gf2_leaf_on_card.h`](../exhaustive_search/gf2_leaf_on_card.h)'s
+/// The seam is here and not in [`../../../infrastructure/gpu_leaf/`](../../../infrastructure/gpu_leaf/README.md) for the
+/// reason [`../exhaustive/gf2_leaf_on_card.h`](../exhaustive/gf2_leaf_on_card.h)'s
 /// is where it is: a build without `nvcc` must get "no" rather than a link
 /// error, so the question is asked of a registration that nothing registered.
 ///
 /// **Declining is not failing.** Another field, a shape with no kernel, a span
 /// under the launch floor: all of those are the host's job and none of them is
 /// news. A CUDA call that failed is news, and goes to
-/// [`card_failure.h`](card_failure.h) so a command can say once that the run got
+/// [`card_failure.h`](../../../infrastructure/run_limits/card_failure.h) so a command can say once that the run got
 /// slower and not that the answer changed.
 namespace bilinear_rank {
 

@@ -48,8 +48,8 @@ it shrinks with it, but the floor under a wall clock does not: process start,
 the first page faults and reading the file are the same absolute cost whether
 the search then takes a millisecond or a minute, and at the bottom of the range
 they are most of what was timed. The searches got fast enough on 2026-08-23 for
-that to start mattering — the descent's first two steps are now 0.9 ms to 23.8 ms
-across the four polynomial fixtures — so where a denominator is that small the
+that to start mattering (the descent's first two steps are now 0.9 ms to 23.8 ms
+across the four polynomial fixtures), so where a denominator is that small the
 claim is written as the order of magnitude it is evidence of. `36 to 189 times`
 became `one to two orders of magnitude` for exactly this reason, after a hand run
 moved one fixture's ratio from 189 to 85 without anything changing in the code.
@@ -98,9 +98,9 @@ hand, on the reference machine, under this protocol, and are quoted as evidence
 of an order of magnitude rather than of a digit.
 
 **That line is structural and not a convention to remember.** The two binaries
-whose whole output is timings — `measure-leaf`, which moves
+whose whole output is timings (`measure-leaf`, which moves
 `device_launch_floor`, and `price-canonical-route`, which moves `CanonicalPrices`
-and with it whether `--route canonical` pays — are built outside their strand's
+and with it whether `--route canonical` pays) are built outside their strand's
 `commands/`. Neither is a tool, in [`OPTIONS.md`](OPTIONS.md), or offered by the
 console; each ships beside the constant it decides, because a constant nobody can
 re-measure is a constant nobody can move.

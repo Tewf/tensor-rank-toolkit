@@ -17,7 +17,7 @@
 /// count; finding a witness stops early, and workers dispatch subtrees a
 /// depth-first walk would never have reached, so that total is an upper bound
 /// that grows with the workers.
-/// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md) carries
+/// [`what-threads-change.md`](../../methods/bilinear_rank/exhaustive/what-threads-change.md) carries
 /// the measurement and the consequence, which is that a tight `--node-limit` can
 /// turn a proof into an undecided. The heuristic still adopts the same candidates in the same order.
 /// Which decomposition a successful search hands back also differs, since

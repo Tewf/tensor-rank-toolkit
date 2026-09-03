@@ -42,7 +42,7 @@ asserts the verdict and
 the node count at 1, 2, 4, 6 and 12 workers on every fixture it already covered.
 **On a satisfiable question the total is an upper bound**, because a witness stops
 the search and the subtrees already in flight spend against the same counter: the
-finding [`../../exhaustive_search/what-threads-change.md`](../../exhaustive/what-threads-change.md)
+finding [`../../exhaustive/what-threads-change.md`](../../exhaustive/what-threads-change.md)
 made about the plain search applies here unchanged, and so does its mitigation.
 `expand_up_to_impl` tests the shared `found` flag before it consumes a node.
 

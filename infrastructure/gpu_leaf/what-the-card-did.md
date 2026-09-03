@@ -1,7 +1,7 @@
 # What the card did, and what it was measured against
 
 The tables behind [`README.md`](README.md)'s verdict. Measured under
-[`../MEASURING.md`](../../MEASURING.md): one core where it says one core, fastest of
+[`../../MEASURING.md`](../../MEASURING.md): one core where it says one core, fastest of
 three, machine otherwise quiet, under `flock /tmp/bilinear-measure.lock`, at
 `-O3` with no `-march=native`, which is how the rest of this repository is built.
 
@@ -10,7 +10,7 @@ three, machine otherwise quiet, under `flock /tmp/bilinear-measure.lock`, at
 The only per-element figure this repository had was **785 ns**, the *general*
 Givaro path at `⟨4,4,4⟩`. The GF(2) leaf is 6.0x to 39.6x faster than that path on
 the same work
-([`../exhaustive_search/gf2_leaf.h`](../../methods/bilinear_rank/exhaustive/gf2_leaf.h)), so timing
+([`gf2_leaf.h`](../../methods/bilinear_rank/exhaustive/gf2_leaf.h)), so timing
 a kernel against 785 ns would have flattered the card by up to 23x. So the first
 thing measured is the GF(2) leaf itself, on an **addressed** pool at 16x16 over
 GF(2), one core. Three host rows follow and they are three different claims:
@@ -73,9 +73,9 @@ which is the section below.
 packed leaf later the same day.** `is_rank_one` and the carried residual both
 landed on 2026-08-20, after which the scan never forms an element at all:
 **3.3 ns** an element in the search and **3.9 ns** on the walk
-([`../how-the-search-works/what-the-rewrites-were-worth.md`](../../writeup/how-the-search-works/what-the-rewrites-were-worth.md)),
+([`what-the-rewrites-were-worth.md`](../../writeup/how-the-search-works/what-the-rewrites-were-worth.md)),
 and **1.16 ns** for the residual change alone in a harness
-([`../how-the-search-works/what-to-wire.md`](../../writeup/how-the-search-works/what-to-wire.md)).
+([`what-to-wire.md`](../../writeup/how-the-search-works/what-to-wire.md)).
 Against the card's 0.24 ns that is roughly 5x to 14x, not the 544x
 [`README.md`](README.md)'s verdict quotes, which is why that verdict is
 **suspended** rather than retracted: every row here is true of the leaf it names
@@ -116,7 +116,7 @@ pool both times, 1.019 s both times, 0.290 s on the widest walk both times.
 those are untouched by anything that changed between the builds, so the spread is
 the chassis: the second run followed fifteen minutes of somebody else's
 single-core job, and 13% run to run from throttling alone is what
-[`../MEASURING.md`](../../MEASURING.md) documents this machine at. By that file's
+[`../../MEASURING.md`](../../MEASURING.md) documents this machine at. By that file's
 rule the minimum over runs is the closest estimate of the work, so each row above
 keeps its faster observation, which is the first run for every host row and a tie
 for the card. **The published ratios are the conservative ones**, taken where the

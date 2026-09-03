@@ -39,11 +39,11 @@
 /// walk at a leaf still costs `p^k`. `[yang2025]`'s search compresses at *every
 /// node* of its recursion, which is a large part of why it is fast, and this is
 /// the whole-tensor operation only; keys are
-/// [`../references.md`](../references.md).
+/// [`../../references.md`](../../references.md).
 ///
 /// **What was read, and what was not.** The idea to compress is that paper's and
 /// is cited to it. What was read here: this repository's entry for `[yang2025]`
-/// in [`../references.md`](../references.md), which is detailed about Algorithm 1
+/// in [`../../references.md`](../../references.md), which is detailed about Algorithm 1
 /// and the pruners, and the paragraph in
 /// [`tensor_flattening.h`](tensor_flattening.h) that named this gap. **Not read:
 /// the paper itself, at either venue**, so no numbered result of it is claimed

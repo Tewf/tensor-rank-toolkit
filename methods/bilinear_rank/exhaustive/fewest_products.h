@@ -16,12 +16,12 @@
 ///
 /// It starts at the flattening lower bound rather than at the span dimension,
 /// so no exponential search is ever asked about a `k` that
-/// [`tensor_flattening.h`](../linear_algebra/tensor_flattening.h) refutes in
+/// [`tensor_flattening.h`](../../../core/linear_algebra/tensor_flattening.h) refutes in
 /// microseconds.
 namespace bilinear_rank {
 
 /// The smallest `k` worth asking about: the largest lower bound
-/// [`rank_lower_bound`](../linear_algebra/rank_lower_bound.h) can prove without
+/// [`rank_lower_bound`](../../../core/linear_algebra/rank_lower_bound.h) can prove without
 /// searching, which is the flattening ranks and `[yang2025]`'s rank sum.
 ///
 /// Reported by the commands so a run says how much room is left between what a

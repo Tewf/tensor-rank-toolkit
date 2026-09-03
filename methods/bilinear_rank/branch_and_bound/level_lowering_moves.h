@@ -10,7 +10,7 @@
 ///
 /// **Which adjunctions can lower the cost, exactly.** Write `R[r]` for the span
 /// of the elements of `V` of rank at most `r`, as
-/// [`../descent_search/sorted_span.h`](../descent_search/sorted_span.h) does, and
+/// [`../greedy_heuristic/sorted_span.h`](../greedy_heuristic/sorted_span.h) does, and
 /// `W = V + <g>` for a rank-one `g` outside `V`. Setting
 /// `e_r = dim R[r](W) - dim R[r](V)`, Abel summation on the cost identity gives
 ///
@@ -38,7 +38,7 @@
 /// **What that does not do is remove the pool.** The count above is 8128 at rank
 /// 7, so the saving is in taking the *low-rank* elements of `V` and nothing else,
 /// which is a restriction and not an equivalence:
-/// [`../exhaustive_search/generating-candidates-from-the-span.md`](../exhaustive_search/generating-candidates-from-the-span.md)
+/// [`../exhaustive/generating-candidates-from-the-span.md`](../exhaustive/generating-candidates-from-the-span.md)
 /// settles the same question for the deficit and reaches the same wall.
 namespace bilinear_rank {
 
@@ -53,7 +53,7 @@ std::vector<Matrix> level_lowering_summands(const Field& field, const Matrix& ma
 /// is between 2 and `cutoff`, deduplicated.
 ///
 /// `element_ranks` is what
-/// [`span_element_ranks`](../descent_search/minimum_weight_basis.h) returns for
+/// [`span_element_ranks`](../greedy_heuristic/minimum_weight_basis.h) returns for
 /// the same slices, so the caller's own filtration pass is not repeated here.
 std::vector<Matrix> level_lowering_moves(const Field& field, const std::vector<Matrix>& slices,
                                          const std::vector<std::size_t>& element_ranks,

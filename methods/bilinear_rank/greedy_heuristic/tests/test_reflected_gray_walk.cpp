@@ -1,6 +1,6 @@
 /// The base-`p` reflected Gray order is an order on every string, and a ±1 one.
 ///
-/// The subspace walk in [`subspace_walk.h`](../../exhaustive_search/subspace_walk.h) rests entirely
+/// The subspace walk in [`subspace_walk.h`](../../exhaustive/subspace_walk.h) rests entirely
 /// on two properties of this successor, and neither is visible in the answers it
 /// produces: a leaf that skipped an element would report a subspace has no
 /// rank-one basis when it has one, and a leaf that moved two digits at a step

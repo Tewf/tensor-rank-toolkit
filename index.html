@@ -116,7 +116,7 @@
     </tbody>
   </table>
 
-  <p>Searching column supports stops finishing somewhere, and on a <span class="nowrap">&#10216;4,4,4&#10217;</span> operator it stops well before the answer: fourteen million subsets at weight six, four hundred and fifty-one million at weight eight. That one is answered by <strong>not searching</strong> &mdash; one linear programme per coordinate, in exact rationals, reaching a verified basis at <strong>100 nonzeros in a third of a second</strong>. It is an upper bound rather than a proof, and it reaches the proved minimum anyway on every operator where a proof exists, four to fifteen times faster than the search that proves it. Why it should is <a href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/matrix_sparsification/method/answering-without-searching.md">an open question</a>: the theorem that suggested it turns out not to apply to any operator measured.</p>
+  <p>Searching column supports stops finishing somewhere, and on a <span class="nowrap">&#10216;4,4,4&#10217;</span> operator it stops well before the answer: fourteen million subsets at weight six, four hundred and fifty-one million at weight eight. That one is answered by <strong>not searching</strong>: one linear programme per coordinate, in exact rationals, reaching a verified basis at <strong>100 nonzeros in a third of a second</strong>. It is an upper bound rather than a proof, and it reaches the proved minimum anyway on every operator where a proof exists, four to fifteen times faster than the search that proves it. Why it should is <a href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/methods/matrix_sparsification/method/answering-without-searching.md">an open question</a>: the theorem that suggested it turns out not to apply to any operator measured.</p>
 
   <p>And fewer nonzeros is not the same as fewer additions. Hand this exact stage's output to a common-subexpression pass and a raw scheme improves by 23%, two already-polished ones by 2% and 7%, and <strong>one operator gets worse</strong>. That is measured rather than expected, and it is the reason the two counts are reported separately.</p>
 
@@ -135,7 +135,7 @@ sparsify-operator out_L.sms                                 # 31 -&gt; 27 nonzer
       <span class="t">Source, fixtures and CI</span>
       <span class="d">C++20 on Givaro, MIT licensed. Thirteen command-line tools, and a test suite that asserts every count on this page in about two minutes.</span>
     </a>
-    <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/the-research-front/README.md">
+    <a class="card" href="https://github.com/Tewf/tensor-rank-toolkit/blob/main/writeup/the-research-front/README.md">
       <span class="tag">Context</span>
       <span class="t">Where the research front is</span>
       <span class="d">What the literature holds, which parts of it are implemented here, and what this library adds to it.</span>

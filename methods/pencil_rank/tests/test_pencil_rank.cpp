@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
                      static_cast<long long>(reported.proved) <= fixture.rank ? 1 : 0, 1);
 
         // The claim that makes the bound worth reporting. A bound above the rank
-        // would be a wrong answer wearing the word "bound".
+        // would be wrong outright, not merely a bound that happens to be loose.
         check::equal(label + ": and it does not exceed the rank",
                      static_cast<long long>(reported.over_closure) <= fixture.rank ? 1 : 0, 1);
         if (reported.exact) {

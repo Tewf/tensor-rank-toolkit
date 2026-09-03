@@ -19,7 +19,7 @@
 /// ([`tensor_flattening.h`](tensor_flattening.h)), the line and total rank
 /// sums ([`tensor_rank_sum.h`](tensor_rank_sum.h)), and Griesmer applied to the
 /// slice space read as a rank-metric code
-/// ([`../rank_metric_bound/rank_metric_bound.h`](../rank_metric_bound/rank_metric_bound.h)). They are kept as separate
+/// ([`../../methods/rank_metric_bound/rank_metric_bound.h`](../../methods/rank_metric_bound/rank_metric_bound.h)). They are kept as separate
 /// functions rather than folded together because they are separately testable,
 /// and because the flattening bound is polynomial time while the rank sums are not.
 ///

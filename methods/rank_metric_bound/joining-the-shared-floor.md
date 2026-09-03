@@ -6,10 +6,10 @@ which is why the per-axis entry points take the table and not the tensor, and wh
 this is **strictly cheaper than the floor already in use**.
 
 Both timed in one process, one core, fastest of three, under
-[`../MEASURING.md`](../../MEASURING.md): on `f3_3x6`, Griesmer **4.1 ms** against
+[`../../MEASURING.md`](../../MEASURING.md): on `f3_3x6`, Griesmer **4.1 ms** against
 `rank_lower_bound`'s **498 ms**; on `f2_3x8`, **0.9 ms** against **29.8 ms**. The
 difference is the line bound enumerating pairs where this reads the table once,
-and it confirms the 469 ms `../linear_algebra/tensor_rank_sum.h` records for
+and it confirms the 469 ms `../../core/linear_algebra/tensor_rank_sum.h` records for
 `f3_3x6` with process start included. On `gf16` the two are 0.017 and 0.027 ms,
 inside the 13% band, so that pair is not quoted as a ratio.
 
@@ -40,7 +40,8 @@ Three edits, all made:
 `evidence/reproduce/measure.py --check` reports that every published count still
 reproduces. `f2_5x5` is the only fixture whose floor changes, and no other file
 publishes a floor for it: the `12 <= rank <= 14` in `methods/satisfiability/results.json`,
-`methods/bilinear_rank/greedy_heuristic/known_ranks.md` and `writeup/the-research-front/where-we-stand.md` is the
+`evidence/benchmark_tensors/README.md` (then the heuristic's own
+known-ranks page) and `writeup/the-research-front/where-we-stand.md` is the
 exhaustive search's bracket, which this reaches rather than improves. That
 bracket was `13 <= rank <= 14` once `--target 12` was exhausted and is `13` since
 [`tighten-rank-bound`](../bilinear_rank/branch_and_bound/README.md) exhibited one; the sentence

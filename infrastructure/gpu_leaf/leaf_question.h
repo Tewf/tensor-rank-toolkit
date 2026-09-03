@@ -24,12 +24,12 @@ namespace gpu_leaf {
 /// vector and `right_masks[j]` the `columns`-bit pattern of the `j`th right
 /// one, so pool element `i * right_count + j` is their outer product and is
 /// derived rather than stored. That is the same index
-/// [`RankOnePool::at`](../descent_search/candidate_pool.h) uses.
+/// [`RankOnePool::at`](../../methods/bilinear_rank/candidate_pool.h) uses.
 ///
 /// `span_rows` is `dimension` rows of `words` words, in the order
 /// `SpanBasis::rows()` hands them over, which is the order the subspace walk
 /// reads its digits in. `pivots[j]` is the leading set bit of row `j`, which is
-/// the pivot [`Gf2SpanBasis`](../linear_algebra/gf2_span_basis.h) would find,
+/// the pivot [`Gf2SpanBasis`](../../core/linear_algebra/gf2_span_basis.h) would find,
 /// because the rows arrive already in reduced row echelon form.
 struct LeafQuestion {
     std::size_t rows = 0;

@@ -24,7 +24,7 @@
 ///
 /// ## What it is worth, measured
 ///
-/// Measured 2026-08-19 under [`../MEASURING.md`](../MEASURING.md): one core,
+/// Measured 2026-08-19 under [`../../../MEASURING.md`](../../../MEASURING.md): one core,
 /// fastest of three, on a machine whose throttle counters did not move across
 /// the runs. The number taken is the search's own `N nodes in S s`, which
 /// excludes process start-up and pool construction, so what is left is the tree
@@ -51,7 +51,7 @@
 /// and a bit. Walking the subspace gains more, and the cleanest evidence is the
 /// two 4x4 rows: **6.0x scanning against 16.2x walking, at one shape**. There
 /// the win is not the width at all. `gf2_is_rank_one` is one comparison per row
-/// where [`rank`](../linear_algebra/measures.h) is a Gaussian elimination, so
+/// where [`rank`](../../../core/linear_algebra/measures.h) is a Gaussian elimination, so
 /// those two differ by a factor of the shape and not by a factor of 64.
 ///
 /// **The general column moved on 2026-08-20 and these ratios are now upper
@@ -83,13 +83,13 @@
 /// answers wherever the pool is not the grid, but a search now reaches
 /// `by_carrying_a_residual` instead, so the scan rows understate the file by
 /// whatever that route is worth. Nothing here re-prices them: the measurement
-/// is a separate act under [`../MEASURING.md`](../MEASURING.md), and a number
+/// is a separate act under [`../../../MEASURING.md`](../../../MEASURING.md), and a number
 /// nobody took does not belong in a table of numbers somebody did.
 namespace bilinear_rank {
 
 /// Whether the leaf test has a GF(2) form for this field and shape.
 ///
-/// The width limit is [`gf2_row`](../linear_algebra/gf2_bits.h)'s: the rank-one
+/// The width limit is [`gf2_row`](../../../core/linear_algebra/gf2_bits.h)'s: the rank-one
 /// test reads a row as the low bits of one word. Sixteen columns is the widest
 /// shape this repository prices, the 4x4 slices of `<4,4,4>`.
 ///
@@ -225,7 +225,7 @@ class Gf2Leaf {
     /// index, ascending; `try_add` over them in that order visits what the
     /// sequential loop visited, in the order it visited it, and so keeps the
     /// same maps. That is the whole of why the answer is bit-identical:
-    /// [`../gpu_leaf/why-the-answer-is-the-same.md`](../gpu_leaf/why-the-answer-is-the-same.md).
+    /// [`../../../infrastructure/gpu_leaf/why-the-answer-is-the-same.md`](../../../infrastructure/gpu_leaf/why-the-answer-is-the-same.md).
     bool scanned_on_the_card(const ReducedBasis& span, std::size_t needed, SearchBudget* budget,
                              std::vector<Matrix>& found) const;
     bool walked_on_the_card(const ReducedBasis& span, std::size_t needed, std::size_t elements,

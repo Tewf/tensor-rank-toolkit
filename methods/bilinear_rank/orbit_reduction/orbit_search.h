@@ -13,10 +13,10 @@
 /// `[covanov2019, Alg. 3]`, `BDEZStab`, which recurses on a target subspace,
 /// its stabiliser and a target rank, and returns one representative per
 /// equivalence class. The plain search
-/// ([`exhaustive_search.h`](../exhaustive_search/exhaustive_search.h)) is
+/// ([`exhaustive_search.h`](../exhaustive/exhaustive_search.h)) is
 /// `[bdez2012, Alg. 1]`; this is the same decision, visiting one branch per
 /// orbit instead of one per candidate. Keys are
-/// [`../references.md`](../references.md).
+/// [`../references.md`](../../../references.md).
 ///
 /// What makes the quotient lossless is `[covanov2019, Prop. 14]`: if a rank-`r`
 /// decomposition of `T` meets the orbit `φ ∘ Stab(T)` at all, then some
@@ -56,7 +56,7 @@ namespace bilinear_rank {
 /// subtrees already in flight spend against the same counter, so that total is an
 /// upper bound and a tight `--node-limit` can turn a proof into an undecided.
 /// Measured, with the mitigation this search now carries too:
-/// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md).
+/// [`what-threads-change.md`](../exhaustive/what-threads-change.md).
 ///
 /// The split cannot be at the root the way the plain search's is. The plain
 /// search has one first choice per pool element, 225 at `⟨2,2,2⟩`; the quotient

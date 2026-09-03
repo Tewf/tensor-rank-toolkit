@@ -1,6 +1,6 @@
 # The other strand, where the finding is an absence
 
-[`../matrix_sparsification/`](../../methods/matrix_sparsification/README.md) implements
+[`../../methods/matrix_sparsification/`](../../methods/matrix_sparsification/README.md) implements
 `[karstadt2017]`'s alternative-basis construction, SPAA 2017 and JACM 67(1) 2020,
 [doi:10.1145/3364504](https://doi.org/10.1145/3364504), and `[beniamini2020]`'s
 sparsification built on top of it,
@@ -17,7 +17,7 @@ a thesis appendix. Read the claim narrowly in the other direction too. What was
 not found is an implementation of *these two papers' construction*, not an
 absence of sparsification code in general; `[plinopt]` is public, is the near
 neighbour in this problem area, and is already recorded in
-[`references.md`](../../references.md) as reaching sparsity by a different route.
+[`../../references.md`](../../references.md) as reaching sparsity by a different route.
 
 One distinction is worth a sentence, because the names sound adjacent and the
 adjacency is false. Those papers optimise **additions**, the leading coefficient
@@ -36,7 +36,7 @@ decomposition and then minimises `nnz` over a change of basis, with the rank hel
 fixed. It finds no common subexpressions, does no in-place accumulation, no
 Tellegen transposition and no compaction, and it emits no straight-line program.
 A tool that produces one is downstream of a decomposition and is a different job;
-the ones that do are in [`references.md`](../../references.md).
+the ones that do are in [`../../references.md`](../../references.md).
 
 **What this strand does promise is the minimum.** On `Grey-221`'s three operators
 the answer is **128** nonzeros, and 128 is the minimum over every invertible `V`
@@ -70,7 +70,7 @@ What is *not* found in the literature, in descending order of confidence:
    heuristic. That the bound is characteristic-free is written down nowhere.
 4. **A measurement rather than a method**: that minimising nonzeros can *cost*
    additions once common subexpressions are on the table, which
-   [`../matrix_sparsification/measured-with-other-tools/before-a-subexpression-pass.md`](../../methods/matrix_sparsification/measured-with-other-tools/before-a-subexpression-pass.md)
+   [`../../methods/matrix_sparsification/measured-with-other-tools/before-a-subexpression-pass.md`](../../methods/matrix_sparsification/measured-with-other-tools/before-a-subexpression-pass.md)
    shows going the wrong way on one operator of three schemes.
 
 **Read all four narrowly.** They rest on searches that found nothing, which is

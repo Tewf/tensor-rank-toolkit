@@ -19,7 +19,7 @@ std::vector<Matrix> rank_one_candidates(const Field& field, const std::vector<Ma
 /// class, `(p^length − 1)/(p−1)` of them.
 ///
 /// The pool below is the grid of outer products of two of these lists, and
-/// [its orbits](../orbit_reduction/pool_orbits.h) are computed on the lists rather than on the
+/// [its orbits](orbit_reduction/pool_orbits.h) are computed on the lists rather than on the
 /// grid, so they are worth having by name.
 std::vector<std::vector<int64_t>> normalised_vectors(const Field& field, std::size_t length);
 
@@ -34,12 +34,12 @@ std::vector<std::vector<int64_t>> normalised_vectors(const Field& field, std::si
 ///
 /// **The index is the same index.** `left * right_count + right` is the order
 /// `all_rank_one_maps` builds in and the order
-/// [`pool_orbits.h`](../orbit_reduction/pool_orbits.h) keys its orbit tables by,
+/// [`pool_orbits.h`](orbit_reduction/pool_orbits.h) keys its orbit tables by,
 /// so the two are interchangeable elementwise and
-/// [`tests/test_candidate_pool.cpp`](tests/test_candidate_pool.cpp) asserts it.
+/// [`greedy_heuristic/tests/test_candidate_pool.cpp`](greedy_heuristic/tests/test_candidate_pool.cpp) asserts it.
 ///
 /// Step 3 walks this rather than the grid on its unquotiented path, and so does
-/// `walk-scheme --from`, which is what [`improving_candidates`](minimise_rank.h)
+/// `walk-scheme --from`, which is what [`improving_candidates`](greedy_heuristic/minimise_rank.h)
 /// has a second overload for: on the 9x9 slices of `⟨3,3,3⟩` that is 16.7 MB of
 /// resident memory against 189.4 MB, measured both ways at the same cut-off.
 ///
@@ -134,7 +134,7 @@ bool has_same_row_space(const Field& field, const std::vector<Matrix>& known, co
 /// rest of the argument exists: replacing a candidate by a representative of
 /// its class only preserves the answer if the same automorphism is applied to
 /// the map being decomposed. Measuring the reduction is useful on its own, and
-/// [`tests/test_candidate_pool.cpp`](tests/test_candidate_pool.cpp) reports it.
+/// [`greedy_heuristic/tests/test_candidate_pool.cpp`](greedy_heuristic/tests/test_candidate_pool.cpp) reports it.
 std::vector<Matrix> row_space_representatives(const Field& field, const std::vector<Matrix>& pool);
 
 }  // namespace bilinear_rank

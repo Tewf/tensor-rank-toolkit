@@ -16,7 +16,7 @@ namespace pencil_rank {
 /// answered by these counts, and building the block matrix would only give
 /// something else to keep consistent. `[gantmacher1959, Ch. XII §5, Thm. 5]` is
 /// what says the four are enough: they determine the pencil up to strict
-/// equivalence. Keys are [`../references.md`](../references.md).
+/// equivalence. Keys are [`../../references.md`](../../references.md).
 struct KroneckerStructure {
     /// Degrees of a minimal basis of the pencil's null space, ascending. A zero
     /// here is a column that is zero in both slices.

@@ -15,13 +15,13 @@
 /// which a `Gf2Leaf` cannot be because that one hands back the independent maps
 /// it kept rather than everything that passed. And it separates the card from
 /// the representation: the leaf this repository ships derives its candidate
-/// through [`RankOnePool::at`](../descent_search/candidate_pool.h), which is 256
+/// through [`RankOnePool::at`](../../methods/bilinear_rank/candidate_pool.h), which is 256
 /// Givaro multiplications and a heap allocation, where a kernel derives it with
 /// two shifts. Timing the kernel against the shipped leaf alone would credit the
 /// GPU with a win that is partly the bit trick, so both are measured.
 ///
 /// The reductions and the rank-one test are
-/// [`gf2_bits.h`](../linear_algebra/gf2_bits.h)'s, unchanged, so nothing about
+/// [`gf2_bits.h`](../../core/linear_algebra/gf2_bits.h)'s, unchanged, so nothing about
 /// the answer is restated here.
 namespace gpu_leaf {
 
@@ -46,7 +46,7 @@ inline void packed_outer_product(const LeafQuestion& question, std::uint32_t lef
 }
 
 /// Whether a packed candidate lies in the span: the reduction
-/// [`Gf2SpanBasis`](../linear_algebra/gf2_span_basis.h) performs, written
+/// [`Gf2SpanBasis`](../../core/linear_algebra/gf2_span_basis.h) performs, written
 /// without its branch.
 ///
 /// **The branch is the reason this is not simply a call into that class.** Which

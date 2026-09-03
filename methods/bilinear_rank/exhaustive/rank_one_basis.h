@@ -44,7 +44,7 @@ namespace bilinear_rank {
 ///
 /// Templated on where the candidates come from, so the same code serves a
 /// materialised pool and an addressed one: see `Materialised` and `Addressed` in
-/// [`candidate_pool.h`](../descent_search/candidate_pool.h). Instantiated for
+/// [`candidate_pool.h`](../candidate_pool.h). Instantiated for
 /// exactly those two in the source, so the definition stays out of this header.
 ///
 /// Note that the cheaper of the two routes above, walking the subspace, touches

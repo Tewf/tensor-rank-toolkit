@@ -35,4 +35,4 @@ together: on F2 5×5 it spent 0.0985 s confirming the 14 step 2 already had. The
 range behind that is 36 to 189 times and it is **not quoted to two digits**,
 because steps 1 and 2 are now 0.9 ms to 23.8 ms and a hand run moved one
 fixture's ratio from 189 to 85 with nothing changed in the code
-([`../MEASURING.md`](../../../MEASURING.md)).
+([`../../../MEASURING.md`](../../../MEASURING.md)).

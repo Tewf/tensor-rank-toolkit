@@ -11,7 +11,7 @@
 /// `[dantzig1951, Ch. XXI]`, whose own summary is that it constructs *"first a
 /// feasible, and then a maximum feasible, solution"*; the two-phase form with
 /// an explicit phase I, which is what runs here, is `[dantzig1955, p. 193]`.
-/// Keys are [`../references.md`](../references.md).
+/// Keys are [`../../references.md`](../../references.md).
 ///
 /// The pivoting rule is `[bland1977, Thm. 1.1]`: under the smallest-subscript
 /// choice on both the entering and the leaving variable, the simplex method

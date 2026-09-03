@@ -1,6 +1,6 @@
 # Measuring a number taken on the card
 
-[`../MEASURING.md`](../../MEASURING.md) is the protocol for every timing in this
+[`../../MEASURING.md`](../../MEASURING.md) is the protocol for every timing in this
 repository, and none of it transfers to a kernel unexamined. Four things differ
 and each is a rule, with a fifth that is not about timing at all.
 

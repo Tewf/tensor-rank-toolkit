@@ -6,7 +6,8 @@
 /// and print what it cost.
 ///
 /// Both strands have commands, so the one place they can share a header from is
-/// the root. Four copies of the same three lines is what this replaces.
+/// infrastructure/, the layer beneath both. Four copies of the same three lines
+/// is what this replaces.
 namespace cli {
 
 using Clock = std::chrono::steady_clock;

@@ -15,9 +15,10 @@ The two stages are the only optimisation and they matter: `q` does not depend on
 `k`, so sharing it saves `r·n₁n₂(n₃−1)` conjunctions against encoding each
 triple product directly.
 
-A solver without native XOR expands each parity into `r−1` fresh variables and
-`4(r−1)` clauses. That is `--plain-cnf`, and it is why the parities are kept
-apart from the clauses until the file is written.
+A solver without native XOR expands each parity into `r−1` fresh variables,
+`4(r−1)` clauses, and one further clause fixing the chain to the wanted value.
+That is `--plain-cnf`, and it is why the parities are kept apart from the
+clauses until the file is written.
 
 Measured, with `--emit-cnf`:
 

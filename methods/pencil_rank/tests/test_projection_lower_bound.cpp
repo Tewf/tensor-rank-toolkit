@@ -1,4 +1,4 @@
-/// The projection bound: sound, cheap, and beaten by what this repository
+/// The projection bound: sound, cheap, and weaker than what this repository
 /// already has.
 ///
 /// Asserted here is the only property that must hold, soundness: the bound never

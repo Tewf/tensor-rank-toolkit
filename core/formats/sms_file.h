@@ -35,8 +35,8 @@ namespace formats {
 /// Write the right letter because it tells a reader where the entries live, not
 /// because anything downstream will catch it.
 ///
-/// Enables interchange with the exact-linear-algebra ecosystem: LinBox, Givaro,
-/// and external solvers all speak this format. What was measured
+/// This is the interchange format with the exact linear algebra ecosystem:
+/// LinBox, Givaro and PLinOpt all speak it. What was measured
 /// travelling each way, and the four ways to get a failure that is not about SMS,
 /// is [`interchange/`](interchange/README.md).
 linear_algebra::RationalMatrix read_sms(std::istream& input);
@@ -49,7 +49,7 @@ linear_algebra::RationalMatrix read_sms_file(const std::string& path);
 /// The field is a parameter because the file does not carry it: this is the
 /// reading half of `write_sms(std::ostream&, const linear_algebra::ModularMatrix&)`, which had
 /// none, and it is how a published algorithm becomes a tensor in
-/// [`operators_to_tensor_main.cpp`](../descent_search/commands/operators_to_tensor_main.cpp).
+/// [`operators_to_tensor_main.cpp`](../../methods/bilinear_rank/commands/operators_to_tensor_main.cpp).
 ///
 /// `4/9` is reduced rather than refused, since a fast algorithm's operators are
 /// full of ninths and mod 2 a ninth is 1. A denominator that vanishes is refused:

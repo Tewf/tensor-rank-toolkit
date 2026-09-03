@@ -14,3 +14,7 @@ orders have standard names that predate this repository by a decade.
 
 Our names were invented here, which is why three searches for them returned
 nothing: zero results meant the query was wrong, not that nothing existed.
+
+The ascending sweep often needs only its first question: on two of the seven
+fixtures recorded in [`the-unimplemented-schedule.md`](the-unimplemented-schedule.md)
+it stops in 0.006 s.

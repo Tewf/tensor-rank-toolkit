@@ -27,7 +27,7 @@
 /// cannot be checked against a sequential scan that would take an hour. What
 /// makes the second trustworthy is that the first passed on the same kernel.
 ///
-/// Every timing here follows [`../MEASURING.md`](../MEASURING.md): one core
+/// Every timing here follows [`../../MEASURING.md`](../../MEASURING.md): one core
 /// where it says one core, fastest of three, on a quiet machine, under
 /// `flock /tmp/bilinear-measure.lock`.
 namespace {
@@ -354,7 +354,7 @@ void measure_the_walk() {
 
 /// Dimension 31 is the widest subspace `⟨4,4,4⟩` ever walks: past it `2^dim`
 /// exceeds the 4 294 836 225 maps of the pool and
-/// [`rank_one_basis.cpp`](../exhaustive_search/rank_one_basis.cpp) scans
+/// [`rank_one_basis.cpp`](../../methods/bilinear_rank/exhaustive/rank_one_basis.cpp) scans
 /// instead.
 ///
 /// The card alone, because one core walking it is over three minutes and

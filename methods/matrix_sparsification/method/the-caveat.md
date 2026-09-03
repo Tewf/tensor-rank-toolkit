@@ -1,7 +1,7 @@
 # The caveat
 
 These count **field operations**. Over `Q` those are not constant time; see
-[the exact layer](../../linear_algebra/costs.md#the-caveat-that-matters-not-all-field-operations-cost-the-same).
+[the exact layer](../../../core/linear_algebra/costs.md#the-caveat-that-matters-not-all-field-operations-cost-the-same).
 Numerators and denominators grow through elimination, so wall-clock grows faster
 than the operation counts above. It has not bitten yet at 7×4 with entries in
 ninths; it would on anything substantial. On the 23×9 `Grey-221` operators the

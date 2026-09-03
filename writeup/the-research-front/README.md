@@ -78,4 +78,4 @@ One file per question, then one per instrument, then where that leaves us.
 | [`do-the-counters-agree.md`](do-the-counters-agree.md) | whether their `work` and our `nodes` count the same event: they do, and closing it corrected one of the figures above |
 
 Full citations, with what each contributes:
-[`../references.md`](../../references.md).
+[`../../references.md`](../../references.md).

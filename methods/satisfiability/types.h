@@ -6,7 +6,7 @@
 ///
 /// Håstad proved it in 1990: deciding the rank of a three-dimensional tensor is
 /// NP-complete over every finite field, and NP-hard over the rationals
-/// (`[hastad1990]`; keys are [references.md](../references.md)). That is a
+/// (`[hastad1990]`; keys are [references.md](../../references.md)). That is a
 /// statement with two directions, and this folder runs both of them.
 ///
 /// - [`formula_to_tensor.h`](formula_to_tensor.h) is the hard direction. Any
@@ -18,7 +18,7 @@
 ///   by enumeration.
 ///
 /// The second is why this exists at all. The
-/// [exhaustive search](../exhaustive_search/exhaustive_search.h) is complete and
+/// [exhaustive search](../bilinear_rank/exhaustive/exhaustive_search.h) is complete and
 /// pays for it: its own `method/` costs F₂ 5×5 at twelve products at seven
 /// hours. A solver answers questions of that shape for a living.
 namespace satisfiability {

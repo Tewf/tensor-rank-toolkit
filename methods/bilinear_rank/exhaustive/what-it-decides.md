@@ -1,6 +1,6 @@
 # What the exact search decides
 
-The expensive direction, and what it proves. What the descent reaches is in
+The expensive direction, and what it proves. What the heuristic reaches is in
 [`../greedy_heuristic/README.md`](../greedy_heuristic/README.md); the guarantees
 each step carries are in
 [`../greedy_heuristic/correctness.md`](../greedy_heuristic/correctness.md).
@@ -15,7 +15,7 @@ each step carries are in
 
 This library closes 5×5 from both sides: the exhaustive search rules out 12
 products, which puts the rank at 13 or more, and the incumbent search exhibits 13.
-It was `13 ≤ rank ≤ 14` until 2026-08-21, the descent reaching only 14 and the 13
+It was `13 ≤ rank ≤ 14` until 2026-08-21, the heuristic reaching only 14 and the 13
 being `[bdez2012]`'s. **Nothing on this page moved**; what closed the map is a
 construction, which this search cannot make and does not have to.
 

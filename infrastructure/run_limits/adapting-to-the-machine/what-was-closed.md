@@ -21,7 +21,7 @@ already there, already correct, and already documented.
 
 **`tighten-rank-bound` gained `--threads`, and a loop for it to reach.** The
 incumbent search costs one `minimum_weight_basis_with` per surviving move at every
-node. The identical call `descent_search` has spread over cores for months. The
+node. The identical call `greedy_heuristic` has spread over cores for months. The
 node loop above it cannot be threaded (the incumbent decides what the next node
 prunes), and neither can the filter that decides which moves are children (a
 `std::set` of residues, where offering order decides which of two equal residues
@@ -40,7 +40,7 @@ buffer and all; the parallel path gives each item its own coefficients.
 rather than repeated.** `--plateau 3` on `⟨2,2,2⟩` costs **20.67 s at one worker,
 20.85 s at four and 20.84 s at twelve**, identical counts throughout. The only
 loop that could take workers is one `minimum_weight_basis_with` per candidate per
-state, the same call `descent_search` already spreads, but that run is 200 003
+state, the same call `greedy_heuristic` already spreads, but that run is 200 003
 states at **103 µs each** and `parallel_for` creates and joins its workers on
 every call, **87 µs for seven of them** here. One call a state would add most of a
 state to every state. Spreading it wants a persistent pool, a primitive nothing

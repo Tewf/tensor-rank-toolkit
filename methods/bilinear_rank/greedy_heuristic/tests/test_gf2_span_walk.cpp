@@ -12,7 +12,7 @@
 /// all three and a wrong answer from any of them is a published number that
 /// nobody would question: every rank of a span, the minimum-weight basis, and
 /// the basis with one candidate adjoined, which is the call
-/// [`../../incumbent_search/cost_first_search.cpp`](../../incumbent_search/cost_first_search.cpp)
+/// [`../../branch_and_bound/cost_first_search.cpp`](../../branch_and_bound/cost_first_search.cpp)
 /// makes once per child and the only one that exercises the floor under the
 /// unranked half.
 ///

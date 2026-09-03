@@ -14,9 +14,9 @@
 /// types: the pool's two vector lists, and a span to test membership in.
 ///
 /// Nothing here is a second implementation of anything. The vector lists are
-/// [`normalised_vectors`](../descent_search/candidate_pool.h)'s, so the index a
+/// [`normalised_vectors`](../../methods/bilinear_rank/candidate_pool.h)'s, so the index a
 /// kernel derives its candidate from is the index `RankOnePool::at` would have
-/// used, and the packing is [`gf2_pack`](../linear_algebra/gf2_bits.h)'s.
+/// used, and the packing is [`gf2_pack`](../../core/linear_algebra/gf2_bits.h)'s.
 namespace gpu_leaf {
 
 /// A vector of GF(2) entries as the low bits of one word.

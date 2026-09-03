@@ -16,7 +16,7 @@
 /// built and both get searched, so the work below them is repeated once per orbit
 /// element. **Nothing in this repository deduplicated up to the group**, and
 /// `[bdez2012]` §4.5 and `[covanov2019]` Algorithm 7 both say duplicates have to
-/// go, neither implementing it. Keys are [references.md](../references.md).
+/// go, neither implementing it. Keys are [references.md](../../../references.md).
 ///
 /// The standard fix is **McKay canonical augmentation** (`[mckay1998]`, the `nauty`
 /// lineage): give every object a **canonical parent**, computed from the object
@@ -99,7 +99,7 @@ struct EnumerationReport {
 /// the thread count. `emitted`, `distinct`, `nodes` and `canonisations` are
 /// therefore identical at one thread and at twelve, asserted in
 /// `tests/test_canonical_augmentation.cpp`; contrast
-/// [`what-threads-change.md`](../exhaustive_search/what-threads-change.md), where
+/// [`what-threads-change.md`](../exhaustive/what-threads-change.md), where
 /// the shared budget makes a thread count visible in a verdict. `stop_at_first`
 /// is excluded and stays sequential, because a walk that stops early is exactly
 /// the case the invariance argument does not cover.

@@ -6,7 +6,7 @@
 Re-run 2026-08-21 against PLinOpt at `5b16d98`, built from source on LinBox
 1.7.0 and Givaro 4.2.0 from the Ubuntu 24.04 archive. All four rows still hold,
 word for word. Naming the version is not ceremony: this table is the only claim
-here that depends on somebody else's code, so it is the only one that can go
+here that depends on code outside this repository, so it is the only one that can go
 stale without anything in this repository changing.
 
 | fixture | products | shapes | PMchecker |
@@ -16,8 +16,8 @@ stale without anything in this repository changing.
 | `f2_5x5` | 14 | L 14x5, R 14x5, P 9x14 | `SUCCESS: correct 4o4o8 ... modulo 2` |
 | `f3_3x6` | 10 | L 10x3, R 10x6, P 8x10 | `SUCCESS: correct 2o5o7 ... modulo 3` |
 
-He derives the `1o1o2` and `4o4o8` degree labels from the matrix dimensions
-alone, with no knowledge of the fixture, and they match it. So **an outside checker
+`PMchecker` derives the `1o1o2` and `4o4o8` degree labels from the matrix
+dimensions alone, with no knowledge of the fixture, and they match it. So **an outside checker
 independently confirms the published 14 on `f2_5x5` and 10 on `f3_3x6`**, which
 is a stronger statement than our own `recovers_map` makes: that one checks our
 arithmetic against our arithmetic.

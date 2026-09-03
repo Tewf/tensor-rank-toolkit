@@ -15,7 +15,7 @@
 /// and this file says nothing about that. It is the same enumeration of the
 /// same span in the same order, with a matrix held as bits in machine words
 /// instead of as one `int64_t` an entry. It is the precedent
-/// [`../exhaustive_search/gf2_leaf.h`](../exhaustive_search/gf2_leaf.h) set for
+/// [`../exhaustive/gf2_leaf.h`](../exhaustive/gf2_leaf.h) set for
 /// the leaf of the exact search, applied to the two functions the incumbent
 /// search spends its life inside.
 ///
@@ -86,7 +86,7 @@
 /// `flock /tmp/bilinear-measure.lock`. Those seconds are measurements.
 ///
 /// **The unstarred rows are not.** They were taken on 2026-08-22 at load 2.5 to
-/// 5.0, which [`../MEASURING.md`](../MEASURING.md) abandons above 1.0: another
+/// 5.0, which [`../../../MEASURING.md`](../../../MEASURING.md) abandons above 1.0: another
 /// session held two of the twelve cores throughout and waiting it out was not
 /// available then. The three attempts of the two paths were **interleaved**
 /// rather than run in two blocks, so the neighbour is shared between the columns
@@ -108,9 +108,9 @@
 /// the two paths to one answer.
 ///
 /// **Nothing here is a second bit representation.**
-/// [`../linear_algebra/gf2_bits.h`](../linear_algebra/gf2_bits.h) already had
+/// [`../../../core/linear_algebra/gf2_bits.h`](../../../core/linear_algebra/gf2_bits.h) already had
 /// the packing, the exclusive or and the row reader, and
-/// [`../linear_algebra/gf2_span_basis.h`](../linear_algebra/gf2_span_basis.h)
+/// [`../../../core/linear_algebra/gf2_span_basis.h`](../../../core/linear_algebra/gf2_span_basis.h)
 /// already had the reduced row echelon form the greedy asks for. One primitive
 /// was missing and was added there rather than here: `gf2_rank`, because the
 /// leaf only ever needed to know whether a rank was one, and step 1 needs the
@@ -128,7 +128,7 @@ namespace bilinear_rank {
 
 /// Whether the span walk has a GF(2) form for this field and these slices.
 ///
-/// The width limit is [`gf2_row`](../linear_algebra/gf2_bits.h)'s, which
+/// The width limit is [`gf2_row`](../../../core/linear_algebra/gf2_bits.h)'s, which
 /// `gf2_rank` reads a row through: a row is the low bits of one word, so a
 /// slice may have any number of rows and at most 64 columns. The 12x20 slices
 /// of `<3,4,5>` and the 16x16 slices of `<4,4,4>` are both well inside it.

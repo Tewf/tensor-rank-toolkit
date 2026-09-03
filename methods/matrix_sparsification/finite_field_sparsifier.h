@@ -26,7 +26,7 @@
 /// does not depend on how ties are broken.
 ///
 /// **This is the same algorithm as
-/// [`../descent_search/minimum_weight_basis.h`](../descent_search/minimum_weight_basis.h)
+/// [`../bilinear_rank/greedy_heuristic/minimum_weight_basis.h`](../bilinear_rank/greedy_heuristic/minimum_weight_basis.h)
 /// under a different weight.** There the ground set is `span(T)` and the weight
 /// of an element is its *rank*; here it is the operator's column space and the
 /// weight is its *number of nonzeros*. One matroid, two costs, and the same

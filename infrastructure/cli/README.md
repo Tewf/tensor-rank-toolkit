@@ -17,7 +17,7 @@ In this folder:
   [`symmetry_argument.h`](symmetry_argument.h): the two typed values, `2G`
   and `matmul 2 2 2`.
 - [`timing.h`](timing.h): the one clock every printed duration comes from.
-- [`tunables.h`](tunables.h): reads [`../tunables.conf`](../../tunables.conf),
+- [`tunables.h`](tunables.h): reads [`../../tunables.conf`](../../tunables.conf),
   the numbers a run is bounded by.
 - [`interrupt_cleanup.h`](interrupt_cleanup.h): removes a scratch file when a
   signal cuts a run short.

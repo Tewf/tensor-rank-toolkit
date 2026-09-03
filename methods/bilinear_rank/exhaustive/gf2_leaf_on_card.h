@@ -8,8 +8,8 @@
 
 /// How a card offers to answer a GF(2) leaf, and how the search asks it to.
 ///
-/// The seam is here rather than in [`infrastructure/gpu_leaf/`](../gpu_leaf/gpu_leaf.h) for the
-/// reason [`../run_limits/device.h`](../run_limits/device.h)'s is in
+/// The seam is here rather than in [`infrastructure/gpu_leaf/`](../../../infrastructure/gpu_leaf/gpu_leaf.h) for the
+/// reason [`../../../infrastructure/run_limits/device.h`](../../../infrastructure/run_limits/device.h)'s is in
 /// `run_limits`: the search must be able to ask on a machine that has no card
 /// and a build that has no kernels, and get "no" rather than a link error. A
 /// build with `nvcc` registers a backend and a build without one registers
@@ -19,7 +19,7 @@
 /// kernel, a span wider than a kernel holds, a leaf under the launch floor: all
 /// of those are the host's job and none of them is news. What *is* news is a
 /// CUDA call that failed, which is recorded by
-/// [`note_card_failure`](../descent_search/card_failure.h) and printed once by
+/// [`note_card_failure`](../../../infrastructure/run_limits/card_failure.h) and printed once by
 /// the command, because a card that silently stopped being used would otherwise
 /// show up as a run that got mysteriously slower. That record is shared with
 /// every seam that offers work to a card, because there is one card.
@@ -59,7 +59,7 @@ struct PackedLeaf {
 /// **`survivors` comes back ascending or not at all.** The greedy the host runs
 /// over it is order-dependent, so ascending index order is what makes the maps
 /// it keeps the same maps the sequential loop kept: see
-/// [`../gpu_leaf/why-the-answer-is-the-same.md`](../gpu_leaf/why-the-answer-is-the-same.md).
+/// [`../../../infrastructure/gpu_leaf/why-the-answer-is-the-same.md`](../../../infrastructure/gpu_leaf/why-the-answer-is-the-same.md).
 /// A backend that cannot report every survivor of the range returns false and
 /// leaves `survivors` untouched, because a truncated list is not a short answer,
 /// it is a wrong one.

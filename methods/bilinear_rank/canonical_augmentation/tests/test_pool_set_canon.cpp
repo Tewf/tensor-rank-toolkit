@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     //
     // The oracle is deliberately **not** the whole-group walk this replaced, which
     // is retired to `rejected-experiments`. It is the closed form from the A_3
-    // quiver in `../orbit_reduction/pool_orbits.h`, derived from Gabriel's theorem
+    // quiver in `../../orbit_reduction/pool_orbits.h`, derived from Gabriel's theorem
     // and needing no group built at all. Two independent routes agreeing is worth
     // more than a fast one agreeing with the slow one it exists to retire.
     std::vector<std::vector<std::size_t>> names;

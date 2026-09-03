@@ -22,7 +22,7 @@
 /// alone.
 ///
 /// The same object exists a layer up, as `Algorithm` in
-/// [`../descent_search/algorithm_recovery.h`](../descent_search/algorithm_recovery.h):
+/// [`../../methods/bilinear_rank/algorithm_recovery.h`](../../methods/bilinear_rank/algorithm_recovery.h):
 /// `left` and `right` are the axis 0 and axis 1 factors as they stand, and
 /// `decode` is the axis 2 factor transposed, because an algorithm is read by
 /// output and a decomposition by term. Nothing converts between them here. This

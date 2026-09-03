@@ -1,7 +1,7 @@
 /// The price model against the sweeps it was corrected on.
 ///
 /// **No timing is taken here.** The seconds below were measured once, by hand,
-/// under [`../../MEASURING.md`](../../MEASURING.md), and are constants in this
+/// under [`../../../../MEASURING.md`](../../../../MEASURING.md), and are constants in this
 /// file; what runs is the model's arithmetic against them. That is deliberate:
 /// `MEASURING.md` says no test may fail on a clock, and a model held to recorded
 /// observations is exactly as reproducible as the observations.

@@ -2,10 +2,16 @@ NOTICE: scope of the MIT licence, and credit for material that is not mine
 ==========================================================================
 
 The MIT LICENSE in this repository covers **my own work only**: the C++ in
-core/linear_algebra/, core/formats/, infrastructure/cli/, infrastructure/testing/,
-infrastructure/run_limits/, methods/bilinear_rank/map_construction/, methods/bilinear_rank/greedy_heuristic/, methods/bilinear_rank/exhaustive/, methods/bilinear_rank/orbit_reduction/, methods/bilinear_rank/flip_graph/,
-methods/bilinear_rank/branch_and_bound/, methods/integer_programme/, methods/matrix_sparsification/,
-methods/satisfiability/, methods/curve_bounds/, methods/rank_metric_bound/, methods/bilinear_rank/canonical_augmentation/,
+core/linear_algebra/, core/formats/, infrastructure/cli/,
+infrastructure/testing/, methods/bilinear_rank/ (the shared vocabulary at
+the group root),
+infrastructure/run_limits/, methods/bilinear_rank/map_construction/,
+methods/bilinear_rank/greedy_heuristic/, methods/bilinear_rank/exhaustive/,
+methods/bilinear_rank/orbit_reduction/, methods/bilinear_rank/flip_graph/,
+methods/bilinear_rank/branch_and_bound/, methods/integer_programme/,
+methods/matrix_sparsification/,
+methods/satisfiability/, methods/curve_bounds/, methods/rank_metric_bound/,
+methods/bilinear_rank/canonical_augmentation/,
 methods/pencil_rank/, methods/canonical_factorisation/ and methods/bilinear_rank/search_plan/, the CUDA in
 infrastructure/gpu_leaf/, the Python in web_interface/ and evidence/reproduce/,
 together with the fixtures and the site. One directory of fixtures is the exception and is not

@@ -22,5 +22,5 @@ int main() {
 }
 ```
 
-Why it sits at the root instead of inside a module: the top of
-[`CMakeLists.txt`](CMakeLists.txt).
+Why it sits directly under `infrastructure/` instead of inside a module: the
+top of [`CMakeLists.txt`](CMakeLists.txt).

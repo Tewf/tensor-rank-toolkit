@@ -9,7 +9,7 @@
 ///
 /// It is an instrument and not a tool. It asks nothing about a tensor, takes no
 /// map, and answers no question in
-/// [`OPTIONS/one-question-per-command.md`](../OPTIONS/one-question-per-command.md).
+/// [`OPTIONS/one-question-per-command.md`](../../OPTIONS/one-question-per-command.md).
 /// What it prints is this machine and this working directory.
 ///
 /// **A flag beats the file beats the default**, and the `source` column says

@@ -52,7 +52,7 @@ void usage() {
 ///
 /// **The one setting this command has, and it is here because the refusal
 /// already named it.** Every constructor below is cubic in numbers this takes
-/// without a ceiling — `--matmul 2 100 100 100` is 7.2 TiB — and `require_room`
+/// without a ceiling (`--matmul 2 100 100 100` is 7.2 TiB), and `require_room`
 /// now prices them, ending its sentence "Raise it with --max-memory if the
 /// machine has the room". A command that printed that and then refused the flag
 /// would be worse than one that never mentioned it.

@@ -2,7 +2,7 @@
 
 The least rank each argument fails to refute, one core, fastest of three, from
 `build/methods/rank_metric_bound/tests/test_rank_metric_bound fixtures` under
-[`../MEASURING.md`](../../MEASURING.md). The `flattening + rank sums` column is what
+[`../../MEASURING.md`](../../MEASURING.md). The `flattening + rank sums` column is what
 `rank_lower_bound` returned before Griesmer joined it; `floor today` is what a
 caller gets now, which is that column and the Griesmer one under one `max`; `k` and `d` are
 the deciding axis's, printed by that same command. Cost is
@@ -13,7 +13,7 @@ quoted to two decimals, so read them as an order of magnitude and not as a
 figure; `f3_3x6`, `matmul_3x3x3` and the three `[wang2026]` formats are the only
 rows far enough above the noise floor to compare with anything. The six rows that
 arrived with
-[`../fixtures/published-targets.md`](../../evidence/fixtures/published-targets.md) were taken
+[`../../evidence/fixtures/published-targets.md`](../../evidence/fixtures/published-targets.md) were taken
 in a later run of the same command, which moved the other eighteen by less than
 the 13% the chassis varies by on its own, so those stand as first taken.
 

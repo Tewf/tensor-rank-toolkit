@@ -40,7 +40,7 @@ out is what let the oracles leave, and it is what
 Theorem 3.22 proves the bottom-up one optimal. They are not wrong and they are
 not rejected: they are superseded by a method that returns the same answer two
 orders of magnitude faster.
-[`../positioning/the-sparsification-strand.md`](../../writeup/positioning/the-sparsification-strand.md)
+[`../../writeup/positioning/the-sparsification-strand.md`](../../writeup/positioning/the-sparsification-strand.md)
 claims this may be the only public implementation of that paper's construction,
 and that claim rests on code that now lives on a branch rather than in `main`.
 **Read it as "in this repository", not "in this working tree".**

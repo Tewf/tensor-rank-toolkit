@@ -15,7 +15,7 @@ namespace bilinear_rank {
 namespace {
 
 /// Every vector of `GF(p)^length`, counting with the first coordinate fastest,
-/// which is the order [`coefficient_vector`](../descent_search/span_enumeration.h)
+/// which is the order [`coefficient_vector`](../greedy_heuristic/span_enumeration.h)
 /// already fixes for spans. Used for `b`, which is not normalised: `bᵀa = 1`
 /// pins the scalar that `a`'s normalisation leaves free.
 ///

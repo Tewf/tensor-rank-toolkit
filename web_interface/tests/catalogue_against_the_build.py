@@ -45,7 +45,7 @@ NOT_TOOLS = {
     # typed map. Offering it with two of its three operands missing would be
     # worse than not offering it. A limit of the console, named here so that it
     # is a decision rather than a drift.
-    "methods/bilinear_rank/greedy_heuristic/operators-to-tensor",
+    "methods/bilinear_rank/operators-to-tensor",
     # An instrument that takes no map: it prints what this machine and this
     # working directory bound a run to. The console shows its output in the run
     # pane instead of offering it as a tool, because there is no question to ask
@@ -111,8 +111,13 @@ def _the_tools(setup, build):
     offered = {tool["binary"] for tool in setup["tools"]}
     missing = sorted(name for name in offered if not (build / name).is_file())
 
-    built = {str(path.relative_to(build)) for path in build.glob("*/*")
-             if path.is_file() and os.access(path, os.X_OK)}
+    # Recursive on purpose: the tree nests since the regrouping, and the
+    # two-level glob this replaced matched nothing there, which made this
+    # check pass over an empty set. Test binaries live under tests/ and are
+    # not commands, so that part is pruned, as CMake's own machinery is.
+    built = {str(path.relative_to(build)) for path in build.rglob("*")
+             if path.is_file() and os.access(path, os.X_OK)
+             and "CMakeFiles" not in path.parts and "tests" not in path.parts}
     unoffered = sorted(built - offered - NOT_TOOLS)
     return [
         ("every tool offered is a binary that is there" + _naming(missing),
