@@ -58,6 +58,20 @@ sparsify-operator out_L.sms                         # then the additions
 curve-bounds --solvers                              # which backends this machine has
 ```
 
+## A published algorithm, read in and put to work
+
+```sh
+operators-to-tensor stem_L.sms stem_R.sms stem_P.sms -q 2 > map.tensor
+sparsify-operator stem_L.sms          # fewer additions in someone else's scheme
+decide-rank map.tensor --target k     # or any tool: it is a map like any other
+```
+
+The shipped example: PLinOpt's own Strassen triple in
+[`../fixtures/plinopt/`](../fixtures/plinopt/README.md) rebuilds
+`fixtures/matmul_2x2x2.tensor` entry for entry, which the test suite asserts.
+The whole flow, and the differences that bite:
+[`../formats/interchange/bringing-an-algorithm-in.md`](../formats/interchange/bringing-an-algorithm-in.md).
+
 ## Timing one choice against another on one question
 
 A comparison across two questions is not a comparison, so four flags exist to
