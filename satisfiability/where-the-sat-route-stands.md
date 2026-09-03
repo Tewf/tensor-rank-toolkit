@@ -75,14 +75,13 @@ and [`shaped-encodings/plan.md`](shaped-encodings/plan.md).
   searched — a real no-find, verified against the logs), where `xnfsat` finds 6/10. So the
   regime table's shaped row holds against Gauss too: `xnfsat` ≻ everything, including CMS.
 
-## Measurement status — the queue that settled the above
+## Measurement status — the queue that settled the above, drained
 
-All the informative cells are in and folded above (experiment 0 in both regimes: CMS+Gauss
-dominated on the fixtures and 0/10 on the challenges). What remains is negative-confirmation
-bookkeeping: the closure-wave survivors a missing binary voided on 2026-09-01, completing
-the honest record — **12 of 17 re-run, every one 0 finds at 900 s**; the last five land at
-1-way (a 2-way run hit the 95 C throttle). Raw cells in
-`work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/summary.txt`.
+Complete. Experiment 0 landed in both regimes (CMS+Gauss dominated on the fixtures, 0/10 on
+the challenges), and the closure-wave survivors a missing binary voided on 2026-09-01 are
+re-run: **all 17, across 25 runs at 900 s, every one a no-find** — the honest wave record is
+closed with zero finds, as the campaign predicted the unbuilt devices would leave it. Raw
+cells in `work/2026-09-01_shaped-encodings/out/2026-09-02-queue2/summary.txt`.
 
 ## Owed, not yet built
 
