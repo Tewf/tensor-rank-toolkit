@@ -9,15 +9,15 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - **`start-here.md`, a task-first front door in plain words**: the visitor
-  who arrives with one want — a tensor and its decomposition — and none of
+  who arrives with one want (a tensor and its decomposition) and none of
   the field's vocabulary now gets the file format shown whole, the one
   command per want, and the three words defined where they are used, without
   the theory. Both READMEs point at it first. And every top-level folder now
-  carries a README: nine were signposts missing — `cli/`,
+  carries a README saying what is in the folder, with an example of use
+  whose output was produced rather than typed; nine had none: `cli/`,
   `exhaustive_search/`, `map_construction/`, `OPTIONS/`,
-  `oracle_guided_search/`, `run_limits/`, `search_plan/`, `testing/`,
-  `tools/` — each a plain-words sentence and pointers to where the depth
-  already lives, restating none of it.
+  `oracle_guided_search/`, `run_limits/`, `search_plan/`, `testing/` and
+  `tools/`.
 
 - **`cmake --install` places the thirteen tools on PATH**, which every
   documented command line assumed and nothing provided: the first line a
@@ -41,14 +41,14 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **`reproduce/README.md`** and an import recipe in
   `OPTIONS/common-recipes.md`: the two pages simulated first-contact users
-  reached for and did not find — the reviewer's one command, and the line
+  reached for and did not find: the reviewer's one command, and the line
   that reads a published ⟨L,R,P⟩ triple in.
 
 ### Fixed
 
 - **`show-limits` aborted on a typo**: no catch around `refuse()`, so an
-  unrecognised flag reached `std::terminate` and dumped core — reachable from
-  the browser console, which shells out to it — and its usage went to stdout,
+  unrecognised flag reached `std::terminate` and dumped core (reachable from
+  the browser console, which shells out to it), and its usage went to stdout,
   which is for results. **`measure-leaf` read `--help` as a mode it did not
   know**, fell through every branch and left green. Both now refuse by name
   and leave as 2, and `check_argument_grammar.sh` covers the instruments it
