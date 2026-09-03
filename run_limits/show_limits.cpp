@@ -1,7 +1,7 @@
 /// What bounds a run on this machine, and where each number came from.
 ///
-/// Three surfaces decide what a run may spend — a flag, `tunables.conf`, and a
-/// compiled default that is now sometimes a reading of the machine — and until
+/// Three surfaces decide what a run may spend: a flag, `tunables.conf`, and a
+/// compiled default that is now sometimes a reading of the machine, and until
 /// this instrument there was no way to see the result of the three without
 /// running a search and reading its plan. That is the wrong order: the numbers
 /// should be legible before the hour is spent, not inferred from how the hour

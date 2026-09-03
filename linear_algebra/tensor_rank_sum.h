@@ -142,9 +142,9 @@ inline std::size_t rank_sum_work(std::size_t characteristic, std::size_t length)
 /// built from the digits of `index` and reduced against `slices`, which nobody
 /// writes, and written to its own slot: no loop-carried dependency, uniform cost,
 /// and up to a million of them. Three commands offer `--threads` and every one of
-/// them stopped at this function's door until now, so the whole rank-sum floor —
-/// 469 ms at its most expensive fixture, paid before a search starts — ran on one
-/// core whatever was asked for.
+/// them stopped at this function's door until now, so the whole rank-sum floor,
+/// 469 ms at its most expensive fixture and paid before a search starts, ran on
+/// one core whatever was asked for.
 ///
 /// **The one-worker path is left exactly as it was**, scratch and all. The
 /// parallel path gives each item its own `coefficients`, because one shared

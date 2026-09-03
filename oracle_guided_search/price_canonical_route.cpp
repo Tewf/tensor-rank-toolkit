@@ -59,8 +59,8 @@ void usage() {
 /// a breadth-first walk whose `seen` list is scanned linearly, so the plain root
 /// costs `sum |O_i|^2` where `orbit_representatives` costs `|P|`.
 ///
-/// It is found here the way the plain search's root finds it — from the same
-/// `PoolAction`, over the same pool — so the count this reports is the number of
+/// It is found here the way the plain search's root finds it: from the same
+/// `PoolAction`, over the same pool, so the count this reports is the number of
 /// children either route's root emits, and `count + 1` is the node count of both.
 bilinear_rank::PoolOrbits pool_orbits(const bilinear_rank::PoolAction& action,
                                       std::size_t generators, std::size_t pool_size) {

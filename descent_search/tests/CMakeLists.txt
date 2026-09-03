@@ -60,7 +60,7 @@ target_link_libraries(test_sorted_span PRIVATE descent_search formats testing pr
 add_test(NAME sorted_span COMMAND test_sorted_span ${PROJECT_SOURCE_DIR}/fixtures)
 
 # The order both spans here are walked in, asserted on its own. Neither property
-# it rests on — every string once, one digit by one — shows up in a verdict, so a
+# it rests on (every string once, one digit by one) shows up in a verdict, so a
 # broken successor would come back as a wrong rank rather than as a failure
 # anywhere else.
 add_executable(test_reflected_gray_walk test_reflected_gray_walk.cpp)

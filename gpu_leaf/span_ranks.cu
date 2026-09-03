@@ -8,7 +8,7 @@
 /// nothing transferred per element.
 ///
 /// The element is derived the way [`subspace_walk.cu`](subspace_walk.cu) derives
-/// one — the exclusive or of the slices whose bit is set in the index — and then
+/// one, the exclusive or of the slices whose bit is set in the index, and then
 /// **ranked** rather than tested for rank one. Over GF(2) the rank of a matrix is
 /// the size of a basis of its rows under exclusive or, so the whole computation
 /// is an insertion of `ROWS` words into a table indexed by leading bit, with no
@@ -51,7 +51,7 @@ __device__ inline unsigned int row_bits(const std::uint64_t* element, int row) {
 /// The rank is the number of rows that survive reduction against the rows before
 /// them. `basis[b]` holds the reduced row whose highest set bit is `b`, so
 /// walking `b` downwards either clears bit `b` of the row being inserted or
-/// installs it and stops — and "stops" is `value &= ~take`, which makes every
+/// installs it and stops, where "stops" is `value &= ~take`, which makes every
 /// later iteration a no-op without a branch.
 template <int ROWS, int COLUMNS>
 __global__ void rank_kernel(unsigned long long begin, unsigned long long end, int slices,

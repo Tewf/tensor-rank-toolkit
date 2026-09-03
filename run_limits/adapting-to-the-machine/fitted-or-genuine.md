@@ -8,11 +8,11 @@ should be. What was not stated is which of them stay true off that machine.
 **A fitted number that ships as a constant is a bug on someone else's
 hardware**, so the sort is worth doing outright.
 
-- **Genuine** — a fact about the arithmetic, the format, or a CUDA limit. The
+- **Genuine**: a fact about the arithmetic, the format, or a CUDA limit. The
   same number is right on every machine.
-- **Policy** — a budget somebody chose. It is not a measurement and does not
+- **Policy**: a budget somebody chose. It is not a measurement and does not
   claim to be, so it cannot be wrong on new hardware, only unhelpful.
-- **Fitted** — read off *this* chassis. It is right here and wrong elsewhere by
+- **Fitted**: read off *this* chassis. It is right here and wrong elsewhere by
   however much the two machines differ.
 
 ## Fitted, and there were four. Two are now derived
@@ -27,7 +27,7 @@ it cost, not because it is open.
 | number | where | what it is really a measurement of | what happens elsewhere |
 |---|---|---|---|
 | `device_launch_floor = 8192` | [`../device.cpp`](../device.cpp), `cli/tunables.h` | the card's 21–29 µs fixed launch cost divided by the host's 3.1–4.0 ns an element. **Both halves are hardware.** | A card with a cheaper launch, or a slower host, crosses over lower and this floor keeps work on the host that the card would have won. A faster host crosses over higher and this floor sends work to a card that loses it. Re-fit it with `measure-leaf floor` and set `device_launch_floor` in `tunables.conf`; the knob exists, only its default is fitted. |
-| `CUDA_ARCHITECTURES "89"` | `gpu_leaf/CMakeLists.txt` | 8.9 **is the RTX 4060**. Nothing else. | This was the worst of the four. A build on an A100 (8.0), a 3090 (8.6), an H100 (9.0) or anything newer produced no cubin the device could run, every launch failed with `cudaErrorNoKernelImageForDevice`, `answered_or_the_host` caught it and the host answered — so the run was **silently several hundred times slower** with one line on stderr to say so. Now `native` where CMake can detect the card, and the value stands where a packager pins one. |
+| `CUDA_ARCHITECTURES "89"` | `gpu_leaf/CMakeLists.txt` | 8.9 **is the RTX 4060**. Nothing else. | This was the worst of the four. A build on an A100 (8.0), a 3090 (8.6), an H100 (9.0) or anything newer produced no cubin the device could run, every launch failed with `cudaErrorNoKernelImageForDevice`, `answered_or_the_host` caught it and the host answered, so the run was **silently several hundred times slower** with one line on stderr to say so. Now `native` where CMake can detect the card, and the value stands where a packager pins one. |
 
 ## Derived since 2026-08-22, and no longer fitted to anything
 
@@ -77,12 +77,12 @@ found what it needs, so one shape's answer is not a rule.
 value, which is where a person changing it will be.
 
 It belongs on this page because it is neither of the two kinds above. It is not
-fitted — nothing about 380 is a fact about this chassis, since it is a count of
-subspaces — and it is not policy either, now that a measurement exists for it.
+fitted (nothing about 380 is a fact about this chassis, since it is a count of
+subspaces), and it is not policy either, now that a measurement exists for it.
 It is a bound held above its measurement on purpose, and the day a second shape
 is measured it can be chosen rather than guessed.
 
-## Genuine — the same on any machine
+## Genuine: the same on any machine
 
 | number | where | why it does not move |
 |---|---|---|
@@ -95,7 +95,7 @@ is measured it can be chosen rather than guessed.
 | `maximum_pinned_order() = 8` | `matrix_sparsification/pattern_feasibility.cpp` | a ceiling on `Θ(order!)`. |
 | `budget = 10'000'000` variables | `satisfiability/binary_encoding.cpp` | a ceiling on the encoding, in variables. |
 
-## Policy — chosen, not measured
+## Policy: chosen, not measured
 
 `search_node_limit = 5'000'000`, `search_leaf_limit = 100'000'000`,
 `ilp_node_limit = 200'000`, `sat_timeout_seconds = 300`,
@@ -103,8 +103,8 @@ is measured it can be chosen rather than guessed.
 `sat_solver_order`, `ilp_backend_order`, `device_order`.
 
 These bound work or rank capabilities. `MEASURING.md` leans on two of them as
-reproducibility anchors — a published node count above 5 000 000 means a
-non-default flag was given — so moving a default would move a published table,
+reproducibility anchors (a published node count above 5 000 000 means a
+non-default flag was given), so moving a default would move a published table,
 which is why none of them moved here.
 
 ## The one that is adaptive already, and is the model for the rest
@@ -120,7 +120,7 @@ mostly do not.
 
 Nothing anywhere reads `cudaDeviceProp` to size a launch. `kThreadsPerBlock =
 256` is the same on all three kernels and on all hardware. That is a defensible
-default rather than a fitted number — 256 is legal on every architecture CUDA
-has shipped and within a factor of two of optimal on most — but it is a default
+default rather than a fitted number (256 is legal on every architecture CUDA
+has shipped and within a factor of two of optimal on most), but it is a default
 and not a tuning, and this page would rather say so than let a reader assume the
 launch geometry was fitted to anything.

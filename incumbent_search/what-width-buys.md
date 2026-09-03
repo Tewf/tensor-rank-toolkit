@@ -5,6 +5,17 @@ so it is the dial between a greedy walk and the branch and bound `--width 0`
 runs. **A beam is incomplete**: what it discards may have held the answer, which
 is why this search only ever exhibits a decomposition and never refutes one.
 
+One row of the table below, run rather than read:
+
+    lower-the-bound fixtures/matmul_2x2x2.tensor --width 8
+
+    GF(2), start: 8 products over 4 dimensions
+    best: 7 products, rank bound 6, gap 1, verified
+    # 40 nodes, 4359 children costed, 6648 moves offered, 1 improvements, 282 branches bounded, depth 3, largest single-move drop 1, tree exhausted
+
+which is the `matmul_2x2x2` column at width 8 in the table below: 40 nodes and
+4 359 children to reach Strassen's 7.
+
 Swept 2026-08-22 at widths 1, 2, 4, 8 and 16, `--from descent` and every other
 flag at its default. **Counts, not seconds**, except where a run did not finish
 at all, which is a fact about this machine and is marked as one.
@@ -63,8 +74,8 @@ rebuilding the fixture exactly.
 children are entered cheapest-first, and cheapest-first is a heuristic: at width 1
 the search commits to that ordering and walks deep, at width 4 it spends the same
 budget spreading across children that the ordering ranked well and the answer did
-not need. Nothing here says width 1 is better in general — it is worse on two of
-the ten — only that neither direction is monotone, which is the honest thing to
-know about a dial before turning it.
+not need. Nothing here says width 1 is better in general: it is worse on two of
+the ten. It says only that neither direction is monotone, which is the honest
+thing to know about a dial before turning it.
 
 `mu_2(6) = 15` is still 4 below this. The gap is real and this does not close it.

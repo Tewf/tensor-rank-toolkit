@@ -1,8 +1,9 @@
 # OPTIONS/
 
 The flag tables, one page per question, plus the four pages that come before
-any table. The front door and index is [`../OPTIONS.md`](../OPTIONS.md); this
-folder is its pages.
+any table, covering the thirteen tools sharing this argument grammar
+([`one-question-per-command.md`](one-question-per-command.md)). The front
+door and index is [`../OPTIONS.md`](../OPTIONS.md); this folder is its pages.
 
 In this folder, the four to read first:
 

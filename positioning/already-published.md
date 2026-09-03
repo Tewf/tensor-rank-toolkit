@@ -6,7 +6,7 @@
 |---|---|---|
 | `⟨2,2,2⟩` | 7 | Strassen 1969 |
 | `⟨3,3,3⟩` | 23 | Laderman 1976 |
-| `⟨4,4,4⟩` | 49 over `Z`, 48 over `Q` | AlphaEvolve 2025 |
+| `⟨4,4,4⟩` | 49 over `Z`, 48 over `ℂ` | AlphaEvolve 2025, `[alphaevolve2025]` |
 | `⟨5,5,5⟩` | 93 | Moosbauer and Poole 2025, `[moosbauer2025]` |
 
 The flip graph here reaches **7** at `⟨2,2,2⟩`, matching the record, and **24** at

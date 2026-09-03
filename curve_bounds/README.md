@@ -74,3 +74,23 @@ An entry is `lower - upper`. A settled entry has them equal. An entry with no
 published lower bound reports `lower = 0`, and **zero is not a bound**. It is the
 absence of one, which is why `Bound::settled()` exists and why an unpriced point
 is refused by the programme rather than costed at nothing.
+
+## Running it
+
+    $ curve-bounds --degree 5 --points 1:8
+    supply: 8 of degree 1
+    divisor degree: 5, spent exactly
+    bound [built-in]: mu_sym_2(m) <= 5, using 5x(degree 1, multiplicity 1)
+      an envelope, not a bound: no curve with this supply was shown to exist
+
+Not every supply can pay for every degree. Eight points of degree 1 will not
+build a divisor of degree 5 out of points of degree 2 alone, and the command
+says so rather than approximating:
+
+    $ curve-bounds --degree 5 --points 2:4
+    supply: 4 of degree 2
+    divisor degree: 5, spent exactly
+    no divisor [built-in]: degree 5 cannot be made from this supply at any price the table publishes
+
+That second run exits 1. A supply that cannot assemble the requested degree at
+any price the table publishes is a real answer, not a failure of the command.

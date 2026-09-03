@@ -15,6 +15,19 @@ form is unique to a subspace, so counting the duplication needs no canonisation
 and no group. The flag changes nothing: every count below is the count of the
 run without it.
 
+The flag, run rather than read off the table below:
+
+    lower-the-bound fixtures/matmul_2x2x2.tensor --span-census
+
+    GF(2), start: 8 products over 4 dimensions
+    best: 8 products, rank bound 6, gap 2, verified
+    # 21 nodes, 2251 children costed, 3442 moves offered, 0 improvements, 64 branches bounded, depth 3, largest single-move drop 0, tree exhausted
+    # span census: 85 nodes entered, 73 distinct spans, 14.1% repeats, most-entered span reached 2 times
+    # span census: 21 nodes expanded, 18 distinct spans, 14.3% repeats, most-expanded span reached 2 times
+    # span census: 2251 children costed, 1877 distinct spans, 16.6% repeats, most-costed span reached 5 times
+
+which is exactly the `matmul_2x2x2`, width 4 row of the table below.
+
 ## One tree, which is all a parent test ever sees
 
 `--rounds 1`, every other flag at its default. **A child is where the money is**:

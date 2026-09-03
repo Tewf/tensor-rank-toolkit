@@ -42,7 +42,7 @@ void parallel_for(std::size_t count, const std::function<void(std::size_t)>& bod
     // **What a worker throws is carried out rather than dropped on the floor.**
     // An exception that leaves a `std::thread`'s function calls `std::terminate`,
     // so before this every `require_room` refusal raised under `--threads 2` or
-    // more was a SIGABRT instead of the sentence naming the number — and the
+    // more was a SIGABRT instead of the sentence naming the number. The
     // refusal exists precisely so that a machine smaller than the one a run was
     // written on degrades rather than dies. The first one wins and the rest are
     // dropped, because a caller wants the reason and not `threads` copies of it;

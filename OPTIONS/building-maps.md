@@ -28,11 +28,19 @@ No measurement chose anything here for the modes, and none could: the output is
 determined by the arguments, and the maps are the fixtures every timing elsewhere
 is taken on rather than something timed themselves.
 
+```sh
+$ make-tensor --matmul 2 2 2 2
+# Matrix multiplication <2,2,2>, over GF(2).
+# Naive cost 8 multiplications, written by make-tensor.
+field 2
+shape 4 4 4
+```
+
 ## `make-tensor`'s options
 
 | Flag | Default | What chose the default |
 |---|---|---|
-| `--max-memory N` | `2G` | Argument: it leaves room on a 16 GB desktop for a browser and an editor to survive the run. Every mode is cubic in the numbers it takes; `--matmul 2 100 100 100` is 7.2 TiB of slices. |
+| `--max-memory N` | `2G` | As `minimise-rank` ([`searching-for-rank.md`](searching-for-rank.md)): an eighth of what the machine reports. Every mode is cubic in the numbers it takes; `--matmul 2 100 100 100` is 7.2 TiB of slices. |
 
 ## `operators-to-tensor`
 
@@ -47,7 +55,7 @@ the two lines differ only in the program name.
 
 Nothing else is measurable here either. What it refuses and why: three files that
 are not one algorithm leave as exit 5 with `inner dimension mismatch`, his own
-words for it, and so does an entry whose denominator vanishes at `p` — which is a
+words for it, and so does an entry whose denominator vanishes at `p`, which is a
 real answer about a rational algorithm and not a defect, since his checkers
 reject the same triple at the same primes. The page for whoever has such files is
 [`../formats/interchange/exchanging-files.md`](../formats/interchange/exchanging-files.md).

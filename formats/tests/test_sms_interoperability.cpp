@@ -84,9 +84,9 @@ std::string refusal_over(int64_t characteristic, const std::string& text) {
 /// A read reported as a number rather than as an exception, `-1` when refused.
 ///
 /// The difference matters when a check is deliberately broken to see whether it
-/// bites: a reader that throws where the test expected a matrix ends the process
-/// with no output at all, which looks the same as a suite that never ran. These
-/// two turn that into a `FAIL` line naming what was expected.
+/// is caught: a reader that throws where the test expected a matrix ends the
+/// process with no output at all, which looks the same as a suite that never
+/// ran. These two turn that into a `FAIL` line naming what was expected.
 long long nonzeros_in(const std::string& text);
 
 long long first_entry(const std::string& text) {

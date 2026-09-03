@@ -11,7 +11,7 @@ over `Q`.
 | [`field.h`](field.h) | The two fields: `ModularField` = `GF(p)`, `RationalField` = `Q` |
 | [`span_basis.h`](span_basis.h) | A basis in reduced row echelon form, built one vector at a time, and the span of a set of slices |
 | [`measures.h`](measures.h) | What a thing costs: rank, multiplications, nonzeros |
-| [`span_queries.h`](span_queries.h) | What a span contains: `spans_all`, `raises_rank`, `same_row_space` |
+| [`span_queries.h`](span_queries.h) | What a span contains: `spans_all`, `same_row_space` |
 | [`solver.h`](solver.h) | Exact solve in a row space, and the inverse built on it |
 | [`row_space_coordinates.h`](row_space_coordinates.h) | Every row of a matrix over a maximal independent subset of its rows |
 | [`matrix_ops.h`](matrix_ops.h) | Transpose, product, row and column selection |
@@ -42,6 +42,23 @@ and not the other way round.
 `p` the characteristic · `r × c` a matrix's shape · `d` the dimension of the
 span in play, always `d ≤ min(r, c)` · `k` slices of shape `n × m` · `w = n·m`,
 the width a slice occupies when flattened.
+
+## Example
+
+```cpp
+#include "linear_algebra.h"
+
+linear_algebra::ModularField field(5);        // GF(5)
+linear_algebra::ModularMatrix matrix(2, 2);
+field.assign(matrix(0, 0), field.one);
+field.assign(matrix(1, 1), field.one);
+const std::size_t matrix_rank = linear_algebra::rank(field, matrix);  // 2
+```
+
+`rank` is what both strands spend their exact arithmetic on, by way of
+`SpanBasis`. Reducing a candidate against a basis already in echelon form,
+rather than computing two ranks from scratch, took step 3 of the exact search
+from 29.8 seconds to 11.3 on F3 3×6, measured in [`costs.md`](costs.md).
 
 ## What each operation costs
 

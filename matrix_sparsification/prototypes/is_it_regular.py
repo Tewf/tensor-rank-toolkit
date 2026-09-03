@@ -6,7 +6,7 @@ the vector matroids of totally unimodular matrices are the regular ones, which
 are closed under duality. Our operators are 0/+-1, so the necessary condition
 holds and the question is worth ten seconds before anything else is built.
 
-Refuting is cheap and confirming is not: one basis with |det| >= 2 kills it, so
+Refuting is cheap and confirming is not: one basis with |det| >= 2 refutes it, so
 sample first and only then consider the C(n, r) full test.
 """
 import sys, random, itertools

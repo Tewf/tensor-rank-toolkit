@@ -1,8 +1,6 @@
-# A change of coordinates on each operand preserves rank, so if it also fixes
-# the target subspace it maps solutions to solutions and only one member of each
-# orbit need be visited. The group, the orbits, the rule that rejects a repeat,
-# and each consumer of them are separate jobs, which is why this is seven files
-# and not one.
+# The group, the orbits, the rule that rejects a repeat, and each consumer of
+# them are separate jobs, which is why this is seven files and not one; the
+# mathematical rationale is `README.md`'s.
 # `subspace_canon.cpp` came from `oracle_guided_search` on 2026-08-23. It names a
 # subspace so that two can be compared and a whole orbit has one name, which is
 # this module's sentence rather than that one's, and two consumers now sit on

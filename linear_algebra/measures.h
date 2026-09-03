@@ -14,8 +14,8 @@ namespace linear_algebra {
 
 /// Exact rank: the number of independent rows.
 ///
-/// Computed using a basis walk that reduces modulo p at each step, avoiding
-/// overflow and maintaining exact arithmetic throughout.
+/// Builds a `SpanBasis` and folds every row of `matrix` into it in turn; the
+/// basis's final dimension is the rank.
 template <class Field>
 std::size_t rank(const Field& field, const MatrixOver<Field>& matrix) {
     if (matrix.rows() == 0 || matrix.columns() == 0) return 0;

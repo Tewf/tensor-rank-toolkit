@@ -65,7 +65,7 @@
 /// `O(2^n)`, and `k|G|`. **Here `k|G|` is by far the smallest**, and Linton's own
 /// third conclusion applies verbatim: "if `|G|` grows polynomially in `n` then the
 /// running time is polynomial in `n` for any `k`". On the factored presentation it
-/// does — `log|G|/log n` is 1.58, 2.00, 2.41, 1.90 and 2.22 at the five shapes
+/// does: `log|G|/log n` is 1.58, 2.00, 2.41, 1.90 and 2.22 at the five shapes
 /// measured, so `|G| ~ n^2` throughout. He adds that "experiment suggests that the
 /// actual number of candidates is much smaller", which is why the constants below
 /// are measured and the bound is quoted rather than used.
@@ -98,7 +98,7 @@ struct CanonicalPrices {
     std::size_t plain_node_picoseconds = 20000;
     /// One canonical image: the part that does not scale with the degree.
     std::size_t image_floor_nanoseconds = 10800;
-    /// And the part that does — `[linton2004]`'s base changes and orbit
+    /// And the part that does: `[linton2004]`'s base changes and orbit
     /// computations, both linear in the degree up to logarithms.
     std::size_t image_nanoseconds_per_point = 74;
     /// One setwise stabiliser, per axis point. **PROVISIONAL and known weak**: the
@@ -159,7 +159,7 @@ struct CanonicalPrices {
 ///
 /// Zero means "not measured", and the one-level clause then refuses rather than
 /// guessing. The bound it would otherwise use is orbit counting's `|O| <= |G|`,
-/// and that is **125x** the measured value at `<3,3,3>` — the same mistake, in
+/// and that is **125x** the measured value at `<3,3,3>`, the same mistake, in
 /// the same direction, that `rho <= |G|` made before it was corrected.
 struct PoolOrbits {
     /// Orbits of the pool under the stabiliser, which is exactly the number of
@@ -182,8 +182,8 @@ struct RouteShape {
     std::size_t target = 6;
     /// Generators the group is handed as: two per general linear factor, so six for
     /// a product shape. Both routes are handed the same six, and both take the
-    /// **exact** quotient from them — `least_in_orbit` on one side and
-    /// `orbit_representatives` on the other — so this counts what each pays per
+    /// **exact** quotient from them (`least_in_orbit` on one side and
+    /// `orbit_representatives` on the other), so this counts what each pays per
     /// element and never a difference in what they reject.
     std::size_t generators = 6;
 };

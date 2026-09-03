@@ -3,7 +3,7 @@
 ///
 /// `GpuSurvivors::overflowed` means the threads past the capacity never wrote,
 /// and which of them those were is a race between blocks, so the indices are not
-/// a short answer — they are not an answer. Two behaviours follow and both are
+/// a short answer. They are not an answer. Two behaviours follow and both are
 /// asserted here against the host's own survivor list, element for element:
 ///
 /// **A range the chunking can rescue comes back whole.** Halving the bite halves
@@ -131,7 +131,7 @@ int main() {
     check_a_walk(9, 9, 9, 256, true, "walk 9x9 dim 9 dense, 256 slots");
 
     // **A scan is cut into rows of the grid, and this span puts 511 of its 523
-    // survivors in one row** — every map whose only nonzero row is the first is
+    // survivors in one row**: every map whose only nonzero row is the first is
     // one left vector against every right. So no split separates them, seven
     // bites of the range all contain that row, and the leaf goes back to the
     // host. That is the honest limit of chunking a grid by rows, and it is here

@@ -11,3 +11,6 @@ that is large. Measured: at `⟨3,3,3⟩` with `k = 23` the depth is 13, and the
 returned no verdict on any of the thirteen candidates in **723 s** before it was
 stopped, against a 5 000 000 node budget per candidate. This is a result about shallow
 pinning near the rank, not about matrix multiplication in general.
+
+The shallow case, where the tree does win, is the command run in
+[`README.md`](README.md): `⟨2,2,2⟩` at `k = 6`, one level deep, 45 to 72 nodes.

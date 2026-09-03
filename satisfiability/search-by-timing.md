@@ -36,10 +36,11 @@ is already here as `--probe`.
 ## And the prize is under four percent
 
 Any exact search pays a yes at `r` and a no at `r-1`. On GF(16) that mandatory
-floor is 108.461 s and the ascending sweep costs 112.533 s, so **everything a
-cleverer probe placement could win is 4.07 s, or 3.75%**. It would be bought
-with a signal that varies about 13% run to run on this chassis from thermal
-throttling alone: the noise is larger than the effect.
+floor is 108.461 s and the ascending sweep costs 112.533 s
+(measured in [`the-five-schedules.md`](search/the-five-schedules.md)), so
+**everything a cleverer probe placement could win is 4.07 s, or 3.75%**. It
+would be bought with a signal that varies about 13% run to run on this chassis
+from thermal throttling alone: the noise is larger than the effect.
 
 ## What survives, and it is the useful half
 
@@ -51,3 +52,17 @@ of the idea that does not depend on a smooth signal.
 An exhausted probe is evidence without being an answer. It moves no bound in
 either direction, and the sweep that follows re-asks the question properly,
 because treating "gave up quickly" as a refusal would invent a lower bound.
+
+For example, on a run here:
+
+```
+$ decide-rank-by-sat fixtures/matmul_2x2x2.tensor --probe 1 --break-symmetry --plain-cnf
+fixtures/matmul_2x2x2.tensor: 4 slices of 4x4 over GF(2)
+  lower bound: rank is at least 6
+  naive upper bound: rank is at most 16
+  asked 2 questions in 0.516806 s
+rank is exactly 7
+```
+
+Both mandatory questions finished under the one second probe budget, so the
+ladder spent nothing extra and the full sweep needed no second pass.

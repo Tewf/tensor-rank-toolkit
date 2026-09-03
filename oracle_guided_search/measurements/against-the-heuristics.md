@@ -11,3 +11,13 @@
 `⟨2,2,2⟩` and `gf16` and is between 390 and 1500 times slower doing it; it returns a
 *worse* bound on `f2_5x5`, 15 against 14; and on `f3_3x6` it does not reach 10 at all
 in 300 s while the greedy returns a verified 10-product algorithm in 18.9 s.
+
+`walk-scheme` reaching the table's `⟨2,2,2⟩` row, on this run of the binary:
+
+```sh
+walk-scheme fixtures/matmul_2x2x2.tensor
+GF(2), naive scheme: 8 products
+  seed 1: 7 products after 1020 flips and 1 reductions, 0.0062886 s
+best over 8 seeds: 7 products, rank bound 6, gap 1
+# 0.0282744 s, 1 worker(s)
+```

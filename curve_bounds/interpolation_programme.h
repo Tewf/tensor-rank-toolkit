@@ -30,7 +30,7 @@
 /// **What this does not do, and it is most of the method.** Steps 2 and 4 of
 /// the roadmap are absent. Finding a curve with many points of low degree, and
 /// checking that an admissible interpolation system `(G, D, Q)` exists at all
-/// -- conditions `l(2D − G) = 0` and `i(D − Q) = 0` -- need Riemann-Roch spaces
+/// (conditions `l(2D − G) = 0` and `i(D − Q) = 0`) need Riemann-Roch spaces
 /// and curve construction. That is Magma or Sage work, not a Givaro
 /// repository. So a result here is **a lower envelope on what the method could
 /// give if a curve with that supply of points exists**, and never a bound on

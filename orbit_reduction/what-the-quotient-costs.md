@@ -6,8 +6,9 @@ are measurable, and the second is the half that decides when to ask for it.
 ## Nodes, which are exact
 
 Node counts do not depend on the machine, the load or the clock, so they are
-what this page argues from. `⟨2,2,2⟩` over GF(2), `decide-rank`, the default
-against `-s matmul 2 2 2`:
+what this page argues from. `⟨2,2,2⟩` over GF(2),
+`decide-rank fixtures/matmul_2x2x2.tensor -s matmul 2 2 2`, the default, at
+`--target 6` and `--target 7`:
 
 | question | plain | quotiented | nodes removed | seconds |
 |---|---|---|---|---|
@@ -60,7 +61,7 @@ forwards and reversed:
 
 The control is what makes the second row a result. Without a group the tree
 counts each *set* of pool elements once, in ascending index order, whatever order
-the pool is in — so reversing cannot move it, and does not. With the quotient,
+the pool is in. So reversing cannot move it, and does not. With the quotient,
 `least_in_orbit` keeps the earliest member of each orbit **within the remaining
 suffix**, so reversing changes which element represents each orbit, and different
 representatives sit above suffixes of different sizes.

@@ -4,8 +4,8 @@
 /// `by_scanning_the_pool_directly` asks the span about every element in turn;
 /// `by_carrying_a_residual` never forms an element and never asks, carrying a
 /// reduction along a Gray code over the right-hand vectors instead. **The second
-/// is required to be the first's answer and not an equivalent one** — the same
-/// maps, in the same order — because `Gf2SpanBasis::try_add` is order-dependent,
+/// is required to be the first's answer and not an equivalent one**: the same
+/// maps, in the same order, because `Gf2SpanBasis::try_add` is order-dependent,
 /// so which rank-one basis a leaf hands back is a fact about the order it saw
 /// its candidates in, and every decomposition this repository prints is a stack
 /// of those.

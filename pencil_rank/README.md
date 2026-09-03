@@ -10,7 +10,30 @@ itself is `[gantmacher1959, Ch. XII §4, (30)]`, restated as `[sumi2009, Lem.
 here by exact linear algebra over GF(p), in polynomial time and with no
 candidate pool at all.
 
-`decide-rank-by-pencil <tensor>` prints the form and what it implies.
+`decide-rank-by-pencil <tensor>` prints the form and what it implies, on the
+pencil `the-measured-gap.md` is about:
+
+```sh
+$ ./build/pencil_rank/decide-rank-by-pencil fixtures/pencil_irreducible_f2_4.tensor
+tensor: fixtures/pencil_irreducible_f2_4.tensor, GF(2), 2 slices of 4x4
+Kronecker canonical form:
+  column minimal indices: none
+  row minimal indices: none
+  elementary divisors: an irreducible of degree 4 [degree 4]
+  regular part: 4x4
+rank: at least 5 (proved)
+  over the algebraic closure it is 4, which GF(2) can only exceed
+  and likely at least 5 (the same count over GF(2) itself, PROVISIONAL)
+  not settled here: this pencil is not diagonalisable over GF(2), and whether either bound is reached
+  depends on the size of the field. pencil_rank/README.md has the
+  measured gaps.
+```
+
+That is `(I_4, C)` with `C` the companion matrix of `x^4 + x + 1`: the tool
+proves a bound of 5 and says so in the same breath. What settles the pencil
+outright, rank 6, is the exhaustive search in
+[`the-measured-gap.md`](the-measured-gap.md), which shares no code with this
+module.
 
 ## What is computed, and how strongly it is claimed
 

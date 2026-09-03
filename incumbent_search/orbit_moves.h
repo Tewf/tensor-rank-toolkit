@@ -25,7 +25,7 @@
 /// root; one adjunction later the span is larger and its stabiliser is a
 /// different, usually smaller, group. A quotient taken once and reused would
 /// throw away the move that would have paid, so the stabiliser is recomputed
-/// from the node's own basis at every node — which is also why this is priced
+/// from the node's own basis at every node, which is also why this is priced
 /// per node rather than once per run.
 ///
 /// **The move set is closed under that group**, which is what
@@ -45,7 +45,7 @@ namespace bilinear_rank {
 ///
 /// `ambient` empty returns `moves` untouched, which is what every caller that
 /// was never given a group reads as "try every move". `stabiliser_size`, when
-/// not null, receives how large that subgroup turned out to be — worth knowing,
+/// not null, receives how large that subgroup turned out to be, worth knowing
 /// because a stabiliser of one quotients nothing and the run should be able to
 /// say so rather than leave a reader to infer it from an unchanged count.
 ///

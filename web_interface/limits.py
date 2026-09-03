@@ -14,7 +14,7 @@ Editing the limits is deliberately not offered here. `tunables.conf` belongs to
 the checkout and a console that wrote to it would change what every other run on
 this machine is bounded by, invisibly and from a browser. Per-run limits are
 already flags, they are already in the options panel, and `OPTIONS.md`'s
-precedence — a flag, then the file, then the compiled default — stays the one
+precedence (a flag, then the file, then the compiled default) stays the one
 rule.
 """
 import subprocess

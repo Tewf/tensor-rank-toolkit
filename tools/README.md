@@ -17,4 +17,29 @@ python3 tools/compare_backends.py --build build --timeout 60
 ```
 
 One row per question and backend; `--only` narrows the backends and
-`--question` the fixtures, and `--help` lists the rest.
+`--question` the fixtures. `--help`'s usage and flag list, quoted as printed
+(its description repeats the module docstring above and is elided here):
+
+```
+$ python3 tools/compare_backends.py --help
+usage: compare_backends.py [-h] [--build BUILD] [--fixtures FIXTURES]
+                           [--timeout TIMEOUT] [--repeats REPEATS]
+                           [--only ONLY] [--question QUESTION]
+[...]
+options:
+  -h, --help           show this help message and exit
+  --build BUILD
+  --fixtures FIXTURES
+  --timeout TIMEOUT
+  --repeats REPEATS
+  --only ONLY          substring filter on the backend label
+  --question QUESTION  substring filter on the tensor name, so the expensive
+                       rows can be run at a different timeout from the cheap
+                       ones
+```
+
+A full run is timing-sensitive, so it is not reproduced here; the rows this
+script produces are already measured, under the same protocol, in
+[`../satisfiability/measurements.md`](../satisfiability/measurements.md):
+ruling out 6 products on `⟨2,2,2⟩`, the tree search beats the solver by
+**11.7x**; ruling out 8 on GF(16), the solver beats the tree by **2.30x**.

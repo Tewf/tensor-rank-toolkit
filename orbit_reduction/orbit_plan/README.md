@@ -14,6 +14,11 @@ as work outstanding. Its four items landed here as:
 What it says about the heuristic being a separate question, and about the pool
 having to be closed under the action, still governs.
 
+What it built to, concretely: `decide-rank fixtures/matmul_2x2x2.tensor
+--target 6 -s matmul 2 2 2` visits 648 nodes where the unquotiented walk visits
+25 399, [`../what-the-quotient-costs.md`](../what-the-quotient-costs.md)'s
+table.
+
 The published continuation of the algorithm in
 [`exhaustive_search.h`](../../exhaustive_search/exhaustive_search.h). Source:
 `[covanov2018]` §1.3, *RP-automorphisms*, and §2.2.4, *Improving on BDEZ using

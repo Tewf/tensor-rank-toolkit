@@ -47,3 +47,24 @@ which includes `GF(p)`. That bounds every method in this repository at once, so
 the absence below is structural rather than an omission. Theorem 3.5
 concerns single additions: `⟨2,2,2⟩` sits at a 1-opt fixed point of cost 8 while
 its rank is 7, which is a fact about the neighbourhood and not a defect.
+
+## What a run of it looks like
+
+`minimise-rank fixtures/f2_5x5.tensor --steps 3` prints, verbatim:
+
+    fixtures/f2_5x5.tensor
+      naive: 25 multiplications, 9 slices, 0 s cumulative
+      step 1: 16 multiplications, 9 slices, 0.000107719 s cumulative
+      step 2: 14 multiplications, 11 slices, 0.00126404 s cumulative
+    # step 3 pool: 961 rank-one maps
+    # step 3 shortlist: 0
+      step 3: 14 multiplications, 11 slices, 0.106819 s cumulative
+    # algorithm: 14 products, rank bound 12, gap 2, L is 14x5, R is 14x5, P is 9x14
+
+Reaching that last line is Theorem 3.2 exercised rather than only tested:
+`run` in [`commands/minimise_rank_main.cpp`](commands/minimise_rank_main.cpp)
+calls `verify` after every step and `recovers_map` at the end, and any one of
+them failing prints `FAILED` and stops before the algorithm line is ever
+written. The `14` multiplications is the same number
+[`results.json`](results.json) and
+[`what-it-reaches.md`](what-it-reaches.md) publish for this fixture.

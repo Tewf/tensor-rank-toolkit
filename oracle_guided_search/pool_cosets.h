@@ -12,7 +12,7 @@
 /// **This is the cost the canonical route was bound by, and it was not the group.**
 /// Measured at five shapes
 /// ([`when-canonical-pays/where-the-time-goes.md`](when-canonical-pays/where-the-time-goes.md)),
-/// a canonical node spent 7 to 14 whole pool scans — 98% of its time at `<2,3,3>`,
+/// a canonical node spent 7 to 14 whole pool scans: 98% of its time at `<2,3,3>`,
 /// against 1.0% in the setwise stabiliser and 1.1% in the canonical image. Most of
 /// those scans were one per **candidate child**, because
 /// `is_canonical_augmentation` opened with `pool_inside(field, pool, child)` and
@@ -22,8 +22,8 @@
 /// a pool element lies in the child exactly when it lies in the current subspace or
 /// its residue modulo that subspace spans the same line as `added`'s. Reduce every
 /// pool element once, group the nonzero residues by their normalised value, and the
-/// content of a child is the current content merged with one of those groups —
-/// a lookup, whatever the number of children. One scan a node replaces `c + 2` of
+/// content of a child is the current content merged with one of those groups: a
+/// lookup, whatever the number of children. One scan a node replaces `c + 2` of
 /// them.
 ///
 /// **It is the same list, not an equally good one.** `inside()` is

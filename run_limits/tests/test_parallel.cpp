@@ -10,9 +10,9 @@
 ///
 /// **A body that throws is carried out to the caller.** This is the one that was
 /// wrong. `require_room` exists so that a machine smaller than the one a run was
-/// written on says which allocation it cannot afford instead of being killed —
-/// and above one worker that refusal left a `std::thread`, which is
-/// `std::terminate`, so the one graceful failure here became the one abrupt one
+/// written on says which allocation it cannot afford instead of being killed.
+/// Above one worker, that refusal left a `std::thread`, which is
+/// `std::terminate`, so the one graceful failure here became the one abrupt one,
 /// and only when `--threads` was given. A test that only ran the pool at one
 /// worker would not have seen it, so every case below is run at four as well.
 ///

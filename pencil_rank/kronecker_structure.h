@@ -78,12 +78,8 @@ struct PencilRank {
 
     /// Whether `over_closure` is also the rank over GF(p).
     ///
-    /// True only in the case this module can prove: no minimal indices, and
-    /// every elementary divisor a linear form of multiplicity one. Then the
-    /// pencil is simultaneously diagonalisable over GF(p) and the `r` matrices
-    ///
-    /// True in two cases now. The first is the one this module could always
-    /// prove: no minimal indices, and every elementary divisor a linear form of
+    /// True in two cases. The first is the one this module could always prove:
+    /// no minimal indices, and every elementary divisor a linear form of
     /// multiplicity one, so the pencil is simultaneously diagonalisable over
     /// GF(p) and the `r` matrices `e_i e_i^T` attain the bound. The second is
     /// `[sumi2009, Thm. 3.3]`, which settles the regular case outright whenever

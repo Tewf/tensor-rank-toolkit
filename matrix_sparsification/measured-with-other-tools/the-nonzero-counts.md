@@ -28,7 +28,7 @@ another basis of the same weight could carry an entry that is neither, and on th
 alternative-basis fixture a since-retired method left all ten of its entries as
 ninths, twenty operations for ten nonzeros.
 
-No operator ever separated the two oracles from the exact method on *count* — not
+No operator ever separated the two oracles from the exact method on *count*: not
 these three, not 400 random ones, not 203 built the way a real one is, a sparse
 basis hidden behind a change of basis. Only the row-basis heuristic was ever
 measured losing, on 37% and 21% of those two families. What separated them was

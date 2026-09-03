@@ -11,11 +11,9 @@ add_executable(test_algorithm_cost test_algorithm_cost.cpp)
 target_link_libraries(test_algorithm_cost PRIVATE matrix_sparsification project_warnings testing)
 add_test(NAME algorithm_cost COMMAND test_algorithm_cost ${PROJECT_SOURCE_DIR}/fixtures)
 
-# An operator and its transpose reach the same count. They must, and until
-# 2026-08-22 they did not: a wide operator went through every method then
-# shipped unchanged
-# because the question is vacuous on that side. Every fixture here is 7x4, which
-# is why nothing caught it; this check writes the transpose itself.
+# An operator and its transpose must reach the same count; a regression fixed
+# 2026-08-22 let a wide operator through unchanged instead. Rationale in
+# check_orientation_does_not_decide.sh, which writes the transpose itself.
 add_test(NAME sparsify_orientation
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_orientation_does_not_decide.sh
                  $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)
@@ -35,9 +33,9 @@ target_link_libraries(test_rational_sparsifier
                       PRIVATE matrix_sparsification project_warnings testing)
 add_test(NAME rational_sparsifier COMMAND test_rational_sparsifier)
 
-# What `--emit` writes is a drop-in for what it read: same shape, already minimal.
-# The count is the same either way up and a program is not, so nothing about the
-# reported number would have caught this.
+# What `--emit` writes must be a drop-in for what it read: same shape, already
+# minimal. Rationale in check_emitted_operator_is_a_drop_in.sh: the nonzero
+# count alone cannot tell an operator from its transpose.
 add_test(NAME sparsify_emit
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_emitted_operator_is_a_drop_in.sh
                  $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)
@@ -51,10 +49,9 @@ target_link_libraries(test_lightest_vector_by_simplex
                       PRIVATE sparsify_by_simplex project_warnings testing)
 add_test(NAME lightest_vector_by_simplex COMMAND test_lightest_vector_by_simplex)
 
-# Every route the command offers still answers, and none beats the proved
-# minimum. Three flags changed meaning on 2026-08-22 and nothing exercised them;
-# this also asserts that the flag which was removed is refused rather than
-# ignored, which is how a stale script goes on looking correct.
+# Every route the command offers still answers and none beats the proved
+# minimum, covering the flag surface rewritten 2026-08-22. Rationale in
+# check_every_route_answers.sh.
 add_test(NAME sparsify_routes
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_every_route_answers.sh
                  $<TARGET_FILE:sparsify-operator> ${PROJECT_SOURCE_DIR}/fixtures)

@@ -144,7 +144,7 @@ int main() {
     bilinear_rank::register_span_ranks_on_card(&fake_card);
 
     // Gate 2: every gate open. The backend is asked, and what it returns is what
-    // the caller gets -- so a card that fired is visible here rather than
+    // the caller gets, so a card that fired is visible here rather than
     // indistinguishable from the host.
     shape_is_handled = true;
     backend_answers = true;
@@ -164,8 +164,8 @@ int main() {
                  same_ranks(carded, host) ? 1 : 0, 1);
 
     // Gate 3: a shape no kernel was compiled for. This is the gate <3,4,5> stops
-    // at -- its operands are 12x20 and `span_ranks_handle` carries four square
-    // shapes -- so it is the one that decides whether a CUDA install changes
+    // at: its operands are 12x20 and `span_ranks_handle` carries four square
+    // shapes, so it is the one that decides whether a CUDA install changes
     // anything for that tensor.
     shape_is_handled = false;
     forget_what_was_asked();

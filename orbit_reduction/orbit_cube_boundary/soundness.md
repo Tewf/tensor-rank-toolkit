@@ -21,3 +21,8 @@ map, but a *no* rests on the search having been complete.
 An incomplete group only costs speed. Fewer verified elements means more orbits
 means a bigger search, still exhaustive and still sound. Only an element that was
 never verified, or a cube set that misses a first term, can corrupt an answer.
+
+`ctest -R symmetry_agreement` is the check that would catch a wrong element: it
+compares the quotiented search against the unquotiented one on every fixture
+where both terminate. At `⟨2,2,2⟩` over GF(2) the group it is trusting has 216
+elements ([`../group_construction.h`](../group_construction.h)).

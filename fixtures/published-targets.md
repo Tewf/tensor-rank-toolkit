@@ -2,7 +2,7 @@
 
 `gf4`, `gf8` and `gf16` are settled here by this repository's own exhaustive
 search, so their rank is a measurement and not a citation. These six are the
-other kind: each ships because somebody has published a number for it and
+other kind: each ships because a paper has published a number for it and
 nothing here can reach that number yet, so what the file buys is the tensor the
 published claim is about, held still and in full.
 

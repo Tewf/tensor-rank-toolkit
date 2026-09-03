@@ -124,9 +124,9 @@ void print_table() {
 /// It lives beside `--route` rather than in a command of its own because the
 /// ranking is only ever read to decide what `--route chain` will reach: a caller
 /// with no curve to bound has no use for it. The order printed is the one that
-/// would really run — `run` puts `ilp_backend_order` in force before it walks a
-/// single argument — because printing the compiled order while the file had
-/// moved it would make the one place a caller looks the one place that lies.
+/// would really run: `run` puts `ilp_backend_order` in force before it walks a
+/// single argument. Printing the compiled order while the file had moved it
+/// would make the one place a caller looks the one place that lies.
 void print_backends() {
     cli::result() << "integer programming backends, in preference order:\n";
     for (const integer_programme::Backend backend : integer_programme::ranked_backends()) {

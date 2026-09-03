@@ -13,6 +13,10 @@ scoreboard: what this repository promises is the `nnz` column, and it promises i
 as a minimum over every change of basis. The three cost models a count like this
 can be read in are [`../what-it-is-worth.md`](../what-it-is-worth.md).
 
+On `Grey-221`, that promise is 128 nonzeros total; handed to `[plinopt]`'s own
+subexpression pass those come down to 62 additions, the pair
+[`before-a-subexpression-pass.md`](before-a-subexpression-pass.md) measures.
+
 | | |
 |---|---|
 | [`the-nonzero-counts.md`](the-nonzero-counts.md) | what each tool reached on the three operators of `Grey-221`, column by column |

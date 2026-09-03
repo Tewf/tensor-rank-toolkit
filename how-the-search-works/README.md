@@ -54,6 +54,35 @@ the moment it meets a smaller index still in `[from, |P|)`. And `P[i]` on an
 addressed pool is arithmetic, `lefts[i / |rights|] ⊗ rights[i % |rights|]`, so
 4 294 836 225 candidates cost no memory at all.
 
+## What it prints
+
+Run against a fixture this repository ships, read-only from `build/`:
+
+```
+$ decide-rank fixtures/matmul_2x2x2.tensor --target 7
+fixtures/matmul_2x2x2.tensor
+  rank bound: rank is at least 6
+  pool: 225 rank-one maps of shape 4x4
+  leaf: GF(2), one bit per entry
+  plan:
+    pool: materialised (225 maps at 184 B each is 40 KiB, inside the 4.00 GiB budget)
+    leaf route: walk (128 subspace elements at dimension 7 against 225 pool maps)
+    device: cpu (128 elements at the deepest leaf, under the 8192 launch floor)
+    threads: 1
+    quotient: none
+    orbit test: full
+    anchor: map
+  7436 nodes in 0.014831 s
+  FOUND: 7 products, rank bound 6, gap 1
+  verified: they compute the map
+```
+
+Every line the plan prints is one of the five pieces answering for itself before
+`descend` opens a node: which pool, which leaf route, which device, how many
+workers, which quotient. The node count is `nodes_visited` in `SearchBudget`,
+the counter [`what-the-rewrites-were-worth.md`](what-the-rewrites-were-worth.md)
+times whole questions by.
+
 The leaf is where the run lives. Which route it takes is decided by count and
 [that rule is measured](../exhaustive_search/which-leaf-route-is-cheaper.md).
 Both routes were rewritten on 2026-08-20 and neither forms an element any more:

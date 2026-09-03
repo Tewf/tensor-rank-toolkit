@@ -131,7 +131,8 @@ jobs:
         if: always()
         run: python3 reproduce/notice_scope.py
 
-      # The GF(16) exhaustion, 105 600 301 nodes: 395 s on the reference core and
+      # The GF(16) exhaustion, 105 600 301 nodes: 247.118 s on the reference core
+      # (satisfiability/results.json, re-measured 2026-08-23) and
       # longer on a shared runner, which is more than every other question in the
       # driver put together. On every push that would be a fivefold slowdown to
       # re-derive a deterministic count, and one slow runner from a red tick that

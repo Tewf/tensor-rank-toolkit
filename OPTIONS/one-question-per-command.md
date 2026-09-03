@@ -50,11 +50,11 @@ two mutually exclusive flag sets is worse than two commands.**
   works because its routes differ in the *library* and share every flag; these
   do not. Pencil alone contributes no flags and so passes the flag test, and
   loses on two others: `decide_rank_main.cpp` is already the longest file here,
-  and exit 3 would come to mean two things in one command — `check_exit_codes.sh`
+  and exit 3 would come to mean two things in one command: `check_exit_codes.sh`
   records that pencil is *the one place* Undecided means the mathematics stopped
   rather than a budget did.
 - **`minimise-rank` + `lower-the-bound`.** Refused. Same question, two machines,
-  and no name collides — but four descent-only flags against six
+  and no name collides, but four descent-only flags against six
   incumbent-only ones, and `--json` and `--steps` would silently mean nothing on
   half the command.
 - **`walk-scheme` into either of those.** Refused twice over: `--steps` already

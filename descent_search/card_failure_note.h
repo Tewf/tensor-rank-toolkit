@@ -11,7 +11,7 @@
 /// here, in the one place every command that can reach a card includes.
 ///
 /// One file rather than the same four lines in four `*_main.cpp`s, because the
-/// sentence is not the point — the *reason* is, and a reason copied four times is
+/// sentence is not the point: the *reason* is, and a reason copied four times is
 /// a reason that will be corrected in one of them. The reason: a card that
 /// silently stopped being used is a run that got mysteriously slower, and the
 /// answer it produced is the same answer, so the only thing to report is the

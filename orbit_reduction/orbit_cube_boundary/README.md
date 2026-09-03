@@ -10,6 +10,9 @@ Both sides break the symmetry of the same formula. Theirs does it with a term
 sound alone. **Their conjunction is not**, and that is the one thing here that
 cannot be got wrong.
 
+Checked, not just argued: `ctest -R orbit_cubes_preserve_the_answer` passed
+five for five in 65.4 s on 2026-08-16, per [`validation.md`](validation.md).
+
 | | |
 |---|---|
 | [`the-contract.md`](the-contract.md) | what `orbit_cubes` hands over, what a representative is, and the array layout it is written in |

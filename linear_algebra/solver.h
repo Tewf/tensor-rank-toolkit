@@ -9,8 +9,8 @@
 
 /// Solving an exact linear system, and the one thing built on it: inversion.
 ///
-/// Every operation goes through the field, which ensures exact arithmetic and
-/// coherence across all computations.
+/// Every operation goes through the field: no raw arithmetic on an `Element`
+/// bypasses it, which is what keeps the solver and `invert` exact.
 namespace linear_algebra {
 
 /// Solve `coefficients * rows = target` for rows that are linearly independent,

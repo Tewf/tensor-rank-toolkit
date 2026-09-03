@@ -1,8 +1,8 @@
 /// Sparsify the operator of a fast multiplication algorithm and report the
 /// fewest nonzeros any change of basis can leave it with.
 ///
-/// Takes a file and optionally --show flag to control output, enabling scripted
-/// runs without interactive prompts.
+/// One required file argument; every other option is a flag, listed in
+/// `usage()` below.
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -77,7 +77,7 @@ void usage() {
 /// separates them not at all: on the alternative-basis operator every route
 /// reaches ten, and they are not the same ten. What separates them is
 /// `nnz + nns`, the cost the articles minimise, where an entry that is neither
-/// `0` nor `±1` costs a multiplication as well as an addition — ten ninths are
+/// `0` nor `±1` costs a multiplication as well as an addition: ten ninths are
 /// twenty operations and ten signs are ten. Printing zeros alone showed the
 /// routes tying and hid the only result `--operations` exists to produce.
 template <class AnyField>

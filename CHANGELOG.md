@@ -68,6 +68,25 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Every folder passed a researcher-grade documentation review.** One
+  reviewer per folder, children per subfolder, each holding the prose to the
+  professional register, to the no-dash rule, and to accuracy against the
+  code and records beside it, and every documentation page now carries an
+  example of use and at least one real number whose source is named: output
+  actually produced by the built binaries, or a committed record linked
+  where it lives. What the review corrected on the way, each against the
+  repository's own records: a stale extrapolation row that the 2026-08-19
+  run had settled, a canonical-pass timing transcribed onto the plain
+  pass's node count, two pages still counting twelve vendored PLinOpt
+  files, a miscounted Gray-walk total, a misattributed codeword-count
+  citation, two stale cross-references, a prediction band quoted where its
+  own page records the measurement, a GPU verdict stated as settled where
+  its source suspends it, and the GF(16) exhaustion's superseded 6.6
+  minutes in the driver's own prose. Findings the review could not settle
+  from the tree (a citation-policy contradiction, dangling bibliography
+  keys, the social-preview image's affiliation line) are recorded for the
+  maintainer rather than guessed at.
+
 - **Both READMEs open academically and put the repository layout first.**
   The abstract now frames the problem by its complexity (NP-complete over
   finite fields per `[hastad1990]`, ∃ℝ-complete over the reals per

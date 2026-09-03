@@ -6,8 +6,8 @@
 // shapes there is no reference left, and one half of the contract is still
 // checkable without one: moving a set by a group element may not move its name.
 //
-// That is the weaker half — the constant function passes it, which is why it is
-// never the only check here — and it is the half that reaches `⟨3,3,3⟩`, where the
+// That is the weaker half (the constant function passes it, which is why it is
+// never the only check here), and it is the half that reaches `⟨3,3,3⟩`, where the
 // group is 4 741 632 elements, the grid presentation is a megabyte a generator, and
 // neither oracle exists. What it does catch is a search that has drifted off the
 // group: a base change that lost a point, a transversal read in the wrong

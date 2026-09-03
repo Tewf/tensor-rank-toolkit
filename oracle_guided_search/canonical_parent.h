@@ -85,7 +85,7 @@ std::vector<CandidateParent> candidate_parents(const Field& field,
 /// the first part is the same whichever cell is marked. Only the mark entry is
 /// left to compare, and its least value over the cells is forced: the mark's image
 /// lies in `canon(indices)`, and every point of `canon(indices)` is the image of
-/// some cell, so the least attainable mark entry is that set's own least point —
+/// some cell, so the least attainable mark entry is that set's own least point,
 /// which is the key's own first entry. A cell is therefore least exactly when its
 /// own key says so, and the loop over the other cells was asking a question whose
 /// answer it already held.
@@ -119,7 +119,7 @@ bool is_distinguished_cell(const PoolSetCanon& canon, const std::vector<std::siz
 /// rather than a matrix.** Both were the same mistake: this function used to open
 /// with `pool_inside(field, pool, child)`, a whole pool scan, and then walk that
 /// list comparing single-element codes to find where `added` sat in it. The caller
-/// knows both — it chose `added` by index and
+/// knows both: it chose `added` by index and
 /// [`pool_cosets.h`](pool_cosets.h) gives it every child's content from one scan a
 /// node. Measured, that scan was 98% of a node's cost at `<2,3,3>`.
 /// **`parent_name` is the parent's own canonical name, and the caller computes it

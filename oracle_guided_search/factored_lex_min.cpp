@@ -248,8 +248,8 @@ permlib::dom_int LeastImageSearch::commit_row(
 
     // `row_count_` stands above every row and is never attained, so a candidate
     // with nothing left to place could not win. At a row step every candidate has
-    // something left to place — they all hold the same number of cells and fewer
-    // than that are committed — so nothing is excluded by the sentinel here.
+    // something left to place: they all hold the same number of cells and fewer
+    // than that are committed, so nothing is excluded by the sentinel here.
     permlib::dom_int least = static_cast<permlib::dom_int>(row_count_);
     std::vector<const std::vector<std::size_t>*> passing;
     for (const std::vector<std::size_t>& candidate : candidates) {
@@ -318,7 +318,7 @@ void LeastImageSearch::commit(std::vector<std::vector<std::size_t>>& candidates,
     // A column of one row can be a column of an earlier one, so the point to commit
     // may already be a base point. Then the subgroup still free fixes it, its orbit
     // is itself, and the only candidates that could have attained it are the ones
-    // that already have an uncommitted cell there — carried by the identity. The
+    // that already have an uncommitted cell there, carried by the identity. The
     // base does not grow, because stabilising a fixed point again is the same
     // group, and a repeated base point is not a base.
     if (in_base_[point]) {

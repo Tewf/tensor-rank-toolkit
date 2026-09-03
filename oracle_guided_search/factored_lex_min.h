@@ -14,8 +14,8 @@
 /// `left_count * right_count` points per generator: 900 bytes at `⟨2,2,2⟩`, a
 /// megabyte at `⟨3,3,3⟩`, **17 GB** at `⟨4,4,4⟩`.
 ///
-/// The action never mixes the two sides — `[covanov2019, Thm. 17]`, and
-/// [`pool_orbits.h`](../orbit_reduction/pool_orbits.h) sets the algebra out — so a
+/// The action never mixes the two sides (`[covanov2019, Thm. 17]`), and
+/// [`pool_orbits.h`](../orbit_reduction/pool_orbits.h) sets the algebra out, so a
 /// generator is a pair of permutations, one of each vector list, and `G` embeds in
 /// `Sym(L) × Sym(R)`. Presenting it on the **disjoint union** `L ⊔ R` costs
 /// `left_count + right_count` points instead: 131 070 at `⟨4,4,4⟩`, half a megabyte
@@ -72,7 +72,7 @@ struct FactoredGenerator {
 /// Carried over unchanged from the grid presentation, where `⟨3,3,3⟩`'s 261 121
 /// points measured at about 370 bytes each. The construction is the same
 /// Schreier-Sims with the same Schreier tree transversals on a smaller domain, so
-/// the *rate* is the one thing that does not change when the degree does — but no
+/// the *rate* is the one thing that does not change when the degree does, but no
 /// new measurement stands behind the number, which is why that is said here rather
 /// than left implied.
 ///
@@ -115,7 +115,7 @@ class FactoredGrid {
     /// The cheap answer here is the wrong one and is not taken. The subgroup fixing
     /// the set of touched rows and the set of touched columns is one call to
     /// `setStabilizer` on this presentation, and it is in general **larger** than
-    /// `Stab_G(S)`, because it may carry cells out of the set and others in —
+    /// `Stab_G(S)`, because it may carry cells out of the set and others in:
     /// measured larger on 13.6% of 20 000 random cell sets of one to nine cells at
     /// `⟨2,2,2⟩`, and 12 elements against 1 at the worst of them. Too
     /// large is the unsound direction: it merges augmentations that are not

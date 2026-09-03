@@ -12,8 +12,8 @@ bool (*gpu_probe)() = nullptr;
 /// **It is the smallest element count at which every compiled route won**, and
 /// that is the whole rule: below it at least one route loses, so no question
 /// below it is sent to a card. Both routes were swept on all four shapes a
-/// kernel exists for, the card's column being `GpuSurvivors::wall_seconds` — the
-/// launch, the kernel and the copy back — because the launch and the copy back
+/// kernel exists for, the card's column being `GpuSurvivors::wall_seconds`: the
+/// launch, the kernel and the copy back, because the launch and the copy back
 /// are precisely the two costs a floor exists to price. A walk row is a whole
 /// subspace of its dimension rather than a prefix of a wider one, since the
 /// kernel rebuilds an element from every basis row and a leaf never walks a

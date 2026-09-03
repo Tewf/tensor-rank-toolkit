@@ -58,9 +58,9 @@ bool spanned_by(const Field& field, std::size_t width, const std::vector<Matrix>
 /// visits every element and returns a maximal independent set of the rank-one
 /// maps inside.
 ///
-/// That set has an order-independent *size* — it is a basis of the span of all
+/// That set has an order-independent *size*: it is a basis of the span of all
 /// the rank-one elements, and a greedy over a matroid gives one whatever order
-/// it sees the elements in — which is why the counts may be compared for
+/// it sees the elements in, which is why the counts may be compared for
 /// equality rather than merely for both being enough.
 void check_one_span(const std::string& label, const Field& field, const ReducedBasis& span,
                     std::size_t rows, std::size_t columns) {

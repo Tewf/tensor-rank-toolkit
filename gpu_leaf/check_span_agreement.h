@@ -20,7 +20,7 @@
 /// separate the filter from the greedy and put the order back with a sort. There
 /// is no greedy here. `span_element_ranks` returns one number per index, the
 /// number depends on the element alone, and the element depends on the index
-/// alone — so the order elements are visited in is invisible to the answer, which
+/// alone, so the order elements are visited in is invisible to the answer, which
 /// is the same fact that let the host walk them in Gray order. A kernel is that
 /// same independence taken to 2 048 threads.
 ///

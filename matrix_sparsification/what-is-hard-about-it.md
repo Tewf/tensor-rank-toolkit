@@ -8,7 +8,7 @@ some invertible `V`. `nnz + nns` is the same problem under a different weight.
 
 ## It is four problems with four names
 
-The inner question — *the lightest nonzero vector in a subspace* — is one object
+The inner question, *the lightest nonzero vector in a subspace*, is one object
 the literature names four ways, and they are the same:
 
 | name | field | where |
@@ -65,8 +65,8 @@ operators here and `q^k` is 32 or 64.
 
 **And it cannot be improved much.** `[stephensdavidowitz2019]` shows that under
 SETH there is no `q^((1−ε)n)` algorithm for the minimum distance problem over any
-finite field, for a code with `q^n` codewords — where `n` is the dimension, which
-is our `k`. So the `q^k` factor is not an artefact of a naive implementation: no
+finite field, for a code with `q^n` codewords (where `n` is the dimension, which
+is our `k`). So the `q^k` factor is not an artefact of a naive implementation: no
 algorithm avoids it, up to the `ε`. Two honest caveats: that is worst-case over
 arbitrary codes and says nothing about these structured operators, and it does not
 speak to the `2^(0.0951 n)` information-set decoding line, which is about random
@@ -92,7 +92,7 @@ citing literature was available, the sentence says what the citing literature sa
 "finite field" or "GF(2)": for hardness it cites `[mccormick1983]` and
 `[colemanpothen1986]` and stops. The real-field community and the coding community
 are working on one problem and not citing each other, and the finite-field *basis*
-problem — ours, the one every operator the rank strand emits poses — falls between
+problem (ours, the one every operator the rank strand emits poses) falls between
 them.
 
 **The same gap costs us on the algorithms side, and there it is sharper.** Coding

@@ -145,7 +145,7 @@ void the_move_set_is_closed_over_gf3() {
     // what every count above would survive losing: no orbit may be dropped. The
     // ambient group here is a whole group rather than a generating set, so its
     // stabiliser is a subgroup and one application of one element reaches the
-    // whole orbit — this is the property and not an approximation of it.
+    // whole orbit, which is the property and not an approximation of it.
     const std::vector<Automorphism> elements =
         bilinear_rank::stabiliser_of(field, basis, ambient);
     std::size_t uncovered = 0;

@@ -16,7 +16,7 @@ namespace {
 ///
 /// **Linear in the characteristic, which is read off the tensor file and checked
 /// only for primality.** `field 2147483647` is a legal header, and this then
-/// asked for a 17 GB polynomial with nothing in front of it — the one allocation
+/// asked for a 17 GB polynomial with nothing in front of it: the one allocation
 /// in this module that a *file* rather than a flag can make unsurvivable. Priced
 /// like every other bulk allocation here, so it is refused with the number and
 /// `--max-memory` moves it where the machine has the room.

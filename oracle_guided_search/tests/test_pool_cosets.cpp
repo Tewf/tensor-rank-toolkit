@@ -4,7 +4,7 @@
 // is worth 7 to 14 scans a node and was 98% of the canonical route's time at
 // `<2,3,3>`. The whole of its correctness is that `extended_by(i)` is exactly
 // `pool_inside(field, pool, current + pool[i])`, same elements and same order, so
-// that is what is checked — on every child of every subspace tried, not on a
+// that is what is checked: on every child of every subspace tried, not on a
 // sample of them.
 //
 // **Over GF(2) the residue never needs normalising and a broken normalisation

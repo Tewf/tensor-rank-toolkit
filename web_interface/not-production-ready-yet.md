@@ -25,6 +25,21 @@ the cheapest search on a shipped fixture, followed the output, stopped a run
 and found where results are kept: evidence the pages carry enough to act on,
 and still not a person in the chair.
 
+One piece of that reproduction is checked here rather than only claimed. The
+third worked example in [`worked_examples.py`](worked_examples.py) says the
+quotient turns 25 399 nodes into 648; run against this build, the same map
+ends both ways:
+
+```
+build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6
+exit 1, NO: there is no algorithm with 6 products. The search was exhaustive. 25399 nodes.
+
+build/exhaustive_search/decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+exit 1, NO: there is no algorithm with 6 products. The search was exhaustive. 648 nodes, quotiented.
+```
+
+Both proved, and the worked example's own number is what this build reaches too.
+
 ## Things it deliberately does not do
 
 **It does not validate a map itself.** The readers in `formats/` already refuse
@@ -58,8 +73,8 @@ prints at startup is how many are there, how large, and the one command that
 clears them.
 
 **`curve-bounds --table` sat among the questions.** It is grouped under "on
-nothing but its own arguments", and its exit 0 carries its own reading — the
-table was printed and nothing was minimised — rather than the tool's. What
+nothing but its own arguments", and its exit 0 carries its own reading (the
+table was printed and nothing was minimised) rather than the tool's. What
 remains untidy is that it is a mode wearing the shape of a flag, in the same list
 as the flags that tune a minimisation, and that is the tool's shape rather than
 this interface's. `--solvers`, which arrived when `list-solvers` stopped being a

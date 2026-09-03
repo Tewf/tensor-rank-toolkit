@@ -43,7 +43,7 @@ namespace bilinear_rank {
 ///
 /// **Most of the other half is skipped too, and no answer moves.** The dearest
 /// element the greedy can take is bounded by the dearest of the slices it was
-/// handed, so every element above that ceiling is dropped before it is ranked —
+/// handed, so every element above that ceiling is dropped before it is ranked:
 /// on the strength of `|rank(v) - rank(g)|`, which needs no elimination. The
 /// argument and its two lines are in
 /// [`minimum_weight_basis.cpp`](minimum_weight_basis.cpp); what it buys is 2 043
@@ -65,7 +65,7 @@ std::vector<Matrix> minimum_weight_basis(const Field& field, const std::vector<M
 ///
 /// Both walks over a candidate pool ask exactly this, so it lives here with the
 /// step it calls rather than twice in the two callers. `cost` is the answer to
-/// the question as asked — the count, not the basis — and every caller here
+/// the question as asked (the count, not the basis), and every caller here
 /// wants it, which is why it comes back rather than being asked for again.
 std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vector<Matrix>& slices,
                                const Matrix& candidate,
@@ -91,7 +91,7 @@ std::vector<Matrix> minimum_weight_basis_with(const Field& field, const std::vec
 /// `ranks_without_last`, `SortedSpan` as its filtration, and
 /// [`level_lowering_moves`](../incumbent_search/level_lowering_moves.h) as a
 /// filter on which elements are cheap enough to split. Where a routine instead
-/// *consumes* elements in order — a greedy taking the first that pays — this
+/// *consumes* elements in order (a greedy taking the first that pays), this
 /// order is not available and the fix is to collect and sort back, as
 /// `Gf2Leaf::by_carrying_a_residual` does.
 std::vector<std::size_t> span_element_ranks(const Field& field,

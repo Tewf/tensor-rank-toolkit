@@ -7,9 +7,9 @@ machine and not in its decisions.
 
 In this folder:
 
-- [`search_plan.h`](search_plan.h): the seven choices (pool route, leaf
-  route, device, and the rest) and the three rules that settle them, each
-  rule asked of the module that already owned it.
+- [`search_plan.h`](search_plan.h): the seven choices (pool, leaf route,
+  device, and the rest) and the three rules that settle them, each rule
+  asked of the module that already owned it.
 - [`plan_file.h`](plan_file.h): one plan written down and read back,
   `name value` per line.
 - [`tests/`](tests/): a plan replayed is the same run, asserted.

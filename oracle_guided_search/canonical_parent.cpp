@@ -93,8 +93,8 @@ ParentTest is_canonical_augmentation(const Field& field, const std::vector<Matri
 
     // The canonical name of each candidate parent's orbit, by least image under a
     // prescribed group rather than by walking it. `canonical_subspace` took the
-    // least code over every element, which is what made this route lose: 16.2x
-    // fewer nodes for 15x the wall clock, because one test cost `|G|` reductions.
+    // least code over every element, which is what made this route lose: one
+    // test cost `|G|` reductions, and the wall clock paid for every node saved.
     //
     // **Asked as an early exit rather than as a minimum.** The condition is that
     // the parent's class is least, and one candidate strictly below it settles that

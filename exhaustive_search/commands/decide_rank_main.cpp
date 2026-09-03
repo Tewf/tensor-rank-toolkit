@@ -231,8 +231,8 @@ int run(int argc, char** argv) {
     }
 
     // Two slices is a different problem, and a polynomial one. A pencil `A + xB`
-    // has a complete invariant — Kronecker's minimal indices and elementary
-    // divisors — so where that invariant settles the rank there is nothing to
+    // has a complete invariant (Kronecker's minimal indices and elementary
+    // divisors), so where that invariant settles the rank there is nothing to
     // search for and no pool to build. Håstad's NP-completeness is about tensors
     // whose third dimension grows; it does not reach this case, and declining to
     // use the closed form here would be walking an exponential tree past an

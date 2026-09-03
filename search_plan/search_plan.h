@@ -17,7 +17,7 @@
 /// the device in [`../run_limits/device.h`](../run_limits/device.h) with nothing
 /// calling it at all, and the remaining four in the argument loop. Scattered,
 /// they could not be reported together, could not be overridden together, and
-/// could not be written down and replayed somewhere else — which is exactly what
+/// could not be written down and replayed somewhere else, which is exactly what
 /// a cloud run reproducing a laptop's decisions needs.
 ///
 /// **No rule moved and none of them is restated here.** `chosen_plan` asks the

@@ -1,7 +1,7 @@
 # Checking ours with another tool
 
 `minimise-rank <fixture> --emit-operators <stem>`, then
-`PMchecker <stem>_{L,R,P}.sms -q p`. `P` is outputs by products.
+`PMchecker <stem>_{L,R,P}.sms -q p`. `P` holds the outputs, indexed by products.
 
 Re-run 2026-08-21 against PLinOpt at `5b16d98`, built from source on LinBox
 1.7.0 and Givaro 4.2.0 from the Ubuntu 24.04 archive. All four rows still hold,

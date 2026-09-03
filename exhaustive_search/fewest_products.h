@@ -11,11 +11,11 @@
 ///
 /// [`exhaustive_search.h`](exhaustive_search.h) answers "is there an algorithm
 /// with exactly this many products?". Turning that into "how few products are
-/// there?" is a separate decision with a separate cost, and three answers to it
-/// live here: sweep upward, bisect, or build from nothing.
+/// there?" is a separate decision with a separate cost. What lives here is the
+/// sweep upward.
 ///
-/// All three now start at the flattening lower bound rather than at the span
-/// dimension, so no exponential search is ever asked about a `k` that
+/// It starts at the flattening lower bound rather than at the span dimension,
+/// so no exponential search is ever asked about a `k` that
 /// [`tensor_flattening.h`](../linear_algebra/tensor_flattening.h) refutes in
 /// microseconds.
 namespace bilinear_rank {

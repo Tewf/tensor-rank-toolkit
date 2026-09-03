@@ -47,8 +47,8 @@ sums and by rref; `[covanov2019]`'s quotient removes whole orbits. They are
 different mechanisms and nothing here shows they cannot be combined.
 
 The Python route is slower than both by three orders of magnitude and visits
-**7.5x fewer nodes than either**, which is the pruners doing real work in a
-language that cannot cash it.
+**7.5x fewer nodes than either**, which is the pruners doing real work that the
+implementation cannot convert into wall-clock speed.
 
 ## The caveat, closed
 
@@ -61,9 +61,9 @@ survives is 27 nodes traceable to a single line:
 ## Past `⟨2,2,2⟩`
 
 Six questions now, over three more tensors, and the baseline is above this search
-every time by 0.06% to 1.04% — one direction, one line of code accounting for all
-of it. Three of the six the baseline cannot finish, which stopped mattering once
-its tree turned out to have a closed form:
+every time, by 0.06% to 1.04%. Three of the six the baseline cannot finish, which
+stopped mattering once its tree turned out to have a closed form; what accounts
+for the whole gap is one line of code:
 [`the-baseline-prunes-nothing.md`](the-baseline-prunes-nothing.md).
 
 ## What is not run yet

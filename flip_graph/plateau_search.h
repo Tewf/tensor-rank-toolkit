@@ -19,11 +19,12 @@
 /// first step, and quotienting the pool by symmetry does not help, because an
 /// empty shortlist stays empty however it is grouped.
 ///
-/// Yet `⟨2,2,2⟩` has a 7-product algorithm, and the exact search finds it in a
-/// fifth of a second. Strassen's seven are reachable from the naive eight only
+/// Yet `⟨2,2,2⟩` has a 7-product algorithm, and the exact search finds it in
+/// 0.0126 s (famous_tensors/decided-exactly.md; a fifth of a second before the
+/// GF(2) leaf). Strassen's seven are reachable from the naive eight only
 /// by passing through maps that cost the same. A strictly descending walk cannot
-/// enter such a state by construction, which is not bad luck but the shape of
-/// the method.
+/// enter such a state by construction: this is a structural limit of the
+/// method, not a contingent failure.
 ///
 /// So this one takes a strict improvement whenever one exists, and otherwise
 /// steps sideways to an equal-cost map it has not seen before, and it

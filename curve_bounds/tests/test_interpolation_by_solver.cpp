@@ -60,8 +60,8 @@ void check_the_model_states_the_same_question() {
     check::equal("the degree row is an equality on deg G",
                  model.constraints.front().relation == integer_programme::Relation::Equal ? 1 : 0, 1);
 
-    // Every variable is a count: whole, non-negative, and bounded above, because
-    // an integer variable with no stated upper bound is binary to CBC and to GLPK.
+    // Every variable is a count: whole, non-negative, and bounded above.
+    // interpolation_by_solver.cpp explains why the upper bound is mandatory.
     bool all_counts = !model.variables.empty();
     for (const integer_programme::Variable& variable : model.variables) {
         if (!variable.integral || !variable.bounded_below || !variable.bounded_above) {

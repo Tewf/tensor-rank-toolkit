@@ -83,8 +83,8 @@ Model read_dimacs_model(std::istream& input) {
     while (std::getline(input, line)) {
         if (line.rfind("s ", 0) == 0) {
             // Only the two verdicts are answers. A solver interrupted by its
-            // deadline can still print an s line - kissat's alarm handler says
-            // `s UNKNOWN` on the way out - and reading any s line as an answer
+            // deadline can still print an s line (kissat's alarm handler says
+            // `s UNKNOWN` on the way out), and reading any s line as an answer
             // turned a timeout into a refutation on 2026-09-01: cyclic_f2_7
             // "refuted" at 601 s under a 600 s cap and at 901 s under a 900 s
             // one, the verdict tracking the cap.

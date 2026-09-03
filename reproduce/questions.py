@@ -44,7 +44,7 @@ def shown(command):
 REPEATS = 3
 
 # The four the descent is measured on, and deliberately only those. `fixtures/`
-# holds twenty-five tensors, but a name here is a claim that
+# holds twenty-six tensors, but a name here is a claim that
 # `descent_search/results.json` publishes a step-by-step row for it, and the six
 # that ship for a published target rather than for a measurement made here
 # (`fixtures/published-targets.md`) have no such row to re-derive.
@@ -193,7 +193,7 @@ CARRIED = (
     ("matrix_sparsification/results.json", "3x3x3_23_Grey-221",
      "the whole published_scheme_operators block",
      "nine numbers, none of them re-derivable here. The three operators are PLinOpt's own and are "
-     "not among the twelve `fixtures/plinopt/` ships, so `sparsify-operator` has nothing to run on, "
+     "not among the thirteen `fixtures/plinopt/` ships, so `sparsify-operator` has nothing to run on, "
      "and PLinOpt's `bin/sparsifier` is not built in the checkout vendored here. All three columns "
      "were measured on 2026-08-22 under MEASURING.md and are carried; what holds `index.html`'s "
      "table to the two it prints is `reproduce/front_page.py`."),

@@ -5,8 +5,8 @@
 /// its index; `by_walking_the_subspace` carries one running combination along a
 /// reflected Gray code, where an element costs a single exclusive or, and drains
 /// each batch of the walk back into index order. **The second is required to be
-/// the first's answer and not an equivalent one** — the same maps, in the same
-/// order — because `Gf2SpanBasis::try_add` is order-dependent, so which rank-one
+/// the first's answer and not an equivalent one**: the same maps, in the same
+/// order, because `Gf2SpanBasis::try_add` is order-dependent, so which rank-one
 /// basis a leaf hands back is a fact about the order it saw its candidates in,
 /// and every decomposition this repository prints is a stack of those.
 ///
@@ -19,9 +19,9 @@
 ///
 /// A disagreement would mostly not crash. Gray order is not index order, so a
 /// greedy fed the survivors as the walk finds them returns a different basis of
-/// the same space and every count still matches. Batches drained out of order —
-/// which is what cutting one global Gray walk into fixed runs would give, since
-/// run `m` of such a walk covers the index block `G(m)` — would do the same,
+/// the same space and every count still matches. Batches drained out of order
+/// (which is what cutting one global Gray walk into fixed runs would give, since
+/// run `m` of such a walk covers the index block `G(m)`) would do the same,
 /// and only on the spans whose survivors straddle a boundary. A budget spent at
 /// a different rate would abandon a leaf somewhere else and turn a refutation
 /// into an undecided, or the reverse. So the two are run against each other on
@@ -34,8 +34,8 @@
 /// batch varies, so most of the spans here cross batch boundaries and the ones
 /// below 9 pin the single-batch case beside them.
 ///
-/// Neither routine reads the pool — a walked subspace touches it only for the
-/// shape — so the leaf is built once per shape and with no table, rather than
+/// Neither routine reads the pool: a walked subspace touches it only for the
+/// shape, so the leaf is built once per shape and with no table, rather than
 /// once per storage route the way the pool scan has to be.
 #include <cstddef>
 #include <random>
@@ -155,8 +155,8 @@ std::vector<std::size_t> targets_for(const ReducedBasis& span, std::size_t width
 ///
 /// The walk is cut into batches of a fixed power of two, so a count that is not
 /// one leaves a final batch the Gray order covers whole and the drain must stop
-/// inside. Nothing in the search passes such a count — `rank_one_basis.cpp`
-/// computes `p ^ dim` exactly — but the routine takes one, and the two routines
+/// inside. Nothing in the search passes such a count (`rank_one_basis.cpp`
+/// computes `p ^ dim` exactly), but the routine takes one, and the two routines
 /// have to agree wherever it is legal rather than only where it is reached.
 std::vector<std::size_t> partial_counts(std::size_t elements) {
     return {1, 2, elements / 3, elements - 1};

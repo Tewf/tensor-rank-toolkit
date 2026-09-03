@@ -2,8 +2,8 @@
 
 `--route canonical` visits far fewer nodes than `--route exhaustive` and loses on
 the clock at every shape measured so far. That is a trade with a crossing in it,
-and the question this folder answers is where the crossing is — **before** a node
-is opened, from quantities a caller already holds: the characteristic `p`, the
+and the question this folder answers is where the crossing is (**before** a node
+is opened, from quantities a caller already holds): the characteristic `p`, the
 shape `<n,m,k>`, the pool size `|P|`, the factored degree `a+b`, the group order
 `|G|` and the generator count.
 
@@ -36,8 +36,14 @@ are written out instead:
 `price_canonical_route`, and it returns each side beside the verdict so a reading
 can be argued with rather than merely obeyed.
 
-**One input is not free and is stated as its own type.** `PoolOrbits` — the
-orbits of the pool under the stabiliser and the sum of their squared sizes — has
+Run directly on the shipped `<2,2,3>` fixture, `price-canonical-route
+fixtures/matmul_2x2x3.tensor -s matmul 2 2 3 --target 7` reports `group 6048, 6
+generators` and `price ratio 78.45`, ending `verdict: one level of augmentation:
+the orbits of this pool are small enough that naming them one element at a time
+still costs less than a pool pass a leaf`.
+
+**One input is not free and is stated as its own type.** `PoolOrbits` (the
+orbits of the pool under the stabiliser and the sum of their squared sizes) has
 no closed form here and costs one `O(|P| * generators)` pass: 27 us at `<2,2,2>`
 and 51 ms at `<3,3,3>`, the latter against the 4.9 s decision it prices.
 Withheld, the one-level arm refuses rather than falling back on `|O| <= |G|`,
@@ -62,7 +68,7 @@ which is **125x** the truth at `<3,3,3>`.
 ## The state of it, in one line
 
 The predicate now gets **all ten** swept rows, including the one it used to miss.
-It says the route pays at exactly one of them, `<3,3,3>` at 10 — and **nothing
+It says the route pays at exactly one of them, `<3,3,3>` at 10. **Nothing
 consults it, deliberately**, because the margin there is a quadratic in the
 baseline's orbit test rather than anything canonical augmentation does:
 [`../../how-the-search-works/what-to-wire.md`](../../how-the-search-works/what-to-wire.md)

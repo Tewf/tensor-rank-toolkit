@@ -64,7 +64,7 @@ SupplyPlan plan_for(const PointSupply& supply, std::size_t degree_budget) {
     // so `--degree 100000` on a supply of degree 1 asked for a 100 001 by 100 001
     // frontier in two tables, about 240 GB, and the process was simply killed.
     // Priced against the one budget that decides these, so it is refused with the
-    // number instead — `--max-memory` moves it where the machine has the room.
+    // number instead. `--max-memory` moves it where the machine has the room.
     // Asked a row at a time and then a frontier of rows, rather than as one
     // product: `(usable + 1) * (degree_budget + 1)` is exactly the multiplication
     // that overflows on the input this is here to refuse. One row inside the

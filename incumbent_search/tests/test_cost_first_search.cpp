@@ -149,7 +149,7 @@ void it_reaches_a_known_answer(const std::string& name, std::size_t expected) {
 /// only one of them is the interesting one:
 ///
 /// - `below` at the answer reaches it, and reaches it entering **no more nodes**
-///   than the plain run — the whole point of seeding the incumbent low;
+///   than the plain run, the whole point of seeding the incumbent low;
 /// - `below` under anything the search can build does not reach it, and
 ///   `reached_below` stays false. Nothing else may be read off that;
 /// - `below` at or above the start is already held, so nothing is searched.

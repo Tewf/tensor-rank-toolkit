@@ -7,7 +7,7 @@
 /// fmm.univ-lille.fr publishes the same triple as Maple matrices. Nobody ships
 /// a matrix-multiplication tensor, because ⟨m,n,k⟩ already determines it. So the
 /// `.tensor` format is this repository's own, and the thing that arrives from
-/// outside is a triple. `formats/interchange/reading-his-files.md`
+/// outside is a triple. `formats/interchange/bringing-an-algorithm-in.md`
 /// is the page for whoever has one.
 #include <string>
 #include <vector>
@@ -39,7 +39,7 @@ void usage() {
 /// else: output i is `sum_r P[i][r] * (L[r] . x)(R[r] . y)`, so slice i is
 /// `sum_r P[i][r] * L[r] (x) R[r]`. That is PLinOpt's convention as well as this
 /// repository's, which is asserted rather than assumed in
-/// `formats/tests/test_operators_to_tensor.cpp`.
+/// `descent_search/tests/test_operators_to_tensor.cpp`.
 formats::Tensor map_of(const bilinear_rank::Field& field, int64_t characteristic,
                               const bilinear_rank::Algorithm& algorithm) {
     formats::Tensor tensor;

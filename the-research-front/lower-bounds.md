@@ -31,12 +31,13 @@ this repository is, and the front is much closer to us:
 
   **Polynomial space is real, and it is narrower than it sounds.** The *search*
   state here is already polynomial, a basis plus an index. What is not is the
-  *pool*: `all_rank_one_maps` materialises it, which
-  [`descent_search/method/descent-cost.md`](../descent_search/method/descent-cost.md)
-  already
-  diagnoses and which is 4.3e9 maps at `⟨4,4,4⟩`. Yang walks it with an in-place
-  odometer instead. So the whole difference is the pool, and an iterator is the
-  whole fix.
+  *pool*: `all_rank_one_maps` materialises it where it fits, 4.3e9 maps at
+  `⟨4,4,4⟩` where it does not. Yang walks it with an in-place odometer
+  instead, and that iterator now exists here:
+  [`descent_search/candidate_pool.h`](../descent_search/candidate_pool.h)'s
+  `RankOnePool` is `[yang2025]`'s odometer, and `decide-rank` takes it
+  wherever the materialised pool would be refused. So the whole difference
+  was the pool, and the iterator closed it.
 
   **What was genuinely missing is the pruners, which shrink the tree rather than
   re-deriving it.** Both rank-sum bounds are now
@@ -60,7 +61,9 @@ this repository is, and the front is much closer to us:
 
   It leaves `⟨2,2,2⟩` where it was. Our `rank_lower_bound` is the maximum over the
   flattening rank, both rank sums and Griesmer, and on `⟨2,2,2⟩` that maximum is
-  **6**; ruling out 6 then costs `decide-rank` **25 399 nodes and 0.65 s** of
-  exhaustion. That shape is still one where every bound we have stops one short of
+  **6**; ruling out 6 then costs `decide-rank` **25 399 nodes and 0.0362 s** of
+  exhaustion ([`comparing-against-the-baseline.md`](comparing-against-the-baseline.md);
+  an earlier revision here carried the canonical pass's 0.65 s beside the
+  plain pass's node count). That shape is still one where every bound we have stops one short of
   the answer and a search pays for the last step, and the literature's one
   candidate aimed at that gap has now been tried.

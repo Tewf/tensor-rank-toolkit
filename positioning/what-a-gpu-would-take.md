@@ -84,6 +84,10 @@ real and insufficient, under 5x the bandwidth wall**, and the card clears 50x
 against every host baseline, including all twelve threads running the kernel's
 own arithmetic. **One whole `<4,4,4>` leaf is 1.02 s.** The tables:
 [`../gpu_leaf/what-the-card-did.md`](../gpu_leaf/what-the-card-did.md).
+That verdict was taken against the host leaf of its day:
+[`../gpu_leaf/README.md`](../gpu_leaf/README.md) now prices the same
+comparison at 5x to 14x after the host leaf's later rewrites, and holds its
+verdict suspended, not retracted, until `measure-leaf` re-takes it.
 
 **The prior in this paragraph was wrong.** It said a 256-bit exclusive-or reduce
 is likely bandwidth bound and made the middle band the prior; it is compute

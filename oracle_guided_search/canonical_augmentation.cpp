@@ -110,8 +110,8 @@ std::vector<std::size_t> augmentations(const Walk& walk, const PoolCosets& coset
 /// Every child this node offers, with the parent test already applied, handed to a
 /// visitor that says whether to stop.
 ///
-/// `descend` and `expand_one` differ only in what they do with an accepted child —
-/// one recurses, the other hands back a branch — so the deciding lives here once.
+/// `descend` and `expand_one` differ only in what they do with an accepted child:
+/// one recurses, the other hands back a branch, so the deciding lives here once.
 /// It used to be written out in both, with a comment requiring them to stay equal
 /// line for line; a shared body is the version of that requirement a compiler can
 /// keep.
@@ -209,7 +209,7 @@ struct Branch {
 ///
 /// This is `descend` with the recursion replaced by a push. The node is counted
 /// here, a leaf is emitted here, and the parent test's group visits are charged in
-/// `offer_children`, which both walks share — so a walk split across cores counts
+/// `offer_children`, which both walks share, so a walk split across cores counts
 /// exactly what the sequential one counts, by construction rather than by a comment
 /// asking two copies to stay equal.
 void expand_one(Walk& walk, const std::vector<Matrix>& root, const Branch& node,

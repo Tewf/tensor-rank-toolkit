@@ -17,3 +17,15 @@ The `⟨2,2,2⟩` descent, itemised:
   unrestricted question takes about 0.2 s. Pinned to candidate 0 it does not finish in
   30 s; pinned to candidate 1 it takes 0.50 s. The commitment is not a reliable
   narrowing of an easy question, it is a reshaping that can make one hard.
+
+The same per-candidate pattern, from the tool that replaced the finder:
+
+```sh
+deflate-strictly fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+  candidate 0: refuted, 0.721823 s
+  candidate 1: refuted, 0.644588 s
+  candidate 2: refuted, 0.720952 s
+  candidate 3: refuted, 0.48914 s
+  candidate 4: refuted, 0.591016 s
+k = 6: every candidate refuted, so the rank is above 6, 3.17116 s, kissat
+```

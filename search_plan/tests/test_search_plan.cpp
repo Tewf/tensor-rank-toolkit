@@ -1,4 +1,4 @@
-/// The rules, the overrides, and the round trip — with the rules pinned to
+/// The rules, the overrides, and the round trip, with the rules pinned to
 /// tensors whose answers can be read off by hand.
 ///
 /// **A rule that is only exercised through a search is a rule nobody can see.**

@@ -7,9 +7,10 @@
 /// both are wrong for a search that needs one.
 ///
 /// What is asserted is therefore agreement and not speed: the route must return
-/// the same rank as the plain one and its own receipt must check out. The timing
-/// is in [`../narrowing-the-search.md`](../narrowing-the-search.md), where it
-/// loses by two orders of magnitude and says so.
+/// the same rank as the plain one and its own receipt must check out. The
+/// timing is in [`../canonical-augmentation.md`](../canonical-augmentation.md):
+/// 5.1x against on the wall clock today, from 25.8x when first measured and
+/// 129x at the first wiring.
 #include <string>
 
 #include "check.h"

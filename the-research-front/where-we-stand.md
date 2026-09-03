@@ -42,7 +42,7 @@ competitive, and breaking the same symmetry in the SAT encoding is sound and
 does not rescue `f3_3x6`.
 
 **On the upper-bound side we were a decade behind until today**, when the flip
-graph landed on the orbit branch and recovered Strassen by walking. That is
+graph was implemented and recovered Strassen by walking. That is
 `[kauers2023]`, the 2023 method, and reaching `[moosbauer2025]` means adding
 symmetry to the walk, which is exactly the group the orbit work already computes.
 

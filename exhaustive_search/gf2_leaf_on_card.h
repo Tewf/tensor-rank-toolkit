@@ -58,7 +58,7 @@ struct PackedLeaf {
 ///
 /// **`survivors` comes back ascending or not at all.** The greedy the host runs
 /// over it is order-dependent, so ascending index order is what makes the maps
-/// it keeps the same maps the sequential loop kept — see
+/// it keeps the same maps the sequential loop kept: see
 /// [`../gpu_leaf/why-the-answer-is-the-same.md`](../gpu_leaf/why-the-answer-is-the-same.md).
 /// A backend that cannot report every survivor of the range returns false and
 /// leaves `survivors` untouched, because a truncated list is not a short answer,

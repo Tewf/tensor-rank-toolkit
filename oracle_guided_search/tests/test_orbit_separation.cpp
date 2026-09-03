@@ -1,7 +1,7 @@
 // Does the canonical form separate the orbits, or only respect them?
 //
 // Respecting them is easy and worthless. Any function constant on orbits passes an
-// invariance check — the constant function does — and the failure that costs
+// invariance check (the constant function does), and the failure that costs
 // something is the other direction: a form that gives **two inequivalent sets the
 // same name** merges their classes, so the enumeration reaches one of them and
 // skips the other, and a search that was going to refute a rank refutes it on fewer

@@ -23,8 +23,8 @@ struct Expectation {
     /// and is 10 for the exact method**, on the
     /// alternative-basis operator whose entries are ninths. The oracles left all
     /// ten entries as ninths, twenty operations; the exact method returns a
-    /// basis of ten signs, ten. It does not *aim* at this — it minimises zeros
-    /// and breaks ties by the order it walks supports in — so read the 10 as a
+    /// basis of ten signs, ten. It does not *aim* at this: it minimises zeros
+    /// and breaks ties by the order it walks supports in, so read the 10 as a
     /// measurement of one tie-break and not as a guarantee. The method that
     /// guarantees it is the greedy by rescaling, in the column beside.
     long long exact_operations;

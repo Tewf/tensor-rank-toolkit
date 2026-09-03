@@ -31,7 +31,7 @@ questions below the baseline cannot finish. Given twenty minutes it reached 1.7%
 
 **Six questions, one direction, and the same line accounts for all of it.** The
 baseline is above this search every time, by 0.06% to 1.04%, and the gap is
-`if (span.contains(map)) continue` — a candidate already inside the span cannot
+`if (span.contains(map)) continue`: a candidate already inside the span cannot
 raise the dimension, so no node is spent on it, and the Java loop has no such
 test. The agreement first seen at `⟨2,2,2⟩` was not a coincidence of one shape.
 

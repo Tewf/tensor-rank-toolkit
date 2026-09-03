@@ -19,7 +19,14 @@ written when the floor on GF(16) was 4, five short of the rank. `rank_lower_boun
 now returns 8, and on all seven fixtures the floor is the rank or one below it,
 so ascending already asks the two mandatory questions and no ceiling can save a
 third. Buying `descend_from_ceiling`'s bracket to supply one costs 1.25x to 2.9x
-the whole search: [`handing-over-the-bracket.md`](handing-over-the-bracket.md)
+the whole search:
+
+| Fixture | wired/plain |
+|---|---|
+| gf4 (worst) | 2.9x |
+| GF(16) (best) | 1.25x |
+
+[`handing-over-the-bracket.md`](handing-over-the-bracket.md)
 prices both ways on all seven. A good `U` is still the lever wherever the floor
 is loose; these seven are no longer that case.
 

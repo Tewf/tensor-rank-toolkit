@@ -32,7 +32,7 @@ class GreedyBasis;
 ///
 /// Both loops in this file used to rebuild element `index` from
 /// `coefficient_vector(index)`, which is `O(k · width)` multiply-accumulates for
-/// a thing that is `O(width)` field additions away from the element before it —
+/// a thing that is `O(width)` field additions away from the element before it:
 /// under an order where consecutive strings differ in one digit by one, which is
 /// what [`ReflectedGrayWalk`](reflected_gray_walk.h) is. This is that walk with
 /// the base-`p` value of the string maintained beside it, `± p^digit` a step, so
@@ -157,7 +157,7 @@ class GreedyBasis {
 /// set can hold more members that cheap than that dimension. So the `i`-th
 /// cheapest element of the answer is no dearer than the `i`-th cheapest of any
 /// other basis, and in particular its **dearest** element is no dearer than the
-/// dearest element of any basis drawn from `slices` themselves — of which there
+/// dearest element of any basis drawn from `slices` themselves, of which there
 /// is one, since a spanning set contains a basis.
 ///
 /// That is the whole licence for the three lines in the walk below that drop an
@@ -321,7 +321,7 @@ std::vector<Matrix> basis_walked_over(const Field& field, const std::vector<Matr
     // element is one slice away from the one before it rather than `k`
     // multiply-accumulates away from its own index. The walk starts on the
     // all-zero string, which is index 0 and is skipped here as it was before,
-    // and visits every other index exactly once — so this pushes the same
+    // and visits every other index exactly once, so this pushes the same
     // `combinations - 1` candidates.
     //
     // **The elements a `ranks_without_last` covers are still not ranked**, which
@@ -377,7 +377,7 @@ std::vector<Matrix> basis_walked_over(const Field& field, const std::vector<Matr
 
     // The ceiling is a claim about what the answer holds, and a basis that came
     // up short under it would compute a different map rather than compute the
-    // same one slower — the one failure nothing downstream would catch, since
+    // same one slower: the one failure nothing downstream would catch, since
     // every count taken from it would be lower and look better. Checked here,
     // where the claim is spent, and not only in the test that holds the filtered
     // walk against the unfiltered one.

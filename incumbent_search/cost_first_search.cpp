@@ -147,7 +147,7 @@ struct Ascent {
         }
 
         // Which moves are children, then what each child costs, in that order and
-        // not interleaved — because only the second half may leave this core.
+        // not interleaved, because only the second half may leave this core.
         //
         // **The filter carries state and stays sequential.** `reached` decides a
         // move by what earlier moves put in it, so which of two moves with the
@@ -159,7 +159,7 @@ struct Ascent {
         // `minimum_weight_basis_with` reads `basis`, `known` and its own move,
         // none of which anybody writes, and each answer is written to its own
         // slot. So the children are the same children in the same order at any
-        // `--threads`, and the `stable_sort` below sees the same vector — which
+        // `--threads`, and the `stable_sort` below sees the same vector, which
         // is what makes this the one search here that threads without an argument
         // about node counts. It is the same trade
         // [`../descent_search/minimise_rank.cpp`](../descent_search/minimise_rank.cpp)

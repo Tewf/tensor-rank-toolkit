@@ -6,7 +6,8 @@ order-3 tensor, so every tensor the complexity literature cares about fits the
 same file format and the same two searches. This is what happened when they were
 fed the famous ones, over GF(2), on one core of an i5-12450H.
 
-Build them with `make-tensor --matmul n m k` and `--cyclic n`.
+Build them with `make-tensor --matmul p n m k` and `--cyclic p n`, `p` being the
+field characteristic (2 throughout this table).
 
 ## What each search did
 
@@ -37,8 +38,8 @@ shapes it was run on it improves on the descent. Its three timings are
 | [`where-the-exact-search-stops.md`](where-the-exact-search-stops.md) | the price of every run made and of the ones refused, node by node |
 
 For the state of the art on exactly these families, including matrix
-multiplication over F₂ and cyclic convolution over F₂ and F₃, see *Automated
-Lower Bounds for Bilinear Complexity over Finite Fields* (arXiv 2603.07280),
-which raised the F₂ lower bound for `⟨3,3,3⟩` from 19 to 20 using orbit
-classification under a symmetry group. That is the direction this search would
-have to go to reach the sizes it currently cannot.
+multiplication over F₂ and cyclic convolution over F₂ and F₃, see `[wang2026]`,
+*Automated Lower Bounds for Bilinear Complexity over Finite Fields*, which
+raised the F₂ lower bound for `⟨3,3,3⟩` from 19 to 20 using orbit classification
+under a symmetry group. That is the direction this search would have to go to
+reach the sizes it currently cannot.

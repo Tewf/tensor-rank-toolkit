@@ -18,7 +18,7 @@
 /// `[perminov2026]` covering 680 formats. This implementation is behind all of
 /// them and is not a contribution; what it is for, and the one question in this
 /// area that is genuinely open here, is
-/// [`positioning.md`](../positioning/README.md).
+/// [`positioning/`](../positioning/README.md).
 ///
 /// Two moves, and the asymmetry between them is the whole method:
 ///
@@ -30,7 +30,7 @@
 ///
 /// Flips are common and reductions are rare, so the walk is: flip at random
 /// until a reduction becomes available, take it, repeat. That is why this can
-/// reach schemes a descending search cannot: the road between two good schemes
+/// reach schemes a descending search cannot: the path between two good schemes
 /// runs entirely through schemes of the same size.
 ///
 /// **Over GF(p) the two terms need only share a factor up to a scalar.** Since

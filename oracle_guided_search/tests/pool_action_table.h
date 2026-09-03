@@ -10,8 +10,8 @@
 
 /// How every element of a group moves every pool element, written out.
 ///
-/// The table is exactly what the factored presentation exists to avoid — at
-/// `⟨4,4,4⟩` one row of it is 17 GB — and having one here is the point: a check on
+/// The table is exactly what the factored presentation exists to avoid (at
+/// `⟨4,4,4⟩` one row of it is 17 GB), and having one here is the point: a check on
 /// a canonical form wants an oracle that walks the group element by element, and
 /// walking wants the images laid out rather than divided out. `⟨2,2,2⟩`'s is 216 by
 /// 225.

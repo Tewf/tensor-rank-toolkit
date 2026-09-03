@@ -149,7 +149,7 @@ int run(int argc, char** argv) {
                         << "-product scheme to walk from";
             // Was 1, which reads as a refutation of a k-product scheme. Nothing
             // of the sort was shown: --from k asked for a starting point this
-            // heuristic does not hand over, so the argument is the problem.
+            // heuristic does not reach, so the argument is the problem.
             return cli::exit_status(cli::ExitCode::Usage);
         }
         start = bilinear_rank::scheme_of(reduced);

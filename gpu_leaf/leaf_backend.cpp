@@ -15,7 +15,7 @@ namespace {
 ///
 /// **The span lives in `__constant__` memory and there is one of it.** Two
 /// workers routing leaves to the card at once would upload two spans to the same
-/// symbol and each would reduce against the other's — a wrong survivor set, and
+/// symbol and each would reduce against the other's: a wrong survivor set, and
 /// so a wrong rank-one basis, with nothing downstream to catch it. The shape
 /// tables below are shared for the same reason.
 ///
@@ -45,8 +45,8 @@ constexpr std::size_t kWalkDimensionCeiling = 64;
 ///
 /// Not `constexpr`, because [`tests/test_survivor_overflow.cpp`](tests/test_survivor_overflow.cpp)
 /// shrinks it. Overflow is the one branch here that no question in this
-/// repository reaches — a 47-dimensional span keeps a handful of the four
-/// billion maps tested against it — and a branch nothing exercises is a branch
+/// repository reaches (a 47-dimensional span keeps a handful of the four
+/// billion maps tested against it), and a branch nothing exercises is a branch
 /// that does not work.
 std::size_t survivor_capacity = 1u << 16;
 
@@ -55,7 +55,7 @@ std::size_t survivor_capacity = 1u << 16;
 /// Bounded rather than unbounded, because the recovery is for something that
 /// does not happen and thrashing through sixteen halvings would cost more than
 /// the host would have. Six is at most 64 launches, and past it the host
-/// answers — which is always correct and is never a truncation.
+/// answers, which is always correct and is never a truncation.
 constexpr int kHalvingsAllowed = 6;
 
 /// The two vector lists in the kernel's width, kept between leaves.

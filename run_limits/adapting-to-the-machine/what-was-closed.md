@@ -9,7 +9,7 @@ defaults to what the compiled default already was, so a run that gives none of
 them behaves exactly as it did. `ctest` is 70 and 11 where it was 68 and 11, and
 the two new ones are the two written here.
 
-## (a) Cores — two `parallel_for`s nobody could reach, and one that aborted
+## (a) Cores: two `parallel_for`s nobody could reach, and one that aborted
 
 **`decide-rank-by-sat` gained `--threads`.** `satisfiability/rank_question.cpp`
 has run its cubes through `parallel_for` since cube-and-conquer arrived, with the
@@ -21,14 +21,14 @@ already there, already correct, and already documented.
 
 **`lower-the-bound` gained `--threads`, and a loop for it to reach.** The
 incumbent search costs one `minimum_weight_basis_with` per surviving move at every
-node — the identical call `descent_search` has spread over cores for months. The
+node. The identical call `descent_search` has spread over cores for months. The
 node loop above it cannot be threaded (the incumbent decides what the next node
 prunes), and neither can the filter that decides which moves are children (a
 `std::set` of residues, where offering order decides which of two equal residues
 survives). So the two are separated: **the filter stays sequential and the costing
 goes to the workers, each writing its own slot.** The children are then the same
 children in the same order at any thread count, which
-`check_the_limits_reach_the_commands.sh` asserts on `matmul_2x2x3` — 341 nodes,
+`check_the_limits_reach_the_commands.sh` asserts on `matmul_2x2x3`: 341 nodes,
 159 860 children, identical at 1 and at 4.
 
 **`contraction_ranks` gained one.** The rank-sum floor is up to 2²⁰ independent
@@ -55,13 +55,13 @@ the crossing do read it.
 was a live production bug rather than a missed opportunity: an exception leaving a
 `std::thread`'s function is `std::terminate`, so **every `require_room` refusal
 raised under `--threads 2` or more was a SIGABRT instead of the sentence naming
-the number** — and `require_room` exists precisely so that a machine smaller than
+the number.** `require_room` exists precisely so that a machine smaller than
 the one a run was written on says what it cannot afford rather than dying. The one
 graceful failure here was the one that aborted, and only when threads were asked
 for. `test_parallel.cpp` asserts it at one worker and at four; with the fix
 reverted that test does not fail, it *aborts*, at exit 134.
 
-## (b) Memory — five allocations that had nothing in front of them
+## (b) Memory: five allocations that had nothing in front of them
 
 Each is exponential or cubic in a number read off a command line or a tensor
 file, each was a `reserve` or a `resize` straight to the allocator, and each now
@@ -93,12 +93,12 @@ are the most useful thing this audit learned: `--max-memory` selects the cheap
 representation as well as capping the expensive one, so the cheap one's own cost
 cannot be priced against it.
 
-## (c) The card — one line, and it was the worst bug of the three axes
+## (c) The card: one line, and it was the worst bug of the three axes
 
 `gpu_leaf/CMakeLists.txt` said `CUDA_ARCHITECTURES "89"`. **8.9 is the RTX 4060
 and nothing else.** On any other card the fatbin held no image the device could
 run, every launch returned `cudaErrorNoKernelImageForDevice`, `leaf_backend.cpp`
-caught it exactly as designed and let the host answer — so the run was several
+caught it exactly as designed and let the host answer, so the run was several
 hundred times slower with one line on stderr to say so, and the two seams this
 whole directory exists for were dead. It now asks CMake for `native`, which asks
 the driver what is really in the machine; an explicit `CMAKE_CUDA_ARCHITECTURES`

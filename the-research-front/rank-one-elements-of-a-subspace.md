@@ -26,8 +26,8 @@ builds vectors with leading entry 1, one per point of `PG(m−1, q)`, and
 of the Segre variety and `|pool| = ((q^m−1)/(q−1)) · ((q^n−1)/(q−1))`, which is
 the Segre point count over `F_q`. Over GF(2) that is `(2^k−1)²` at `k x k`:
 **225, 261 121 and 4 294 836 225** at 4x4, 9x9 and 16x16, the three numbers
-`generating-candidates-from-the-span.md` opens with. The enumeration was already
-walking the right object; it did not know the name.
+`generating-candidates-from-the-span.md` opens with. The enumeration already
+walked the right object; this repository did not yet have its name.
 
 ## What the name buys, and what it does not
 

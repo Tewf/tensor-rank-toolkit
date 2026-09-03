@@ -3,7 +3,7 @@
 **The first two items at the bottom of this page have since been done**, and the
 shares below are the ones that asked for them. What they were worth: `<2,3,3>` at 8
 from 98.0 s to **11.4 s**, `<2,2,4>` at 10 from 0.500 s to 0.144 s, `<3,3,3>` at 10
-from a 1.33x win to a **2.07x** one — with every node count unchanged, which is the
+from a 1.33x win to a **2.07x** one, with every node count unchanged, which is the
 check that it was a cost and not an answer that moved.
 [`../pool_cosets.h`](../pool_cosets.h) is the first mechanism and the parent test's
 early exit is the second.
@@ -21,9 +21,14 @@ a setwise stabiliser is a pool scan.
 | `<2,3,3>` | 2 | **98%** | 1.1% | 1.0% | 13.9 |
 | `<3,3,3>` | 1 | **97%** | 0.1% | 3.3% | 2.4 |
 
+On the shipped `<2,2,3>` fixture at two levels, `price-canonical-route
+fixtures/matmul_2x2x3.tensor -s matmul 2 2 3 --target 8` reports a price ratio of
+`101.467` against a saving ratio of `28.35`, the same `<2,2,3>` row this table
+breaks into pool scans, canonical images and the setwise stabiliser.
+
 **The two operations the whole apparatus exists for are 2% of the cost at the
-largest shape swept.** The setwise stabiliser — GI-hard, no proven subexponential
-bound, the term this model was warned would be the hard one — is 1.0% at `<2,3,3>`
+largest shape swept.** The setwise stabiliser (GI-hard, no proven subexponential
+bound, the term this model was warned would be the hard one) is 1.0% at `<2,3,3>`
 and 4% at `<2,2,4>`. The canonical image, which the factored presentation and
 `[linton2004]` were brought in to make cheap, is 1.1%. They were made cheap, the
 measurement says so, and what is left is not them.
@@ -80,7 +85,7 @@ and `../tests/test_route_price.cpp` records the miss rather than fitting it away
 4. **Only then the rest of the group work**, where `[linton2004]` §4's advanced
    algorithm and a factored stabiliser sit. §4 loops over orbit representatives of
    a subgroup `H` of the setwise stabiliser **acting on the set itself**, and
-   reports 67x to 100x where that induced group is large — his benchmark is 20
+   reports 67x to 100x where that induced group is large: his benchmark is 20
    points with a stabiliser of order 2 880 acting faithfully on them. Ours are sets
    of three to ten cells whose stabilisers induce very little on so few points, so
    the regime that produced his figure is not the one here, and the figure should

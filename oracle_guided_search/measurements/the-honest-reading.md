@@ -15,3 +15,12 @@ known. [`../../descent_search/known_ranks.md`](../../descent_search/known_ranks.
 What is worth keeping is not the finder: it is the descending schedule, which hands
 `find_rank` a bracket needing one refutation instead of one per rank, the zero-term
 drop, which is a correctness fix, and the shared base encoding in `decide_rank`.
+
+The canonical route quotienting `⟨2,2,2⟩`'s own pool, for scale against the group
+sizes above:
+
+```sh
+enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2 --canonical
+  pool: 225 rank-one maps, group: 6 elements
+  canonical: 0 distinct subspaces from 0 paths, 58 nodes, 0 group visits, 0.0105228 s
+```

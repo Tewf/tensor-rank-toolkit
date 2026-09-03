@@ -25,3 +25,7 @@ trivial to improve by returning a different matrix.
 | [`accelerations-not-built.md`](accelerations-not-built.md) | two that would have made the walk cheaper, priced and rejected |
 | [`answering-without-searching.md`](answering-without-searching.md) | **a way past it that is not a search**: an LP, and the theorem that turned out not to apply |
 | [`the-caveat.md`](the-caveat.md) | why these operation counts are not wall clock, and what is not proved |
+
+On the three operators of the published `Grey-221` scheme, `exact-over-q.md`'s
+method reaches 43, 42 and 43 nonzeros, the proved minimum over every invertible
+`V` ([`../dominated.md`](../dominated.md)).

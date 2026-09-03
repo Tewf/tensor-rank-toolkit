@@ -2,7 +2,7 @@
 
 `price-canonical-route <tensor> -s matmul n m k --target t` times each of them,
 fastest of the calls it is given, under [`../../MEASURING.md`](../../MEASURING.md).
-Measured 2026-08-21, the lock held, on a machine that was not idle — every
+Measured 2026-08-21, the lock held, on a machine that was not idle: every
 absolute number below is therefore an over-estimate and the shape-to-shape
 *scaling*, which is what the predicate uses, is what survives that.
 
@@ -24,7 +24,7 @@ why every other cost in the model is quoted in units of it.
 
 **The canonical image barely moves.** 13.0 us at degree 30 and 86.7 us at degree
 1 022: a factor of 6.7 across a factor of 34 in degree, and per axis point it
-*falls*, 434 ns to 85 ns. That is `[linton2004]`'s analysis showing through — the
+*falls*, 434 ns to 85 ns. That is `[linton2004]`'s analysis showing through: the
 degree enters only through the base changes and the orbit computations, both linear
 up to logarithms, while the candidate count that could have dominated does not,
 exactly as he predicted it would not.
@@ -39,8 +39,8 @@ why `CanonicalPrices::stabiliser_nanoseconds_per_point` is marked PROVISIONAL.
 `canonical-augmentation.md` records 13 ms to present `<2,2,2>`; it is 98 us now,
 133x less, because that measurement was of the **grid** presentation on 225 points
 and this one is of the **axis** presentation on 30. The fee is under 5 ms even at
-`<3,3,3>`, so the gate it guards — that a plain sweep must cost more than the
-presentation it would replace — only ever bites at `<2,2,2>`.
+`<3,3,3>`, so the gate it guards (that a plain sweep must cost more than the
+presentation it would replace) only ever bites at `<2,2,2>`.
 
 ## The three a root pays, added 2026-08-21
 
@@ -58,7 +58,7 @@ so three more constants were measured for it. Same command, same protocol.
 
 **The orbit test is quadratic and the orbit pass is linear, and the numbers say
 so rather than the code alone.** Dividing `least_in_orbit` by `sum |O_i|^2`:
-2.7, 1.2, 0.79, 0.52 and 0.51 ns — settling to a constant at the two shapes where
+2.7, 1.2, 0.79, 0.52 and 0.51 ns, settling to a constant at the two shapes where
 this term decides anything, which is what a `Theta(sum |O_i|^2)` cost looks like
 from outside. Dividing `orbit_representatives` by `|P|`: 121, 130, 131, 133 and
 196 ns, flat. The small shapes sit in cache and read low on the first ratio, so
@@ -66,7 +66,7 @@ from outside. Dividing `orbit_representatives` by `|P|`: 121, 130, 131, 133 and
 is to refuse at small shapes, which is the direction that costs nothing.
 
 **Building the pool is in the model because both routes pay it.** 368 to 566 ns
-an element, flat, and at `<2,2,2>` it is most of either route's clock — so a
+an element, flat, and at `<2,2,2>` it is most of either route's clock, so a
 comparison that left it out would report a ratio no user ever experiences.
 
 The fourth, the canonical route's **leaf**, is quoted in membership tests rather

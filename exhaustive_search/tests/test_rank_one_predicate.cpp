@@ -12,7 +12,7 @@
 ///
 /// So the predicate is not argued from its derivation here, it is checked
 /// against the elimination it replaced, over **all** matrices of the small
-/// shapes — which is affordable and therefore the right test to run — and over a
+/// shapes (which is affordable and therefore the right test to run) and over a
 /// sample where it is not. The named cases below are the ones where an
 /// implementation goes wrong quietly: a zero row, a first row that is zero, and
 /// a rank-two matrix that agrees with a rank-one one for exactly as long as a

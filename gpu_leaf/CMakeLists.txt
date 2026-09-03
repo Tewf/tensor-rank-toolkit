@@ -9,7 +9,7 @@
 # The harness's C++ half, compiled on every machine and linked on none of them.
 # It is an object library rather than a target anybody runs: `measure_leaf.cpp`
 # calls into the kernels, so it cannot link without them, but it can be
-# type-checked without them — and that is the whole point. This is what would
+# type-checked without them, and that is the whole point. This is what would
 # have caught `Gf2Leaf` gaining a `field` argument on 2026-08-20.
 add_library(measure-leaf-host-check OBJECT measure_leaf.cpp)
 target_include_directories(measure-leaf-host-check PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -66,8 +66,8 @@ target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive_search CUDA::cudart
 # **Which card, asked of the machine rather than written down.**
 #
 # This said `"89"`, which is the RTX 4060 every number in README.md was measured
-# on and nothing else. A build on any other card — 8.0 on an A100, 8.6 on a 3090,
-# 9.0 on an H100, anything newer — produced a fatbin with no image the device
+# on and nothing else. A build on any other card (8.0 on an A100, 8.6 on a 3090,
+# 9.0 on an H100, anything newer) produced a fatbin with no image the device
 # could run, so every launch failed with `cudaErrorNoKernelImageForDevice`,
 # `answered_or_the_host` in leaf_backend.cpp caught it as designed, and the run
 # was **silently several hundred times slower** with one line on stderr to say
@@ -81,7 +81,7 @@ target_link_libraries(gpu_leaf_kernels PUBLIC exhaustive_search CUDA::cudart
 # A packager cross-compiling for hardware that is not present sets
 # `CMAKE_CUDA_ARCHITECTURES`, or exports `CUDAARCHS`, and is left alone: the
 # property is only written where nobody has chosen, so an explicit choice always
-# wins over this guess. **Whether anybody chose is read from the flag captured
+# wins over this default. **Whether anybody chose is read from the flag captured
 # above `enable_language(CUDA)` and not from the variable**, which by this line
 # CMake has filled in from nvcc's default on every build that did not choose.
 if(NOT gpu_leaf_architectures_chosen)
@@ -111,7 +111,7 @@ target_link_libraries(measure-leaf PRIVATE gpu_leaf_kernels exhaustive_search de
 # An object library rather than a static one because a static library
 # contributes only the objects something already references, and nothing
 # references this by design: linking it *is* the registration. It is separate
-# from the kernels above because `measure-leaf` must not have it — a harness
+# from the kernels above because `measure-leaf` must not have it. A harness
 # whose shipped-leaf column had quietly started answering on the card would be
 # comparing the card with itself.
 add_library(gpu_leaf_registration OBJECT register_the_card.cpp)

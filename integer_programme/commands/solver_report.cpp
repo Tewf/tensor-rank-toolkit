@@ -10,7 +10,7 @@
 /// somebody's `list-solvers | grep gurobi` would go quiet without saying what to
 /// type instead. It prints the new line and leaves as **2**, so a caller that
 /// checks its exit code stops rather than reading an empty ranking as "no
-/// backends installed" — which is the one wrong answer this file could give.
+/// backends installed", the one wrong answer this file could give.
 #include "exit_code.h"
 #include "report.h"
 

@@ -8,6 +8,11 @@ nobody looks like a result being ignored.
 The verdict it feeds is one row of
 [`../../how-the-search-works/what-to-wire.md`](../../how-the-search-works/what-to-wire.md).
 
+Run directly on the shipped `<3,3,3>` fixture, `price-canonical-route
+fixtures/matmul_3x3x3.tensor -s matmul 3 3 3 --target 10` prints `orbits of the
+pool: 13, sum of squared sizes 9.93945e+09` and ends `verdict: canonical
+augmentation pays here`, the one row this page is about.
+
 ## There is a condition, it is sound, and it is cheap to test
 
 - **At `L >= 2` the route loses by 1.9x to 15x, structurally.** A plain node
@@ -42,7 +47,7 @@ asks `orbit_representatives`, which marks each element once: `Theta(|P|)`.
 **The plain route's entire 4.87 s run at `<3,3,3>` target 10 is that one call.**
 So the predicate fires there because the competitor is slow, on the one level of
 a sweep where it can fire at all, at a pool 13x past where `--route auto` has
-already left the pool for the solver — and a real sweep starts at
+already left the pool for the solver. A real sweep starts at
 `rank_lower_bound`, 14 at `<3,3,3>`, so it never reaches `L = 1` at all. Wiring
 it would put an artefact on a path nothing takes.
 
@@ -54,8 +59,8 @@ that survives neither is not describing canonical augmentation.**
 ## What to do instead, and it is 99x rather than 2.15x
 
 At a node whose live suffix is the whole pool, `orbit_representatives` gives the
-identical children for `Theta(|P|)`. It costs one 4-byte array over the pool —
-1 MB at `<3,3,3>` against that pool's own 184 MB — which is exactly the memory
+identical children for `Theta(|P|)`. It costs one 4-byte array over the pool
+(1 MB at `<3,3,3>` against that pool's own 184 MB), which is exactly the memory
 `least_in_orbit` gave up in order to reach `<4,4,4>`, where the same array is
 17 GB. **The trade is real and it is conditional on the pool being
 materialised**, which it is on every shape this route can run at.
@@ -69,7 +74,7 @@ test.
 
 ## Nor is a cheaper partial break, and it is the same measurement
 
-The partial rule already exists — `--orbit-test generators`, Crawford lex-leader
+The partial rule already exists: `--orbit-test generators`, Crawford lex-leader
 `[crawford1996]` restricted to one generator applied once. It is sound, it
 refuses fewer duplicates, and it is the only kind available: `[anders2024,
 Thm. 1.1]` puts graph isomorphism in co-NP if a polynomial-time **complete**

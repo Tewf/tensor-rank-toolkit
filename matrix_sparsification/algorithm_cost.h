@@ -40,7 +40,7 @@ std::size_t decoding_complexity(const Field& field, const Matrix& operator_);
 ///
 /// Claim 3.9: `q_u/(t - nm) + q_v/(t - mk) + q_w/(t - nk) + 1`. For a square
 /// `<n, n, n; t>` algorithm this is Corollary 3.10's `q/(t - n^2) + 1`, and
-/// Strassen is the check everyone knows: `q = 18`, `t = 7`, `n = 2` gives 7,
+/// Strassen is the standard check: `q = 18`, `t = 7`, `n = 2` gives 7,
 /// which is the 7 in `7*N^log2(7) - 6*N^2`. Winograd's 15 additions give 6.
 ///
 /// Exact, because it is a ratio of small integers and the whole point is to

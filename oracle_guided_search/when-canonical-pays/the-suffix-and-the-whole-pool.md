@@ -12,6 +12,11 @@ spends nearly all of its nodes deep. The canonical route has no suffix: a
 canonical form is a function of the **whole** set, so `PoolCosets` reduces every
 pool element at every node whatever the depth.
 
+On the shipped `<2,2,2>` fixture at two levels, `price-canonical-route
+fixtures/matmul_2x2x2.tensor -s matmul 2 2 2 --target 6` ends `verdict: the nodes
+the group removes do not cover the parent tests they cost`, this section's
+argument in the tool's own words.
+
 Divide each route's seconds by its own node count, and both by one pool scan:
 
 | shape | `t` | a plain node | a canonical node | price a node | node saving | net |
@@ -35,7 +40,7 @@ constant that closes two orders of magnitude, and the model does not try.**
 ## At one level: two roots, and the difference is an order
 
 At `L = 1` there is no tree to save. Both routes emit exactly one node per
-`G`-orbit of the pool, so the node counts are equal — checked as an identity
+`G`-orbit of the pool, so the node counts are equal: checked as an identity
 rather than observed, since **orbits + 1 is the node count of both**, at all five
 shapes. What is left is how each route names those children.
 
@@ -50,7 +55,7 @@ shapes. What is left is how each route names those children.
 Same answer, same 13 children, **99x**. The plain route asks `least_in_orbit`
 once per pool element; it walks the orbit breadth first and asks `std::find` over
 a `seen` list that grows to the whole orbit, so the sweep costs
-`Theta(sum |O_i|^2)` — measured at 0.51 ns a unit, within 4% at the two largest
+`Theta(sum |O_i|^2)`, measured at 0.51 ns a unit, within 4% at the two largest
 shapes. `orbit_representatives` marks every element once and costs
 `Theta(|P|)`, 182 ns an element. **That is a difference in order, not a
 constant**, and it is the whole of the `<3,3,3>` margin: the plain route's entire
@@ -73,7 +78,7 @@ calls match one to one:
 **Driving every canonisation cost to zero does not save the route at `<2,2,2>`,
 and it is not what wins it at `<3,3,3>`.** What is left in the first four rows is
 one pool pass a node and a leaf that scans the pool where the plain route walks
-`p^target` elements — 1 024 against 261 121 at `<3,3,3>` — through the packed
+`p^target` elements (1 024 against 261 121 at `<3,3,3>`) through the packed
 GF(2) leaf. Both are named in
 [where-the-time-goes.md](where-the-time-goes.md) as still open.
 

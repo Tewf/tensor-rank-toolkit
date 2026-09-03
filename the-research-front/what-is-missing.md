@@ -2,7 +2,8 @@
 
 **What is missing from this repository as a whole**: `[yang2025]`'s algorithm,
 symmetry-aware flip graphs, and any evolutionary or learned search. The last is
-not a weekend's work and needs hardware this laptop does not have.
+a substantial engineering undertaking and needs hardware this laptop does not
+have.
 
 **What is missing from the solver strand specifically is a shorter and
 different list**, and it is worth separating, because a feature another design

@@ -88,7 +88,7 @@ class GridStabiliserPredicate : public permlib::SubgroupPredicate<Perm> {
 /// `BacktrackSearch::construct` is protected and the limit fields with it, which is
 /// why this exists at all: it is the three lines `SetStabilizerSearch::construct`
 /// runs before handing over, with the cell predicate in place of the point one.
-/// `breakAfterChildRestriction` is safe for the same reason it is safe there — the
+/// `breakAfterChildRestriction` is safe for the same reason it is safe there: the
 /// base is prefixed by the touched points, so `[permlib]`'s base order sorts them
 /// first and a level's images leave that prefix once and for good.
 class GridStabiliserSearch : public permlib::classic::BacktrackSearch<Group, Transversal> {

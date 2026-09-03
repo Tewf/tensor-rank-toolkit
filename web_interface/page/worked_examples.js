@@ -1,7 +1,7 @@
 /* The seven starters, and what pressing one does.
 
-   A starter fills the panes behind the drawer — the map, the question, its
-   flags — and then stops. It does not run anything. That is deliberate: the
+   A starter fills the panes behind the drawer: the map, the question, its
+   flags. It then stops, and does not run anything. That is deliberate: the
    point of this console is that a command is shown before it is run, and a
    button that skipped straight to an answer would teach the opposite of what
    the interface is for. So the drawer closes onto the filled-in command, and

@@ -57,7 +57,7 @@ The leaf.
 | `--node-limit` | 5 000 000 | nodes before exit 3 |
 | `--leaf-limit` | 100 000 000 | elements inside **one** leaf before exit 3, which no node limit can bound |
 | `--threads` | 1 | `spread_over_cores` |
-| `--max-memory` | 2 GiB | whether the pool is materialised or addressed |
+| `--max-memory` | an eighth of the machine's memory (2 GiB on the 16 GB laptop this repository was written on) | whether the pool is materialised or addressed |
 
 Every flag of every tool, each with the measurement that chose its default:
 [`../OPTIONS.md`](../OPTIONS.md).

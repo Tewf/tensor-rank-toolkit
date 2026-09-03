@@ -57,7 +57,7 @@
 /// **The general column moved on 2026-08-20 and these ratios are now upper
 /// bounds.** `is_rank_one` replaced `rank(...) != 1` on that path, so the column
 /// this file is measured *against* got faster. Re-run on `matmul_2x2x2
-/// --target 6`, the general leaf is **0.1305 s against the 0.560 s above** — and
+/// --target 6`, the general leaf is **0.1305 s against the 0.560 s above**, and
 /// that re-run was taken under load, which can only slow it, so the quiet figure
 /// is no larger. **That row's 16.2x is therefore at most 3.8x.** The other rows
 /// have not been re-taken. Nothing here is wrong about the day it was measured;
@@ -139,7 +139,7 @@ class Gf2Leaf {
     /// **Two routines answer this and they are the same answer**, not merely
     /// the same count: the same maps, in the same order, for every span, every
     /// `needed` and every budget. Which one runs is a fact about the pool and
-    /// not about the span — `carries_a_residual` below — and
+    /// not about the span (`carries_a_residual` below), and
     /// [`tests/test_residual_scan.cpp`](tests/test_residual_scan.cpp) is what
     /// holds them to it.
     std::vector<Matrix> by_scanning_the_pool(const ReducedBasis& span, std::size_t needed,

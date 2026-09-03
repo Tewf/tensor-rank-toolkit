@@ -40,16 +40,20 @@ Strassen's seven are reachable from the naive eight only through maps that cost
 the same, and a strictly descending walk cannot enter an equal-cost state by
 construction. That is what
 [`flip_graph/plateau_search.h:15-26`](../flip_graph/plateau_search.h) was written
-for, and, given sideways steps and a backtrack, the same strand gets there:
+for. The two rows below reach the same crossing with a different tool,
+`walk-scheme`'s flip walk restarted over independent seeds rather than
+`plateau_search`'s own depth-limited backtracking:
 
 | Tensor | Strict descent | Plateau walk | Cost |
 |---|---|---|---|
 | `⟨2,2,2⟩` | 8, shortlist 0 of 225 | **7** | 0.11 s |
 | `⟨3,3,3⟩` | 27, no improvement | **24** | 38.1 s, `--flips 20000 --seeds 8` |
 
-Both rows are measured in
-[`oracle_guided_search/measurements.md`](../oracle_guided_search/measurements/README.md),
-lines 14 and 29. On `⟨2,2,2⟩` the number to beat is 7 and not 8; on `⟨3,3,3⟩`
+Both rows are `walk-scheme`'s, measured in
+[`against-the-heuristics.md`](../oracle_guided_search/measurements/against-the-heuristics.md)
+line 5 and
+[`three-by-three.md`](../oracle_guided_search/measurements/three-by-three.md) line
+6. On `⟨2,2,2⟩` the number to beat is 7 and not 8; on `⟨3,3,3⟩`
 the walk is three products under the naive 27 where the descent is level with
 it. One sideways step does not do it: from the naive eight, `⟨2,2,2⟩` needs
 three additions before the count moves, which is why the plateau is searched to

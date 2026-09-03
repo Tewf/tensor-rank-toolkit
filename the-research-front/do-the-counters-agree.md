@@ -10,14 +10,14 @@ number is a timing, so neither depends on the machine.
 
 **They count the same event.** `work[partial_tups.size()]++` is the
 first statement of `dfs` in `CPD_DFS.java`, once per invocation, bucketed by
-depth and never touched again; `try_consume_node` is the first statement of
-`expand_subspace_impl` here. Both count the root, both exclude the linear algebra
+depth and never touched again; `try_consume_node` is the first budget action of
+`expand_subspace_impl` here, behind only the shared-witness early return. Both count the root, both exclude the linear algebra
 inside a node, and both walk strictly increasing subsets of the same 225 rank-one
 4x4 maps over F2. The depths coincide structurally rather than by luck: theirs is
 `R - n0` and ours is `target - dim span(T)`, the same number for a concise tensor.
 
 **Closing it corrected a figure.** `work` is an array, and the 25 200 published
-for R = 6 was its **deepest element**, not its sum — it is
+for R = 6 was its **deepest element**, not its sum: it is
 exactly `C(225, 2)`, the level-2 count, dropping the root and the 225 nodes above
 it. The R = 7 row was the sum. Re-run, the arrays are
 `[1, 225, 25200]` and `[1, 1, 54, 10536]`, so the totals are **25 426** and

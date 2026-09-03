@@ -30,16 +30,16 @@ refused after the bind.
 
 Four columns, all on the screen at once: the map, what was read back, the
 question, and how it is asked over the answer it gave. That last one is stacked
-rather than beside because its two are read in sequence — the flags, then the
+rather than beside because its two are read in sequence: the flags, then the
 command they built, then that same command again under the answer. Only a pane
 scrolls, never the page. `layout.css` is the shell, `console.css` the filling.
 
 **Start here.** Seven worked examples, behind the button of that name, in
 [`worked_examples.py`](worked_examples.py). Each fills the map, the question and
-the flags and then stops, so the line is read before it is run. Four of them are
-the same map one flag apart, which is the shortest way to see the difference
-between found, proved impossible, and a budget that ran out. The last is the
-pipeline below.
+the flags and then stops, so the line is read before it is run. Three of them
+are the same map one flag apart, the shortest way to see found against proved
+impossible, with and without the quotient; a fourth shows a budget running
+out, which proves nothing. The last is the pipeline below.
 
 1. **The map.** Type it, paste it, load one of the repository's fixtures, open a
    file, or build one with `make-tensor`. The format is the one that already

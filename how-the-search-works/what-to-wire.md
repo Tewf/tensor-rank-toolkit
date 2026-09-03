@@ -9,14 +9,14 @@ behind its flag.
 |---|---|---|
 | orbit quotient | **wired**, on `-s` | 39.2x fewer nodes refuting `⟨2,2,2⟩` at 6, at about a 1.3x surcharge a node |
 | odometer | **wired**, automatic | the only route at `⟨4,4,4⟩`, where a held pool is 8.2 TiB |
-| GPU leaf | **verdict suspended** — the host moved under it | was 81x on the hardest comparison; the host leaf has since changed twice |
+| GPU leaf | **verdict suspended**: the host moved under it | was 81x on the hardest comparison; the host leaf has since changed twice |
 | `SortedSpan` | **wire the cost query, not the search** | 1.10x there; refuted at a node, dominated at a leaf |
 | McKay | **leave it on `--route canonical`**, and the predicate that says so is now wired to nothing on purpose | the one row it wins is 99x of the baseline's own orbit test |
 
 ## The GPU: the verdict is suspended, because the host moved
 
 **Everything below was measured against a host leaf that has since changed
-twice** — `is_rank_one` and the carried residual both landed on 2026-08-20, and
+twice**: `is_rank_one` and the carried residual both landed on 2026-08-20, and
 the second alone took a scan element from 108 ns to 1.16 ns in a harness. Against
 a card at 0.24 ns that is under 5x, which is this page's own "not worth it" band.
 Nothing here is retracted; it is suspended until the comparison is re-taken with
@@ -107,8 +107,8 @@ roots name one child per orbit from the same six generators; the plain route ask
 `orbit_representatives` answers identically in `Theta(|P|)`. At the `<3,3,3>`
 root that is **5.05 s against 51.2 ms for the same 13 children**, and the plain
 route's whole 4.87 s run *is* that one call. So the row is 99x of the baseline's
-own orbit test, on the one level a real sweep never reaches — `rank_lower_bound`
-is 14 at `<3,3,3>` — at a pool 13x past where `--route auto` has already left for
+own orbit test, on the one level a real sweep never reaches (`rank_lower_bound`
+is 14 at `<3,3,3>`), at a pool 13x past where `--route auto` has already left for
 the solver. The fix worth making is the `Theta(|P|)` pass, not the route.
 
 The whole argument, the five-shape table behind it, the partial-symmetry-break

@@ -242,7 +242,7 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--threads")) {
             // The cubes are independent instances of one formula and
             // `satisfiability/rank_question.cpp` has run them through
-            // `parallel_for` since they existed — with the 3.42x it measured
+            // `parallel_for` since they existed, with the 3.42x it measured
             // written in the comment beside it. Nothing on this command line
             // could reach that call, so `run_limits::worker_count()` was 1 for every run of
             // this tool and the whole split ran one cube at a time. This is the

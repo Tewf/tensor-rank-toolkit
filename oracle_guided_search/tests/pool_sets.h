@@ -10,7 +10,7 @@
 /// and the pool from, and subsets of that pool to ask about.
 ///
 /// Named once here because four test programs want them, and a second copy of "how
-/// a random subset is drawn" is a copy free to drift from the first — which matters
+/// a random subset is drawn" is a copy free to drift from the first: this matters
 /// more than it looks, since a differential test that drew its sets differently
 /// from the separation test beside it would be silent about the sets that one
 /// covers.

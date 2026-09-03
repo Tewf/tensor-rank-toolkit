@@ -5,7 +5,7 @@
 // slow. Too small a stabiliser leaves the enumerator generating several children
 // per orbit: more nodes, same answer. Too large a one merges augmentations that are
 // not equivalent, so a subspace is never generated and a refutation is claimed on
-// fewer subspaces than the count says — the failure nothing downstream catches, and
+// fewer subspaces than the count says: the failure nothing downstream catches, and
 // the reason the cheap answer (stabilise the touched rows and the touched columns,
 // one `setStabilizer` call away) is refused in `pool_set_canon.h`.
 //

@@ -50,14 +50,14 @@ paradox, and the whole sweep behind that sentence is
 [`what-width-buys.md`](what-width-buys.md).
 
 **It took a wider beam, and that is the finding rather than the 13.** At the
-default `--width 4` this row stopped at 14 in 139 nodes with the tree exhausted —
+default `--width 4` this row stopped at 14 in 139 nodes with the tree exhausted,
 not out of budget, out of tree. Doubling to `--width 8` exhausts a tree of 1 873
 nodes and reaches 13. So on this fixture the binding constraint was never the
 node limit; it was how many children a node is allowed to enter, and the two are
 not interchangeable. `--width 0` did not finish in fifty minutes on one core.
 
 **And the width does not keep paying, which is the more useful half.** `--width
-16`, on four workers, exhausts a tree of 13 593 nodes and 9 222 176 children —
+16`, on four workers, exhausts a tree of 13 593 nodes and 9 222 176 children:
 **7.3x the nodes of `--width 8` for the same 13**. The gain arrives once, between
 4 and 8, and stops. Closing the last product to the proved floor of 12 needs a
 different mechanism and not more of this one, which is worth knowing before
@@ -65,7 +65,7 @@ anybody rents a machine to run it wider.
 
 The 13 was checked outside the search that found it: the emitted `⟨L, R, P⟩` were
 read back by [`operators-to-tensor`](../formats/README.md) and rebuilt the fixture's 125
-entries exactly. `PMchecker` is the wrong checker here and says so —
+entries exactly. `PMchecker` is the wrong checker here and says so:
 [`four-false-failures.md`](../formats/interchange/four-false-failures.md)
 covers that case: it checks polynomial multiplication, and this is multiplication
 in GF(32).
@@ -73,7 +73,7 @@ in GF(32).
 **`f2_5x5` now has both sides inside this repository.** The exhaustive search
 refutes 12 in 146 402 553 nodes; this exhibits 13 in 80. `[bdez2012]` reached
 the same 13 by exhaustion, in 9.65·10⁹ tests and 2.28·10⁵ seconds. Nothing here
-proves 13 is the rank on its own — the refutation does that, and this only stops
+proves 13 is the rank on its own: the refutation does that, and this only stops
 the citation being what the upper half rests on.
 
 **The descent is not beaten so much as unblocked.** Every row that step 3 could
@@ -119,9 +119,9 @@ one per level. Measured shape of the failures:
 three nodes and then stops moving. A `--nodes 12` run on it was stopped at
 **22 minutes without returning**, and `f2_4x7 --from basis --width 4` at 15 with
 a budget of 120. **The generated
-move set is what makes the rest affordable at all** — 20 678 moves offered over
+move set is what makes the rest affordable at all**: 20 678 moves offered over
 22 nodes on `cyclic_f2_7`, against the 16 129 a *single* node would offer from
-the pool — but it does not touch the `p^dim` factor, and that is the honest
+the pool, but it does not touch the `p^dim` factor, and that is the honest
 scaling limit of this file.
 
 **What one of those ranks costs moved on 2026-08-22, and the `p^dim` factor did

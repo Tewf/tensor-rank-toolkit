@@ -5,8 +5,8 @@
 // points, and ask `[permlib]` for the least image of a subset of it. It now
 // presents the group on `left_count + right_count` points and runs
 // `[linton2004]`'s search against cells. The claim that move makes is not that the
-// new form is as good a canonical form as the old — that would be a new definition
-// and would need its own proof — but that it is **the same function**: same group,
+// new form is as good a canonical form as the old (that would be a new definition
+// and would need its own proof) but that it is **the same function**: same group,
 // same flat index `left * right_count + right`, same order on images, therefore the
 // same set of pool indices out.
 //
@@ -174,7 +174,7 @@ int main() {
     sweep({2, 2, 3}, {1, 1000, 2, true}, source);
 
     // `⟨2,2,4⟩` and `⟨2,3,3⟩` are the last two shapes where a permutation of the
-    // grid can be built at all: 3 825 and 32 193 points. No tree walk here — one
+    // grid can be built at all: 3 825 and 32 193 points. No tree walk here: one
     // node of it scans the whole pool for its content, and what is being checked is
     // the canonical form rather than the walk.
     sweep({2, 2, 4}, {5, 500, 0, true}, source);

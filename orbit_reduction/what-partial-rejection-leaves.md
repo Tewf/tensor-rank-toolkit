@@ -58,8 +58,8 @@ no room to compound, not that it is small.
 ## Where the comparison could not be made
 
 `gf16_multiplication` is a 4×4 map over GF(2) and is not a matrix multiplication
-tensor, so `--symmetry auto` refuses it — it would have to build 4.06×10⁸
-automorphism pairs — and the closed form does not apply. There is no quotiented
+tensor, so `--symmetry auto` refuses it (it would have to build 4.06×10⁸
+automorphism pairs) and the closed form does not apply. There is no quotiented
 run there under either rule, so the fixture is in no row above. That is the
 pre-existing limit [`README.md`](README.md) records under "Where it stops",
 reached again from a new direction.
@@ -69,7 +69,7 @@ reached again from a new direction.
 Nothing here says partial rejection is a bad idea in general. `[katsirelos2010]`
 finds the partial predicates it studies *"often effective in practice"* while
 leaving *"a large number of symmetric solutions in the worst case"*, and its
-other finding is that a stronger break is not thereby a slower one — neither of
+other finding is that a stronger break is not thereby a slower one, neither of
 which this page contradicts.
 
 What it says is narrower and is about this search: **the exact rule here is

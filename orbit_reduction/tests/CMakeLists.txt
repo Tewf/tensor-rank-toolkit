@@ -1,7 +1,7 @@
 # The only test that links both sides of the orbit-cube boundary, because the
 # question it asks needs both: do the cubes give the answer the whole formula
 # gives? The contract they meet is
-# `orbit_reduction/orbit_cube_boundary.md`.
+# `orbit_reduction/orbit_cube_boundary/`.
 add_executable(test_orbit_cubes test_orbit_cubes.cpp)
 target_link_libraries(test_orbit_cubes PRIVATE orbit_reduction descent_search
                                                map_construction satisfiability formats
@@ -10,7 +10,8 @@ add_test(NAME orbit_cubes COMMAND test_orbit_cubes)
 
 # The validation the boundary actually rests on: the same question whole and
 # split into cubes, at 7 products where <2,2,2> is satisfiable and at 6 where it
-# is not. Four minutes, and the refutation at 6 is nearly all of it.
+# is not. `orbit_reduction/orbit_cube_boundary/validation.md` recorded 65.4 s,
+# five for five, on 2026-08-16; the refutation at 6 is nearly all of it.
 add_test(NAME orbit_cubes_preserve_the_answer COMMAND test_orbit_cubes --with-solver)
 set_tests_properties(orbit_cubes_preserve_the_answer PROPERTIES LABELS slow TIMEOUT 900)
 
@@ -23,7 +24,7 @@ add_test(NAME symmetry_agreement COMMAND test_symmetry_agreement ${PROJECT_SOURC
 
 # The cheap rejection rule against the exact one. Two claims: the verdicts agree,
 # which is what a rule that removed a whole orbit would break, and no orbit of
-# `⟨2,2,2⟩` is emptied by the generator-only test — checked against a sabotaged
+# `⟨2,2,2⟩` is emptied by the generator-only test, checked against a sabotaged
 # rule that empties orbits, so a green line here means something.
 add_executable(test_generator_rejection test_generator_rejection.cpp)
 target_link_libraries(test_generator_rejection PRIVATE orbit_reduction descent_search

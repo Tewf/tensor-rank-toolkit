@@ -51,3 +51,19 @@ exact branch and bound agree on every one. That test is what makes either route
 quotable: the enumeration's exactness had rested on one sentence and five
 hand-computed spot checks.
 
+The same question, run through all three routes on the same supply, lands on
+the same bound. `chosen` need not match, and it does not: the built-in and the
+chain happen to pick the same multiset here while the enumeration spreads the
+degree-1 points differently, but all three cost 28.
+
+    $ curve-bounds --degree 20 --points 1:8 --points 2:4 --route built-in
+    bound [built-in]: mu_sym_2(m) <= 28, using 4x(degree 1, multiplicity 1) 4x(degree 1, multiplicity 2) 4x(degree 2, multiplicity 1)
+
+    $ curve-bounds --degree 20 --points 1:8 --points 2:4 --route enumeration
+    bound [dynamic programme]: mu_sym_2(m) <= 28, using 6x(degree 1, multiplicity 1) 2x(degree 1, multiplicity 3) 4x(degree 2, multiplicity 1)
+
+    $ curve-bounds --degree 20 --points 1:8 --points 2:4 --route chain
+    bound [cbc]: mu_sym_2(m) <= 28, using 4x(degree 1, multiplicity 1) 4x(degree 1, multiplicity 2) 4x(degree 2, multiplicity 1)
+      feasible, not certified optimal: this backend's answer passed the model's own
+      checks, which cannot check optimality. --route built-in proves it.
+

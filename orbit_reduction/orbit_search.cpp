@@ -80,9 +80,9 @@ bool expand_up_to_impl(const Field& field, ReducedBasis span, const Candidates& 
     bool found = false;
     for (std::uint32_t chosen = from; chosen < pool.size() && !found; ++chosen) {
         // Everything equivalent to this one is answered by trying this one, so
-        // only the least member of each orbit opens a branch — or, under
+        // only the least member of each orbit opens a branch (or, under
         // `--orbit-test generators`, whatever no single element sends earlier,
-        // which is a superset of those. `isomorph_rejection.h` derives why the
+        // which is a superset of those). `isomorph_rejection.h` derives why the
         // superset changes no verdict.
         if (!opens_a_branch(action, residual, chosen, from)) continue;
 

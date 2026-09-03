@@ -183,7 +183,7 @@ int run(int argc, char** argv) {
         } else if (arguments.is("--max-memory")) {
             // Every `require_room` this command reaches was pinned at the
             // compiled 2 GiB, while the refusal it prints ends "Raise it with
-            // --max-memory if the machine has the room" — naming a flag this
+            // --max-memory if the machine has the room": naming a flag this
             // command did not have. It has it now.
             run_limits::set_memory_budget(arguments.memory_size());
         } else if (arguments.is("--general-span")) {
@@ -296,8 +296,8 @@ int run(int argc, char** argv) {
     // ([`../what-width-buys.md`](../what-width-buys.md)): width changes the
     // answer on exactly two, and on both of those it is 8 that changes it. No
     // fixture measured wants 16, which is why this doubles once and stops rather
-    // than climbing. It is not free — `gf32_multiplication` is 368 nodes and
-    // seconds at 4 against 1 873 nodes and 466 s at 8 — which is why it is a flag
+    // than climbing. It is not free: `gf32_multiplication` is 368 nodes and
+    // seconds at 4 against 1 873 nodes and 466 s at 8, which is why it is a flag
     // and not the default.
     if (widen && report.tree_fully_walked && !report.reached_below &&
         report.nodes * 2 < limits.node_limit &&

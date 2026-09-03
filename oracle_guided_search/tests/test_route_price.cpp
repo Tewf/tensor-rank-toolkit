@@ -12,7 +12,7 @@
 /// against first.
 ///
 /// What it catches is a change to `canonical_route_price.cpp` that quietly stops
-/// agreeing with the ten rows, and — since 2026-08-21 — a change that makes the
+/// agreeing with the ten rows, and (since 2026-08-21) a change that makes the
 /// one-level clause fire for a reason other than the one it was derived from.
 #include <cmath>
 #include <cstddef>
@@ -41,8 +41,8 @@ struct Observation {
 
 /// Measured 2026-08-21 on the reference machine, `factor-over-canonical-basis
 /// --route exhaustive|canonical --floor t --ceiling t`, the lock held, fastest of
-/// three, both routes of a row back to back. The machine was **not** idle —
-/// `/proc/loadavg` ran 1.8 to 2.1 — so the absolute seconds are over-estimates
+/// three, both routes of a row back to back. The machine was **not** idle
+/// (`/proc/loadavg` ran 1.8 to 2.1), so the absolute seconds are over-estimates
 /// and a ratio within a row is what they are evidence of. Every node and
 /// canonisation count reproduces the run of the day before exactly.
 ///

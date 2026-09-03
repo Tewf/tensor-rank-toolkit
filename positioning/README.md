@@ -29,5 +29,7 @@ field, and finds almost nothing.
   the page below never examined, why the `C A` multiply is dead at any speed, and
   why the same measurement says 4% at one shape and almost everything at another.
 - [What machine this is the right shape for](hardware-and-parallelism.md): why a
-  GPU is the wrong instrument for the tree and backwards for the solver, and why
-  a GF(2) bitset representation is worth 40x to 64x on the hot loop first.
+  GPU is the wrong instrument for the tree and backwards for the solver, and
+  what the GF(2) bitset representation measured on the hot loop: 6.0x to 39.6x,
+  against the 40x to 64x that page had predicted, and it says where the
+  prediction went wrong.

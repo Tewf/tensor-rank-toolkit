@@ -1,10 +1,10 @@
 /// That the greedy over a finite field really is exact, checked against the only
 /// authority that settles it: every basis, enumerated.
 ///
-/// The claim is a theorem — linear independence is a matroid and the greedy
-/// returns a minimum-weight basis of any matroid under any weight function — but
-/// a theorem is about the algorithm and a test is about the code, and the two
-/// have disagreed here before. So the small cases are brute-forced: every
+/// The claim is a theorem: linear independence is a matroid, and the greedy
+/// returns a minimum-weight basis of any matroid under any weight function.
+/// But a theorem is about the algorithm and a test is about the code, and the
+/// two have disagreed here before. So the small cases are brute-forced: every
 /// `k`-subset of the column space is tried, the lightest independent one wins,
 /// and the greedy has to match it exactly rather than approach it.
 ///

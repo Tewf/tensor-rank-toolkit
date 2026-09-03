@@ -4,7 +4,7 @@
 # Two minutes, and left in the default suite rather than labelled slow, because a
 # wrong parent test loses solutions in silence and nothing downstream would notice.
 # The plain pass is nearly all of the cost, since it walks 1.9 million nodes to reach
-# the 36 the canonical pass reaches in 954.
+# the 36 the canonical pass reaches in 83.
 add_executable(test_canonical_augmentation test_canonical_augmentation.cpp)
 target_link_libraries(test_canonical_augmentation PRIVATE oracle_guided_search formats testing
                                                           project_warnings)
@@ -55,9 +55,9 @@ set_tests_properties(factored_canonisation PROPERTIES TIMEOUT 1800)
 
 # The check that catches a canonical form that is too coarse, which is the one
 # failure the enumeration's own totals cannot: a coarser form gives a smaller node
-# count, and so does a better one. Complete rather than sampled — every pair and
+# count, and so does a better one. Complete rather than sampled (every pair and
 # every triple of the 225-element pool against the partition the 216 elements
-# define — because a spot check on the sets a span produces is exactly the check a
+# define), because a spot check on the sets a span produces is exactly the check a
 # too-coarse form passes.
 #
 # Labelled slow for the 1.9 million triples, not for the group.

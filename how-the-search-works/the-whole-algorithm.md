@@ -86,8 +86,8 @@ leaf(V):                                   has V a rank-one basis?
 ```
 
 **Both host routes carry rather than rebuild**, since 2026-08-20. Each returns
-the same maps in the same order, and the CUDA kernel — written against the old
-scan — agrees with the new one survivor by survivor on all thirteen shapes.
+the same maps in the same order, and the CUDA kernel, written against the old
+scan, agrees with the new one survivor by survivor on all thirteen shapes.
 
 **The host leaf stops at `dim V` maps and the kernel does not**, so the card's
 measured factors are for a leaf run to its end: every leaf of a refutation, and

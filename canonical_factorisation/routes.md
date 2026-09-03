@@ -57,12 +57,10 @@ and is reported as agreeing is the worst outcome available.
 ## Why GL(n) x GL(m) cannot shrink the pool, and what can
 
 The natural hope is to quotient the rank-one maps by the sandwiching action
-`M -> mu M nu` and search over representatives. It buys nothing, for a reason
-worth stating once: **that action is transitive on the nonzero rank-one
-matrices.** Given `u v^T` and `u' v'^T`, pick `mu` with `mu u = u'` and `nu`
-with `v^T nu = v'^T`, both of which exist because `GL` is transitive on nonzero
-vectors. So the entire pool is a single orbit, and quotienting by the full group
-leaves one representative and no problem.
+`M -> mu M nu` and search over representatives. It buys nothing: that action is
+transitive on the nonzero rank-one matrices, so the entire pool is a single
+orbit and quotienting by the full group leaves one representative and no
+problem. The proof is in [`narrowing-the-search.md`](narrowing-the-search.md).
 
 The group that helps is the subgroup that stabilises `span(T)`, since only that
 one maps solutions for `T` to solutions for `T`. It is what

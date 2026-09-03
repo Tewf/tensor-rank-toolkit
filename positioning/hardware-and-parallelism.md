@@ -62,7 +62,7 @@ forces the general path over GF(2) so both columns are the same tree:
 bound.** `is_rank_one` replaced a full Gaussian elimination on that path, so the
 baseline these are measured against got faster. One row re-run: `matmul_2x2x2
 --target 6` is **0.1305 s** where the table says 0.560 s, taken under load, which
-can only slow it — so its 16.2x is at most **3.8x**. The rest are untaken.
+can only slow it. So its 16.2x is at most **3.8x**. The rest are untaken.
 
 **The band was too high and the reasoning behind it was wrong twice over.** The
 loop this page named, the pool scan, reaches 23.2x and not 40x: a bitset shortens

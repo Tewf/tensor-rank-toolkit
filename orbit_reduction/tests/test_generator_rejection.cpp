@@ -5,7 +5,7 @@
 /// and therefore leaves duplicate branches standing. Duplicates cost nodes and
 /// nothing else; what would not be harmless is a rule that removed **every**
 /// representative of some orbit, because that turns a refutation into a lower
-/// bound nobody downstream can see is false — the same failure mode
+/// bound nobody downstream can see is false, the same failure mode
 /// `test_symmetry_agreement.cpp` exists for, reached by a different route.
 ///
 /// So two things are asserted here. First, that both rules reach the same

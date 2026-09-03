@@ -13,7 +13,7 @@ weight 5. The remaining 7 need weight 6 or more, where the scan is `C(49,6)`, 14
 million subsets, reaching 451 million at weight 8. Neither the C++ nor an
 independent reference finished it in 30 minutes, which is how this was found out.
 **That is a fact about the combinatorics, not about the code, so running it
-longer buys nothing** — and the command no longer tries: it prices the walk at
+longer buys nothing.** The command no longer tries: it prices the walk at
 1.4 PiB and refuses in milliseconds, naming the number.
 
 The problem this reduces to is the one coding theory has computed for forty
@@ -21,8 +21,9 @@ years, minimum-weight codewords of a linear code, and its standard algorithm
 **Brouwer-Zimmermann** `[zimmermann1996]` carries a lower bound from several
 disjoint information sets and prunes on it. That is the first thing to try here,
 because it prunes this same enumeration rather than replacing it. What that
-bound is worth is measured rather than hoped: `[hernando2019]` reports 198
-million codewords generated against Magma's 6 001 million on one code, so the
+bound is worth is measured rather than hoped: `[bouyuklieva2021]`, Table 1,
+reports 198 million codewords generated against Magma's 6 001 million on one
+code, so the
 saving is the pruning and not a faster inner loop.
 
 **The oracle this scan implements already has a pruned algorithm, in somebody

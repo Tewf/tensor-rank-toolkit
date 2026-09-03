@@ -13,6 +13,21 @@ sparsify-operator operator.sms              # SMS is read directly, by extension
 sparsify-operator operator.sms --emit sparser.sms   # and hand the minimum on
 ```
 
+The first line above, run on this machine, printed:
+
+```
+fixtures/strassen_u.matrix
+  as given: 12 nonzeros, 12 operations, 7x4
+  exact, matroid greedy over Q: 10 nonzeros, 10 operations, 0.000140825 s
+0 0 0 1
+1 0 0 1
+0 1 0 1
+0 -1 0 0
+0 0 1 1
+1 0 0 0
+0 0 1 0
+```
+
 **What the problem is and what is proved hard about it**, including the four
 names one question goes under and why the exact method here does not contradict
 any of the hardness results:

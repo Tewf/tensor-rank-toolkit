@@ -14,7 +14,7 @@ reader who disagrees with a number can rerun exactly what made it.
 
     reproduce/measure.py --build build                 # rewrite the results files
     reproduce/measure.py --build build --check         # counts only, exit 1 on drift
-    reproduce/measure.py --build build --check --slow  # and the 6.6 minute exhaustion
+    reproduce/measure.py --build build --check --slow  # and the 4.1 minute exhaustion
     reproduce/measure.py --build build --counts        # rewrite counts, keep every timing
 
 `--check` is what CI runs. It re-derives every *count* and compares, and it does
@@ -40,7 +40,7 @@ session that improved the bound behind it. What each section is and what names i
 rows is `SECTIONS`, in `questions.py`; a section missing from it goes unnoticed.
 
 One question is not asked by default, and it is priced rather than hidden: the
-GF(16) exhaustion visits 105 600 301 nodes and costs 6.6 minutes of one core,
+GF(16) exhaustion visits 105 600 301 nodes and costs 4.1 minutes of one core,
 which is longer than everything else here together, so the default run leaves it
 out and `--slow` asks it. The flag it needs is written down in the
 `exhaustive_command` of the row it belongs to, and this reads that field back
@@ -258,7 +258,7 @@ def main():
                         help="compare counts against the committed files and exit 1 on drift")
     parser.add_argument("--slow", action="store_true",
                         help="also ask the questions priced in exhaustive_costs, "
-                             "which is 6.6 minutes of one core for the GF(16) exhaustion")
+                             "which is 4.1 minutes of one core for the GF(16) exhaustion")
     parser.add_argument("--counts", action="store_true",
                         help="rewrite the counts and the invocations that produced them, and "
                              "leave every timing exactly as it was measured. This is the "

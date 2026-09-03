@@ -23,9 +23,21 @@ pinned to the system one and only `nvcc` is taken from the environment:
 leaves it unfound and the target is never defined. Verified 2026-08-20 with
 nvcc 12.9 from conda-forge against Givaro 4.2.0 from the system.
 
+The binary that build produces is real and runnable, confirmed here without
+starting a measurement, `--help` printed exactly as captured:
+
+    $ ./build-cuda/gpu_leaf/measure-leaf --help
+    # usage: measure-leaf [check|measure|both|floor] [shipped-rows] [packed-rows]
+    #
+    #   check    every device answer against the host's (the default)
+    #   measure  the scan, the walk and the widest walk, timed
+    #   both     check, then measure
+    #   floor    where the card starts winning, re-fit
+    #   --help   print this and stop, as exit 2
+
 **`-DCMAKE_CUDA_ARCHITECTURES=89` was on that line and is gone from it.** It is
 the RTX 4060 and it was also written into `CMakeLists.txt`, so a build on any
-other card produced a fatbin with no image the device could run — and the failure
+other card produced a fatbin with no image the device could run, and the failure
 is invisible, because `leaf_backend.cpp` catches it and lets the host answer.
 `CMakeLists.txt` now asks CMake for `native`, which asks the driver what is
 really in the machine. Pass the flag only to build for a card that is *not* here;

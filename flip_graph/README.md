@@ -36,7 +36,7 @@ visits 386 subspaces, against a default of 200 000 that reaches the same 7 over
 On `f3_3x6`, four seeds of 20 000 flips **from the naive scheme reach 12
 products; from the heuristic's 10 they hold 10**. So the walk does not recover
 what the descent already found, and the two are complements rather than rivals:
-the descent gets somewhere good, the walk explores sideways from there.
+the descent reaches a good scheme, the walk explores sideways from there.
 
 ## Where this stops
 
@@ -44,4 +44,4 @@ A walk gives upper bounds only, and a plateau crossing is not a proof of
 anything. Nothing here decides a rank; that is
 [`../exhaustive_search/`](../exhaustive_search/README.md). And the published flip-graph
 results are far ahead of this implementation, which
-[`../positioning.md`](../positioning/README.md) states with the numbers.
+[`../positioning/`](../positioning/README.md) states with the numbers.

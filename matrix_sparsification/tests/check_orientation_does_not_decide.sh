@@ -6,7 +6,7 @@
 # the transpose. Until 2026-08-22 they did not: a matrix wider than it is tall
 # went through every method then shipped unchanged, in microseconds, because
 # "find invertible V minimising nnz(U V)" is **vacuous** on a wide full-rank
-# matrix — every one of them has the whole space as its column space, so the
+# matrix: every one of them has the whole space as its column space, so the
 # constraint holds for anything and every route returns what it was given.
 #
 # Nothing caught it because every operator fixture here is 7x4, while

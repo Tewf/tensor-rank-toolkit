@@ -12,11 +12,11 @@
 /// rebuild it.
 ///
 /// That is the whole reason this exists. Its two callers keep a linear
-/// combination of basis rows alongside the string —
+/// combination of basis rows alongside the string:
 /// [`../exhaustive_search/subspace_walk.h`](../exhaustive_search/subspace_walk.h)
 /// over the elements of a leaf's subspace, and
-/// [`span_element_ranks`](minimum_weight_basis.h) over the elements of a span —
-/// and under this order the update between two consecutive strings is one row
+/// [`span_element_ranks`](minimum_weight_basis.h) over the elements of a span.
+/// Under this order the update between two consecutive strings is one row
 /// added or one row subtracted, so the combination costs one pass over the row
 /// rather than one pass per nonzero digit, and no field multiplication at all.
 ///

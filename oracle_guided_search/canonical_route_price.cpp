@@ -139,8 +139,8 @@ RouteVerdict price_canonical_route(const RouteShape& shape, const CanonicalPrice
 
     if (verdict.levels == 1) {
         // **One level is not a tree and the per-node ratio does not apply to it.**
-        // Both routes emit one node per `G`-orbit of the pool — the baseline by
-        // `least_in_orbit`, this one by `orbit_representatives` — so `rho` is
+        // Both routes emit one node per `G`-orbit of the pool: the baseline by
+        // `least_in_orbit`, this one by `orbit_representatives`, so `rho` is
         // exactly 1 and the node counts are equal, measured at all five shapes.
         // What is left is two roots and their leaves, and they are written out
         // here rather than divided, because the two roots differ in **order**:

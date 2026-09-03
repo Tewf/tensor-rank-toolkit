@@ -12,10 +12,13 @@
 ///
 /// These types were part of `fixed_rank_finder.h`, whose search was measured to
 /// be dominated on every fixture and now lives on the `rejected-experiments`
-/// branch. They are here because they outlived it: `strict_deflation` asks the
-/// same shape of question, one candidate at a time against a budget, and reports
-/// the same four outcomes. Keeping them in the file that was removed would have
-/// meant keeping the search to host its own result type.
+/// branch. They stayed when it was removed, on the premise that
+/// `strict_deflation`, which asks the same shape of question one candidate at a
+/// time against a budget, would report through them. It does not: `StrictStep`
+/// reports through `satisfiability::Verdict` and its own `accepted`/`refuted`
+/// flags, and neither `Outcome` nor `FoundAtRank` is referenced anywhere else in
+/// this repository. Left in place rather than removed, since that is a decision
+/// past what a comment edit should make.
 namespace bilinear_rank {
 
 /// How one `k` ended. The last two are not the same claim and must not be merged.

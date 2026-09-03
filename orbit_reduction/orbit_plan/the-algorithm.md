@@ -33,6 +33,12 @@ The initial call is `ExpandSubspace(T, G, Stab(T), ℓ, r)` with `ℓ = dim T` a
 of `H` under `U` **after reduction by a basis of `V`**, not of `H` alone: the
 thesis spells the four-step reduction out just under the algorithm.
 
+At `⟨2,2,2⟩` over GF(2), `Stab(T)` has 216 elements
+([`../group_construction.h`](../group_construction.h)), and running
+`decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2` walks 648
+nodes where the unquotiented call walks 25 399
+([`../what-the-quotient-costs.md`](../what-the-quotient-costs.md)).
+
 ## What to build, in order
 
 1. `symmetry_group.h/.cpp`: `Symmetry {left, right, transposed}`, the action,

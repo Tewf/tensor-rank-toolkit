@@ -35,7 +35,7 @@
 /// kept rather than expanded: [`factored_lex_min.h`](factored_lex_min.h) presents
 /// `G` on the two vector lists side by side, `left_count + right_count` points, and
 /// answers the same two questions there. Expanding it costs a permutation of the
-/// pool per generator — 900 bytes at `⟨2,2,2⟩`, a megabyte at `⟨3,3,3⟩`, **17 GB**
+/// pool per generator: 900 bytes at `⟨2,2,2⟩`, a megabyte at `⟨3,3,3⟩`, **17 GB**
 /// at `⟨4,4,4⟩`, against half a megabyte factored. Nothing in this file's contract
 /// changes: the flat index `left * right_count + right` numbers the pool the same
 /// way either side of the reduction, so the canonical form is the same set of pool
@@ -93,7 +93,7 @@ class PoolSetCanon {
     /// Least is by the sorted pool indices compared entry by entry, which for sets
     /// of one size is the order `[permlib]`'s `smallestSetImage` puts on subsets of
     /// the pool. Which order it is does not matter, only that it is the same one
-    /// every time — and it is the same one it was when the group was presented on
+    /// every time, and it is the same one it was when the group was presented on
     /// the pool itself, which is what lets the two be held against each other
     /// rather than merely compared for inducing the same partition.
     std::vector<std::size_t> canonical(const std::vector<std::size_t>& indices) const;
@@ -129,16 +129,12 @@ class PoolSetCanon {
     /// [`factored_lex_min.h`](factored_lex_min.h) runs `[permlib]`'s on the axis
     /// presentation, with a predicate that decides membership on the **cells**.
     ///
-    /// **The cheap answer there is the wrong one and is not taken.** Stabilising
-    /// the set of touched rows and the set of touched columns is one call to
-    /// `setStabilizer` on `left_count + right_count` points, and it is a strictly
-    /// larger group than `Stab_G(S)` — measured larger on 13.6% of 20 000 random
-    /// cell sets of one to nine cells at `⟨2,2,2⟩`, and 12 elements against 1 at
-    /// the worst of them — because it may carry cells out of the set and others
-    /// in. A stabiliser that is too large merges augmentations that are not
-    /// equivalent, and a refutation built on it is a wrong lower bound that nothing
-    /// downstream can catch. So that group prunes the backtrack and the cells
-    /// decide membership.
+    /// **The cheap answer there is the wrong one and is not taken**, for the reason
+    /// and the measurement given at `FactoredGrid::setwise_stabiliser` in
+    /// [`factored_lex_min.h`](factored_lex_min.h): stabilising the touched rows and
+    /// columns is cheaper but in general strictly larger than `Stab_G(S)`, and a
+    /// stabiliser that is too large merges augmentations that are not equivalent,
+    /// so that group prunes the backtrack and the cells decide membership.
     ///
     /// **Why the setwise stabiliser of the pool content is the stabiliser of the
     /// subspace.** The enumerator descends from `span(T)`, so every subspace it

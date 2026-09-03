@@ -68,8 +68,8 @@ Measured, the cheapest `cost(V)` seen at each depth:
 | `f2_2x3` | 5 | 5 | **5 at the root** |
 
 It fires only where the minimum-weight basis is already the answer, and there the
-search is two nodes anyway. **`cost(V)` does fall as the search descends** — the
-`gf8` row above goes 9 to 7 — which this file denied until 2026-08-20; the
+search is two nodes anyway. **`cost(V)` does fall as the search descends** (the
+`gf8` row above goes 9 to 7), which this file denied until 2026-08-20; the
 minimal case is in
 [`../descent_search/sorted_span.h`](../descent_search/sorted_span.h). What it
 never does here is fall far enough to reach the target before `dim V` does. And

@@ -26,8 +26,8 @@ std::vector<Matrix> moves_up_to_symmetry(const Field& field, const std::vector<M
     // than assumes.
     //
     // **Removing this line breaks nothing today, and it is kept anyway.** The
-    // move set happens to be closed under scaling — the span contains `λv` with
-    // `v`, and the summands of `λv` are `λ` times the summands of `v` — so every
+    // move set happens to be closed under scaling: the span contains `λv` with
+    // `v`, and the summands of `λv` are `λ` times the summands of `v`, so every
     // class is present in full and every lookup would land. That is an accident
     // of what generates the list, not the contract `permutation_action_on`
     // states, and the routine here takes any list of moves.

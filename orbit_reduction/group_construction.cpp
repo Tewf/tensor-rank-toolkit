@@ -3,8 +3,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <stdexcept>
-
 #include "measures.h"
 #include "memory_budget.h"
 #include "solver.h"

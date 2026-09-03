@@ -17,16 +17,24 @@ Precedence and `BILINEAR_TUNABLES`:
 | `--node-limit N` | `ilp_node_limit`, `200000` | **Nothing.** No measurement anywhere. Reaching it returns `Exhausted`, which falls back to the dynamic programme rather than bounding anything. |
 | `--solver-timeout N` | `ilp_time_limit_seconds`, `300` | **Nothing measured.** It exists because of an incident rather than a table: five leaked solvers once sat at full tilt for half an hour and spoiled another session's measurements. It bounds `--route chain` only; the built-in has no wall clock anywhere. |
 | backend order (no flag) | `ilp_backend_order` | **Nothing measured.** Gurobi leads where a licence exists and the built-in trails because it is the slowest. `--route built-in` is how a caller sidesteps the order entirely. |
-| `--max-memory N` | derived | Argument: an eighth of what the machine reports, which is `2G` on the 16 GB laptop every table here was measured on and moves on its own elsewhere. The interpolation frontier is quadratic in `--degree`, so this is what refuses a degree the machine cannot hold. |
+| `--max-memory N` | derived | As `minimise-rank` ([`searching-for-rank.md`](searching-for-rank.md)): an eighth of what the machine reports. The interpolation frontier is quadratic in `--degree`, so this is what refuses a degree the machine cannot hold. |
 
 Agreement, which is measured and is a correctness result rather than a timing:
 the three routes were compared on **140 questions over ten supplies, 95 of them
 with an answer**, and all agreed.
 
+```sh
+$ curve-bounds --degree 20 --points 1:8 --points 2:4 --route built-in
+supply: 8 of degree 1 4 of degree 2
+divisor degree: 20, spent exactly
+bound [built-in]: mu_sym_2(m) <= 28, using 4x(degree 1, multiplicity 1) 4x(degree 1, multiplicity 2) 4x(degree 2, multiplicity 1)
+  an envelope, not a bound: no curve with this supply was shown to exist
+```
+
 ## `--solvers`, which was the command `list-solvers`
 
 It prints the integer programme backends in preference order and whether each is
-on `PATH`, and stops, leaving as **0** — the same shape as `--table` above and
+on `PATH`, and stops, leaving as **0**, the same shape as `--table` above and
 the same unusual exit, which
 [`one-idea-several-spellings.md`](one-idea-several-spellings.md) records as a
 wart rather than a rule.

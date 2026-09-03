@@ -9,8 +9,8 @@
 /// supposed to be, which silently changes ranks. Both come back as a
 /// minimum-weight basis that is merely plausible.
 ///
-/// So the reference here is the obvious reading — rebuild element `index` from
-/// `coefficient_vector(index)` and rank it — compared **entry for entry** over
+/// So the reference here is the obvious reading: rebuild element `index` from
+/// `coefficient_vector(index)` and rank it, compared **entry for entry** over
 /// the whole span. Sizes are never what is compared.
 #include <cstdint>
 #include <string>

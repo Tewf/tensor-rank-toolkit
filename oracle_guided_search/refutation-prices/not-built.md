@@ -11,3 +11,8 @@
   `ranksum` and the shared `ranks[v]` table now. `FinderSettings::floor` is the seam.
 - **Memoisation.** No question is asked twice at this depth, so it has nothing to
   return. It earns its place only once a sweep re-asks a tightened question.
+
+None of this is needed to reach the mitigations that are built: the run in
+[`README.md`](README.md) shows the tree route directly, and
+[`the-mitigations.md`](the-mitigations.md) prices the cumulative gain without any
+of the three above at roughly **700x**.

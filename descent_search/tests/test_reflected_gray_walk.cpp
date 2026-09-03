@@ -8,7 +8,7 @@
 /// back as a wrong rank rather than as a crash, so both are asserted here
 /// directly rather than inferred from a verdict downstream.
 ///
-/// Asserted for `p` in {2, 3, 5} and lengths 1 to 4, which is 780 strings and a
+/// Asserted for `p` in {2, 3, 5} and lengths 1 to 4, which is 930 strings and a
 /// few microseconds. `p = 2` is the ordinary binary reflected code, and the odd
 /// radices are the ones where "reflected" is doing work: a digit there runs up
 /// to `p - 1`, turns round and runs back down, rather than alternating.

@@ -48,7 +48,7 @@ summed over iterations: `O(k!)`, `O(n^k)` or `O(2^n)` whichever is smaller, and
 `k|G|`. **Here `k|G|` is smaller than either of the others by many orders**, and
 his third conclusion applies word for word: "if `|G|` grows polynomially in `n`
 then the running time is polynomial in `n` for any `k`". On the factored
-presentation it does — `log|G| / log n` is 1.58, 2.00, 2.41, 1.90 and 2.22 at
+presentation it does: `log|G| / log n` is 1.58, 2.00, 2.41, 1.90 and 2.22 at
 `<2,2,2>`, `<2,2,3>`, `<2,2,4>`, `<2,3,3>` and `<3,3,3>`, so `|G| ~ n^2`
 throughout. He adds that "experiment suggests that the actual number of candidates
 is much smaller", which is why the constants in
@@ -76,13 +76,13 @@ distinguished cell.
     pays  <=>  pi/rho + F/(plain sweep)  <  1
 
 `parents` is `(p^L - 1)/(p - 1)`, the hyperplanes of the quotient, of which
-`candidate_parents` keeps only the reachable ones — so it is an upper bound, and
+`candidate_parents` keeps only the reachable ones, so it is an upper bound, and
 the one place this model is cautious rather than generous.
 
 ## And at `L = 1` there is no tree, so none of the above applies
 
 Everything above compares two trees through a per-node ratio. At one level of
-augmentation there is one internal node — the root — and its children are leaves,
+augmentation there is one internal node, the root, and its children are leaves,
 so a per-node ratio divides two numbers that mean different things.
 
 Worse, `rho` is not merely near 1 there, it **is** 1, and for a reason rather
@@ -93,6 +93,10 @@ returns one index per orbit. At the root `from` is 0, so both emit exactly one
 child per `G`-orbit of the pool, and the node count of either is `orbits + 1`.
 Counted separately, that is 5, 5, 5, 10 and 13 orbits against node counts of
 6, 6, 6, 11 and 14.
+
+On the shipped `<2,2,2>` fixture, `price-canonical-route
+fixtures/matmul_2x2x2.tensor -s matmul 2 2 2 --target 5` prints `orbits of the
+pool: 5, sum of squared sizes 10773`, the exact row this section counts by hand.
 
 So the one-level break-even is between two **roots**, written out:
 
@@ -112,7 +116,7 @@ clause is a statement about the **baseline's** orbit test, which is why getting
 the row right is not the same as taking the route.
 
 `sum |O_i|^2` has no closed form here and is the one input to the predicate that
-costs anything — one `O(|P| * generators)` pass, 1% of the decision it prices.
+costs anything: one `O(|P| * generators)` pass, 1% of the decision it prices.
 Bounded above by `|P| * |G|` and below by `|P|^2 / r`, and the upper bound is
 125x the truth at `<3,3,3>`, so the bound is not usable as an estimate. That is
 the same mistake `rho <= |G|` made, and it is refused the same way: unmeasured,

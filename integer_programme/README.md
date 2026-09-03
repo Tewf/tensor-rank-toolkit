@@ -40,10 +40,23 @@ curve strand uses and not a strand of its own.
 The ranking is fixed; what is installed is not. A machine with nothing gets the
 built-in and a slower answer, a machine that acquires a Gurobi licence tomorrow
 uses it without a line changing, and `curve-bounds --solvers` says which is
-which — it was the command `list-solvers` until 2026-08-21, and that spelling now
+which. It was the command `list-solvers` until 2026-08-21, and that spelling now
 prints this line and stops:
 
     $ ./build/curve_bounds/curve-bounds --solvers
+
+Run just now on this machine, it printed:
+
+    integer programming backends, in preference order:
+      absent   gurobi
+      present  cbc
+      present  glpk
+      present  lp_solve
+      present  built-in
+
+    The first present backend answers; the built-in is always present and is the
+    only one whose answer needs no checking, so it is also the only one that may
+    report a problem infeasible.
 
 Backends are found on `PATH` at run time and never linked, which is how the
 satisfiability strand already treats `kissat` and `cvc5`. The tree therefore

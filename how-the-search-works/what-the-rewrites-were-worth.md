@@ -33,7 +33,7 @@ is one instead of computing it.
 `f3_3x6` is the general-field path and the cleanest reading: an odd
 characteristic, no bit packing anywhere, 1.95x from the Gray walk and
 `is_rank_one` alone. The `matmul_3x3x3` row was taken at load 1.37, so it is a
-**lower bound** — load can only slow a run, and it came back faster than
+**lower bound**: load can only slow a run, and it came back faster than
 published. The last two rows are milliseconds, which `MEASURING.md` counts as
 correctness controls rather than speed evidence.
 
@@ -58,7 +58,7 @@ launch floor)"*.
 | the plain route it must beat | 0.0102 s | **0.00713 s** |
 | the gap | 25.8x | **8.1x** |
 
-Two thirds of the gap closed, and it still loses — at this shape it cannot win,
+Two thirds of the gap closed, and it still loses: at this shape it cannot win,
 since the parent test costs more per node than a 53x node saving is worth. What
 moved is where the crossover sits, and that
 [`../canonical_factorisation/canonical-augmentation.md`](../canonical_factorisation/canonical-augmentation.md)

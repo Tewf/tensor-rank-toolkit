@@ -27,6 +27,21 @@ Notation is [the README's](README.md#notation).
 | `multiply(A, B)` | Θ(a·b·c) | Θ(a·c) |
 | `transpose(A)` | Θ(r·c) | Θ(r·c) |
 
+## Example
+
+```cpp
+#include "linear_algebra.h"
+
+linear_algebra::ModularField field(3);                                // GF(3)
+linear_algebra::SpanBasis<linear_algebra::ModularField> basis(field, 6);
+const bool added = basis.try_add(candidate);   // candidate: a width-6 vector
+```
+
+`try_add` is the `Θ(d·w)` row above, the one a search calls hundreds of millions
+of times asking "is this vector new?", and why that row, not any other, is the
+one worth having cheap is in the "`SpanBasis` is why the searches finish"
+paragraph below.
+
 **The rank sums are the rows above that are not polynomial**, and the only
 exponential thing in this layer. They are exponential in the *axis length*, not
 in the rank, and the two differ by a whole exponent: the total bound reads the
@@ -44,8 +59,8 @@ in echelon form costs Θ(d·w). On F3 3×6 that change alone took step 3 from 29
 seconds to 11.3.
 
 **`is_rank_one` is the same saving one row further down.** "Is this rank one?" is
-asked far more often than "what is its rank?" — once per element of every
-subspace the exhaustive search walks — and answering it with `rank` pays the `d`
+asked far more often than "what is its rank?", once per element of every
+subspace the exhaustive search walks, and answering it with `rank` pays the `d`
 and an allocation per row for a verdict settled at the second nonzero one.
 Cross-multiplying against the first nonzero row decides it in one pass and no
 inverses; why that is the same question is in

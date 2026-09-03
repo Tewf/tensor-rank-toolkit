@@ -26,6 +26,20 @@ build of the mathematics, whose answers would have to be trusted alongside the
 first. This interface shells out to the binaries the test suite checks, so there
 is one implementation of every answer and it is the one that was verified.
 
+That claim is checked rather than assumed. Read straight from `build/`, the same
+binary the checks use:
+
+```
+build/descent_search/minimise-rank fixtures/f2_5x5.tensor
+exit 0, algorithm: 14 products, rank bound 12, gap 2
+```
+
+14 is the number the fifth worked example in
+[`worked_examples.py`](worked_examples.py) shows behind a button, and the number
+[`tests/check_web_interface.py`](tests/check_web_interface.py) asserts of the
+same step inside the pipeline flow. One binary, one answer, wherever it is
+reached from.
+
 ## What it does not solve
 
 A browser is a poor place for a search that runs for hours, because a page can

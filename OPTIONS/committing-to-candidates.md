@@ -35,3 +35,29 @@ Waits for a proof, which is what makes it minimality-preserving and dear.
 | `-s, --symmetry matmul` | `none` | Without a group there is nothing to deduplicate up to. |
 
 Neither a node limit nor a timeout exists here.
+
+## Both, on one question
+
+`⟨2,2,2⟩` at `k = 6`, the same refutation `asking-a-sat-solver.md`'s
+`--break-symmetry` row times by a different route, here with the tree refuter
+and quotiented by `-s matmul` instead:
+
+```sh
+$ deflate-strictly fixtures/matmul_2x2x2.tensor --target 6 --refuter tree -s matmul 2 2 2
+  candidate 0: refuted, 0.00324674 s, 45 nodes
+  candidate 1: refuted, 0.000665064 s, 45 nodes
+  candidate 2: refuted, 0.000659531 s, 72 nodes
+  candidate 3: refuted, 0.000635245 s, 72 nodes
+  candidate 4: refuted, 0.000618762 s, 45 nodes
+  k = 6: every candidate refuted, so the rank is above 6, 0.00605391 s, quotiented tree
+```
+
+`enumerate-subspaces` on the same question counts zero, which is the same
+fact stated the other way: no rank-6 subspace exists to enumerate.
+
+```sh
+$ enumerate-subspaces fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2
+  pool: 225 rank-one maps, group: 6 elements
+  plain: 0 distinct subspaces from 0 paths, 25399 nodes, 0 group visits, 0.404418 s
+  canonical: 0 distinct subspaces from 0 paths, 58 nodes, 0 group visits, 0.00844161 s
+```

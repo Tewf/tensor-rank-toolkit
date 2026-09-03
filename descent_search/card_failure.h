@@ -14,9 +14,9 @@
 ///
 /// **A failed CUDA call is never an answer that changed.** Every backend catches
 /// it, notes it here and returns false, and the host answers the same question
-/// the same way; what changed is the clock. So it is kept rather than printed —
-/// a library that writes to a stream cannot be used by a command that pipes its
-/// results — and a command prints it once at the end, because a card that
+/// the same way; what changed is the clock. So it is kept rather than printed
+/// (a library that writes to a stream cannot be used by a command that pipes its
+/// results), and a command prints it once at the end, because a card that
 /// silently stopped being used is a run that got mysteriously slower.
 namespace bilinear_rank {
 

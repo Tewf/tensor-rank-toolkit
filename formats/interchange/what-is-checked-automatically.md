@@ -1,6 +1,6 @@
 # What is checked automatically
 
-Three tests, over the twelve of his files vendored in
+Three tests, over the thirteen of his files vendored in
 [`../../fixtures/plinopt/`](../../fixtures/plinopt/README.md), so nothing here
 reaches outside the repository for its inputs.
 
@@ -13,5 +13,5 @@ reaches outside the repository for its inputs.
 The runs above are not in the suite: they need his binaries, which are not a
 dependency of this build. Neither is the sweep over all 153 of his matrices in
 [`where-the-conventions-differ.md`](where-the-conventions-differ.md), which needs his `data/` as
-well; the vendored twelve are the subset that carries each thing the readers
+well; the vendored thirteen are the subset that carries each thing the readers
 disagreed about.

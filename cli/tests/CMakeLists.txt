@@ -10,10 +10,10 @@ add_executable(test_report test_report.cpp)
 target_link_libraries(test_report PRIVATE cli project_warnings testing)
 add_test(NAME report COMMAND test_report)
 
-# A signal cannot be tested inside the process it kills, so this one forks. It is
-# also the only caller `interrupt_cleanup.h` has: the scratch files it exists for
-# are named in satisfiability/solver_process.cpp, which is where the registration
-# belongs and is not this strand's to edit.
+# Why this one forks is in the file's own header comment. It is also the only
+# caller `interrupt_cleanup.h` has: the scratch files it exists for are named in
+# satisfiability/solver_process.cpp, which is where the registration belongs and
+# is not this strand's to edit.
 add_executable(test_interrupt_cleanup test_interrupt_cleanup.cpp)
 target_link_libraries(test_interrupt_cleanup PRIVATE cli project_warnings testing)
 add_test(NAME interrupt_cleanup COMMAND test_interrupt_cleanup)
@@ -25,17 +25,16 @@ target_link_libraries(test_tunables PRIVATE cli project_warnings testing)
 add_test(NAME tunables COMMAND test_tunables ${PROJECT_SOURCE_DIR})
 
 # That the commands read a line the way the walker says, which neither test above
-# can see: both assert headers against code written inside the test, so both
-# passed while no command included either header. This one spends processes.
+# can see, for the reason the script's own header comment gives. This one spends
+# processes.
 add_test(NAME argument_grammar
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_argument_grammar.sh
                  $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)
 set_tests_properties(argument_grammar PROPERTIES TIMEOUT 120)
 
-# That a file bounds a real run, which the check above cannot see: both its sides
-# come from tunables.h, so it passed throughout the period when no command
-# included the header. This one spends a process, the way satisfiability/ asserts
-# the exit codes against the built commands rather than describing them.
+# That a file bounds a real run, which the check above cannot see, for the reason
+# its own header comment gives. This one spends a process, the way satisfiability/
+# asserts the exit codes against the built commands rather than describing them.
 add_test(NAME tunables_bound_a_run
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_tunables_bound_a_run.sh
                  $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/fixtures)

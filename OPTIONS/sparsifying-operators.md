@@ -13,7 +13,21 @@ can beat it. The comparison is still what the default output is for. Precedence 
 | `--emit PATH` | off | Nothing to measure: writes that minimum as SMS, the way up the file came in, so another tool can read it. |
 | `--show` | off | Nothing to measure: prints the sparsified matrix as well as its count. |
 | `--simplex` | off | Argument: it is an upper bound where the default is a proof, so the proof is the default. It is also the only route that answers an operator the search refuses, which is why it is one flag away. |
-| `--max-memory N` | derived | Argument: an eighth of what the machine reports, `2G` on the 16 GB laptop every table here was measured on. The scan is priced by what it may *walk*, `C(b, (b−r+1)/2 + 1)`, not by what it allocates: about ten megabytes on a 23×9 operator and 1.4 PiB on a 49×16 one, which is why the second is refused in milliseconds instead of running for half an hour. |
+| `--max-memory N` | derived | As `minimise-rank` ([`searching-for-rank.md`](searching-for-rank.md)): an eighth of what the machine reports. The scan is priced by what it may *walk*, `C(b, (b−r+1)/2 + 1)`, not by what it allocates: about ten megabytes on a 23×9 operator and 1.4 PiB on a 49×16 one, which is why the second is refused in milliseconds instead of running for half an hour. |
+
+```sh
+$ sparsify-operator fixtures/strassen_u.matrix --show
+fixtures/strassen_u.matrix
+  as given: 12 nonzeros, 12 operations, 7x4
+  exact, matroid greedy over Q: 10 nonzeros, 10 operations, 0.000193219 s
+0 0 0 1
+1 0 0 1
+0 1 0 1
+0 -1 0 0
+0 0 1 1
+1 0 0 0
+0 0 1 0
+```
 
 ## The routes, and which measurement separates them
 

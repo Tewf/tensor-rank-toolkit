@@ -29,8 +29,8 @@ nearest one that does.
 Words distinguish and colours do not, and a reader takes the colour first. Two
 endings painted the same shade have been merged before the sentence under them
 is read, so every card also carries `decides`: **found**, **proved**, or
-**nothing proved**. It is `decide-rank`'s own vocabulary — that tool prints
-`FOUND`, `NO` and `GAVE UP` — and it is one branch on the exit code, taken
+**nothing proved**. It is `decide-rank`'s own vocabulary (that tool prints
+`FOUND`, `NO` and `GAVE UP`) and it is one branch on the exit code, taken
 before the tool's badge is applied and never from it. Only exit 1 reaches
 `proved`. Everything that is not 0 or 1 lands in `nothing proved`: a budget, a
 stop, the wall clock, a crash, and a status with no name. There is no path in
@@ -79,3 +79,12 @@ nothing proved. Asserting that against a table of codes would pass whatever the
 interface did with them, so it is asserted against
 `decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000`, which really
 does run out of nodes.
+
+Run against this build, that line ends:
+
+```
+build/exhaustive_search/decide-rank fixtures/f2_5x5.tensor --target 13 --node-limit 1000
+exit 3, GAVE UP: the node limit was reached, so nothing is decided. 1000 nodes.
+```
+
+The word is GAVE UP and the exit is 3, and `no` appears nowhere in that sentence.

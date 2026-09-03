@@ -3,7 +3,7 @@
 #
 # `test_device.cpp` and `test_parallel.cpp` read `run_limits` on both sides, so
 # both would pass throughout a period when not one command offered `--threads` or
-# `--max-memory` — and that period was most of this repository's history. The same
+# `--max-memory`, and that period was most of this repository's history. The same
 # argument `cli/tests/check_argument_grammar.sh` and
 # `search_plan/tests/check_the_plan_reaches_a_run.sh` make, so this one spends
 # processes too.
@@ -18,7 +18,7 @@
 #  2. **The flag its own refusal names exists.** The sentence ends "Raise it with
 #     --max-memory if the machine has the room", and printing that from a command
 #     that then refuses the flag is worse than never mentioning it. So each is
-#     asked with `--max-memory 1` — a budget that holds nothing — and the refusal
+#     asked with `--max-memory 1` (a budget that holds nothing), and the refusal
 #     is the proof that the flag arrived.
 #  3. **`--threads` changes the clock and not the answer.** `lower-the-bound` is
 #     asked at 1 and at 4 and the whole count line has to match, because the
@@ -96,9 +96,9 @@ operator=$fixtures/strassen_u.matrix
 # that holds nothing does not refuse `--target k`: the pool goes addressed and the
 # search runs, which is what `search_plan/tests/check_the_plan_reaches_a_run.sh`
 # asserts and what `satisfiability/tests/check_exit_codes.sh` asserts the exit
-# code of. **`--max-memory` is two things in this repository** — a ceiling on one
-# allocation, and the knob that chooses the cheaper representation — and wherever
-# a cheaper representation exists the second meaning wins. The sweep, which has no
+# code of. **`--max-memory` is two things in this repository**: a ceiling on one
+# allocation, and the knob that chooses the cheaper representation. Wherever a
+# cheaper representation exists, the second meaning wins. The sweep, which has no
 # addressed form, does refuse, but with a sentence of its own that explains which
 # route to take instead rather than with `require_room`'s, so asserting it here
 # would be asserting that command's prose in this file.
@@ -128,7 +128,7 @@ echo "and it moves the clock rather than the answer"
 #
 # **On <2,2,3> and not on <2,2,2>, because <2,2,2> cannot tell.** Written against
 # the smaller fixture this check passed with the children deliberately landing in
-# completion order instead of in their own slots — 21 nodes is too few and too
+# completion order instead of in their own slots. 21 nodes is too few and too
 # shallow for two equal-cost children ever to race. <2,2,3> is 341 nodes and
 # 159 860 children, and the same sabotage moves it to 160 102: a beam that entered
 # a different child at one node, which is exactly the failure the slots prevent.

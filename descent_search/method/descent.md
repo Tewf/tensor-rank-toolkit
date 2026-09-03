@@ -83,3 +83,20 @@ decomposes each slice, giving `Σ rank(Tᵢ)` candidates, which is `cost(T)`.
 built as outer products of vectors normalised to leading entry 1, in
 Θ(\|G\|·w) time and space. That gives 961, 1785, 1905 and 4732 for the four
 fixtures, which is what the tool reports.
+
+## One pass over `f3_3x6`, printed
+
+`minimise-rank fixtures/f3_3x6.tensor --steps 3` runs the pseudocode above
+twice, once per step, and prints:
+
+    fixtures/f3_3x6.tensor
+      naive: 18 multiplications, 8 slices, 0 s cumulative
+      step 1: 12 multiplications, 8 slices, 0.00262942 s cumulative
+      step 2: 11 multiplications, 9 slices, 0.0266886 s cumulative
+    # step 3 pool: 4732 rank-one maps
+    # step 3 shortlist: 6
+      step 3: 10 multiplications, 10 slices, 2.76913 s cumulative
+    # algorithm: 10 products, rank bound 9, gap 1, L is 10x3, R is 10x6, P is 8x10
+
+The `4732` is `|G|` for this shape, and the `6` is the size of the shortlist
+`improving_candidates` returned, one of the four counts named above.

@@ -56,7 +56,7 @@ fit mistook a per-node cost that varies with the target for a fixed entry fee.
 Measured directly instead of inferred: building `PoolSetCanon` on the 225 points
 of `⟨2,2,2⟩` takes **0.013 s**, three runs, and that was taken on a loaded
 machine, which can only make it slower. Subtracting it leaves about **13.8 ms** a
-node at target 7 against **0.79 ms** at target 6 — a factor of seventeen between
+node at target 7 against **0.79 ms** at target 6, a factor of seventeen between
 two levels of the same sweep.
 
 **That 0.013 s was the grid presentation and it is 98 us now.** The number stood
@@ -78,15 +78,15 @@ bar for every quotient competing with it**, which is the reusable lesson.
 
 ## Where it could still win, now measured rather than posed
 
-That open question — whether the crossing arrives before the pool becomes the
-binding cost — has been swept at five shapes, and the answer is that **the pool
+That open question, whether the crossing arrives before the pool becomes the
+binding cost, has been swept at five shapes, and the answer is that **the pool
 became the binding cost first, and it is not the pool's size that does it**. Both
 routes at `⟨2,2,2⟩`, `⟨2,2,3⟩`, `⟨2,2,4⟩`, `⟨2,3,3⟩` and `⟨3,3,3⟩`, level by level:
 [`../oracle_guided_search/when-canonical-pays/`](../oracle_guided_search/when-canonical-pays/README.md).
 
 Three results from it bear on this page. The node saving is **nothing at all** at
 one level of augmentation, because the baseline's `least_in_orbit` is the exact
-rule and has already taken that quotient — both routes emit one child per pool
+rule and has already taken that quotient: both routes emit one child per pool
 orbit, and `orbits + 1` is the node count of either. It is 11x to 226x at two
 levels, which is 0.017% to 5% of `|G|` and nowhere near the orbit-counting bound.
 And at `⟨3,3,3⟩` the canonical route is **2.15x faster** with both routes visiting

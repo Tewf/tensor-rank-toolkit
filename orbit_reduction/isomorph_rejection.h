@@ -103,7 +103,7 @@ OrbitTest orbit_test();
 ///
 /// **Breadth first, because `residual` may be a generating set.** Applying each
 /// element once reaches part of the orbit and leaves the rest, which is sound and
-/// wastes exactly what the quotient is for — and it is what `Generators` below
+/// wastes exactly what the quotient is for, and it is what `Generators` below
 /// deliberately does instead.
 ///
 /// **The `>= from` guard is the whole of the restriction.** The question is

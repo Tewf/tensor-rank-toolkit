@@ -55,7 +55,7 @@ For `⟨3,3,3⟩` at rank 23, then, two records and they are not competing:
 **61 linear operations in model (b)** (`[beniamini2020]` Table 2, reproduced
 exactly by `[holtz2025]`), and **55 additions in model (c)**
 (`[karunaratne2026]`). The 55 gives a leading coefficient near 4.93, under
-`[holtz2025]`'s lower bound of 5 — which is not a contradiction, because that
+`[holtz2025]`'s lower bound of 5, which is not a contradiction, because that
 bound is stated in model (b) and a program with common subexpressions is not
 bound by `nnz − rows`.
 

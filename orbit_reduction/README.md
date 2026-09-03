@@ -2,7 +2,7 @@
 
 A change of coordinates on each operand preserves rank, so if it also fixes the
 target subspace it maps solutions to solutions and only one member of each orbit
-need be visited. Seven modules, because the group, the orbits, the rule that
+need be visited. Eight modules, because the group, the orbits, the rule that
 rejects a repeat and each consumer of them are separate jobs, and the header is
 the authority in every case: this is a map, not a second copy of one.
 
@@ -43,6 +43,7 @@ subspace and not about the pool.
 | [`orbit_search.h`](orbit_search.h) | The exact search of [`../exhaustive_search/`](../exhaustive_search/README.md) with its tree quotiented: one branch per orbit |
 | [`orbit_heuristic.h`](orbit_heuristic.h) | Steps 2 and 3 of [`../descent_search/`](../descent_search/README.md) against a quotiented pool |
 | [`orbit_cubes.h`](orbit_cubes.h) | The first term fixed to one representative per orbit, for a solver to split on |
+| [`subspace_canon.h`](subspace_canon.h) | Naming a subspace so two of them can be compared: moved here from `oracle_guided_search` on 2026-08-23 so a second consumer could reach it |
 
 Two documents rather than a third table. Why the family is arranged this way:
 [`orbit_plan/`](orbit_plan/README.md). What the cubes promise the SAT encoder,
@@ -55,8 +56,10 @@ knowing a command line exists.
 
 ## What it is worth, measured
 
-The quotient removes 39.2x the nodes on a `⟨2,2,2⟩` refutation and 2.35x on a
-satisfiable question, and since `least_in_orbit` charges only about 1.2x a node,
+The quotient removes 39.2x the nodes on a `⟨2,2,2⟩` refutation
+(`decide-rank fixtures/matmul_2x2x2.tensor --target 6 -s matmul 2 2 2`) and
+2.35x on a satisfiable question (the same command at `--target 7`), and since
+`least_in_orbit` charges only about 1.2x a node,
 the time follows: **about 30x** and **about 2.1x**, quoted that way because the
 quotiented runs are under a millisecond. The saving is largest on a refusal,
 which is the case that costs most, because a refusal has to visit the whole tree

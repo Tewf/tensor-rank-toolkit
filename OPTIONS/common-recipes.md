@@ -27,8 +27,11 @@ on a pool too large to materialise.
 
 ```sh
 decide-rank-by-sat fixtures/matmul_2x2x2.tensor --target 6 --proof six.drat
-#   k = 6 [kissat]: NO, rank is more than 6, refutation verified
+#   k = 6 [kissat]: NO, rank is more than 6  (…s), refutation verified
 ```
+
+The parenthesised seconds are elided above: a wall clock is that run's own,
+not the answer's, which is [`../MEASURING.md`](../MEASURING.md)'s division.
 
 The run hands the certificate to `drat-trim` itself and stops if it fails to
 verify, so what `six.drat` is for is a reader who wants to check it again
@@ -53,7 +56,7 @@ is a front end keeping it.
 
 ```sh
 make-tensor --matmul 2 2 2 2 > strassen.tensor      # or --polynomial, --cyclic, --field
-minimise-rank strassen.tensor --emit-operators out  # 8 -> 7 products
+minimise-rank strassen.tensor --plateau 2 --emit-operators out  # 8 -> 7 products
 sparsify-operator out_L.sms                         # then the additions
 curve-bounds --solvers                              # which backends this machine has
 ```

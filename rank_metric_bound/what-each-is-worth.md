@@ -71,7 +71,7 @@ caller already reads reached it.
 Griesmer's 12 is now one *below* the proved floor rather than level with it. The
 cheap bound is still the best of the four terms here by two products, and it is
 still the reason nobody pays 77 s for a floor; what it no longer does is match
-what the search knows. Elsewhere Griesmer ties thirteen times and loses ten, and it
+what the exhaustive search has since established. Elsewhere Griesmer ties thirteen times and loses ten, and it
 meets the rank held exactly on seven fixtures, none of them among the six added
 last.
 

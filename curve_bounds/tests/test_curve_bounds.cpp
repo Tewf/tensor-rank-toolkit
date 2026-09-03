@@ -61,8 +61,8 @@ void check_programme() {
     check::equal("rational points degree", static_cast<long long>(rational.degree_used), 5);
 
     // With only three points available, the fourth and fifth degree units have
-    // to come from raising multiplicities, and mu_sym_2(1,l) is 1, 3, 5, 8, 11
-    // -- superadditive, so spreading over points is cheaper than stacking.
+    // to come from raising multiplicities, and mu_sym_2(1,l) is 1, 3, 5, 8, 11:
+    // superadditive, so spreading over points is cheaper than stacking.
     // 5 units on 3 points: 3 + 1 + 1 costs 5 + 1 + 1 = 7.
     const curve_bounds::BoundResult scarce =
         curve_bounds::minimise_interpolation_bound({{1, 3}}, 5);

@@ -81,8 +81,8 @@ struct IncumbentLimits {
     /// caller handing over `k + 1` as one: `dim V + 1 >= k + 1` cuts at
     /// dimension `k` immediately, and the tree below that is never entered. It
     /// is the same lever [`what-it-reaches.md`](what-it-reaches.md) prices for
-    /// `--from descent` against `--from basis`, pushed the other way — a tighter
-    /// incumbent is a shorter tree — and pushed past anything the search has
+    /// `--from descent` against `--from basis`, pushed the other way: a tighter
+    /// incumbent is a shorter tree, and pushed past anything the search has
     /// actually built.
     ///
     /// **A run that does not reach `k` has refuted nothing.** The whole file can

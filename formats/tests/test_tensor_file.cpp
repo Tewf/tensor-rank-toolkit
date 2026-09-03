@@ -30,10 +30,10 @@ bool refused(const std::string& text) {
 /// A tensor with every residue of GF(5) somewhere in it, and no symmetry
 /// between its axes.
 ///
-/// Three slices of two rows by three columns, all four numbers different, so a
-/// writer that transposed a slice or swapped the shape fields would produce
-/// something the reader either refuses or reads back changed. A cube of zeroes
-/// and ones would survive both mistakes.
+/// Three slices of two rows by three columns over GF(5), rows and columns
+/// deliberately unequal, so a writer that transposed a slice or swapped the
+/// row and column fields would produce something the reader either refuses or
+/// reads back changed. A cube of zeroes and ones would survive both mistakes.
 formats::Tensor sample_tensor() {
     formats::Tensor tensor;
     tensor.characteristic = 5;

@@ -70,7 +70,7 @@ using PolynomialMatrix = std::vector<std::vector<Polynomial>>;
 /// Cofactor expansion, so the cost is `Theta(order!)` polynomial
 /// multiplications and the caller is expected to have refused a large order
 /// first; [`pattern_feasibility.h`](pattern_feasibility.h) is where that
-/// refusal lives, because it is the one that knows what the order means.
+/// refusal lives, because it is the one that bounds what the order may be.
 Polynomial determinant(const Field& field, const PolynomialMatrix& matrix);
 
 }  // namespace matrix_sparsification

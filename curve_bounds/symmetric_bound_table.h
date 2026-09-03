@@ -18,8 +18,8 @@
 /// this says so rather than inventing a lower one.
 ///
 /// **These are symmetric ranks, and `bilinear_rank/` computes ordinary tensor
-/// rank.** The two are not the same quantity in general -- symmetric rank is at
-/// least the rank -- so the agreements below are observations, not identities.
+/// rank.** The two are not the same quantity in general (symmetric rank is at
+/// least the rank), so the agreements below are observations, not identities.
 /// They happen to agree on every entry this repository can decide: `µ_sym_2(2)`,
 /// `µ_sym_2(3)` and `µ_sym_2(4)` are 3, 6 and 9, and the exact search reaches
 /// exactly those for GF(4), GF(8) and GF(16).

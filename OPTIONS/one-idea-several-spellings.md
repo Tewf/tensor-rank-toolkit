@@ -33,15 +33,15 @@ independent walks, not a seed value; each walk's seed is its index.
 | Spelled | On | Means |
 |---|---|---|
 | `--steps N` | `minimise-rank` | which of the three descent stages to run, 1 to 3 |
-| | `walk-scheme` | flips per seed — an accepted older spelling of `--flips` |
+| | `walk-scheme` | flips per seed, an accepted older spelling of `--flips` |
 | `--from k` | `decide-rank-by-sat` | the bottom of the sweep |
 | | `walk-scheme` | the k-product scheme to start walking from |
-| | `lower-the-bound` | `basis` or `descent`: which root — an enum, not a count |
+| | `lower-the-bound` | `basis` or `descent`: which root, an enum, not a count |
 | `--node-limit N` | `decide-rank`, `deflate-strictly`, `factor-over-canonical-basis` | search-tree nodes, from `search_node_limit` |
 | | `curve-bounds` | branch-and-bound nodes, from `ilp_node_limit`, whose default is 25x smaller |
 | | `lower-the-bound` spells the same idea `--nodes N`, from no tunable at all |
 | `--max-memory` | the three searches | the bulk-allocation budget (`set_memory_budget`), in bytes |
-| | `decide-rank-by-sat`, `deflate-strictly` | the child solver's address-space cap via `RLIMIT_AS` (**not** the bulk-allocation budget), in bytes, from `sat_memory_megabytes` — see [`asking-a-sat-solver.md`](asking-a-sat-solver.md) |
+| | `decide-rank-by-sat`, `deflate-strictly` | the child solver's address-space cap via `RLIMIT_AS` (**not** the bulk-allocation budget), in bytes, from `sat_memory_megabytes`, see [`asking-a-sat-solver.md`](asking-a-sat-solver.md) |
 | `--route` | see the table above | two different sets of values |
 
 ## What a bad value gets you
@@ -62,14 +62,14 @@ because two rows of this table had gone stale in the direction that flatters:
 
 So `decide-rank --orbit-test bogus` says `--orbit-test expects full or
 generators, not 'bogus'`, while `lower-the-bound --from sideways` says
-`unrecognised option: --from` — of a flag it recognises perfectly well, naming
+`unrecognised option: --from`, of a flag it recognises perfectly well, naming
 neither the wrong word nor the two right ones. And `--backend smtt` runs the CNF
 backend without a word, which is the quieter fault: it answers, and about a
 question the caller did not ask.
 
 **`--leaf-route` and `--anchor` were this page's two examples**, and both were
-fixed in `decide_rank_main.cpp` — beside the comment naming the first as the
-fault it declined to copy — without the page being sent back to check.
+fixed in `decide_rank_main.cpp` (beside the comment naming the first as the
+fault it declined to copy) without the page being sent back to check.
 `--device`, which is right, never reached it at all. What is left is `--from`,
 `--backend` and the three that reprint a usage block, and the fix for all five is
 one helper in `cli/arguments.h` rather than five more hand-rolled branches. The

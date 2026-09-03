@@ -13,6 +13,12 @@ comment: "Interestingly, iterative algorithms such as bit-based (BIT) and binary
 search (BIN) perform better than several core-guided MaxSAT algorithms which can
 be explained by their linear number of calls to a SAT oracle in the worst case."
 
+| Schedule, `[morgado2013]` §7 p. 520 | Solved |
+|---|---|
+| LIN-SU | 185 |
+| BIN | 261 |
+| BIN-C (core-guided) | 266 |
+
 The pessimistic sentence often quoted at bisection, that it "has seldom been used
 in practical MaxSAT solvers", is **`[heras2011]`**, AAAI 2011 p. 36, and neither
 "seldom" nor "rarely" occurs in the survey at all. `heras2011`'s contribution is
