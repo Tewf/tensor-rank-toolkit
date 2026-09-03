@@ -8,6 +8,17 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **`start-here.md`, a task-first front door in plain words**: the visitor
+  who arrives with one want — a tensor and its decomposition — and none of
+  the field's vocabulary now gets the file format shown whole, the one
+  command per want, and the three words defined where they are used, without
+  the theory. Both READMEs point at it first. And every top-level folder now
+  carries a README: nine were signposts missing — `cli/`,
+  `exhaustive_search/`, `map_construction/`, `OPTIONS/`,
+  `oracle_guided_search/`, `run_limits/`, `search_plan/`, `testing/`,
+  `tools/` — each a plain-words sentence and pointers to where the depth
+  already lives, restating none of it.
+
 - **`cmake --install` places the thirteen tools on PATH**, which every
   documented command line assumed and nothing provided: the first line a
   newcomer pasted from the README failed with command-not-found. The three
