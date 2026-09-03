@@ -47,6 +47,14 @@ std::vector<int64_t> read_header_line(std::istream& input, const std::string& ke
                                      " values");
         }
     }
+    // Anything left on the line is a mistake worth stopping for, not surplus
+    // to drop: a header that quietly loses a value reads a different tensor.
+    std::string leftover;
+    if (fields >> leftover) {
+        throw std::runtime_error("'" + keyword + "' takes " + std::to_string(value_count) +
+                                 " values and the line carries more, starting at '" + leftover +
+                                 "'");
+    }
     return values;
 }
 
@@ -81,6 +89,15 @@ Tensor read_tensor(std::istream& input) {
                     throw std::runtime_error("slice " + std::to_string(index) + " row " +
                                              std::to_string(row) + " is short of entries");
                 }
+            }
+            // A row carrying more entries than `shape` declares was silently
+            // truncated here once: the answer came back verified and wrong
+            // for the file the user thought they wrote. Refuse it instead.
+            std::string leftover;
+            if (entries >> leftover) {
+                throw std::runtime_error("slice " + std::to_string(index) + " row " +
+                                         std::to_string(row) +
+                                         " has more entries than 'shape' declares");
             }
         }
         tensor.slices.push_back(std::move(slice));

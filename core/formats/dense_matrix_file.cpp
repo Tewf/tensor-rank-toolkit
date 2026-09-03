@@ -70,6 +70,12 @@ linear_algebra::RationalMatrix read_rational_matrix(std::istream& input) {
             }
             matrix(row, column) = parse_rational(text);
         }
+        // Extra entries on a row are refused, never dropped: the tensor
+        // reader had that hole and it turned a typo into a wrong matrix.
+        if (entries >> text) {
+            throw std::runtime_error("row " + std::to_string(row) +
+                                     " has more entries than 'shape' declares");
+        }
     }
     return matrix;
 }

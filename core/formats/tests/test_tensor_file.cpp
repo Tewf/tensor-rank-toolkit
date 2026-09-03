@@ -96,6 +96,15 @@ int main() {
     check::equal("a missing keyword is refused", refused("characteristic 2\n") ? 1 : 0, 1);
     check::equal("a slice short of entries is refused",
                  refused("field 2\nshape 1 2 2\n1 0\n1\n") ? 1 : 0, 1);
+    // A row with entries beyond the declared width was once read by dropping
+    // the tail, so a mistyped file produced a verified answer to a different
+    // question. Both directions of malformation must refuse.
+    check::equal("a slice with extra entries is refused",
+                 refused("field 2\nshape 1 1 2\n1 0 1\n") ? 1 : 0, 1);
+    check::equal("a header with extra values is refused",
+                 refused("field 2\nshape 1 1 1 1\n1\n") ? 1 : 0, 1);
+    check::equal("a field line with extra values is refused",
+                 refused("field 2 3\nshape 1 1 1\n1\n") ? 1 : 0, 1);
 
     // The round trip. Every check above compares the reader against a string
     // typed here, which says nothing about what the repository itself writes;

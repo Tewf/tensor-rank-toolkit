@@ -11,6 +11,10 @@ add_executable(test_tensor_file test_tensor_file.cpp)
 target_link_libraries(test_tensor_file PRIVATE formats project_warnings testing)
 add_test(NAME tensor_file COMMAND test_tensor_file)
 
+add_executable(test_dense_matrix test_dense_matrix.cpp)
+target_link_libraries(test_dense_matrix PRIVATE formats project_warnings testing)
+add_test(NAME dense_matrix COMMAND test_dense_matrix)
+
 add_executable(test_dimacs test_dimacs.cpp)
 target_link_libraries(test_dimacs PRIVATE formats project_warnings testing)
 add_test(NAME dimacs COMMAND test_dimacs)
