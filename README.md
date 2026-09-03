@@ -6,6 +6,10 @@
 
 > [Lire en français](README.fr.md)
 
+> **New here, wanting one thing** — a decomposition, a rank, fewer additions —
+> without the field's vocabulary? **[start-here.md](start-here.md)**: plain
+> words, the exact lines to type, five minutes.
+
 **Exact tensor and bilinear rank over finite fields.** The rank of a bilinear
 map is how many multiplications it needs. Strassen's seven-instead-of-eight for
 2×2 matrices is where fast matrix multiplication comes from, and finding such

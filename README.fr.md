@@ -6,6 +6,11 @@
 
 > [Read in English](README.md)
 
+> **Nouveau ici, pour une seule chose** — une décomposition, un rang, moins
+> d'additions — sans le vocabulaire du domaine ?
+> **[start-here.md](start-here.md)** (en anglais) : des mots simples, les
+> lignes exactes à taper, cinq minutes.
+
 **Rang tensoriel et bilinéaire exact sur les corps finis.** Le rang d'une
 application bilinéaire est le nombre de multiplications nécessaires pour la
 calculer. Le sept-au-lieu-de-huit de Strassen pour les matrices 2×2 est à
