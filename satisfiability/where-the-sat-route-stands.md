@@ -37,6 +37,21 @@ on ⟨3,3,3⟩ the walk itself finds k=30 (0.03 s) and k=27 (1.4 s) and goes dar
 sweep correction). Density above the rank rescues the walk; the approach to the rank
 starves it.
 
+**And the dense top is worth nothing as an upper bound, which is the honest verdict on this
+route as a finder.** An upper bound only counts when it is at least as tight as the best
+known — for ⟨3,3,3⟩ that is Laderman's 23. A decomposition at k=30 or 27 is a *looser* bound
+than 23, so finding it fast adds nothing: the useful range is k ≤ 23, and there the walk is
+dark, exactly where every method is. So on the upper-bound task the finds-only walk is
+dominated across the board: for a matmul bound at ≤ 23 the incumbents are the flip graph and
+the known constructions (`../the-research-front/upper-bounds.md`); for a novel tensor's first
+bound, `kissat` and the exact `decide-rank` (which found f2_5x5 at 14 and 13 where the walk
+found nothing). The "walk owns the dense top" measurement is true and strategically empty —
+the bounds it wins are the ones no one wants. This route's genuine contribution is on the
+*lower-bound and exact-decision* side (refutation with a DRAT proof, the orbit quotient that
+makes refutation feasible), not upper bounds; the SAT-for-finding case survives only if a
+walk-favouring encoding reaches k below the incumbent, which is what `subspace-encoding` is
+for.
+
 ## Encoding devices, kept versus dominated
 
 Kept = it moved a number in the right direction, with the number. Dominated = it was tried
