@@ -35,3 +35,4 @@ compile_commands.json
 
 # clangd's index, written beside the compile database it reads.
 .cache/
+verify/.build/

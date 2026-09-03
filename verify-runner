@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""Run a repo's declared claims and report which have drifted.
+
+    verify                 # checks ./verify/ in the current repo
+    verify path/to/repo
+
+A repo declares what it believes in a `verify/` folder. Every claim states its
+own expected verdict, so this is a regression test for claims: when the code
+changes and a claim stops holding, this says so. Claims rot silently otherwise.
+
+  verify/signature.smt2   the domain vocabulary, declared ONCE and audited once
+  verify/claims/*.smt2    one claim per file, prepended with the signature
+  verify/claims/*.dfy     programs checked by Dafny instead
+  verify/claims/*.lean    unbounded claims, checked by Lean's kernel
+
+Each .smt2 claim carries two header comments:
+    ; CLAIM:  the sentence, in English
+    ; EXPECT: sat | unsat        (sat means a counterexample EXISTS -> claim false)
+"""
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+Z3 = os.environ.get("VERIFY_SOLVER", "z3")
+DAFNY = os.environ.get("VERIFY_DAFNY", str(Path.home() / ".local/bin/dafny"))
+# Per-claim ceiling. A solver on an undecidable fragment does not return, and a
+# claim that got slower is a claim that changed -- so a timeout fails, never skips.
+TIMEOUT_S = int(os.environ.get("VERIFY_TIMEOUT_S", "60"))
+HEADER = re.compile(r"^;\s*(CLAIM|EXPECT):\s*(.+)$", re.M | re.I)
+
+
+def run(cmd, source):
+    try:
+        done = subprocess.run(cmd, capture_output=True, text=True, timeout=TIMEOUT_S)
+        return (done.stdout + done.stderr).strip()
+    except subprocess.TimeoutExpired:
+        return "timeout"
+    except FileNotFoundError:
+        return f"missing tool: {cmd[0]} (needed by {source.name})"
+
+
+def check_smt(path, signature, scratch):
+    meta = dict((k.upper(), v.strip()) for k, v in HEADER.findall(path.read_text()))
+    combined = scratch / path.name
+    combined.write_text(signature + path.read_text())
+    answer = run([Z3, str(combined)], path)
+    head = answer.split()[0] if answer.split() else ""
+    verdict = head if head in ("sat", "unsat") else None
+    expected = meta.get("EXPECT")
+    if not verdict:
+        return "ERROR", meta.get("CLAIM", path.stem), answer.splitlines()[0][:56]
+    if not expected:
+        return "NOEXP", meta.get("CLAIM", path.stem), f"got {verdict}, no ; EXPECT: header"
+    if verdict == expected:
+        return "OK", meta.get("CLAIM", path.stem), verdict
+    return "DRIFT", meta.get("CLAIM", path.stem), f"expected {expected}, got {verdict}"
+
+
+def check_lean(path):
+    """Lean says nothing when it succeeds, so silence is the verdict."""
+    report = run(["lean", str(path)], path)
+    if not report or "warning" in report.lower() and "error" not in report.lower():
+        return "OK", path.stem, "kernel accepted"
+    first = next((l for l in report.splitlines() if "error" in l.lower()), report[:56])
+    return "DRIFT", path.stem, first.strip()[:56]
+
+
+def check_dafny(path):
+    report = run([DAFNY, "verify", str(path)], path)
+    if "0 errors" in report:
+        return "OK", path.stem, "verified"
+    first = next((l for l in report.splitlines() if "Error" in l), report[:56])
+    return "DRIFT", path.stem, first.strip()[:56]
+
+
+def main():
+    repo = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+    folder = repo / "verify"
+    if not folder.is_dir():
+        sys.exit(f"no verify/ folder in {repo}\n"
+                 f"a verify/ folder holds signature.smt2 and claims/*.smt2")
+
+    sig_path = folder / "signature.smt2"
+    signature = sig_path.read_text() + "\n" if sig_path.exists() else ""
+    scratch = folder / ".build"
+    scratch.mkdir(exist_ok=True)
+
+    claims = sorted((folder / "claims").glob("*")) if (folder / "claims").is_dir() else []
+    if not claims:
+        sys.exit(f"no claims in {folder / 'claims'}")
+
+    print(f"{repo.name}: {len(claims)} claim(s)"
+          f"{' · signature ' + str(len(signature.splitlines())) + ' lines' if signature else ''}\n")
+    counts = {}
+    for path in claims:
+        if path.suffix == ".smt2":
+            status, claim, detail = check_smt(path, signature, scratch)
+        elif path.suffix == ".dfy":
+            status, claim, detail = check_dafny(path)
+        elif path.suffix == ".lean":
+            status, claim, detail = check_lean(path)
+        else:
+            continue
+        counts[status] = counts.get(status, 0) + 1
+        print(f"  [{status:<5}] {claim[:60]}")
+        if status != "OK":
+            print(f"           {detail}")
+    print("\n  " + "  ".join(f"{k} {v}" for k, v in sorted(counts.items())))
+    sys.exit(1 if counts.keys() - {"OK"} else 0)
+
+
+if __name__ == "__main__":
+    main()

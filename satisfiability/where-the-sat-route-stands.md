@@ -85,10 +85,13 @@ solver logs are kept as a local archive and not committed; the counts here are t
 
 ## Owed, not yet built
 
-- **Device 10 — the `2^(r²)` quotient.** The orbit argument (RREF-of-first-factors
-  reachable within the true symmetry group) is owed before the encoding is sound; the clean
-  form is the `S_r` orbit lex-minimum via cubes. See
-  [`shaped-encodings/encoding-knowledge-review.md`](shaped-encodings/encoding-knowledge-review.md).
+- **Device 10 — the `2^(r²)` quotient — is refuted as a static constraint** (2026-09-03,
+  Z3-checked in [`../verify/`](../verify/)): a rank-2 tensor over GF(2) has no RREF-first-factor
+  decomposition, and generally `r > dim` forces the first-factor matrix rank-deficient, so
+  fixing it to RREF drops terms and is unsound. The `GL_r` basis freedom is not a symmetry, so
+  nothing quotients it statically. The symmetry quotient (orbit cubes) is the built, sound
+  part; the r² needs a subspace re-encoding. See
+  [`shaped-encodings/device-10-rref-is-unsound.md`](shaped-encodings/device-10-rref-is-unsound.md).
 - **A walk-favouring encoding** for the frontier — every device so far is CDCL-side or
   neutral; the walk still owns only the dense top.
 - Closure-aware zeroing, reject-at-birth generation, the SAT 2019 row/column streamliners,

@@ -100,10 +100,15 @@ fixing comparison exists on decision SAT; our calibration is currently the only 
 
 ## What this changes in the plan
 
-1. **Device 10 is unblocked**, as Mohamed expected: define the canonical form as an orbit
-   lex-minimum, not RREF. Two shapes with precedent — static cubes (Junttila-style prefix
-   assignment; fits `orbit_reduction/` and the process route) first, an SMS/IPASIR-UP
-   propagator for frontier-k later if the cubes pay.
+1. **Device 10's RREF form is refuted — see the correction below.** The review reasoned that
+   an orbit lex-minimum makes the canonical form sound, which is true of the *symmetry*
+   quotient (`S_r` and the tensor's automorphisms) — but that is the orbit cubes already
+   built, not the r². The r² is the `GL_r` basis freedom of the products' span, and `GL_r`
+   is not a symmetry of the decomposition set, so no canonical form (RREF, lex-minimum, or a
+   dynamic propagator) can quotient it statically. Machine-checked 2026-09-03:
+   [`device-10-rref-is-unsound.md`](device-10-rref-is-unsound.md) and [`../../verify/`](../../verify/).
+   Buildable shaping reverts to the campaign's next devices; the r² needs a subspace
+   re-encoding, not a constraint on the tuple encoding.
 2. **Experiment 0 before any new device**: CryptoMiniSat with Gauss-Jordan on the plain
    and shaped encodings — the cheapest injection the field offers, and it prices the
    "give the solver the linear algebra" route against cut-6-pooled and native XNF.

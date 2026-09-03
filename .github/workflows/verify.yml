@@ -1,0 +1,51 @@
+# Runs the claims this repository declares in verify/.
+#
+# Deliberately a separate job from the tests. A claim failing means the code
+# stopped satisfying something the README asserts -- a different failure from a
+# test breaking, and worth reading differently in the run list.
+name: Claims
+
+on: [push, pull_request]
+
+jobs:
+  claims:
+    name: The claims in verify/ still hold
+    runs-on: ubuntu-latest
+    # A solver on an undecidable fragment does not return. Measured 2026-09-02:
+    # one nonlinear integer claim took 240 s where the rest took under a second.
+    # The cap is the point -- a claim that got slow is a claim that changed.
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # z3 and cvc5 answer almost every claim and cost nothing to install.
+      - name: Install the solvers
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq z3 cvc5
+
+      # Only if verify/claims/ holds .dfy files. Dafny is a ~100 MB download, so
+      # it is skipped rather than paid for by repositories that do not use it.
+      - name: Install Dafny, only if a claim needs it
+        run: |
+          if ls verify/claims/*.dfy >/dev/null 2>&1; then
+            curl -sL -o /tmp/dafny.zip \
+              https://github.com/dafny-lang/dafny/releases/download/v4.11.0/dafny-4.11.0-x64-ubuntu-22.04.zip
+            unzip -q /tmp/dafny.zip -d "$HOME/opt"
+            mkdir -p "$HOME/.local/bin" && ln -sf "$HOME/opt/dafny/dafny" "$HOME/.local/bin/dafny"
+          fi
+
+      # Lean pays for itself only in a repository that is already Lean. Anywhere
+      # else it is a toolchain download for a handful of theorems: keep the proof,
+      # and check it where Lean already lives.
+      - name: Install Lean, only if a claim needs it
+        run: |
+          if ls verify/claims/*.lean >/dev/null 2>&1; then
+            sudo apt-get install -y -qq elan && elan toolchain install stable
+          fi
+
+      # The runner is vendored beside verify/ rather than fetched. Fetching it
+      # from where it is maintained would 404 in CI (that repository is private)
+      # and would name a private path in a public file. A copy costs an occasional
+      # re-sync; the alternative costs a broken build and a leak.
+      - name: Run the claims
+        run: VERIFY_TIMEOUT_S=120 ./verify-runner .
