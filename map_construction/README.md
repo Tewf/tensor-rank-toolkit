@@ -1,8 +1,8 @@
 # map_construction/
 
-Where a tensor file comes from when you do not want to type one: `make-tensor`
-writes the tensor for a named problem, so every other tool can be pointed at
-it.
+Construction of the input tensors: `make-tensor` writes the tensor of a
+named bilinear map, so every other tool can be pointed at it without the
+file being prepared by hand.
 
 In this folder:
 

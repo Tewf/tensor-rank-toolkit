@@ -1,7 +1,8 @@
 # oracle_guided_search/
 
-The exact search, spent more carefully. `deflate-strictly` commits to one
-candidate at a time so a no comes with a proof rather than a spent budget;
+Refinements that reduce what the exact search spends. `deflate-strictly`
+commits to one candidate at a time, so a negative answer is a proof rather
+than a spent budget;
 `enumerate-subspaces` generates each candidate subspace once per symmetry
 class instead of once per member; `price-canonical-route` is the instrument
 that says what that canonical generation costs before an hour is spent on it.

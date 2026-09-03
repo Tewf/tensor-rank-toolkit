@@ -1,7 +1,8 @@
 # cli/
 
-The plumbing every command shares. Nothing in here answers a question about a
-tensor; each header holds one convention, used by all thirteen tools.
+The infrastructure every command shares. Nothing in here answers a question
+about a tensor; each header holds one convention, used by all thirteen
+tools.
 
 In this folder:
 

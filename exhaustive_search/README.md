@@ -1,9 +1,12 @@
 # exhaustive_search/
 
-The tool that knows rather than guesses: `decide-rank` answers whether your
-map can be computed in exactly `k` multiplications. Yes arrives with a
-verified recipe, no arrives with the whole tree walked. The cost grows
-exponentially, so it settles small maps outright and refuses what cannot fit.
+The exact decision procedure, in contrast to the heuristics: `decide-rank`
+decides whether a map admits a bilinear algorithm with exactly `k`
+multiplications. A positive answer carries a decomposition verified against
+the map before it is printed; a negative answer means the search tree was
+walked to its end. The cost is exponential, as the NP-completeness of the
+problem leads one to expect, so it settles small maps outright and refuses
+instances that cannot fit.
 
 In this folder:
 
@@ -34,7 +37,7 @@ decide-rank fixtures/matmul_2x2x2.tensor --target 7
 #   verified: they compute the map
 ```
 
-New to all of this: [`../start-here.md`](../start-here.md). Every flag:
+A first session in plain words: [`../start-here.md`](../start-here.md). Every flag:
 [`../OPTIONS/searching-for-rank.md`](../OPTIONS/searching-for-rank.md). The
 algorithm in pseudocode:
 [`../how-the-search-works/`](../how-the-search-works/README.md).
