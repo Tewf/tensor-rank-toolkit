@@ -1,6 +1,6 @@
 # PLinOpt's own operators, unmodified
 
-Twelve `.sms` files copied byte for byte from `data/` in **PLinOpt**, by
+Thirteen `.sms` files copied byte for byte from `data/` in **PLinOpt**, by
 Jean-Guillaume Dumas, Bruno Grenet, Clément Pernet and Alexandre Sedoglavic
 ([github.com/jgdumas/plinopt](https://github.com/jgdumas/plinopt)), which is
 distributed under the **CeCILL-B** free software licence. A copy of that licence

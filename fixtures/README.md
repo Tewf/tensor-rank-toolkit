@@ -64,7 +64,7 @@ formats `[wang2026]` leaves open.
 
 ## The ones that are not ours
 
-[`plinopt/`](plinopt/README.md) is twelve `.sms` operators copied unmodified from
+[`plinopt/`](plinopt/README.md) is thirteen `.sms` operators copied unmodified from
 PLinOpt's `data/`, under **CeCILL-B**, with a copy of that licence beside them.
 They are here so the exchange with the reference toolchain is exercised against
 his bytes rather than against something written here to resemble them, which is

@@ -45,7 +45,7 @@ satisfiability/          the same rank question put to a SAT or SMT solver
 curve_bounds/            bounds from interpolation on an algebraic curve
 integer_programme/       the linear and integer programme layer the curve strand uses
 fixtures/                the maps and operators everything is run on; its
-                         plinopt/ is twelve of PLinOpt's own, under CeCILL-B,
+                         plinopt/ is thirteen of PLinOpt's own, under CeCILL-B,
                          so the interoperability is tested against his bytes
 famous_tensors/          the tensors the literature argues about, and where each
                          search stops on them

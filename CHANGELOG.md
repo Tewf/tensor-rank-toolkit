@@ -422,7 +422,7 @@ refuted.
   [`formats/interchange/exchanging-files.md`](formats/interchange/exchanging-files.md)
   is the page for whoever has such files.
 
-- **Twelve of PLinOpt's own operators, vendored under CeCILL-B** in
+- **Thirteen of PLinOpt's own operators, vendored under CeCILL-B** in
   [`fixtures/plinopt/`](fixtures/plinopt/README.md) with a copy of that licence
   beside them, as Article 5.3.1 asks. Three were already there and neither
   `NOTICE` nor the directory said where they came from or under what terms.

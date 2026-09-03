@@ -1779,12 +1779,12 @@ The near neighbour in this problem area, whose binaries are
 sparse QLUP elimination and bounded coefficient search rather than the Ω-valid
 oracles.
 Not a dependency here: it needs LinBox, which this repository does not.
-Twelve of its `data/` operators are vendored under
+Thirteen of its `data/` operators are vendored under
 [`fixtures/plinopt/`](fixtures/plinopt/README.md) with its licence; what was read
 each way is [`formats/interchange/`](formats/interchange/README.md).
 
 **The three operators the sparsification strand reports on are its files too**,
-`data/3x3x3_23_Grey-221_{L,R,P}.sms`, and they are not among the twelve vendored
+`data/3x3x3_23_Grey-221_{L,R,P}.sms`, and they are not among the thirteen vendored
 here. **Where that scheme itself comes from is recorded nowhere this repository can
 reach.** Its `data/README.md` gives the filename grammar
 `MxKxN_R_text_[L|R|P].sms` and leaves `text` a free label; no file in the checkout

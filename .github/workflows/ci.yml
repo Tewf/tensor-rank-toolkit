@@ -122,6 +122,14 @@ jobs:
         if: always()
         run: python3 reproduce/quoted_numbers.py
 
+      # NOTICE promises its MIT list is every directory CMakeLists.txt adds.
+      # That promise was kept by hand and drifted twice - four directories
+      # missing until 2026-08-20, two more until 2026-09-03 - and a licence
+      # file is the one place a stale list is a legal claim, not a typo.
+      - name: The licence file claims every directory the build adds
+        if: always()
+        run: python3 reproduce/notice_scope.py
+
       # The GF(16) exhaustion, 105 600 301 nodes: 395 s on the reference core and
       # longer on a shared runner, which is more than every other question in the
       # driver put together. On every push that would be a fivefold slowdown to

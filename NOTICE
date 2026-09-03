@@ -4,15 +4,19 @@ NOTICE: scope of the MIT licence, and credit for material that is not mine
 The MIT LICENSE in this repository covers **my own work only**: the C++ in
 linear_algebra/, formats/, cli/, testing/, run_limits/, map_construction/,
 descent_search/, exhaustive_search/, orbit_reduction/, flip_graph/,
-integer_programme/, matrix_sparsification/, satisfiability/, curve_bounds/,
-rank_metric_bound/, oracle_guided_search/, pencil_rank/ and
-canonical_factorisation/, the CUDA in gpu_leaf/, the Python in web_interface/
-and reproduce/, together with the fixtures and the site. One directory of
-fixtures is the exception and is not mine: fixtures/plinopt/, below.
+incumbent_search/, integer_programme/, matrix_sparsification/,
+satisfiability/, curve_bounds/, rank_metric_bound/, oracle_guided_search/,
+pencil_rank/, canonical_factorisation/ and search_plan/, the CUDA in
+gpu_leaf/, the Python in web_interface/ and reproduce/, together with the
+fixtures and the site. One directory of fixtures is the exception and is not
+mine: fixtures/plinopt/, below.
 
 The list is every directory CMakeLists.txt adds, and it is written out rather
 than summarised because a folder missing from it is a folder whose licence this
-file does not state. Four were missing until 2026-08-20.
+file does not state. Four were missing until 2026-08-20, and two more,
+incumbent_search/ and search_plan/, until 2026-09-03; a list that drifted twice
+by hand is now compared against CMakeLists.txt by reproduce/notice_scope.py,
+in CI.
 
 It does **not** cover, and this repository does **not** redistribute, the
 published papers the algorithms come from. **references.md** names every one of
@@ -77,7 +81,7 @@ and reproduce anywhere; timings are not, and are not claimed to.
 
 PLinOpt's operators
 -------------------
-fixtures/plinopt/ is eight `.sms` matrices copied unmodified from the `data/`
+fixtures/plinopt/ is thirteen `.sms` matrices copied unmodified from the `data/`
 directory of **PLinOpt**, by Jean-Guillaume Dumas, Bruno Grenet, Clément Pernet
 and Alexandre Sedoglavic, https://github.com/jgdumas/plinopt. **CeCILL-B**, whose
 Article 5.3.1 asks that a copy of the agreement and the warranty and liability
