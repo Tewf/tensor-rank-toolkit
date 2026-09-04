@@ -15,7 +15,8 @@ and such ranks are where fast matrix multiplication comes from. Deciding
 tensor rank is NP-complete over finite fields [`[hastad1990]`](references.md)
 and ∃ℝ-complete over the reals [`[schaefer2018]`](references.md), so the
 library pairs **complete, exponential-time decision procedures** with
-**polynomial-time heuristics** and with lower bounds that require no search.
+**heuristics that scan where the procedures search**, and with lower bounds
+that do neither.
 All arithmetic is exact, over GF(p) and ℚ via Givaro: a search over ranks and
 over counts of nonzeros gives a different answer when it is nearly right, so
 nothing here is ever a float. Every count below is asserted by the test
@@ -32,7 +33,7 @@ the long form across strands is [`what-it-computes.md`](what-it-computes.md).
 
 | Strand | Asks, on what guarantee | Headline |
 |---|---|---|
-| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/) | rank from above in polynomial time: matroid-greedy, exact for its first step's basis, no guarantee past it | F2 5x5 to **14**, F3 3x6 to **10** |
+| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/) | rank from above at the price of a scan: matroid-greedy passes over the `p^(n+m)` rank-one candidates, exact for its first step's basis, no guarantee past it | F2 5x5 to **14**, F3 3x6 to **10** |
 | [exhaustion](methods/bilinear_rank/exhaustive/) | rank outright: a **complete decision procedure** after [`[bdez2012]`](references.md), exponential as NP-completeness leads one to expect | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
 | [branch and bound](methods/bilinear_rank/branch_and_bound/) | the same tree, cut by the incumbent's cost, stoppable at any moment | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](core/linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |

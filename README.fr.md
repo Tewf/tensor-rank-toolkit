@@ -15,8 +15,8 @@ multiplication matricielle rapide. Décider le rang tensoriel est NP-complet
 sur les corps finis [`[hastad1990]`](references.md) et ∃ℝ-complet sur les
 réels [`[schaefer2018]`](references.md) ; la bibliothèque associe donc des
 **procédures de décision complètes**, en temps exponentiel, à des
-**heuristiques en temps polynomial** et à des bornes inférieures qui
-n'exigent aucune recherche. Toute l'arithmétique est exacte, sur GF(p) et ℚ
+**heuristiques qui balayent là où les procédures cherchent**, et à des
+bornes inférieures qui ne font ni l'un ni l'autre. Toute l'arithmétique est exacte, sur GF(p) et ℚ
 via Givaro : une recherche sur des rangs et des comptes de non-nuls donne une
 autre réponse quand elle est presque juste, donc rien ici n'est jamais un
 flottant. Chaque compte ci-dessous est vérifié par la suite de tests ; les
@@ -36,7 +36,7 @@ documentation technique.
 
 | Axe | Question, et sur quelle garantie | Résultat |
 |---|---|---|
-| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/) | le rang par le haut en temps polynomial : gloutonne sur matroïde, exacte pour la base de sa première étape, sans garantie au-delà | F2 5x5 à **14**, F3 3x6 à **10** |
+| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/) | le rang par le haut au prix d'un balayage : des passes gloutonnes sur matroïde sur les `p^(n+m)` candidats de rang un, exacte pour la base de sa première étape, sans garantie au-delà | F2 5x5 à **14**, F3 3x6 à **10** |
 | [exhaustion](methods/bilinear_rank/exhaustive/) | le rang tranché : une **procédure de décision complète** d'après [`[bdez2012]`](references.md), exponentielle comme la NP-complétude le laisse attendre | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
 | [séparation et évaluation](methods/bilinear_rank/branch_and_bound/) | le même arbre, élagué par le coût du titulaire, arrêtable à tout instant | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](core/linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
