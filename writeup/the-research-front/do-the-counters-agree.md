@@ -26,7 +26,7 @@ it. The R = 7 row was the sum. Re-run, the arrays are
 **What is left is 27 nodes, and they are one line.** 25 426 against 25 399 is
 0.106%, and the whole of the difference is
 [`exhaustive_search.cpp`](../../methods/bilinear_rank/exhaustive/exhaustive_search.cpp)'s
-`if (span.contains(map)) continue`, which declines to spend a node on a candidate
+`if (span.contains(map, scratch)) continue`, which declines to spend a node on a candidate
 already inside the span. The Java loop has no such test and recurses on every
 candidate, so at level 2 it visits all `C(225, 2)` pairs where this visits
 25 173.

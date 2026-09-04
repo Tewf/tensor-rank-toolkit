@@ -39,8 +39,11 @@ A tool that produces one is downstream of a decomposition and is a different job
 the ones that do are in [`../../references.md`](../../references.md).
 
 **What this strand does promise is the minimum.** On `Grey-221`'s three operators
-the answer is **128** nonzeros, and 128 is the minimum over every invertible `V`
-rather than the best found, because Rado-Edmonds says so. It holds over the finite
+the answer is **128** nonzeros, measured in
+[`measured-with-other-tools/the-nonzero-counts.md`](../../methods/matrix_sparsification/measured-with-other-tools/the-nonzero-counts.md),
+and 128 is the minimum over every invertible `V` rather than the best found,
+because [Rado-Edmonds](../../methods/matrix_sparsification/method/exact-over-q.md)
+says so. It holds over the finite
 fields as well as over `Q`, the greedy running on `q^k`, which is the half that
 matters here: every operator [the rank search](../../methods/bilinear_rank/greedy_heuristic/) emits
 is over a finite field.
@@ -54,7 +57,10 @@ optimal by its Theorem 3.22. That one lives on the `rejected-experiments`
 branch (`retired/dominated_sparsifiers/`) since 2026-08-22, so read the claim
 above as "in this repository" rather than "in this working tree". What was added is speed and a written proof, not a result.
 
-What is *not* found in the literature, in descending order of confidence:
+What is *not* found in the literature, in descending order of confidence (the
+same reading, in full, is in
+[`what-is-hard-about-it.md`](../../methods/matrix_sparsification/what-is-hard-about-it.md)
+and [`method/where-the-scan-stops.md`](../../methods/matrix_sparsification/method/where-the-scan-stops.md)):
 
 1. **The bridge.** `[sanjose2025]`'s relative generalized Hamming weight at
    `r = 1` is `[beniamini2020]`'s Sparsest Independent Vector, exactly. One

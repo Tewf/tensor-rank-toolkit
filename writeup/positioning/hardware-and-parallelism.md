@@ -142,7 +142,6 @@ GPU-shaped loop there is, and what was actually missing was `--threads` and
 **The recommendation survives, on less evidence than it claimed.** An order of
 magnitude on the CPU for no new hardware, measured now rather than forecast.
 
-
 ## What the neighbours actually run on
 
 Flip graphs are independent random walks, which parallelise across CPU cores with

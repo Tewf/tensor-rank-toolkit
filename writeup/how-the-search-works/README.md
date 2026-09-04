@@ -1,7 +1,7 @@
 # How the exact search works, in one page
 
 `decide-rank` answers "is there an algorithm with exactly `k` products". It is
-`[bdez2012]` Algorithm 1 with `[covanov2019]`'s quotient, an addressed pool, and
+[`[bdez2012]`](../../references.md) Algorithm 1 with [`[covanov2019]`](../../references.md)'s quotient, an addressed pool, and
 a bit-packed leaf. Five pieces are usually named together when this is discussed
 and **only two of them are wired into this command unconditionally**, so the
 table says which, and on what condition the third one is.
@@ -114,6 +114,21 @@ Six questions, measured, anchored at the map throughout, the true minimum
 | F2 5×5 | is there a 10? **no** | 959 | 0.17 s |
 | F2 5×5 | is there an 11? **no** | 459 239 | 77 s |
 | F2 5×5 | is there a 12? **no** | 146 402 553 | 535.59 s |
+
+**The 10 and 11 rows are the tree's own cost, not what `decide-rank` prints on this
+build today.** The polynomial floor above already proves `f2_5x5`'s rank is at
+least 12, so a plain `--target 10` or `--target 11` run stops at `rank bound: rank
+is at least 12` and the line straight after it, no node opened. Only the 12 row
+still needs the tree, since 12 meets the floor rather than clearing it. The 959
+and 459 239 counts are `expand_subspace` invoked directly, which is what the tree
+still costs and what the wall clock comparisons elsewhere in this repository
+measure it by.
+
+The `F2 2×3` and `GF(8)` fewest rows drift the same way, only smaller: the
+search now reaches the same product count in fewer nodes than the row states,
+with every verdict unchanged. This table is not the source of record for
+either count; the corrected ones, dated and against a commit, are in
+[`results.json`](../../methods/bilinear_rank/greedy_heuristic/results.json).
 
 `decide-rank evidence/fixtures/f2_2x2.tensor` reproduces the first row; this run's own
 printed output was

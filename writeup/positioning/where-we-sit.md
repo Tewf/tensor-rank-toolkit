@@ -11,7 +11,8 @@ names the obstacle: over a field bigger than `Z₂` a constant moves freely betw
 the three factors of a rank-one tensor, so the walk wanders a space it should be
 quotienting, and "it is unclear what is the best way of doing this". That freedom
 is a group action. This repository already computes orbits under the
-RP-automorphism group, and its fixtures are already `GF(3)` and `GF(5)`.
+[RP-automorphism group](../../methods/bilinear_rank/orbit_reduction/),
+and its fixtures are already `GF(3)` and `GF(5)`.
 
 **That is the only place the rank strand has a contribution available, and it is
 a question asked in print rather than one anybody has answered.**

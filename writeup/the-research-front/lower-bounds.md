@@ -60,7 +60,8 @@ this repository is, and the front is much closer to us:
   [`what-rref-is-worth.md`](what-rref-is-worth.md).
 
   It leaves `⟨2,2,2⟩` where it was. Our `rank_lower_bound` is the maximum over the
-  flattening rank, both rank sums and Griesmer, and on `⟨2,2,2⟩` that maximum is
+  flattening rank, both rank sums and
+  [Griesmer](../../methods/rank_metric_bound/), and on `⟨2,2,2⟩` that maximum is
   **6**; ruling out 6 then costs `decide-rank` **25 399 nodes and 0.0362 s** of
   exhaustion ([`comparing-against-the-baseline.md`](comparing-against-the-baseline.md);
   an earlier revision here carried the canonical pass's 0.65 s beside the

@@ -27,9 +27,9 @@ the caveat below before reading the middle column as agreement.
 | question | `cpd/skip-axis` (Java) | `cpd_search.py` (Python) | `decide-rank` (C++) |
 |---|---|---|---|
 | refute R = 6 | 25 426, **0.954 s** | 3 376, **30.45 s** | 25 399, **0.0362 s** |
-| refute R = 6, quotiented | — | — | **648**, **0.0013 s** |
-| find 7 | 10 592, 0.407 s | — | 7 436, 0.0214 s |
-| whole sweep | ~1.385 s | — | **0.0554 s** |
+| refute R = 6, quotiented | not run | not run | **648**, **0.0013 s** |
+| find 7 | 10 592, 0.407 s | not run | 7 436, 0.0214 s |
+| whole sweep | ~1.385 s | not run | **0.0554 s** |
 
 **Three readings, and only one of them is about being faster.**
 

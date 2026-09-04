@@ -15,8 +15,10 @@ adjective.
 **Both directions, in one place.** Flip graphs and learned search produce upper
 bounds only, and `[chen2025]` says so in its own words: it is not clear how to use
 the technique for checking whether an optimum has been reached. Here `f2_5x5` is
-settled at **13 by this repository's own two searches**, the exhaustive one
-refuting 12 in **146 402 553 nodes** and the incumbent one exhibiting 13 in
+settled at **13 by this repository's own two searches**,
+[the exhaustive one](../../methods/bilinear_rank/exhaustive/)
+refuting 12 in **146 402 553 nodes** and
+[the incumbent one](../../methods/bilinear_rank/branch_and_bound/) exhibiting 13 in
 **80**. Until 2026-08-21 the upper half of that was a citation.
 
 **The orbit quotient inside the exact search.** On the same question as
@@ -37,7 +39,8 @@ reported rank is a fact about the map rather than an artefact of rounding, and a
 value that rounds to zero is a different answer rather than a near one.
 
 **A refutation can be rechecked by a program that shares no code with this one.**
-The solver strand writes a DRAT proof and `drat-trim` rereads it, so a lower bound
+The solver strand writes a DRAT proof, the standard machine-checkable refutation
+certificate for a SAT solver, and `drat-trim` rereads it, so a lower bound
 from that route rests on two programs rather than on our word.
 
 **And one open question has been answered, in the direction nobody wanted.**

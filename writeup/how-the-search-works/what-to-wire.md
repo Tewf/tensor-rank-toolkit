@@ -74,7 +74,7 @@ thermal band, three runs:
 |---|---|---|
 | minimum-weight basis, as it ships | 0.0831 s (repeat 0.0828) | 0.2910 s (repeat 0.2882) |
 | the filtration, given the same known ranks | **0.0751 s** | **0.2731 s** |
-| the filtration, as it was written | 0.1411 s | — |
+| the filtration, as it was written | 0.1411 s | not measured |
 
 Every query agreed. **The third row is the finding**: switching the callers to
 `SortedSpan` as it stood would have cost **1.70x**, because it recomputed the
