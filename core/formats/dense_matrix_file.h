@@ -9,7 +9,8 @@ namespace formats {
 
 /// Read a matrix of rationals: `shape rows columns`, then dense rows whose
 /// entries are integers or fractions written `4/9`. Blank lines and `#`
-/// comments are ignored.
+/// comments are ignored. Each row carries exactly `columns` entries; a row
+/// with more or fewer throws.
 ///
 /// Entries stay fractions all the way through. The operators of a fast
 /// multiplication algorithm have entries like 4/9, which no double holds, and

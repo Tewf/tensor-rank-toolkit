@@ -22,7 +22,8 @@ struct Tensor {
 };
 
 /// Read the fixture format: `field p`, `shape slices rows columns`, then the
-/// slices as dense rows. Blank lines and `#` comments are ignored.
+/// slices as dense rows. Blank lines and `#` comments are ignored. Each row
+/// carries exactly `columns` entries; a row with more or fewer throws.
 ///
 /// `p` must be prime, and that is checked here rather than left to whichever
 /// backend the tensor reaches: see `linear_algebra::is_prime` in [`field.h`](../linear_algebra/field.h)

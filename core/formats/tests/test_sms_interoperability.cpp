@@ -21,7 +21,7 @@
 /// down: a value that does not end its line, an entry that is not a rational, a
 /// file holding more than one matrix, and the field, which the file does not
 /// carry at all. `../interchange/where-the-conventions-differ.md` is the
-/// table, with the file and line on PLinOpt's side of each row.
+/// table, with the file and line on PLinOpt's side for most rows.
 #include <cstdio>
 #include <fstream>
 #include <sstream>

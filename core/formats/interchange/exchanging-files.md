@@ -9,8 +9,8 @@ below has been run; what it produced is
 
 ## What to install
 
-Nothing, to read and write those files: `.sms` is handled here and Givaro is
-already this repository's only dependency. To check our output with *their*
+Nothing, to read and write those files: [`.sms`](../sms_file.h) is handled here
+and Givaro is already this repository's only dependency. To check our output with *their*
 binaries you need PLinOpt itself, which wants LinBox ≥ 1.7 and Givaro ≥ 4.2:
 
 ```sh

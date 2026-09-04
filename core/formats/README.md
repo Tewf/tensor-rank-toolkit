@@ -22,6 +22,8 @@ writes through `write_tensor`, which is the round trip taken across two formats.
 Both text formats ignore blank lines and `#` comments, so a fixture can say what
 it is. Both refuse what they do not understand: a parse error throws rather than
 returning a half-built object that could be misread and lead to incorrect results.
+A row carries exactly the number of entries its header declares; more and fewer
+both throw, so a stray or missing value is refused rather than misread.
 
 ## Why a matrix file is rational and a tensor file is not
 
