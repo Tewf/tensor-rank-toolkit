@@ -5,7 +5,7 @@ Nor is the observation that bisection can lose on time despite winning on calls,
 which is `[heras2011]`'s about core-guided binary search.
 
 **New, as far as reading found**: the per-question price table in
-[`bracket/`](../bracket/README.md), which on GF(16) prices all thirteen questions
+[`bracket/`](../bracket/), which on GF(16) prices all thirteen questions
 from k = 4 to k = 16 at once:
 
 | GF(16), from [`every-question-priced.md`](../bracket/every-question-priced.md) | Seconds |

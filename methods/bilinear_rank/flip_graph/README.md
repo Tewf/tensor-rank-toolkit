@@ -42,6 +42,6 @@ the descent reaches a good scheme, the walk explores sideways from there.
 
 A walk gives upper bounds only, and a plateau crossing is not a proof of
 anything. Nothing here decides a rank; that is
-[`../exhaustive/`](../exhaustive/README.md). And the published flip-graph
+[`../exhaustive/`](../exhaustive/). And the published flip-graph
 results are far ahead of this implementation, which
-[`writeup/positioning/`](../../../writeup/positioning/README.md) states with the numbers.
+[`writeup/positioning/`](../../../writeup/positioning/) states with the numbers.

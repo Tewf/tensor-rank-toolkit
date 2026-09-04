@@ -20,7 +20,7 @@ In this folder:
   once, with no memory of what was seen.
 - [`canonical_route_price.h`](canonical_route_price.h) and
   `price_canonical_route.cpp`: the pricing instrument.
-- [`measurements/`](measurements/README.md): every number, including the ones
+- [`measurements/`](measurements/): every number, including the ones
   that retired `find-at-rank` to the `rejected-experiments` branch.
 - Two notes and two folders of evidence:
   [`deduplication-cost.md`](deduplication-cost.md),

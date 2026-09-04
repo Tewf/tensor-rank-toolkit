@@ -20,7 +20,7 @@ over counts of nonzeros gives a different answer when it is nearly right, so
 nothing here is ever a float. Every count below is asserted by the test
 suite; timings are not, and are not claimed to be
 ([`MEASURING.md`](MEASURING.md) states the protocol,
-[`evidence/reproduce/`](evidence/reproduce/README.md) regenerates every published number with
+[`evidence/reproduce/`](evidence/reproduce/) regenerates every published number with
 its provenance).
 
 ## Repository layout
@@ -30,27 +30,27 @@ The ten method strands. Method and caveats, per strand:
 
 | Strand | Asks | Headline |
 |---|---|---|
-| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/README.md) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
-| [exhaustion](methods/bilinear_rank/exhaustive/README.md) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
-| [branch and bound](methods/bilinear_rank/branch_and_bound/README.md) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
+| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive/) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
+| [branch and bound](methods/bilinear_rank/branch_and_bound/) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](core/linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
-| [pencils](methods/pencil_rank/README.md) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
-| [factorisation](methods/canonical_factorisation/README.md) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
-| [satisfiability](methods/satisfiability/README.md) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
-| [symmetry](methods/bilinear_rank/orbit_reduction/README.md) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](methods/bilinear_rank/canonical_augmentation/README.md) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
-| [sparsification](methods/matrix_sparsification/README.md) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
+| [pencils](methods/pencil_rank/) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
+| [factorisation](methods/canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
+| [satisfiability](methods/satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
+| [symmetry](methods/bilinear_rank/orbit_reduction/) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
+| [isomorph-free](methods/bilinear_rank/canonical_augmentation/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
+| [sparsification](methods/matrix_sparsification/) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 The groups around the strands:
 
 | Group | Holds |
 |---|---|
-| [`core/`](core/linear_algebra/README.md) | the exact arithmetic ([`linear_algebra/`](core/linear_algebra/README.md)) and the file formats ([`formats/`](core/formats/README.md)) |
-| [`methods/bilinear_rank/`](methods/bilinear_rank/README.md) | the search core above, one namespace, its shared vocabulary at the group root with `operators-to-tensor`, plus [`map_construction/`](methods/bilinear_rank/map_construction/README.md) and [`search_plan/`](methods/bilinear_rank/search_plan/README.md) |
-| [`infrastructure/`](infrastructure/cli/README.md) | [`cli/`](infrastructure/cli/README.md), [`run_limits/`](infrastructure/run_limits/README.md), [`testing/`](infrastructure/testing/README.md), [`gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`tools/`](infrastructure/tools/README.md) |
-| [`evidence/`](evidence/fixtures/README.md) | [`fixtures/`](evidence/fixtures/README.md), [`benchmark_tensors/`](evidence/benchmark_tensors/README.md), [`reproduce/`](evidence/reproduce/README.md) |
-| [`writeup/`](writeup/article/README.md) | [`article/`](writeup/article/README.md), [`how-the-search-works/`](writeup/how-the-search-works/README.md), [`positioning/`](writeup/positioning/README.md), [`the-research-front/`](writeup/the-research-front/README.md) |
-| [`web_interface/`](web_interface/README.md) | the tools driven from a browser, on Python's standard library alone |
+| [`core/`](core/linear_algebra/) | the exact arithmetic ([`linear_algebra/`](core/linear_algebra/)) and the file formats ([`formats/`](core/formats/)) |
+| [`methods/bilinear_rank/`](methods/bilinear_rank/) | the search core above, one namespace, its shared vocabulary at the group root with `operators-to-tensor`, plus [`map_construction/`](methods/bilinear_rank/map_construction/) and [`search_plan/`](methods/bilinear_rank/search_plan/) |
+| [`infrastructure/`](infrastructure/cli/) | [`cli/`](infrastructure/cli/), [`run_limits/`](infrastructure/run_limits/), [`testing/`](infrastructure/testing/), [`gpu_leaf/`](infrastructure/gpu_leaf/), [`tools/`](infrastructure/tools/) |
+| [`evidence/`](evidence/fixtures/) | [`fixtures/`](evidence/fixtures/), [`benchmark_tensors/`](evidence/benchmark_tensors/), [`reproduce/`](evidence/reproduce/) |
+| [`writeup/`](writeup/article/) | [`article/`](writeup/article/), [`how-the-search-works/`](writeup/how-the-search-works/), [`positioning/`](writeup/positioning/), [`the-research-front/`](writeup/the-research-front/) |
+| [`web_interface/`](web_interface/) | the tools driven from a browser, on Python's standard library alone |
 | [`start-here.md`](start-here.md) | a first session in plain words, for a reader without the field's vocabulary |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | the reasoned map; every flag with the measurement behind its default; the bibliography, keyed from the code |
 
@@ -80,14 +80,14 @@ routes forms an element any more: the walk steps in reflected Gray order over
 GF(2) and GF(p) alike, **2.52x an element over GF(3)** with the dimension
 term gone rather than reduced, and the pool scan carries a residual. Same
 verdicts, same node counts, one consumer card priced against both:
-[`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md).
+[`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/).
 
 **A negative result on the expensive step.** Step 3 of the greedy heuristic
 enumerates the full pool of rank-one maps. Across the four polynomial
 fixtures it improved the answer in **two of four cases**, by one product
 each, at a cost **one to two orders of magnitude** above the first two steps
 together. A continuation that only accelerates step 3 optimises the part
-that mostly does not pay; [`evidence/fixtures/README.md`](evidence/fixtures/README.md) holds
+that mostly does not pay; [`evidence/fixtures/README.md`](evidence/fixtures/) holds
 that finding still.
 
 ## One pipeline
@@ -100,7 +100,7 @@ sparsify-operator out_L.sms                                          # 31 -> 27 
 ```
 
 The browser console runs those two lines in order, once per operator, as a
-flow: [`web_interface/`](web_interface/README.md).
+flow: [`web_interface/`](web_interface/).
 
 ## Interchange with the published literature
 
@@ -149,7 +149,7 @@ sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-
 ```
 
 Givaro and Boost are the only libraries anything links. Boost is needed by
-[`vendor/permlib/`](vendor/permlib/README.md) alone, for `boost::next` and
+[`vendor/permlib/`](vendor/permlib/) alone, for `boost::next` and
 `boost::shared_ptr`, and no header outside that vendored library includes it.
 `libgmp-dev` is on the line because `libgivaro-dev` pulls GMP's runtime but
 not `gmpxx.h`, which Givaro's own headers include; the

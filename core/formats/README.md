@@ -54,4 +54,4 @@ can. Both directions have been run against PLinOpt's own binaries: its checker
 confirms the published 14 products on `f2_5x5` and 10 on `f3_3x6` from our
 operators alone, and its published Strassen operators rebuild our `⟨2,2,2⟩`
 fixture entry for entry:
-[`interchange/`](interchange/README.md).
+[`interchange/`](interchange/).

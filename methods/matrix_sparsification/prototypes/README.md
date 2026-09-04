@@ -4,7 +4,7 @@ Five Python scripts that established
 [`../method/answering-without-searching.md`](../method/answering-without-searching.md).
 They are kept because a finding whose evidence is deleted is indistinguishable
 from a claim, which is the rule the rank strand already follows in
-[`../../bilinear_rank/canonical_augmentation/measurements/`](../../bilinear_rank/canonical_augmentation/measurements/README.md).
+[`../../bilinear_rank/canonical_augmentation/measurements/`](../../bilinear_rank/canonical_augmentation/measurements/).
 
 **The C++ they specified now exists**:
 [`../lightest_vector_by_simplex.h`](../lightest_vector_by_simplex.h), reached by
@@ -24,7 +24,7 @@ between them is worth something.
 
 They need SciPy, which this repository does not depend on and must not start
 depending on: run them with `~/miniforge3/envs/orco/bin/python`. An
-implementation belongs in [`../../integer_programme/`](../../integer_programme/README.md),
+implementation belongs in [`../../integer_programme/`](../../integer_programme/),
 which already keeps a solver chain and needs no new dependency.
 
 ```sh

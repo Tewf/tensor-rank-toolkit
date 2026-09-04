@@ -56,7 +56,7 @@ around every refusal it asserts.
 
 `find-at-rank` is gone from this branch, to `rejected-experiments`, and with it
 the `--descend` and `--pretest-ceiling` flags; the numbers that retired it are in
-[`methods/bilinear_rank/canonical_augmentation/measurements/`](methods/bilinear_rank/canonical_augmentation/measurements/README.md).
+[`methods/bilinear_rank/canonical_augmentation/measurements/`](methods/bilinear_rank/canonical_augmentation/measurements/).
 **`--candidate-timeout` is not gone**, and this sentence used to say it was:
 `find-at-rank` had a flag of that name and so does `decide-rank-by-deflation`, which
 still accepts it and is documented in

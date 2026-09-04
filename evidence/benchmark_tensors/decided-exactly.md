@@ -35,7 +35,7 @@ exhaustion, and that is the half the 4.12 minutes buys.
 ## Two more, decided against a citation: F2 5×5 and F3 3×6
 
 The paper and the table identifying these fixtures with it are in
-[`README.md`](README.md).
+[`README.md`](./).
 
 **`f3_3x6`: the heuristic is optimal, and this repository now proves it alone.**
 Step 3 returns 10 in 17.28 s, and `decide-rank --target 9` returns NO
@@ -46,7 +46,7 @@ the claim rests on.
 **`f2_5x5`: settled here, and it took both directions.** The descent alone
 stops at 14. `decide-rank --target 12` runs to exhaustion in 146 402 553 nodes
 and refuses, which reproduces their exclusion and puts the floor at 13, and
-[`tighten-rank-bound`](../../methods/bilinear_rank/branch_and_bound/README.md)
+[`tighten-rank-bound`](../../methods/bilinear_rank/branch_and_bound/)
 exhibits 13 in 80 nodes on 2026-08-21, closing the ceiling. Their 9.65×10⁹
 tests agree with the exhaustion and are no longer what the claim rests on.
 **Finding a 13 was the part the heuristic missed**, and it is a construction

@@ -6,21 +6,21 @@ without leaving it.
 
 In this group:
 
-- [`bilinear_rank/`](bilinear_rank/README.md): the search core, eight
+- [`bilinear_rank/`](bilinear_rank/): the search core, eight
   members under one namespace, its shared vocabulary at the group root.
-- [`pencil_rank/`](pencil_rank/README.md): two slices, read off the
+- [`pencil_rank/`](pencil_rank/): two slices, read off the
   Kronecker canonical form in polynomial time.
-- [`canonical_factorisation/`](canonical_factorisation/README.md): the rank
+- [`canonical_factorisation/`](canonical_factorisation/): the rank
   as S = C A, with a receipt anybody can multiply out.
-- [`satisfiability/`](satisfiability/README.md): the rank question put to a
+- [`satisfiability/`](satisfiability/): the rank question put to a
   SAT or SMT solver, refutations checkable as DRAT.
-- [`matrix_sparsification/`](matrix_sparsification/README.md): fewest
+- [`matrix_sparsification/`](matrix_sparsification/): fewest
   nonzeros in an operator, proved minimal over every change of basis.
-- [`rank_metric_bound/`](rank_metric_bound/README.md): two search-free
+- [`rank_metric_bound/`](rank_metric_bound/): two search-free
   lower bounds read off a slice space.
-- [`curve_bounds/`](curve_bounds/README.md): upper bounds from
+- [`curve_bounds/`](curve_bounds/): upper bounds from
   interpolation on an algebraic curve.
-- [`integer_programme/`](integer_programme/README.md): the LP and ILP layer
+- [`integer_programme/`](integer_programme/): the LP and ILP layer
   the curve strand and the sparsifier's simplex route both use.
 
 How to use: every strand's README opens with its one command and a run

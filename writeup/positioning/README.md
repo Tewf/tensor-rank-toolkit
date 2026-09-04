@@ -4,7 +4,7 @@ Written after a proper literature review rather than before one, which is the
 wrong order and is why this folder exists. Its job is to keep the repository's
 claims inside what is actually unpublished.
 
-It is not the survey. [`writeup/the-research-front/`](../the-research-front/README.md) maps
+It is not the survey. [`writeup/the-research-front/`](../the-research-front/) maps
 the field; this takes a position inside that map and says which half of it is
 ours to claim. The two were briefly the same filename on two branches, which is
 how one path came to hold two documents.

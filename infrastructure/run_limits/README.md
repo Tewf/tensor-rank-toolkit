@@ -17,7 +17,7 @@ In this folder:
   their own, with the alarm that ends them; its header explains the one
   window that leaves open.
 - `show_limits.cpp`: the `show-limits` instrument.
-- [`adapting-to-the-machine/`](adapting-to-the-machine/README.md): the audit
+- [`adapting-to-the-machine/`](adapting-to-the-machine/): the audit
   of every strand against all three budgets.
 - [`tests/`](tests): the budgets asserted against real runs.
 

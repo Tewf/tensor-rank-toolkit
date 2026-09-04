@@ -5,15 +5,15 @@ and every command uses all of it.
 
 In this group:
 
-- [`cli/`](cli/README.md): the shared command grammar, the exit-code
+- [`cli/`](cli/): the shared command grammar, the exit-code
   vocabulary (a proved no is 1, a spent budget is 3, neither a crash), and
   the stdout-for-results discipline.
-- [`run_limits/`](run_limits/README.md): memory, cores, and which
+- [`run_limits/`](run_limits/): memory, cores, and which
   processor, plus the card-failure note both card leaves share.
-- [`testing/`](testing/README.md): the one assertion helper.
-- [`gpu_leaf/`](gpu_leaf/README.md): what one consumer card is worth on the
+- [`testing/`](testing/): the one assertion helper.
+- [`gpu_leaf/`](gpu_leaf/): what one consumer card is worth on the
   leaf test, measured, built only where nvcc exists.
-- [`tools/`](tools/README.md): scripts outside the build.
+- [`tools/`](tools/): scripts outside the build.
 
 How to use, from a build tree; the output is this run's, quoted as printed:
 

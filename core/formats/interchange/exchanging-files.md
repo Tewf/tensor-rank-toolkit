@@ -70,6 +70,6 @@ The field-by-field comparison, with the file and line on both sides, is
   the accuracy paper carries polynomials in an indeterminate. Refused by name.
 
 Thirteen of those files are vendored so this is exercised by the test suite and not
-only by hand: [`evidence/fixtures/plinopt/`](../../../evidence/fixtures/plinopt/README.md), and
+only by hand: [`evidence/fixtures/plinopt/`](../../../evidence/fixtures/plinopt/), and
 what the suite can and cannot carry is
 [`what-is-checked-automatically.md`](what-is-checked-automatically.md).

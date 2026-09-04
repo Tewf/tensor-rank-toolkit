@@ -3,7 +3,7 @@
 Two bounds come free: the flattening rank below, the smallest product of two of
 the three dimensions above. Finding the rank between them means asking a solver
 a sequence of decision questions, and there is more than one order to ask them
-in. Encodings are [`method/`](../method/README.md); costs against the exhaustive
+in. Encodings are [`method/`](../method/); costs against the exhaustive
 search are [`measurements.md`](../measurements.md).
 
 ## The floor no strategy can go below

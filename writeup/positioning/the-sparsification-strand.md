@@ -1,6 +1,6 @@
 # The other strand, where the finding is an absence
 
-[`../../methods/matrix_sparsification/`](../../methods/matrix_sparsification/README.md) implements
+[`../../methods/matrix_sparsification/`](../../methods/matrix_sparsification/) implements
 `[karstadt2017]`'s alternative-basis construction, SPAA 2017 and JACM 67(1) 2020,
 [doi:10.1145/3364504](https://doi.org/10.1145/3364504), and `[beniamini2020]`'s
 sparsification built on top of it,
@@ -42,7 +42,7 @@ the ones that do are in [`../../references.md`](../../references.md).
 the answer is **128** nonzeros, and 128 is the minimum over every invertible `V`
 rather than the best found, because Rado-Edmonds says so. It holds over the finite
 fields as well as over `Q`, the greedy running on `q^k`, which is the half that
-matters here: every operator [the rank search](../../methods/bilinear_rank/greedy_heuristic/README.md) emits
+matters here: every operator [the rank search](../../methods/bilinear_rank/greedy_heuristic/) emits
 is over a finite field.
 
 ## Is any of it new? Four candidates, and the algorithm is not one of them

@@ -7,7 +7,7 @@ Precedence and `BILINEAR_TUNABLES`:
 The third route, `find-at-rank`, is on the `rejected-experiments` branch and its
 flags are gone with it. Its defaults and what chose them are recorded there, and
 the measurement that retired it is in
-[`../methods/bilinear_rank/canonical_augmentation/measurements/README.md`](../methods/bilinear_rank/canonical_augmentation/measurements/README.md).
+[`../methods/bilinear_rank/canonical_augmentation/measurements/README.md`](../methods/bilinear_rank/canonical_augmentation/measurements/).
 
 ## `decide-rank-by-deflation`
 

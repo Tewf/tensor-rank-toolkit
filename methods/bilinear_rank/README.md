@@ -21,20 +21,20 @@ In this folder:
 
 The members, one question each:
 
-- [`greedy_heuristic/`](greedy_heuristic/README.md): rank from above,
+- [`greedy_heuristic/`](greedy_heuristic/): rank from above,
   cheaply, with no optimality guarantee past its first step.
-- [`exhaustive/`](exhaustive/README.md): the complete decision procedure.
-- [`branch_and_bound/`](branch_and_bound/README.md): the same tree, cut by
+- [`exhaustive/`](exhaustive/): the complete decision procedure.
+- [`branch_and_bound/`](branch_and_bound/): the same tree, cut by
   the incumbent's cost, stoppable at any moment.
-- [`canonical_augmentation/`](canonical_augmentation/README.md): each
+- [`canonical_augmentation/`](canonical_augmentation/): each
   equivalence class exactly once, no memory.
-- [`orbit_reduction/`](orbit_reduction/README.md): the quotient by the
+- [`orbit_reduction/`](orbit_reduction/): the quotient by the
   map's automorphisms.
-- [`flip_graph/`](flip_graph/README.md): moving a working decomposition
+- [`flip_graph/`](flip_graph/): moving a working decomposition
   sideways.
-- [`map_construction/`](map_construction/README.md): building the input
+- [`map_construction/`](map_construction/): building the input
   tensors.
-- [`search_plan/`](search_plan/README.md): the choices a run records and
+- [`search_plan/`](search_plan/): the choices a run records and
   replays.
 
 How to use, from the repository root with the tools installed; the output is

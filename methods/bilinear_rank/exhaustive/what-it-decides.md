@@ -1,7 +1,7 @@
 # What the exact search decides
 
 The expensive direction, and what it proves. What the heuristic reaches is in
-[`../greedy_heuristic/README.md`](../greedy_heuristic/README.md); the guarantees
+[`../greedy_heuristic/README.md`](../greedy_heuristic/); the guarantees
 each step carries are in
 [`../greedy_heuristic/correctness.md`](../greedy_heuristic/correctness.md).
 
@@ -11,7 +11,7 @@ each step carries are in
 | F2 2×3 | **exactly 5** | a 2×3 product: five instead of six |
 | GF(4) over GF(2) | **exactly 3** | classical |
 | GF(8) over GF(2) | **exactly 6** | classical |
-| F2 5×5 | **exactly 13**, both sides here | 9 to 12 ruled out exhaustively here; 13 exhibited by [`tighten-rank-bound`](../branch_and_bound/README.md) in 80 nodes. `[bdez2012]` report the same 13 |
+| F2 5×5 | **exactly 13**, both sides here | 9 to 12 ruled out exhaustively here; 13 exhibited by [`tighten-rank-bound`](../branch_and_bound/) in 80 nodes. `[bdez2012]` report the same 13 |
 
 This library closes 5×5 from both sides: the exhaustive search rules out 12
 products, which puts the rank at 13 or more, and the incumbent search exhibits 13.
@@ -55,7 +55,7 @@ upper one; closing it means deciding 15, which neither side has done. That lower
 bound reads their `k` column by its stated convention rather than from prose
 naming the map, and their 7×4 row carries no timing, so verify it against the
 paper before quoting it as a bound.
-[`../../../writeup/how-the-search-works/README.md`](../../../writeup/how-the-search-works/README.md)
+[`../../../writeup/how-the-search-works/README.md`](../../../writeup/how-the-search-works/)
 says where the cost is, and
 [`what-the-rewrites-were-worth.md`](../../../writeup/how-the-search-works/what-the-rewrites-were-worth.md)
 says what cut it.

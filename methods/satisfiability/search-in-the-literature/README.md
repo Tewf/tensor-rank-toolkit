@@ -1,7 +1,7 @@
 # What the field already settled about asking a solver in order
 
 The order this module asks its questions in was chosen twice by argument and
-twice wrongly, then settled by measurement in [`bracket/`](../bracket/README.md).
+twice wrongly, then settled by measurement in [`bracket/`](../bracket/).
 This is the other half: the question has a literature, the literature had already
 answered it, and reading it first would have saved both wrong answers. On this
 strand's own GF(16) measurement bisection makes the fewest calls and still

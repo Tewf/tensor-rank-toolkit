@@ -61,7 +61,7 @@ no room to compound, not that it is small.
 tensor, so `--symmetry auto` refuses it (it would have to build 4.06×10⁸
 automorphism pairs) and the closed form does not apply. There is no quotiented
 run there under either rule, so the fixture is in no row above. That is the
-pre-existing limit [`README.md`](README.md) records under "Where it stops",
+pre-existing limit [`README.md`](./) records under "Where it stops",
 reached again from a new direction.
 
 ## What this does not say

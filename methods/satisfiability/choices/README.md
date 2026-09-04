@@ -5,7 +5,7 @@ Three things here could have gone more than one way: which backend decides
 settled by running both, and in two of the three cases the measurement
 contradicted an argument that sounded right. The numbers behind them are
 [`measurements.md`](../measurements.md); how the encodings work is
-[`method/`](../method/README.md).
+[`method/`](../method/).
 
 | | |
 |---|---|
@@ -14,5 +14,5 @@ contradicted an argument that sounded right. The numbers behind them are
 | [`the-question-order.md`](the-question-order.md) | the fourth choice, which a paper had already answered |
 
 Where the rank sits between the bounds, and the prices:
-[`../bracket/README.md`](../bracket/README.md). What the field had settled:
-[`../search-in-the-literature/README.md`](../search-in-the-literature/README.md).
+[`../bracket/README.md`](../bracket/). What the field had settled:
+[`../search-in-the-literature/README.md`](../search-in-the-literature/).

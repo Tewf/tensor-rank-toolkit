@@ -94,7 +94,7 @@ working directory bound a run to, which is the one question here whose answer is
 the same whatever tensor is in front of you.
 
 Twelve of the thirteen tools are on the browser console: `operators-to-tensor`
-takes three files at once and [`../web_interface/`](../web_interface/README.md)
+takes three files at once and [`../web_interface/`](../web_interface/)
 offers one, which is a limit of the console rather than a judgement about the
 tool. `show-limits` is on it too, as the run pane's own line rather than as a
 tool to choose.

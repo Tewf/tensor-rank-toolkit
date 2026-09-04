@@ -67,7 +67,7 @@ heuristic, and it is what the exhaustive search drops.
 ## What can be started from a known algorithm, and what cannot
 
 **Can**: sparsify its operators, which is
-[`../matrix_sparsification/`](../../matrix_sparsification/README.md) and needs only
+[`../matrix_sparsification/`](../../matrix_sparsification/) and needs only
 the `⟨L, R, P⟩` triple. That is where a published scheme is genuinely useful input
 here.
 

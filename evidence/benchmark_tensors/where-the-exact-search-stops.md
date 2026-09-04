@@ -76,7 +76,7 @@ the call and the allocator.
 
 ## Two polynomial-multiplication fixtures read from a citation's convention
 
-[`README.md`](README.md) identifies `f2_3x8` and `f2_4x7` with two rows of
+[`README.md`](./) identifies `f2_3x8` and `f2_4x7` with two rows of
 Barbulescu, Detrey, Estibals and Zimmermann's 2012 paper by their `#G`. Both
 readings rest on the paper's stated convention for the `k` column rather than
 on prose naming the maps, and the `8×3` row carries no timing, which is

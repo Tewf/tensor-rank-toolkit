@@ -19,7 +19,7 @@ agree, on every fixture, in both directions, which is what makes them worth
 keeping together: a disagreement would mean one of them is wrong, and neither
 can check a "no" after the fact on its own. Numbers in
 [`measurements.md`](measurements.md); the encodings in
-[`method/`](method/README.md).
+[`method/`](method/).
 
 ```sh
 decide-rank-by-sat evidence/fixtures/matmul_2x2x2.tensor               # rank exactly 7
@@ -78,7 +78,7 @@ not reproduce the tensor.
 
 What each claim rests on, and which are checked rather than argued:
 [`correctness.md`](correctness.md). How the rank is located between the free
-bounds, and the four searches measured to decide it: [`bracket/`](bracket/README.md).
+bounds, and the four searches measured to decide it: [`bracket/`](bracket/).
 
 Symmetry breaking ships off by default, because an over-strong constraint would
 turn a satisfiable instance into UNSAT and a wrong "no" is a wrong lower bound.

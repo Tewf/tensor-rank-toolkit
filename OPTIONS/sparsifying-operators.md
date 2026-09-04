@@ -50,7 +50,7 @@ minimises, where the oracles leave all ten entries as ninths (twenty operations)
 and the greedy leaves ten signs (ten). The counts are asserted in
 [`../methods/matrix_sparsification/tests/test_sparsify.cpp`](../methods/matrix_sparsification/tests/test_sparsify.cpp)
 and tabulated in
-[`../methods/matrix_sparsification/README.md`](../methods/matrix_sparsification/README.md).
+[`../methods/matrix_sparsification/README.md`](../methods/matrix_sparsification/).
 The command prints nonzeros only, so it shows them tying.
 
 The greedy method is a heuristic bounded by a heuristic: the article's line 4 is

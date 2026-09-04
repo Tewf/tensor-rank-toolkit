@@ -1,6 +1,6 @@
 # The method, exactly
 
-Notation: [`../../../../core/linear_algebra/README.md`](../../../../core/linear_algebra/README.md). The
+Notation: [`../../../../core/linear_algebra/README.md`](../../../../core/linear_algebra/). The
 cost of each primitive:
 [`../../../../core/linear_algebra/costs.md`](../../../../core/linear_algebra/costs.md). Here `p` is the
 characteristic, `k` the number of slices, `n × m` their shape, `w = n·m`, and `d`
@@ -24,7 +24,7 @@ Karatsuba's five products for a four-coefficient product is.
 |---|---|
 | [`descent.md`](descent.md) | the three steps of the heuristic, with the pseudocode and the cost of each |
 | [`descent-cost.md`](descent-cost.md) | why the descent's wall is memory rather than time |
-| [`../../../../writeup/how-the-search-works/README.md`](../../../../writeup/how-the-search-works/README.md) | the complete decision procedure: is there an algorithm with exactly `k` products, and what it costs |
+| [`../../../../writeup/how-the-search-works/README.md`](../../../../writeup/how-the-search-works/) | the complete decision procedure: is there an algorithm with exactly `k` products, and what it costs |
 
 ## One number this strand measures
 

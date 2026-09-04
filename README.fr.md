@@ -4,7 +4,7 @@
 [![Site](https://img.shields.io/badge/pages-tewf.github.io%2Ftensor--rank--toolkit-1f6feb)](https://tewf.github.io/tensor-rank-toolkit/)
 [![Licence](https://img.shields.io/badge/licence-MIT-lightgrey)](LICENSE)
 
-> [Read in English](README.md)
+> [Read in English](./)
 
 Une bibliothèque de recherche en C++20 pour le rang tensoriel et bilinéaire
 exact sur les corps finis et sur les rationnels. Le rang d'une application
@@ -22,7 +22,7 @@ autre réponse quand elle est presque juste, donc rien ici n'est jamais un
 flottant. Chaque compte ci-dessous est vérifié par la suite de tests ; les
 temps de calcul, eux, non, et rien ne le prétend
 ([`MEASURING.md`](MEASURING.md) donne le protocole,
-[`evidence/reproduce/`](evidence/reproduce/README.md) régénère chaque nombre publié avec sa
+[`evidence/reproduce/`](evidence/reproduce/) régénère chaque nombre publié avec sa
 provenance).
 
 ## Organisation du dépôt
@@ -33,27 +33,27 @@ reste de la documentation technique.
 
 | Axe | Question | Résultat |
 |---|---|---|
-| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/README.md) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
-| [exhaustion](methods/bilinear_rank/exhaustive/README.md) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
-| [séparation et évaluation](methods/bilinear_rank/branch_and_bound/README.md) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
+| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive/) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
+| [séparation et évaluation](methods/bilinear_rank/branch_and_bound/) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](core/linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
-| [faisceaux](methods/pencil_rank/README.md) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
-| [factorisation](methods/canonical_factorisation/README.md) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
-| [satisfiabilité](methods/satisfiability/README.md) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
-| [symétrie](methods/bilinear_rank/orbit_reduction/README.md) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
-| [sans isomorphes](methods/bilinear_rank/canonical_augmentation/README.md) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
-| [creusement](methods/matrix_sparsification/README.md) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
+| [faisceaux](methods/pencil_rank/) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
+| [factorisation](methods/canonical_factorisation/) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
+| [satisfiabilité](methods/satisfiability/) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
+| [symétrie](methods/bilinear_rank/orbit_reduction/) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
+| [sans isomorphes](methods/bilinear_rank/canonical_augmentation/) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
+| [creusement](methods/matrix_sparsification/) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
 Les groupes autour des axes :
 
 | Groupe | Contenu |
 |---|---|
-| [`core/`](core/linear_algebra/README.md) | l'arithmétique exacte ([`linear_algebra/`](core/linear_algebra/README.md)) et les formats de fichiers ([`formats/`](core/formats/README.md)) |
-| [`methods/bilinear_rank/`](methods/bilinear_rank/README.md) | le cœur de recherche ci-dessus, un seul espace de noms, son vocabulaire partagé à la racine du groupe avec `operators-to-tensor`, plus [`map_construction/`](methods/bilinear_rank/map_construction/README.md) et [`search_plan/`](methods/bilinear_rank/search_plan/README.md) |
-| [`infrastructure/`](infrastructure/cli/README.md) | [`cli/`](infrastructure/cli/README.md), [`run_limits/`](infrastructure/run_limits/README.md), [`testing/`](infrastructure/testing/README.md), [`gpu_leaf/`](infrastructure/gpu_leaf/README.md), [`tools/`](infrastructure/tools/README.md) |
-| [`evidence/`](evidence/fixtures/README.md) | [`fixtures/`](evidence/fixtures/README.md), [`benchmark_tensors/`](evidence/benchmark_tensors/README.md), [`reproduce/`](evidence/reproduce/README.md) |
-| [`writeup/`](writeup/article/README.md) | [`article/`](writeup/article/README.md), [`how-the-search-works/`](writeup/how-the-search-works/README.md), [`positioning/`](writeup/positioning/README.md), [`the-research-front/`](writeup/the-research-front/README.md) |
-| [`web_interface/`](web_interface/README.md) | les outils pilotés depuis un navigateur, sur la seule bibliothèque standard de Python |
+| [`core/`](core/linear_algebra/) | l'arithmétique exacte ([`linear_algebra/`](core/linear_algebra/)) et les formats de fichiers ([`formats/`](core/formats/)) |
+| [`methods/bilinear_rank/`](methods/bilinear_rank/) | le cœur de recherche ci-dessus, un seul espace de noms, son vocabulaire partagé à la racine du groupe avec `operators-to-tensor`, plus [`map_construction/`](methods/bilinear_rank/map_construction/) et [`search_plan/`](methods/bilinear_rank/search_plan/) |
+| [`infrastructure/`](infrastructure/cli/) | [`cli/`](infrastructure/cli/), [`run_limits/`](infrastructure/run_limits/), [`testing/`](infrastructure/testing/), [`gpu_leaf/`](infrastructure/gpu_leaf/), [`tools/`](infrastructure/tools/) |
+| [`evidence/`](evidence/fixtures/) | [`fixtures/`](evidence/fixtures/), [`benchmark_tensors/`](evidence/benchmark_tensors/), [`reproduce/`](evidence/reproduce/) |
+| [`writeup/`](writeup/article/) | [`article/`](writeup/article/), [`how-the-search-works/`](writeup/how-the-search-works/), [`positioning/`](writeup/positioning/), [`the-research-front/`](writeup/the-research-front/) |
+| [`web_interface/`](web_interface/) | les outils pilotés depuis un navigateur, sur la seule bibliothèque standard de Python |
 | [`start-here.md`](start-here.md) | une première session en mots simples (en anglais) |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | la carte raisonnée ; chaque option avec la mesure derrière sa valeur par défaut ; la bibliographie, citée par clé depuis le code |
 
@@ -82,7 +82,7 @@ deux routes n'y forme plus d'élément : le parcours avance en code de Gray
 réfléchi sur GF(2) comme sur GF(p), **2,52x par élément sur GF(3)**, le terme
 en dimension ayant disparu plutôt que diminué, et le balayage du vivier
 transporte un résidu. Mêmes verdicts, mêmes comptes de nœuds, et une carte
-grand public tarifée contre les deux : [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/README.md).
+grand public tarifée contre les deux : [`infrastructure/gpu_leaf/`](infrastructure/gpu_leaf/).
 
 **Un résultat négatif sur l'étape coûteuse.** L'étape 3 de l'heuristique
 gloutonne énumère le vivier complet des applications de rang un. Sur les
@@ -90,7 +90,7 @@ quatre jeux d'essai polynomiaux elle a amélioré le résultat dans **deux cas
 sur quatre**, d'un produit chaque fois, pour un coût supérieur d'**un à deux
 ordres de grandeur** à celui des deux premières étapes réunies. Toute suite
 qui se contenterait d'accélérer l'étape 3 optimiserait la partie qui, le plus
-souvent, ne paie pas ; [`evidence/fixtures/README.md`](evidence/fixtures/README.md) existe pour
+souvent, ne paie pas ; [`evidence/fixtures/README.md`](evidence/fixtures/) existe pour
 maintenir ce constat.
 
 ## Une seule chaîne
@@ -105,7 +105,7 @@ sparsify-operator out_L.sms                                 # 31 -> 27 coefficie
 
 La console dans le navigateur enchaîne ces deux lignes dans cet ordre, une
 fois par opérateur, comme un seul parcours :
-[`web_interface/`](web_interface/README.md).
+[`web_interface/`](web_interface/).
 
 ## Échanges avec la littérature publiée
 
@@ -157,7 +157,7 @@ sudo apt install cmake ninja-build pkg-config libgivaro-dev libgmp-dev libboost-
 ```
 
 Givaro et Boost sont les seules bibliothèques liées. Boost n'est nécessaire
-qu'à [`vendor/permlib/`](vendor/permlib/README.md), pour `boost::next` et
+qu'à [`vendor/permlib/`](vendor/permlib/), pour `boost::next` et
 `boost::shared_ptr`, et aucun en-tête hors de cette bibliothèque embarquée ne
 l'inclut. `libgmp-dev` est sur la ligne parce que `libgivaro-dev` apporte
 l'exécutable de GMP mais pas `gmpxx.h`, que les en-têtes de Givaro incluent ;

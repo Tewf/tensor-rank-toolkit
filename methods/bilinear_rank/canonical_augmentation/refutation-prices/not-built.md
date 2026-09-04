@@ -13,6 +13,6 @@
   return. It earns its place only once a sweep re-asks a tightened question.
 
 None of this is needed to reach the mitigations that are built: the run in
-[`README.md`](README.md) shows the tree route directly, and
+[`README.md`](./) shows the tree route directly, and
 [`the-mitigations.md`](the-mitigations.md) prices the cumulative gain without any
 of the three above at roughly **700x**.

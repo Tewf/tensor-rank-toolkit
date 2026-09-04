@@ -2,7 +2,7 @@
 
 Write `s = dim span(T)`, `N = nm`, and `P` for the rank-one maps of the shape,
 of which there are `(p^n - 1)(p^m - 1)/(p-1)^2`, so `|P|` grows like `p^(n+m)`.
-The rank is `r`. See [`README.md`](README.md) for what `A` and `C` are and
+The rank is `r`. See [`README.md`](./) for what `A` and `C` are and
 [`routes.md`](routes.md) for choosing between the two searches.
 
 ## The five steps

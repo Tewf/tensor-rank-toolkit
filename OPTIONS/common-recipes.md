@@ -70,7 +70,7 @@ decide-rank map.tensor --target k     # or any tool: it is a map like any other
 ```
 
 The shipped example: PLinOpt's own Strassen triple in
-[`../evidence/fixtures/plinopt/`](../evidence/fixtures/plinopt/README.md) rebuilds
+[`../evidence/fixtures/plinopt/`](../evidence/fixtures/plinopt/) rebuilds
 `evidence/fixtures/matmul_2x2x2.tensor` entry for entry, which the test suite asserts.
 The whole flow, and the differences that bite:
 [`../core/formats/interchange/bringing-an-algorithm-in.md`](../core/formats/interchange/bringing-an-algorithm-in.md).

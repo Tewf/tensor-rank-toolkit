@@ -82,7 +82,7 @@ That open question, whether the crossing arrives before the pool becomes the
 binding cost, has been swept at five shapes, and the answer is that **the pool
 became the binding cost first, and it is not the pool's size that does it**. Both
 routes at `⟨2,2,2⟩`, `⟨2,2,3⟩`, `⟨2,2,4⟩`, `⟨2,3,3⟩` and `⟨3,3,3⟩`, level by level:
-[`../bilinear_rank/canonical_augmentation/when-canonical-pays/`](../bilinear_rank/canonical_augmentation/when-canonical-pays/README.md).
+[`../bilinear_rank/canonical_augmentation/when-canonical-pays/`](../bilinear_rank/canonical_augmentation/when-canonical-pays/).
 
 Three results from it bear on this page. The node saving is **nothing at all** at
 one level of augmentation, because the baseline's `least_in_orbit` is the exact

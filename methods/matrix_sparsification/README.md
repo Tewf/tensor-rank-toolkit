@@ -1,7 +1,7 @@
 # Sparsifying the operators
 
 A fast multiplication algorithm has two costs. The multiplications, which
-[the other strand](../bilinear_rank/greedy_heuristic/README.md) counts, and the additions, which are set
+[the other strand](../bilinear_rank/greedy_heuristic/) counts, and the additions, which are set
 by how many nonzero entries its operators carry. Given the operator `U`, the
 problem is to find an invertible `V` minimising `nnz(U V)`. The articles put it
 as `nnz + nns` instead, since an entry that is not `0` or `±1` costs a
@@ -34,7 +34,7 @@ any of the hardness results:
 [`what-is-hard-about-it.md`](what-is-hard-about-it.md).
 
 As in the other strand, the filenames carry what each method guarantees, and
-[`method/README.md`](method/README.md) says what each is and where it fails.
+[`method/README.md`](method/) says what each is and where it fails.
 **A third route does not search at all.** `--simplex` answers by linear
 programming. That is the minimum where the operator's matroid is regular and an
 upper bound elsewhere, and **no operator here is regular**, so read it as the
@@ -52,7 +52,7 @@ moved to a branch: [`dominated.md`](dominated.md). Keys are
 [`../../references.md`](../../references.md).
 
 The operators do not have to be typed in. [The rank
-search](../bilinear_rank/greedy_heuristic/README.md) emits them, which is the whole pipeline: 25
+search](../bilinear_rank/greedy_heuristic/) emits them, which is the whole pipeline: 25
 multiplications become 14, and the additions the multiplication count never saw
 come down too.
 
@@ -96,7 +96,7 @@ live record sits for `⟨3,3,3⟩`: [`what-it-is-worth.md`](what-it-is-worth.md)
 ## The methods
 
 Three of them, one page each, with what each is for and where it fails:
-[`method/README.md`](method/README.md). The greedy by rescaling is the only one
+[`method/README.md`](method/). The greedy by rescaling is the only one
 that wins on `nnz + nns`; the linear programme is the only one that answers an
 operator too large to search. Three more moved to a branch:
 [`dominated.md`](dominated.md).
@@ -127,4 +127,4 @@ different route entirely: sparse QLUP elimination and a bounded coefficient
 search. What its runs on these operators measured, and what the exact stage is
 worth handed to its subexpression pass, where minimising nonzeros turns out to be
 able to cost additions, are recorded in
-[`measured-with-other-tools/`](measured-with-other-tools/README.md).
+[`measured-with-other-tools/`](measured-with-other-tools/).

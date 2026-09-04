@@ -5,8 +5,8 @@ Every number here comes from [`results.json`](results.json), which
 core of an i5-12450H, at the commands each row records. The counts are re-derived
 on every push; the seconds are not, for the reason
 [`../../MEASURING.md`](../../MEASURING.md) gives. The searches compared against are in
-[`../bilinear_rank/exhaustive/`](../bilinear_rank/exhaustive/README.md), on the same fixtures. How the
-encodings work is [`method/`](method/README.md); this is only what they cost.
+[`../bilinear_rank/exhaustive/`](../bilinear_rank/exhaustive/), on the same fixtures. How the
+encodings work is [`method/`](method/); this is only what they cost.
 
 ## The rank itself, not one `k` at a time
 
@@ -91,7 +91,7 @@ column was an extrapolation from `methods/bilinear_rank/greedy_heuristic/method/
 at `C(961,3)` and about seven hours and is labelled extrapolated, and it arrived
 here as a time and a node count in a table headed "Measured". What this repository
 proves by itself is **rank = 13**, with 12 refused here and 13 exhibited by
-[`../bilinear_rank/branch_and_bound/`](../bilinear_rank/branch_and_bound/README.md); it was 13 ≤ rank ≤ 14
+[`../bilinear_rank/branch_and_bound/`](../bilinear_rank/branch_and_bound/); it was 13 ≤ rank ≤ 14
 until 2026-08-21, the heuristic reaching only 14. Eleven went first: an exhaustion of 459 239 nodes and 77 s until
 2026-08-19, when the Griesmer floor moved this map to 12 and returned that
 refusal in milliseconds. Twelve then went by exhaustion, 146 402 553 nodes. The
@@ -125,7 +125,7 @@ lesson:
 
 Which backend, which solver and which flags produced these numbers, and
 the reasoning that measurement overturned to get there:
-[`choices/`](choices/README.md).
+[`choices/`](choices/).
 
 The driver that puts one question to every backend at once and tabulates what
 each cost is [`infrastructure/tools/compare_backends.py`](../../infrastructure/tools/compare_backends.py). It is

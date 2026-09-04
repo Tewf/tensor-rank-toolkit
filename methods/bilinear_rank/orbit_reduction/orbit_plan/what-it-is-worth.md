@@ -9,7 +9,7 @@ that run now reproduces a published exclusion rather than settling anything.
 **Point it at matrix multiplication instead.** ⟨2,2,2⟩ has the sandwich
 symmetries and the cyclic one: order in the hundreds over `F₂`, against a
 225-element pool. That is where orbits collapse a search rather than trim it,
-and [`evidence/benchmark_tensors/`](../../../../evidence/benchmark_tensors/README.md) is where the open
+and [`evidence/benchmark_tensors/`](../../../../evidence/benchmark_tensors/) is where the open
 questions are.
 
 ## The heuristic is a separate question

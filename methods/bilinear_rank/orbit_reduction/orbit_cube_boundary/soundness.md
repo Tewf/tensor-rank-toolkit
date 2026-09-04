@@ -7,7 +7,7 @@ obliged to be lexicographically least, so the consumer's own term ordering
 **must skip term zero**. Conjoin an unmodified ordering with a cube and the two
 together exclude decompositions that exist, which reads as a refutation.
 
-Second guard, from [`../orbit_plan/`](../orbit_plan/README.md): orbit pruning
+Second guard, from [`../orbit_plan/`](../orbit_plan/): orbit pruning
 requires the pool to be closed under the action. `all_rank_one_maps` is closed; `rank_one_candidates` is not.
 Refuse rather than assume.
 

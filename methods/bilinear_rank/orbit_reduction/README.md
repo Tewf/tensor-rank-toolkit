@@ -40,15 +40,15 @@ subspace and not about the pool.
 | [`group_construction.h`](group_construction.h) | Where the groups come from: by brute force, by closed form, and by closing a generating set, the last two pinned against each other |
 | [`pool_orbits.h`](pool_orbits.h) | The orbits of the rank-one pool, found on the operand vectors rather than on their products |
 | [`isomorph_rejection.h`](isomorph_rejection.h) | Which of a node's candidates open a branch: exact rejection, or the cheap partial rule `--orbit-test generators` selects |
-| [`orbit_search.h`](orbit_search.h) | The exact search of [`../exhaustive/`](../exhaustive/README.md) with its tree quotiented: one branch per orbit |
-| [`orbit_heuristic.h`](orbit_heuristic.h) | Steps 2 and 3 of [`../greedy_heuristic/`](../greedy_heuristic/README.md) against a quotiented pool |
+| [`orbit_search.h`](orbit_search.h) | The exact search of [`../exhaustive/`](../exhaustive/) with its tree quotiented: one branch per orbit |
+| [`orbit_heuristic.h`](orbit_heuristic.h) | Steps 2 and 3 of [`../greedy_heuristic/`](../greedy_heuristic/) against a quotiented pool |
 | [`orbit_cubes.h`](orbit_cubes.h) | The first term fixed to one representative per orbit, for a solver to split on |
 | [`subspace_canon.h`](subspace_canon.h) | Naming a subspace so two of them can be compared: moved here from `canonical_augmentation` on 2026-08-23 so a second consumer could reach it |
 
 Two documents rather than a third table. Why the family is arranged this way:
-[`orbit_plan/`](orbit_plan/README.md). What the cubes promise the SAT encoder,
+[`orbit_plan/`](orbit_plan/). What the cubes promise the SAT encoder,
 stated as a contract because the two sides are compiled apart:
-[`orbit_cube_boundary/`](orbit_cube_boundary/README.md).
+[`orbit_cube_boundary/`](orbit_cube_boundary/).
 
 `requested_group.h` sits here too but outside the library target: it turns a
 `--symmetry` word typed at a shell into a group, and the library has no business

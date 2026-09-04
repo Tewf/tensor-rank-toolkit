@@ -26,7 +26,7 @@ built for questions of that shape. Precedence and `BILINEAR_TUNABLES`:
 
 Only one is implemented: linear UNSAT-SAT, walking up from the floor. It was
 **measured against four others** on seven fixtures
-([`../methods/satisfiability/bracket/`](../methods/satisfiability/bracket/README.md)), and it **lost**
+([`../methods/satisfiability/bracket/`](../methods/satisfiability/bracket/)), and it **lost**
 on the only expensive one, coming fourth of five on GF(16): floor 108.461 s,
 ascending 112.533, descending 110.421, bisection 113.614, gallop up 110.399,
 gallop down **110.094**. The whole choice of schedule is worth about **three

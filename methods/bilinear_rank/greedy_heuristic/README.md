@@ -6,10 +6,10 @@ fast matrix multiplication comes from, and finding such decompositions in
 general is open.
 
 There are four ways to go at it here, and the folder names say which is which:
-this one descends, [`../exhaustive/`](../exhaustive/README.md) decides,
-[`../flip_graph/`](../flip_graph/README.md) moves a decomposition sideways, and
-[`../integer_programme/`](../../integer_programme/README.md) hands the question to somebody
-else's solver. [`../orbit_reduction/`](../orbit_reduction/README.md) quotients the first
+this one descends, [`../exhaustive/`](../exhaustive/) decides,
+[`../flip_graph/`](../flip_graph/) moves a decomposition sideways, and
+[`../integer_programme/`](../../integer_programme/) hands the question to somebody
+else's solver. [`../orbit_reduction/`](../orbit_reduction/) quotients the first
 three by symmetry. Each guarantees something different, and each folder says what.
 Every claim below is one of the four earning or failing to earn its keep.
 
@@ -45,13 +45,13 @@ badly**: it improved two of the four by one product each, at one to two orders o
 magnitude what steps 1 and 2 cost together. Per-step times and the full table:
 [`what-it-reaches.md`](what-it-reaches.md). The literature comparison behind
 these published numbers, and how far each is safe to quote, is in
-[`../../../evidence/benchmark_tensors/README.md`](../../../evidence/benchmark_tensors/README.md).
+[`../../../evidence/benchmark_tensors/README.md`](../../../evidence/benchmark_tensors/).
 
 ## What the exact search decides
 
 Small maps outright, with proof: Karatsuba's 3, the classical 3 and 6 for GF(4)
 and GF(8), **rank ⟨2,2,2⟩ = 7** in half a second, and the refutation at 12 that
-[`../branch_and_bound/`](../branch_and_bound/README.md)'s 13 completes into
+[`../branch_and_bound/`](../branch_and_bound/)'s 13 completes into
 **rank(F2 5x5) = 13**. Costs, and what a spent budget does and does not mean:
 [`../exhaustive/what-it-decides.md`](../exhaustive/what-it-decides.md).
 
@@ -76,10 +76,10 @@ map it came from, and the recovered ⟨L, R, P⟩ is rebuilt and compared.
 ## Beyond polynomial multiplication
 
 The same two searches on the tensors the complexity literature argues about:
-**[`../../../evidence/benchmark_tensors/`](../../../evidence/benchmark_tensors/README.md)**. No single rank-one map
+**[`../../../evidence/benchmark_tensors/`](../../../evidence/benchmark_tensors/)**. No single rank-one map
 strictly improves a matrix multiplication tensor, so the step 3 shortlist is 0 of
 225 on `⟨2,2,2⟩` and this descent cannot take a first step. A walk that may cross
-equal-cost maps reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/README.md)).
+equal-cost maps reaches 7 in 0.11 s ([`../flip_graph/`](../flip_graph/)).
 
 ## Where this stops
 

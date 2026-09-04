@@ -1,6 +1,6 @@
 # What each operation costs
 
-The complexity table for [the exact layer](README.md), and the one caveat that
+The complexity table for [the exact layer](./), and the one caveat that
 decides how to read it.
 
 Counted in **field operations**, not bit operations; see the caveat below.

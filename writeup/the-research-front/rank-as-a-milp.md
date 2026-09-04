@@ -24,7 +24,7 @@ the MILP row excluded. **A MILP is the wrong instrument for deciding tensor rank
 and the encoding is retired rather than left as a fourth column nobody would run.
 
 The solver chain underneath it stays, because it has a consumer that suits it:
-[`../../methods/curve_bounds/README.md`](../../methods/curve_bounds/README.md) step 3 is a genuine integer
+[`../../methods/curve_bounds/README.md`](../../methods/curve_bounds/) step 3 is a genuine integer
 programme of 25 variables, and there the same machinery wins. The retired encoding itself is
 not in this repository to read: it was published as a squashed import, so the
 commits that once held those files are not in this history and no `git log`

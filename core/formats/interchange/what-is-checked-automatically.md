@@ -1,7 +1,7 @@
 # What is checked automatically
 
 Three tests, over the thirteen of PLinOpt's files vendored in
-[`evidence/fixtures/plinopt/`](../../../evidence/fixtures/plinopt/README.md), so nothing here
+[`evidence/fixtures/plinopt/`](../../../evidence/fixtures/plinopt/), so nothing here
 reaches outside the repository for its inputs.
 
 | | |

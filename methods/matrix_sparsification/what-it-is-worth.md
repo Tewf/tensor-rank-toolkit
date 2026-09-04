@@ -1,7 +1,7 @@
 # What fewer additions is worth
 
 Fewer additions lowers the leading coefficient of the algorithm's arithmetic
-complexity, not its exponent. The counts are in [`README.md`](README.md); this
+complexity, not its exponent. The counts are in [`README.md`](./); this
 page is what they mean and where the literature says the road ends.
 
 Fewer additions lowers the leading coefficient of the algorithm's arithmetic

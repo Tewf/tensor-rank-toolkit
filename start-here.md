@@ -16,7 +16,7 @@ here:
   add the products back into the answer.
 
 Once, before anything: build and install, the five lines under **Building**
-in the [README](README.md). After that the commands below run as typed.
+in the [README](./). After that the commands below run as typed.
 
 ## "I have a tensor and want a decomposition"
 
@@ -97,7 +97,7 @@ additions around it reach the provable minimum.
 
 `python3 web_interface/serve.py` puts the same tools in the browser: pick a
 shipped example or open your own file, run, stop, and keep every run's
-evidence. [`web_interface/`](web_interface/README.md).
+evidence. [`web_interface/`](web_interface/).
 
 ## When you want to know what just happened
 

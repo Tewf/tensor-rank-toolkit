@@ -1,7 +1,7 @@
 # What the audit closed, what it did not, and why the second list is short
 
 [`the-audit.md`](the-audit.md) is the state before any of this. This page is the
-diff, in the order [`README.md`](README.md) argues for: cores and memory first,
+diff, in the order [`README.md`](./) argues for: cores and memory first,
 because they help every user, and the card last, because it helps almost none.
 
 **No default moved and no published number changed.** Every flag added here

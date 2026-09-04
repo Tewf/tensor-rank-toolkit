@@ -2,7 +2,7 @@
 
 **Which order the questions are asked in**, which sits outside the three above
 for a reason worth naming. **One schedule is implemented and five were priced**,
-which [`bracket/`](../bracket/README.md) shows is the same thing here: a question's
+which [`bracket/`](../bracket/) shows is the same thing here: a question's
 cost does not depend on the order it is reached in, so pricing every question prices
 every schedule over them, the four nobody wrote included. It barely matters. The
 two mandatory questions are 108.461 s of a 110 to 114 s search on GF(16), so the
@@ -28,4 +28,4 @@ puts BIN ahead of linear UNSAT-SAT, 261 solved against 185. That verdict is
 the survey rather than a repetition of it, and the reason is ours to give: our cost
 range is a dozen values wide, too narrow for the asymptotics to act on. The full
 argument is in
-[`search-in-the-literature/`](../search-in-the-literature/README.md).
+[`search-in-the-literature/`](../search-in-the-literature/).

@@ -3,8 +3,8 @@
 The defects this strand had when it arrived, and what each cost. Kept because a
 corrected number with no record of the correction reads exactly like a number
 that was always right. The methods themselves are in
-[`method/README.md`](method/README.md); the results are in
-[`README.md`](README.md).
+[`method/README.md`](method/); the results are in
+[`README.md`](./).
 
 **Algorithm 2.4 was unreachable.** `sparsifying_…py:268-272` offers the choice
 between the two oracles and both arms call `algorithm2_3`. The top-down method
