@@ -76,6 +76,19 @@ panel.
    stream; then both streams kept apart as `infrastructure/cli/report.h` splits them, and any
    file the run wrote.
 
+Between the command and the answer is one path, walked the same way every time.
+[`service.py`](service.py) assembles it, [`runner.py`](runner.py) runs it, and
+what the exit code at the far end may conclude is
+[`what-it-will-not-say.md`](what-it-will-not-say.md)'s:
+
+```mermaid
+flowchart LR
+    input["map + question,<br/>typed or loaded"] -->|"assembled once,<br/>never guessed at"| command["the command shown"]
+    command -->|"spawned in its own<br/>process group"| binary["the binary runs"]
+    binary -->|"streamed live,<br/>wall clock backstops"| streams["stdout / stderr"]
+    streams -->|"exit code decides,<br/>never the words"| answer["outcome, plan, files"]
+```
+
 An unmodified fixture is run where it lies, so the line under the answer is the
 same one the repository's own documents use. Anything typed is written into the
 run's directory first, and that path is what the line then names.

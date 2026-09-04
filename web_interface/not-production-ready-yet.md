@@ -73,8 +73,8 @@ prints at startup is how many are there, how large, and the one command that
 clears them.
 
 **`curve-bounds --table` sat among the questions.** It is grouped under "on
-nothing but its own arguments", and its exit 0 carries its own reading (the
-table was printed and nothing was minimised) rather than the tool's. What
+nothing but its own arguments", and its exit 0 carries its own reading, the same
+one [`what-it-will-not-say.md`](what-it-will-not-say.md) gives it. What
 remains untidy is that it is a mode wearing the shape of a flag, in the same list
 as the flags that tune a minimisation, and that is the tool's shape rather than
 this interface's. `--solvers`, which arrived when `list-solvers` stopped being a
