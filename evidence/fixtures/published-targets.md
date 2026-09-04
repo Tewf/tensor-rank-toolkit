@@ -54,7 +54,9 @@ from above, so a refutation at 12 would settle it. Nothing here has run one.
 
 **Step 3 is not run on the three matrix multiplication rows** because their pools
 are 257 985, 2 092 545 and 268 365 825 rank-one maps. It would also find nothing:
-`cyclic_f2_7` has a shortlist of **0** out of 16 129 and still shows the pattern
+`cyclic_f2_7` has a
+[shortlist](../../methods/bilinear_rank/greedy_heuristic/method/descent.md) of
+**0** out of 16 129 and still shows the pattern
 this repository records for every matrix multiplication tensor, which is that the
 descent cannot take a first step on them. Steps 1 and 2 move none of the three.
 

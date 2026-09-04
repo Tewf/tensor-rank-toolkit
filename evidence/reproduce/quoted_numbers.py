@@ -154,6 +154,7 @@ def flattened(text):
 
 
 def disagreements():
+    """Every document `claims()` names that does not carry what it must."""
     for what, expected, documents in claims():
         for document in documents:
             path = ROOT / document

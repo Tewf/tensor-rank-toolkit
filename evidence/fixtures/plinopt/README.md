@@ -29,4 +29,4 @@ polynomials in an indeterminate; `4o4o4_F32_Montgomery_P.sms`, which holds four
 matrices in one file; and the 32x32x32 operators, which are large and prove
 nothing the small ones do not. What was measured across all 153 of them, and
 what to install to repeat it, is
-[`../../formats/interchange/`](../../../core/formats/interchange/README.md).
+[`core/formats/interchange/`](../../../core/formats/interchange/).

@@ -28,6 +28,7 @@ Five files, one role each, and each says its own rules at the top:
 - [`front_page.py`](front_page.py): that `index.html`'s hand-typeset tables
   are the results files.
 - [`quoted_numbers.py`](quoted_numbers.py): that a ratio typed into prose is
-  the one something else asserts.
+  the one something else asserts; when a sentence pairs a checked figure with
+  a wall clock, its header says which half that is.
 - [`notice_scope.py`](notice_scope.py): that NOTICE claims every directory
   the build adds, and counts what it credits.

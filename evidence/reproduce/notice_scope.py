@@ -29,6 +29,8 @@ NUMBER_WORDS = {
 
 
 def failures():
+    """Every place NOTICE disagrees with what CMakeLists.txt adds or
+    evidence/fixtures/plinopt/ holds."""
     notice = (ROOT / "NOTICE").read_text(encoding="utf-8")
     cmake = (ROOT / "CMakeLists.txt").read_text(encoding="utf-8")
 
