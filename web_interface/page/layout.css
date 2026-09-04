@@ -74,9 +74,11 @@ body {
   font-size: .74rem; font-family: var(--mono); letter-spacing: .12em;
   text-transform: uppercase; color: var(--muted); font-weight: 500;
 }
-/* The one thing in this file that scrolls. `min-height: 0` is what lets it:
-   without it a flex item refuses to be shorter than its content and the
-   overflow reaches the page instead. */
+/* The one place inside the console's grid that scrolls this way. `min-height:
+   0` is what lets it: without it a flex item refuses to be shorter than its
+   content and the overflow reaches the page instead. The drawer below scrolls
+   too, but through a fixed `max-height`; a `dialog` sits outside this grid, so
+   it never needs the flex trick to get there. */
 .pane-body {
   flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
   padding: .6rem .85rem .8rem;

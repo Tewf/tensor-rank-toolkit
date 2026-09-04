@@ -114,9 +114,13 @@ button.copy {
 
 /* The three-way one, filled rather than outlined, because this is the
    distinction a reader has to make from across the room: something was found,
-   something was proved impossible, or nothing was established. `found` and
-   `proved` are the two teals the stylesheet has, so the third is the alarm
-   colour and the card carries a rule down its left in the same shade. */
+   something was proved impossible, or nothing was established. `found` takes
+   the stylesheet's one teal, the same shade the badge beside it uses for a yes
+   or no; `proved` takes `--ink`, its strongest neutral, because proving
+   impossibility is not the claim finding one is and does not borrow its
+   colour; `nothing` takes the same gold the badge already gives undecided,
+   stopped and usage runs. The card carries a rule down its left in the same
+   shade. */
 .decides {
   font-family: var(--mono); font-size: .68rem; letter-spacing: .08em;
   text-transform: uppercase; font-weight: 700; border-radius: 2px;

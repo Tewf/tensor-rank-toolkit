@@ -94,9 +94,10 @@ async function begin() {
   const menu = $("fixture");
   for (const [kind, names] of Object.entries(state.setup.fixtures)) {
     // The kind is on the group so that choosing a tool can grey out the
-    // fixtures it cannot read. `sparsify-operator` takes one operator and the
-    // rest take a map, and offering all of them to both is how a reader spends
-    // a run finding that out.
+    // fixtures it cannot read. `sparsify-operator` reads an operator, most of
+    // the other eleven read a map, and a couple (`curve-bounds`,
+    // `make-tensor`) read neither, so offering every fixture to all of them is
+    // how a reader spends a run finding out which is which.
     const group = el("optgroup", {label: kind, "data-kind": kind});
     for (const name of names) group.appendChild(el("option", {value: name, text: name}));
     menu.appendChild(group);
