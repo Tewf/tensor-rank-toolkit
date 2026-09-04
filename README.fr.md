@@ -64,7 +64,8 @@ que chacun est seul à traiter :
 
 ## Méthodes
 
-Une affirmation par axe, sa garantie d'abord.
+Les garanties porteuses, un paragraphe chacune ; la page de chaque axe
+énonce la sienne.
 
 **L'heuristique gloutonne** descend le rang par pas gloutons sur matroïde :
 exacte pour la base que choisit sa première étape, polynomiale de bout en
@@ -86,8 +87,21 @@ calcul, ce pour quoi la décision ne l'utilise pas
 binaire reprenant l'idée de [`[heule2021]`](references.md) ; une réponse
 négative y est une réfutation DRAT vérifiée par un programme indépendant.
 
-**L'axe creusement** prouve ses minima : la réduction des opérateurs publiés
-`Grey-221` à 128 non-nuls est un minimum sur tout changement de base
+**L'axe graphe de flips** part d'une décomposition qui marche déjà et la
+déplace latéralement, d'après [`[kauers2023]`](references.md) : des bornes
+supérieures seulement, par construction. Les records du jour appartiennent à
+la marche restreinte aux symétries de [`[moosbauer2025]`](references.md), et
+les suites, marches adaptatives et méta comprises, sont cataloguées dans
+[`writeup/positioning/already-published.md`](writeup/positioning/already-published.md).
+
+**L'axe creusement** implémente la construction en base alternative de
+[`[karstadt2017]`](references.md) et le creusement de
+[`[beniamini2020]`](references.md) par-dessus, et une recherche n'a trouvé
+aucune autre implémentation publique de l'un ou de l'autre, une affirmation
+que
+[`writeup/positioning/the-sparsification-strand.md`](writeup/positioning/the-sparsification-strand.md)
+lit au sens étroit. Il prouve ses minima : la réduction des opérateurs
+publiés `Grey-221` à 128 non-nuls est un minimum sur tout changement de base
 inversible, pas un meilleur effort.
 
 **La feuille est l'endroit où vit la recherche exhaustive**, et aucune de ses

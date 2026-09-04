@@ -61,7 +61,8 @@ answers that no other does:
 
 ## Methods
 
-One claim per strand, its guarantee first.
+The load-bearing guarantees, a paragraph each; every strand's own page
+states its own.
 
 **The greedy heuristic** descends rank by matroid-greedy steps: exact for the
 basis its first step picks, polynomial-time throughout, and offering no
@@ -82,9 +83,21 @@ use it ([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
 encoding the idea of [`[heule2021]`](references.md); a negative answer there
 is a DRAT refutation checked by an independent program.
 
-**The sparsification strand** proves its minima: the reduction of the
-published `Grey-221` operators to 128 nonzeros is a minimum over every
-invertible change of basis, not a best effort.
+**The flip graph strand** starts from a decomposition that already works and
+moves it sideways, after [`[kauers2023]`](references.md): upper bounds only,
+by construction. Today's records belong to the symmetry-restricted walk of
+[`[moosbauer2025]`](references.md), and the successors, adaptive and meta
+walks included, are catalogued in
+[`writeup/positioning/already-published.md`](writeup/positioning/already-published.md).
+
+**The sparsification strand** implements [`[karstadt2017]`](references.md)'s
+alternative-basis construction and [`[beniamini2020]`](references.md)'s
+sparsification over it, and a search found no other public implementation of
+either, a claim
+[`writeup/positioning/the-sparsification-strand.md`](writeup/positioning/the-sparsification-strand.md)
+reads narrowly. It proves its minima: the reduction of the published
+`Grey-221` operators to 128 nonzeros is a minimum over every invertible
+change of basis, not a best effort.
 
 **The leaf is where the exhaustive search lives**, and neither of its two
 routes forms an element any more: the walk steps in reflected Gray order over

@@ -2,7 +2,10 @@
 
 Both searches next door build a decomposition from nothing. This one starts from
 a decomposition that already works and walks it, which is a different guarantee:
-it can only ever produce upper bounds, and it never runs out of moves.
+it can only ever produce upper bounds, and it never runs out of moves. Where
+the method has gone since [`[kauers2023]`](../../../references.md), and who
+holds today's records, symmetry [`[moosbauer2025]`](../../../references.md)
+first: [`../../../writeup/positioning/already-published.md`](../../../writeup/positioning/already-published.md).
 
 | File | Role |
 |---|---|
