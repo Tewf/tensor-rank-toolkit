@@ -22,8 +22,9 @@ in the [README](./). After that the commands below run as typed.
 
 Write the file. This is Karatsuba's problem, whole; yours differs only in its
 numbers. `field` is the arithmetic and must be a prime; 2, bit arithmetic,
-is the common case here. `shape 3 2 2` means three matrices of 2x2, and blank
-lines separate them:
+is the common case here. `shape 3 2 2` means three matrices of 2x2; the blank
+lines below are for a human eye only, since the parser reads the matrices off
+the shape and ignores blank lines entirely:
 
 ```
 field 2
@@ -46,9 +47,10 @@ minimise-rank my.tensor --emit-operators out
 ```
 
 Seconds. It prints the multiplication count it reached, and the recipe is the
-three files it wrote: row `i` of `out_L.sms` and row `i` of `out_R.sms` are
-the two sums that product `i` multiplies, and `out_P.sms` adds the products
-back into your answer. That answer is **good but not guaranteed best**. To
+three files it wrote, in [SMS format](core/formats/README.md#sms-and-why-it-is-here):
+row `i` of `out_L.sms` and row `i` of `out_R.sms` are the two sums that
+product `i` multiplies, and `out_P.sms` adds the products back into your
+answer. That answer is **good but not guaranteed best**. To
 know the best (hours, or forever on anything not small) ask instead:
 
 ```sh
@@ -58,8 +60,9 @@ decide-rank my.tensor --target 2   # one question: do 2 multiplications suffice?
 
 Yes means a recipe was found and checked against your map before the verdict
 prints, no comes with a proof, and out of time says so honestly. On the file
-above the second line answers no, because Karatsuba's 3 is the rank.
-`--target` asks about that exact count, so ask at or below what you hope for.
+above, `decide-rank my.tensor --target 2` answers no, because Karatsuba's 3 is
+the rank. `--target` asks about that exact count, so ask at or below what you
+hope for.
 In a script: yes is exit 0, a proved no is 1, giving up is 3, and none of the
 three is a crash. Read [`OPTIONS.md`](OPTIONS.md) before `set -e`.
 

@@ -23,7 +23,8 @@ flottant. Chaque compte ci-dessous est vérifié par la suite de tests ; les
 temps de calcul, eux, non, et rien ne le prétend
 ([`MEASURING.md`](MEASURING.md) donne le protocole,
 [`evidence/reproduce/`](evidence/reproduce/) régénère chaque nombre publié avec sa
-provenance).
+provenance). Un lecteur sans le vocabulaire du domaine peut commencer plutôt
+par [`start-here.md`](start-here.md) (en anglais).
 
 ## Organisation du dépôt
 
@@ -70,7 +71,12 @@ précisément. La recherche exhaustive est une **procédure de décision
 complète** d'après [`[bdez2012]`](references.md), exponentielle comme la
 NP-complétude du problème le laisse attendre ; l'axe sans isomorphes engendre
 un candidat par classe d'équivalence au sens de
-[`[mckay1998]`](references.md). L'axe satisfiabilité réduit la décision du
+[`[mckay1998]`](references.md), un chiffre de *dénombrement* : demandé de
+*décider* plutôt, le même générateur échange ces nœuds en moins contre un
+temps de calcul plus long, 53x moins de nœuds pour 5,1x le temps de calcul, ce
+pour quoi la décision ne l'utilise pas
+([`writeup/how-the-search-works/README.md`](writeup/how-the-search-works/)).
+L'axe satisfiabilité réduit la décision du
 rang à SAT, son encodage binaire reprenant l'idée de
 [`[heule2021]`](references.md) ; une réponse négative y est une réfutation
 DRAT vérifiée par un programme indépendant. L'axe creusement prouve ses
@@ -176,9 +182,11 @@ cmake --install build --prefix ~/.local   # les treize outils, sur le PATH
 
 **Chaque ligne de commande documentée écrit son outil nu**, `minimise-rank …`,
 ce qui suppose l'installation ci-dessus. Sans elle, les mêmes binaires se
-trouvent sous le module qui possède chacun,
-`build/methods/bilinear_rank/greedy_heuristic/minimise-rank` et ainsi de suite, et les lignes
-s'exécutent avec ce préfixe. Les trois instruments et la coquille
+trouvent sous le module qui possède chacun : `build/` suivi du dossier de
+cette commande dans le tableau des axes ci-dessus puis de son nom,
+`build/methods/bilinear_rank/greedy_heuristic/minimise-rank`, ou
+`build/methods/matrix_sparsification/sparsify-operator` pour le creusement, et
+ainsi de suite pour le reste. Les lignes s'exécutent avec ce préfixe. Les trois instruments et la coquille
 `list-solvers` ne s'installent volontairement pas ; le `CMakeLists.txt`
 racine dit pourquoi. Un lecteur nouveau dans le domaine commence par
 [`start-here.md`](start-here.md).

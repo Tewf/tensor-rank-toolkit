@@ -7,13 +7,14 @@
 > [Lire en français](README.fr.md)
 
 A C++20 research library for exact tensor and bilinear rank over finite
-fields and over the rationals. The rank of a bilinear map is the number of
-multiplications an optimal bilinear algorithm for it uses; Strassen's seven
-for the 2×2 matrix product is the classical instance, and such ranks are
-where fast matrix multiplication comes from. Deciding tensor rank is
-NP-complete over finite fields [`[hastad1990]`](references.md) and
-∃ℝ-complete over the reals [`[schaefer2018]`](references.md), so the library
-pairs **complete, exponential-time decision procedures** with
+fields and over the rationals. (A reader without this field's vocabulary can
+start instead at [`start-here.md`](start-here.md).) The rank of a bilinear
+map is the number of multiplications an optimal bilinear algorithm for it
+uses; Strassen's seven for the 2×2 matrix product is the classical instance,
+and such ranks are where fast matrix multiplication comes from. Deciding
+tensor rank is NP-complete over finite fields [`[hastad1990]`](references.md)
+and ∃ℝ-complete over the reals [`[schaefer2018]`](references.md), so the
+library pairs **complete, exponential-time decision procedures** with
 **polynomial-time heuristics** and with lower bounds that require no search.
 All arithmetic is exact, over GF(p) and ℚ via Givaro: a search over ranks and
 over counts of nonzeros gives a different answer when it is nearly right, so
@@ -38,7 +39,7 @@ The ten method strands. Method and caveats, per strand:
 | [factorisation](methods/canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
 | [satisfiability](methods/satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
 | [symmetry](methods/bilinear_rank/orbit_reduction/) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](methods/bilinear_rank/canonical_augmentation/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul |
+| [isomorph-free](methods/bilinear_rank/canonical_augmentation/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul, counting; asked to decide instead, the same generator is 5.1x the wall clock (below) |
 | [sparsification](methods/matrix_sparsification/) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 The groups around the strands:
@@ -67,8 +68,12 @@ precisely. The exhaustive
 search is a **complete decision procedure** after
 [`[bdez2012]`](references.md), exponential as the NP-completeness of the
 problem leads one to expect; the isomorph-free strand generates one candidate
-per equivalence class in the sense of [`[mckay1998]`](references.md). The
-satisfiability strand reduces the rank decision to SAT, its binary encoding
+per equivalence class in the sense of [`[mckay1998]`](references.md), a count
+for *enumeration*: asked to *decide* instead, the same generator trades those
+fewer nodes for a slower clock, 53x fewer nodes for 5.1x the wall clock, which
+is why deciding does not use it
+([`writeup/how-the-search-works/README.md`](writeup/how-the-search-works/)).
+The satisfiability strand reduces the rank decision to SAT, its binary encoding
 the idea of [`[heule2021]`](references.md); a negative answer there is a
 DRAT refutation checked by an independent program. The sparsification
 strand proves its minima: the reduction of the published `Grey-221` operators
@@ -167,8 +172,10 @@ cmake --install build --prefix ~/.local   # the thirteen tools, onto PATH
 
 **Every documented command line types its tool bare**, `minimise-rank …`,
 which assumes the install above. Without it the same binaries sit under the
-module that owns each, `build/methods/bilinear_rank/greedy_heuristic/minimise-rank` and so on, and
-the lines run with that prefix instead. The three instruments and the
+module that owns each, `build/` plus that command's folder in the strand
+table above plus its name: `build/methods/bilinear_rank/greedy_heuristic/minimise-rank`,
+or `build/methods/matrix_sparsification/sparsify-operator` for sparsification,
+and so on for the rest. The lines run with that prefix instead. The three instruments and the
 `list-solvers` shim deliberately do not install; the top `CMakeLists.txt`
 says why. A reader new to the area starts at
 [`start-here.md`](start-here.md).
