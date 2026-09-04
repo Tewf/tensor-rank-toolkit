@@ -22,7 +22,7 @@ tool should be told where it means something else. That is what this page is.
 | | `decide-rank` | `--anchor map\|heuristic` |
 | more than one core | five tools | `--threads N`, `0` for every core |
 | | `decide-rank-by-deflation` | `--parallel`, which is all cores or none |
-| write a file | `minimise-rank`, `tighten-rank-bound` | `--emit-operators <stem>`, three files from it |
+| write a file | `minimise-rank`, `tighten-rank-bound`, `decide-rank` | `--emit-operators <stem>`, three files from it |
 | | `decide-rank-by-sat` | `--emit-cnf <path>`, the path itself |
 
 **There is no `--seed` anywhere.** `walk-scheme --seeds N` is a count of

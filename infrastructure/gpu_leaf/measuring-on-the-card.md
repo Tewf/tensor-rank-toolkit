@@ -22,7 +22,7 @@ allocation and any transfer stated separately, because a kernel that needs its
 input shipped is a different claim from one that derives it from an index.
 
 **A GPU number is not reproducible by the Containerfile and does not pretend to
-be.** The image has no CUDA and skips `infrastructure/gpu_leaf/` entirely, so the 96 tests it
+be.** The image has no CUDA and skips `infrastructure/gpu_leaf/` entirely, so the 97 tests it
 runs are the ones a machine without a card has. A card number is reproduced on
 comparable hardware or not at all, and the model is published beside it: an RTX
 4060 Laptop, 8 GB.

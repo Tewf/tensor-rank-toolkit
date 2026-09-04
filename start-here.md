@@ -66,9 +66,16 @@ hope for.
 In a script: yes is exit 0, a proved no is 1, giving up is 3, and none of the
 three is a crash. Read [`OPTIONS.md`](OPTIONS.md) before `set -e`.
 
-**`decide-rank` proves the count and writes no files; the recipe files come
-from the finders.** So when you want the best recipe you can hold in your
-hands, ask the sharper finder and watch one number:
+**All three write the recipe files with `--emit-operators`.** The difference
+is what the files promise. From `decide-rank` on a bare sweep they are a
+**proved-minimal recipe**, since the sweep decided the rank before writing:
+
+```sh
+decide-rank my.tensor --emit-operators out   # small problems; hours past that
+```
+
+When that search is too expensive, ask the sharper finder and watch one
+number:
 
 ```sh
 tighten-rank-bound my.tensor --emit-operators out

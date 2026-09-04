@@ -227,6 +227,11 @@ TOOLS = [
                      "means": "there is no such algorithm, and the search was "
                               "exhaustive"}},
         "options": [
+            {"flag": "--emit-operators", "kind": "emit_operators",
+             "label": "write the operators (L, R, P as SMS)",
+             "note": "Written only after a verified yes; on the bare sweep "
+                     "the count is the rank, so the files are a proved-minimal "
+                     "recipe."},
             {"flag": "--target", "kind": "count", "label": "products to test",
              "note": "Left out, it searches for the rank itself."},
             {"flag": "--anchor", "kind": "choice", "values": ["map", "heuristic"],

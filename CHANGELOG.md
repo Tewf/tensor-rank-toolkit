@@ -31,6 +31,14 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- **`decide-rank --emit-operators`**: the one command whose witness was
+  verified and then discarded now writes it, as the same three SMS files
+  the finders emit, and only after the verification passes. On the bare
+  sweep the emitted count is the rank, so the files are a proved-minimal
+  recipe, which neither finder can promise; a no or a spent budget writes
+  nothing, and `check_emit_operators.sh` asserts all of it through the
+  built command.
+
 - **`start-here.md`, a task-first front door in plain words**: the visitor
   who arrives with one want (a tensor and its decomposition) and none of
   the field's vocabulary now gets the file format shown whole, the one

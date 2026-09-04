@@ -14,6 +14,7 @@
 #include "kronecker_structure.h"
 #include "card_failure_note.h"
 #include "dense_matrix_file.h"
+#include "sms_file.h"
 #include "device.h"
 #include "exhaustive_search.h"
 #include "exit_code.h"
@@ -46,6 +47,7 @@ void usage() {
                    "                   [--node-limit N] [--leaf-limit N]\n"
                    "                   [--max-memory 2G] [--general-leaf]\n"
                    "                   [--leaf-route auto|scan|walk] [--help]\n"
+                   "                   [--emit-operators <stem>]\n"
                    "                   [--orbit-test full|generators]\n"
                    "                   [--device cpu|gpu|auto]\n"
                    "                   [--plan-out FILE] [--plan-in FILE]\n"
@@ -65,6 +67,10 @@ void usage() {
                    "                      which is every run that does not ask for it. Needs\n"
                    "                      --threads 1, the default: two workers interleave\n"
                    "                      their nodes and what comes out is not a tree\n"
+                   "  --emit-operators <stem>  on a yes, write <stem>_{L,R,P}.sms, the\n"
+                   "                      verified witness in the format PLinOpt reads; on the\n"
+                   "                      bare sweep that count is the rank, so the recipe is\n"
+                   "                      proved minimal\n"
                    "  --plan-out FILE     write the seven choices this run made, and carry on\n"
                    "  --plan-in FILE      make those choices instead of deciding them here, so a\n"
                    "                      run elsewhere reproduces this one. A flag given beside it\n"
@@ -125,6 +131,7 @@ int run(int argc, char** argv) {
     bilinear_rank::PlanRequest request;
     bilinear_rank::PlanFlagsGiven given;
     std::string plan_out;
+    std::string operator_stem;
     std::string trace_out;
     std::string plan_in;
 
@@ -176,6 +183,8 @@ int run(int argc, char** argv) {
             trace_out = arguments.text();
         } else if (arguments.is("--plan-out")) {
             plan_out = arguments.text();
+        } else if (arguments.is("--emit-operators")) {
+            operator_stem = arguments.text();
         } else if (arguments.is("--plan-in")) {
             plan_in = arguments.text();
         } else if (arguments.is("--leaf-route")) {
@@ -483,6 +492,26 @@ int run(int argc, char** argv) {
             return cli::exit_status(cli::ExitCode::Unverified);
         }
         cli::result() << "  verified: they compute the map\n";
+        if (!operator_stem.empty()) {
+            // Same stem-and-suffix interface as the two finders, because
+            // PLinOpt's checkers are invoked as `PMchecker stem_{L,R,P}.sms -q p`.
+            // Written only past the verification above, so a file this run
+            // leaves behind is a witness that recomputed the map, and on the
+            // bare sweep its count is the rank: a proved-minimal recipe.
+            const std::string origin = "Encoding operator recovered from " + path +
+                                       "\nby decide-rank, " +
+                                       std::to_string(products.size()) +
+                                       " products, over GF(" +
+                                       std::to_string(tensor.characteristic) + ").";
+            formats::write_sms_file(operator_stem + "_L.sms",
+                                    origin + " Left operand.", algorithm.left);
+            formats::write_sms_file(operator_stem + "_R.sms",
+                                    origin + " Right operand.", algorithm.right);
+            formats::write_sms_file(operator_stem + "_P.sms",
+                                    origin + " Combines the products into the outputs.",
+                                    algorithm.decode);
+            cli::note() << "wrote " << operator_stem << "_{L,R,P}.sms";
+        }
         return cli::exit_status(cli::ExitCode::Yes);
     }
 

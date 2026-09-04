@@ -82,3 +82,12 @@ add_test(NAME rank_one_predicate COMMAND test_rank_one_predicate)
 add_test(NAME pencil_shortcut
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_pencil_shortcut.sh
                  $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures)
+
+# The emitted-operators contract of the command: files only on a yes, and the
+# triple rebuilds the input through operators-to-tensor, which nothing at
+# library level exercises since recovery and emission meet only in `main`.
+add_test(NAME emit_operators_command
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_emit_operators.sh
+                 $<TARGET_FILE:decide-rank> ${PROJECT_SOURCE_DIR}/evidence/fixtures
+                 $<TARGET_FILE:operators-to-tensor>)
+set_tests_properties(emit_operators_command PROPERTIES TIMEOUT 60)

@@ -95,7 +95,8 @@ flowchart LR
     publie["un algorithme publié,<br/>L, R, P au format SMS"] -->|"operators-to-tensor"| tenseur
     tenseur -->|"minimise-rank --emit-operators<br/>secondes, bon, sans garantie"| recette["out_L, out_R, out_P<br/>une recette qui marche"]
     tenseur -->|"tighten-rank-bound --emit-operators<br/>sous l'heuristique ; gap 0, prouvé optimal"| recette
-    tenseur -->|"decide-rank<br/>le vrai rang, exponentiel, n'écrit aucun fichier"| verdict["oui avec un témoin vérifié,<br/>non avec une preuve"]
+    tenseur -->|"decide-rank<br/>le vrai rang, exponentiel"| verdict["oui avec un témoin vérifié,<br/>non avec une preuve"]
+    verdict -->|"un oui demandé avec --emit-operators :<br/>la recette, prouvée minimale"| recette
     recette -->|"sparsify-operator<br/>rang fixé"| creuse["le moins d'additions,<br/>minimum prouvé"]
     recette -->|"PMchecker, le vérificateur de PLinOpt"| dehors["vérifié hors<br/>de ce dépôt"]
 ```

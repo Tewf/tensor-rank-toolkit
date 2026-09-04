@@ -91,7 +91,8 @@ flowchart LR
     published["a published algorithm,<br/>L, R, P in SMS"] -->|"operators-to-tensor"| tensor
     tensor -->|"minimise-rank --emit-operators<br/>seconds, good, no guarantee"| recipe["out_L, out_R, out_P<br/>a working recipe"]
     tensor -->|"tighten-rank-bound --emit-operators<br/>below the heuristic; gap 0 is proved best"| recipe
-    tensor -->|"decide-rank<br/>the true rank, exponential, writes no files"| verdict["yes with a checked witness,<br/>no with a proof"]
+    tensor -->|"decide-rank<br/>the true rank, exponential"| verdict["yes with a checked witness,<br/>no with a proof"]
+    verdict -->|"a yes asked with --emit-operators:<br/>the recipe, proved minimal"| recipe
     recipe -->|"sparsify-operator<br/>rank fixed"| sparse["fewest additions,<br/>proved minimal"]
     recipe -->|"PMchecker, PLinOpt's checker"| outside["checked outside<br/>this repository"]
 ```
