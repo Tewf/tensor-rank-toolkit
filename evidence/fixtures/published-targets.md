@@ -8,7 +8,7 @@ published claim is about, held still and in full.
 
 Every count below is asserted in
 [`test_fixtures.cpp`](../../core/linear_algebra/tests/test_fixtures.cpp), under the same
-rule [`README.md`](./) states for its own: the expected counts live here
+rule [`README.md`](README.md) states for its own: the expected counts live here
 as well as in the test code, so a test that disagrees with this table is a
 visible disagreement rather than a silent one.
 
@@ -117,7 +117,7 @@ settled, which is what makes the pair worth having.
 ## What is not claimed here
 
 No search here reaches any of these six targets, and none of them is in the
-descent table [`README.md`](./) publishes. The bounds do run on all six,
+descent table [`README.md`](README.md) publishes. The bounds do run on all six,
 pinned and priced in
 [`../../methods/rank_metric_bound/`](../../methods/rank_metric_bound/what-each-is-worth.md), and they
 land far below: that gap is what these fixtures exist to make visible.

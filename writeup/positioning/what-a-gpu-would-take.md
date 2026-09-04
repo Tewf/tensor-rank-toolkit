@@ -6,7 +6,7 @@ question for the exhaustive **tree** (warp divergence) and the **solver** route
 anybody asks about. This page does, and it corrects a number.
 
 **The leaf part is now built and measured**, in
-[`../../infrastructure/gpu_leaf/README.md`](../../infrastructure/gpu_leaf/), on the RTX 4060 Laptop this page
+[`../../infrastructure/gpu_leaf/`](../../infrastructure/gpu_leaf/), on the RTX 4060 Laptop this page
 was written beside. The two other parts below stay forecasts, and are marked as
 such. This paragraph said "nothing here is built" until 2026-08-19; what changed
 is one directory of CUDA, guarded so that a machine without `nvcc` builds and
@@ -85,7 +85,7 @@ against every host baseline, including all twelve threads running the kernel's
 own arithmetic. **One whole `<4,4,4>` leaf is 1.02 s.** The tables:
 [`../../infrastructure/gpu_leaf/what-the-card-did.md`](../../infrastructure/gpu_leaf/what-the-card-did.md).
 That verdict was taken against the host leaf of its day:
-[`../../infrastructure/gpu_leaf/README.md`](../../infrastructure/gpu_leaf/) now prices the same
+[`../../infrastructure/gpu_leaf/`](../../infrastructure/gpu_leaf/) now prices the same
 comparison at 5x to 14x after the host leaf's later rewrites, and holds its
 verdict suspended, not retracted, until `measure-leaf` re-takes it.
 

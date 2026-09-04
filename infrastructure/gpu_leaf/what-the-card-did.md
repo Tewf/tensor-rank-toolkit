@@ -1,6 +1,6 @@
 # What the card did, and what it was measured against
 
-The tables behind [`README.md`](./)'s verdict. Measured under
+The tables behind [`README.md`](README.md)'s verdict. Measured under
 [`../../MEASURING.md`](../../MEASURING.md): one core where it says one core, fastest of
 three, machine otherwise quiet, under `flock /tmp/bilinear-measure.lock`, at
 `-O3` with no `-march=native`, which is how the rest of this repository is built.
@@ -77,7 +77,7 @@ landed on 2026-08-20, after which the scan never forms an element at all:
 and **1.16 ns** for the residual change alone in a harness
 ([`what-to-wire.md`](../../writeup/how-the-search-works/what-to-wire.md)).
 Against the card's 0.24 ns that is roughly 5x to 14x, not the 544x
-[`README.md`](./)'s verdict quotes, which is why that verdict is
+[`README.md`](README.md)'s verdict quotes, which is why that verdict is
 **suspended** rather than retracted: every row here is true of the leaf it names
 and none of them is true of the one that ships. `measure-leaf` times the leaf
 that ships, and re-taking the comparison with it is what would settle it.

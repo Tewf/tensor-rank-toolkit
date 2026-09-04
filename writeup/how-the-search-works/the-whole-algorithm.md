@@ -1,6 +1,6 @@
 # The whole algorithm, with all five pieces drawn in
 
-[`README.md`](./) is the search **as it runs**, two of five pieces wired.
+[`README.md`](README.md) is the search **as it runs**, two of five pieces wired.
 This is the same search with the other three drawn in and one device rule over
 the whole of it, so a proposal can be read against what ships.
 `[flag]` is a route that exists and is off by default, `[gap]` one that nothing

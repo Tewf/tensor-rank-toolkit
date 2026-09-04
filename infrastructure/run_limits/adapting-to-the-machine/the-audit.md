@@ -1,6 +1,6 @@
 # The audit: every strand, its inner loop, and its three axes
 
-Read with [`README.md`](./), which defines the three axes and what
+Read with [`README.md`](README.md), which defines the three axes and what
 "GPU-shaped" has to mean for the column to be falsifiable. **A ✔ means the
 strand reaches the mechanism from its own command line**; a strand that
 transitively touches `require_room` inside a callee but whose command has no

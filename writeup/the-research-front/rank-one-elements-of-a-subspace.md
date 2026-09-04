@@ -67,13 +67,13 @@ a finite field, in FPT with respect to `R` and `|F|`.
 walking the subspace, whichever
 [`../../methods/bilinear_rank/exhaustive/rank_one_basis.h`](../../methods/bilinear_rank/exhaustive/rank_one_basis.h)
 prices cheaper per call. No ideal is ever formed:
-[`../../methods/satisfiability/README.md`](../../methods/satisfiability/) hands a solver the *whole*
+[`../../methods/satisfiability/`](../../methods/satisfiability/) hands a solver the *whole*
 rank question in one encoding, never the leaf.
 
 **Whether solving would beat enumerating at these shapes is not settled, and
 nothing above is a verdict.** What would settle it is the Hilbert series of
 `[bardet2025]` evaluated at the parameters these leaves actually have, `r = 1`
-and the dimensions in [`../../evidence/fixtures/README.md`](../../evidence/fixtures/), and
+and the dimensions in [`../../evidence/fixtures/`](../../evidence/fixtures/), and
 nobody has computed it. Against any hope from that direction sits the hypothesis
 both complexity papers state for themselves: their bounds are for **generic**
 instances, and a matrix multiplication tensor is the least generic object in the

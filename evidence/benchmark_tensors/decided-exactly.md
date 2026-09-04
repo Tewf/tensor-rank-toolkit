@@ -35,7 +35,7 @@ exhaustion, and that is the half the 4.12 minutes buys.
 ## Two more, decided against a citation: F2 5×5 and F3 3×6
 
 The paper and the table identifying these fixtures with it are in
-[`README.md`](./).
+[`README.md`](README.md).
 
 **`f3_3x6`: the heuristic is optimal, and this repository now proves it alone.**
 Step 3 returns 10 in 17.28 s, and `decide-rank --target 9` returns NO

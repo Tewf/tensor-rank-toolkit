@@ -230,7 +230,7 @@ argument that Gaussian elimination is cubic, is a bottleneck, and is inherently
 parallel.
 
 **This is the honest prior art for this repository's GPU claim**, and it narrows
-it rather than sinking it. [`gpu_leaf/README.md`](gpu_leaf/) measures a
+it rather than sinking it. [`gpu_leaf/`](gpu_leaf/) measures a
 leaf kernel at 3962x one core, and
 [`positioning/hardware-and-parallelism.md`](positioning/hardware-and-parallelism.md)
 closes with *"Nothing in this literature reports an exact finite-field rank

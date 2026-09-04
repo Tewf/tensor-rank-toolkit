@@ -72,7 +72,7 @@ per equivalence class in the sense of [`[mckay1998]`](references.md), a count
 for *enumeration*: asked to *decide* instead, the same generator trades those
 fewer nodes for a slower clock, 53x fewer nodes for 5.1x the wall clock, which
 is why deciding does not use it
-([`writeup/how-the-search-works/README.md`](writeup/how-the-search-works/)).
+([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
 The satisfiability strand reduces the rank decision to SAT, its binary encoding
 the idea of [`[heule2021]`](references.md); a negative answer there is a
 DRAT refutation checked by an independent program. The sparsification
@@ -92,7 +92,7 @@ enumerates the full pool of rank-one maps. Across the four polynomial
 fixtures it improved the answer in **two of four cases**, by one product
 each, at a cost **one to two orders of magnitude** above the first two steps
 together. A continuation that only accelerates step 3 optimises the part
-that mostly does not pay; [`evidence/fixtures/README.md`](evidence/fixtures/) holds
+that mostly does not pay; [`evidence/fixtures/`](evidence/fixtures/) holds
 that finding still.
 
 ## One pipeline

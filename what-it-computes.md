@@ -1,7 +1,7 @@
 # What it computes
 
 Ten strands, each with its own folder, its own tests and its own README. This
-page is the long form; [`README.md`](./) carries the headline numbers in a
+page is the long form; [`README.md`](README.md) carries the headline numbers in a
 table and links here rather than restating them, which is the repository's
 zero-redundancy rule applied to itself.
 
@@ -93,7 +93,7 @@ exhaustive search **proves** 6. So the module reports a proved lower bound, a
 sharper count marked provisional, and *exact* only where the pencil is
 diagonalisable over the field. Twelve pencils settled by exhaustion, three of
 which the classical formula gets wrong, are tabulated in
-[`methods/pencil_rank/README.md`](methods/pencil_rank/).
+[`methods/pencil_rank/`](methods/pencil_rank/).
 
 **[The rank as a factorisation](methods/canonical_factorisation/).** Take `B`, the
 canonical basis of the slice space (the `nm` matrices with a single 1), and find

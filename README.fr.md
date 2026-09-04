@@ -75,7 +75,7 @@ un candidat par classe d'équivalence au sens de
 *décider* plutôt, le même générateur échange ces nœuds en moins contre un
 temps de calcul plus long, 53x moins de nœuds pour 5,1x le temps de calcul, ce
 pour quoi la décision ne l'utilise pas
-([`writeup/how-the-search-works/README.md`](writeup/how-the-search-works/)).
+([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
 L'axe satisfiabilité réduit la décision du
 rang à SAT, son encodage binaire reprenant l'idée de
 [`[heule2021]`](references.md) ; une réponse négative y est une réfutation
@@ -96,7 +96,7 @@ quatre jeux d'essai polynomiaux elle a amélioré le résultat dans **deux cas
 sur quatre**, d'un produit chaque fois, pour un coût supérieur d'**un à deux
 ordres de grandeur** à celui des deux premières étapes réunies. Toute suite
 qui se contenterait d'accélérer l'étape 3 optimiserait la partie qui, le plus
-souvent, ne paie pas ; [`evidence/fixtures/README.md`](evidence/fixtures/) existe pour
+souvent, ne paie pas ; [`evidence/fixtures/`](evidence/fixtures/) existe pour
 maintenir ce constat.
 
 ## Une seule chaîne

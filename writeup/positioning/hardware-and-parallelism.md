@@ -129,7 +129,7 @@ knowing here: pool generation is 4% of a `⟨3,3,3⟩` run and almost all of a
 second.
 
 **That one part has since been built and measured**, and the leaf really is worth
-a card: [`../../infrastructure/gpu_leaf/README.md`](../../infrastructure/gpu_leaf/). It changes nothing on
+a card: [`../../infrastructure/gpu_leaf/`](../../infrastructure/gpu_leaf/). It changes nothing on
 this page, which is about the tree above the leaf and stands.
 
 **The sweep this page never did**, over every other strand and over cores and

@@ -15,7 +15,7 @@ In this group:
 
 How to use: these are libraries; the documentation comment at the top of
 each header is the contract, and
-[`linear_algebra/README.md`](linear_algebra/) carries a compilable
+[`linear_algebra/`](linear_algebra/) carries a compilable
 snippet with the measured cost of the one call both searches spend their
 time in (from 29.8 seconds to 11.3 on F3 3×6, measured in
 [`linear_algebra/costs.md`](linear_algebra/costs.md)).

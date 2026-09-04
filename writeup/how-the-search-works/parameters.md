@@ -63,7 +63,7 @@ Anchoring at the map is the true minimum, since every algorithm for `T`
 generates `T`; anchoring at the heuristic's own result only proves a minimum
 among algorithms containing that subspace. Anchored at the map, a run from
 scratch costs `C(|pool|, k − dim T)` nodes, which is what every measured
-question in [`README.md`](./) runs.
+question in [`README.md`](README.md) runs.
 
 Every flag of every tool, each with the measurement that chose its default:
 [`../../OPTIONS.md`](../../OPTIONS.md).
