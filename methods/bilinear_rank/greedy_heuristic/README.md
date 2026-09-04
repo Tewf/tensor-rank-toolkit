@@ -13,6 +13,19 @@ else's solver. [`../orbit_reduction/`](../orbit_reduction/) quotients the first
 three by symmetry. Each guarantees something different, and each folder says what.
 Every claim below is one of the four earning or failing to earn its keep.
 
+The three steps, drawn. The pseudocode, the pools and the prices are in
+[`method/descent.md`](method/descent.md); where the guarantee stops is on the
+arrows.
+
+```mermaid
+flowchart TD
+    T["your tensor T"] -->|"step 1: minimum_weight_basis<br/>matroid greedy over span(T), exact by Rado-Edmonds"| B["a basis of span(T),<br/>sum of ranks minimal, proved"]
+    B -->|"step 2: minimise_rank<br/>pool: the rank-one maps already inside T<br/>adopt if cheaper, irreversible"| C["fewer products,<br/>no guarantee from here on"]
+    C -->|"step 3: the same loop<br/>pool: every rank-one map of the shape<br/>paid in two of four fixtures"| D["the reached scheme,<br/>an upper bound on the rank"]
+    D -->|"--emit-operators"| E["out_L, out_R, out_P in SMS,<br/>sparsify or check elsewhere"]
+```
+
+
 | | Guarantee | Provenance |
 |---|---|---|
 | [`minimum_weight_basis.*`](minimum_weight_basis.h) | Step 1, and provably optimal for the basis it chooses: a matroid greedy (see below) | `[nakatsukasa2017]` §2, Algorithm 1 and Theorem 2.1. The `GF(p)` instantiation is new here; the algorithm and its proof are not |
