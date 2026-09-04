@@ -25,7 +25,7 @@
 /// they fail in completely different ways.
 ///
 /// The two are not both meant to survive. Which one stays is settled by
-/// measurement, and recorded in [`method/`](method/README.md).
+/// measurement, and recorded in [`method/`](method/).
 namespace satisfiability {
 
 struct FieldTheoryEncoding {

@@ -8,7 +8,7 @@ general is open.
 There are four ways to go at it here, and the folder names say which is which:
 this one descends, [`../exhaustive/`](../exhaustive/) decides,
 [`../flip_graph/`](../flip_graph/) moves a decomposition sideways, and
-[`../integer_programme/`](../../integer_programme/) hands the question to somebody
+[`../../integer_programme/`](../../integer_programme/) hands the question to somebody
 else's solver. [`../orbit_reduction/`](../orbit_reduction/) quotients the first
 three by symmetry. Each guarantees something different, and each folder says what.
 Every claim below is one of the four earning or failing to earn its keep.
@@ -45,7 +45,7 @@ badly**: it improved two of the four by one product each, at one to two orders o
 magnitude what steps 1 and 2 cost together. Per-step times and the full table:
 [`what-it-reaches.md`](what-it-reaches.md). The literature comparison behind
 these published numbers, and how far each is safe to quote, is in
-[`../../../evidence/benchmark_tensors/README.md`](../../../evidence/benchmark_tensors/).
+[`../../../evidence/benchmark_tensors/`](../../../evidence/benchmark_tensors/).
 
 ## What the exact search decides
 

@@ -12,7 +12,7 @@ In this folder:
   asked of the module that already owned it.
 - [`plan_file.h`](plan_file.h): one plan written down and read back,
   `name value` per line.
-- [`tests/`](tests): a plan replayed is the same run, asserted.
+- [`tests/`](tests/): a plan replayed is the same run, asserted.
 
 Example of use:
 

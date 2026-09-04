@@ -264,7 +264,7 @@ int run(int argc, char** argv) {
     // **The method that is proved to return the minimum.** `[beniamini2020]`'s
     // own Algorithm 2 with an exact oracle under it, so Rado-Edmonds makes the
     // assembled answer the true minimum over every invertible `V`. The three
-    // methods that used to run beside it reached the same count 86x to 343x
+    // methods that used to run beside it reached the same count 88x to 343x
     // slower and left on 2026-08-22; `../dominated.md` says where they went.
     // [`../rational_sparsifier.h`](../rational_sparsifier.h).
     auto started = cli::Clock::now();

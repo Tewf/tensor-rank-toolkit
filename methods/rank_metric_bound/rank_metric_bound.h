@@ -84,9 +84,9 @@
 /// **The equivalence underneath both** is that a rank-`R` decomposition of `T` is
 /// exactly a set of `R` independent rank-one matrices whose span contains `S`:
 /// `[byrne2021, Lem. 2.7]`, Bürgisser-Clausen-Shokrollahi Prop. 14.45, the same
-/// statement [`../canonical_factorisation/`](../canonical_factorisation/README.md)
+/// statement [`../canonical_factorisation/`](../canonical_factorisation/)
 /// is built on and
-/// [`../bilinear_rank/exhaustive/`](../bilinear_rank/exhaustive/README.md) searches.
+/// [`../bilinear_rank/exhaustive/`](../bilinear_rank/exhaustive/) searches.
 ///
 /// **What they cost.** `d` is a minimum over the whole slice space, so it costs
 /// the `|F|^n_d` contraction ranks of one axis: the table

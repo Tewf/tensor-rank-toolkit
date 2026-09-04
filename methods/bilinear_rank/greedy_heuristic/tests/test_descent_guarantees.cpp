@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
                      built == formed ? 1 : 0, 1);
         shortlisted += from_maps.size();
 
-        // Theorem 2, soundness. The invariant is span(S) contains span(T), so
+        // Thm 3.3, soundness. The invariant is span(S) contains span(T), so
         // whatever comes back still computes the map it came from.
         check::equal(label + ": T2, the result still generates the map",
                      linear_algebra::spans_all(field, settled, tensor.slices) ? 1 : 0, 1);
@@ -99,8 +99,8 @@ int main(int argc, char** argv) {
                          linear_algebra::multiplication_count(field, settled)),
                      fixture.rank);
 
-        // Theorem 5, and the sharp one. The loop stops when no *surviving*
-        // candidate improves; Lemma 4 says everything it discarded provably
+        // Thm 3.6, and the sharp one. The loop stops when no *surviving*
+        // candidate improves; Lem 3.5 says everything it discarded provably
         // could not have. So rescanning the whole pool must find nothing, and
         // a bug in the pruning of `survivors_after` shows up right here rather
         // than as a quietly worse answer three fixtures later.
@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
         check::equal(label + ": T5, no candidate in the whole pool improves it",
                      static_cast<long long>(still_improving.size()), 0);
 
-        // Theorem 6. Improving is invariant under any automorphism fixing the
+        // Thm 4.1. Improving is invariant under any automorphism fixing the
         // span, so the improving set is a union of orbits. Checked on the
         // starting point rather than the fixed point, where by T5 it is empty
         // and the claim would be vacuous.

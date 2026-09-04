@@ -60,8 +60,9 @@ struct SolveOptions {
     /// Set internally while solving one cube. Callers set `cubes`.
     std::vector<int> cube_literals;
 
-    /// Where to write a DRAT refutation, when the answer is no. Empty means
-    /// none, and a no is then believed on the solver's word alone.
+    /// Where to write a DRAT refutation (an unsatisfiability proof checkable by
+    /// a program that shares no code with the solver), when the answer is no.
+    /// Empty means none, and a no is then believed on the solver's word alone.
     ///
     /// Asking for one from a solver that cannot write it, or from the field
     /// theory backend, is **refused rather than ignored**: it used to be dropped
@@ -157,7 +158,7 @@ struct RankBounds {
 /// they are the cheap ones far from the rank.
 ///
 /// **Measured against descending, bisection and the two gallops**, on seven
-/// fixtures at one ceiling each, in [`bracket/`](bracket/README.md). It wins on the
+/// fixtures at one ceiling each, in [`bracket/`](bracket/). It wins on the
 /// cheap ones and **lost on the only expensive one, coming fourth of five on
 /// GF(16)**, where the floor was five short so it walked through a 3.7 s question
 /// no other schedule asks. That handicap is gone: the floor there is now 8 rather
@@ -193,10 +194,10 @@ RankBounds find_rank(const formats::Tensor& tensor, const SolveOptions& approach
 ///
 /// **It is not the default anywhere, and the measurement says why.** Producing
 /// the bracket costs more than knowing it saves on every fixture in
-/// [`bracket/`](bracket/README.md): a sweep buys a yes at every `k` from the naive
+/// [`bracket/`](bracket/): a sweep buys a yes at every `k` from the naive
 /// ceiling down, while the walk buys the one or two questions `rank_lower_bound`
-/// leaves it. See [`what-decides-it.md`](bracket/what-decides-it.md) for the
-/// seven numbers. The seam is here for the caller that already holds a checked
+/// leaves it. See [`handing-over-the-bracket.md`](bracket/handing-over-the-bracket.md)
+/// for the seven numbers. The seam is here for the caller that already holds a checked
 /// decomposition, from a heuristic or from a previous run, and should not have to
 /// buy it again.
 struct AchievedCeiling {

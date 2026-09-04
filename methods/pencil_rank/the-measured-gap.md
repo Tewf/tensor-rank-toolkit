@@ -3,7 +3,7 @@
 What this module first shipped, why it was wrong, and the measurements that
 settle where the classical formula holds. Which parts of this the literature had
 already answered is [`what-the-literature-settles.md`](what-the-literature-settles.md);
-[`README.md`](./) is what the module claims now.
+[`README.md`](README.md) is what the module claims now.
 
 It first shipped Ja'Ja's formula with the **GF(p)** elementary divisors and called
 the result the rank. `test_pencil_agreement` refused it: on `(I_4, C)` over GF(2)

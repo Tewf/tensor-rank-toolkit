@@ -28,7 +28,7 @@ representatives are `⟨n,m,k⟩`'s orbits and nothing else, so `orbit_cubes`
 are cube-validatable today. On `f2_5x5`, `f3_3x6`, `f2_3x8` and `f2_4x7`, a
 constrained run validates the **ordering** constraint alone; their ranks and how
 far each is safe to quote are in
-[`evidence/benchmark_tensors/README.md`](../../../../evidence/benchmark_tensors/).
+[`evidence/benchmark_tensors/`](../../../../evidence/benchmark_tensors/).
 
 This is what closed the last unchecked row of
 [`methods/satisfiability/correctness.md`](../../../satisfiability/correctness.md), *"a cube split

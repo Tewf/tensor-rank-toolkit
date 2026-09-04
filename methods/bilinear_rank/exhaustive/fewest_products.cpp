@@ -9,6 +9,9 @@ namespace bilinear_rank {
 
 std::size_t flattening_floor(const Field& field, const std::vector<Matrix>& base) {
     if (base.empty()) return 0;
+    // The name predates `[yang2025]`'s rank sums: this returns the fuller
+    // `rank_lower_bound` below, not a flattening rank alone.
+    //
     // The third flattening is the slice space, so its rank is exactly the span
     // dimension this used to start from; the maximum over the three axes can only
     // be larger. Every target below it is refuted by Gaussian elimination, so

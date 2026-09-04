@@ -20,4 +20,4 @@ Cost: Θ(a³·|S|), up to `a` candidates, each a solve with `a−1` unknowns ove
 
 The greedy by rescaling is the one caller. On the alternative-basis fixture it
 uses this to reach ten nonzeros as ten signs, ten operations
-([`../README.md`](../)).
+([`../`](../)).

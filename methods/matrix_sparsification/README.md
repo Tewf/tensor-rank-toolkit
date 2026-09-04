@@ -34,7 +34,7 @@ any of the hardness results:
 [`what-is-hard-about-it.md`](what-is-hard-about-it.md).
 
 As in the other strand, the filenames carry what each method guarantees, and
-[`method/README.md`](method/) says what each is and where it fails.
+[`method/`](method/) says what each is and where it fails.
 **A third route does not search at all.** `--simplex` answers by linear
 programming. That is the minimum where the operator's matroid is regular and an
 upper bound elsewhere, and **no operator here is regular**, so read it as the
@@ -96,7 +96,7 @@ live record sits for `⟨3,3,3⟩`: [`what-it-is-worth.md`](what-it-is-worth.md)
 ## The methods
 
 Three of them, one page each, with what each is for and where it fails:
-[`method/README.md`](method/). The greedy by rescaling is the only one
+[`method/`](method/). The greedy by rescaling is the only one
 that wins on `nnz + nns`; the linear programme is the only one that answers an
 operator too large to search. Three more moved to a branch:
 [`dominated.md`](dominated.md).

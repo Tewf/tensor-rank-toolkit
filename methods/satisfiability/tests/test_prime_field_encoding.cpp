@@ -111,6 +111,9 @@ bool literal_holds(const Model& model, int literal) {
     return literal > 0 ? value : !value;
 }
 
+/// How many clauses the assignment breaks. No parities here, unlike the
+/// binary encoding's version of this same check: the one-hot encoding needs
+/// none.
 std::size_t violations(const Cnf& formula, const Model& model) {
     std::size_t broken = 0;
     for (const std::vector<int>& clause : formula.clauses) {

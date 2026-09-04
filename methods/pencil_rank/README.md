@@ -2,8 +2,9 @@
 
 A tensor with two slices is a **matrix pencil** `A + xB`, and Kronecker's theory
 says everything about it that strict equivalence can: a pencil is a direct sum of
-singular blocks, indexed by **minimal indices**, and a regular block, described by
-its **elementary divisors**. That those four data settle the pencil up to strict
+singular blocks, indexed by **[minimal indices](minimal_indices.h)**, and a
+regular block, described by its **[elementary divisors](pencil_divisors.h)**.
+That those four data settle the pencil up to strict
 equivalence is `[gantmacher1959, Ch. XII §5, Thm. 5]`, and the canonical form
 itself is `[gantmacher1959, Ch. XII §4, (30)]`, restated as `[sumi2009, Lem.
 2.1]`; keys are [`../../references.md`](../../references.md). Both halves are computed
@@ -81,5 +82,7 @@ polynomial into the degrees and exponents of its prime powers, deterministically
 finite divisors and reversed for the infinite ones; `minimal_indices` reads the
 singular structure off the ranks of one block system; `kronecker_structure` puts
 them together and refuses to return anything the three counts disagree about;
+`sumi_bound` sharpens the closure count to Ja'Ja's `n + k`, a proved lower bound
+over every field and the rank itself when the field is large enough;
 `projection_lower_bound` is the one consumer that is not about pencils for their
 own sake.

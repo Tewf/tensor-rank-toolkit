@@ -14,7 +14,7 @@ emitted `.sms` files and rebuilding the tensor in a few lines of Python.
 
 `start` is `descend_from_own_basis`, which is steps 1 and 2 and nothing
 exponential. `step 3` is the descent's full pool scan, from
-[`../fixtures/README.md`](../../../evidence/fixtures/) and
+[`../fixtures/`](../../../evidence/fixtures/) and
 [`../fixtures/published-targets.md`](../../../evidence/fixtures/published-targets.md).
 
 | Fixture | floor | start | step 3 | **here** | nodes | children | published |

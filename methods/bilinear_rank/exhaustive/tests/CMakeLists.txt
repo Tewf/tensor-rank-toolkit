@@ -61,7 +61,7 @@ add_test(NAME gf2_subspace_walk COMMAND test_gf2_subspace_walk ${PROJECT_SOURCE_
 set_tests_properties(gf2_subspace_walk PROPERTIES TIMEOUT 900)
 
 # And the leaf built on it, against the rebuild it replaced, on the same span
-# over each of the three odd characteristics the fixtures carry. The Gray order
+# over each of the three fixtures of odd characteristic. The Gray order
 # changes which rank-one basis comes back and may not change how many, which is
 # the leaf's whole verdict.
 add_executable(test_gray_walk_leaf test_gray_walk_leaf.cpp)

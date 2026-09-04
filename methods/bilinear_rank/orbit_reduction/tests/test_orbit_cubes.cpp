@@ -215,9 +215,6 @@ void check_cubes_do_not_change_the_answer(const satisfiability::SatSolver& solve
 
 }  // namespace
 
-/// The structural checks are seconds and the solver ones are minutes, so the
-/// second half is asked for rather than assumed: `--with-solver` runs it, and
-/// CTest registers that as the slow test.
 /// The table and the arithmetic must send every pool element to the same place.
 ///
 /// `permutation_action_on` stores one entry per (automorphism, pool element),
@@ -249,6 +246,9 @@ void check_the_action_needs_no_table(const bilinear_rank::Field& field) {
     check::equal("and every image was compared", static_cast<long long>(compared), 48600LL);
 }
 
+/// The structural checks are seconds and the solver ones are minutes, so the
+/// second half is asked for rather than assumed: `--with-solver` runs it, and
+/// CTest registers that as the slow test.
 int main(int argc, char** argv) {
     const bool with_solver = argc > 1 && std::string(argv[1]) == "--with-solver";
     const bilinear_rank::Field over_two(2);

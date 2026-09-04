@@ -40,7 +40,7 @@
 /// nothing could test it: [`tests/test_span_ranks_seam.cpp`](tests/test_span_ranks_seam.cpp)
 /// now exercises all five gates with a fake backend and no toolkit at all.
 ///
-/// The seam is here and not in [`../../../infrastructure/gpu_leaf/`](../../../infrastructure/gpu_leaf/README.md) for the
+/// The seam is here and not in [`../../../infrastructure/gpu_leaf/`](../../../infrastructure/gpu_leaf/) for the
 /// reason [`../exhaustive/gf2_leaf_on_card.h`](../exhaustive/gf2_leaf_on_card.h)'s
 /// is where it is: a build without `nvcc` must get "no" rather than a link
 /// error, so the question is asked of a registration that nothing registered.

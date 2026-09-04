@@ -12,7 +12,7 @@
 /// generator count.
 ///
 /// The derivation, its primary sources and the measured table it was corrected
-/// against are [`when-canonical-pays/`](when-canonical-pays/README.md).
+/// against are [`when-canonical-pays/`](when-canonical-pays/).
 ///
 /// **There are two regimes and they are not the same question**, which is the
 /// correction of 2026-08-21. `L = target - n*k` is the levels of augmentation.

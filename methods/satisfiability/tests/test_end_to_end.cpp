@@ -155,7 +155,9 @@ int main(int argc, char** argv) {
     check_membership_direction(field, fixtures, "f2_2x2", 3, false);
     check_achieved_ceiling(field, fixtures, "f2_2x2", 3);
     if (slow) {
-        // Bigger, and with the refusal checked by drat-trim when it is present.
+        // Bigger, and with the refusal checked by drat-trim (an independent
+        // verifier of a DRAT refutation, the unsatisfiability proof a CNF solver
+        // can write) when it is present.
         // A proof is asked for only from a solver that writes one, since asking
         // otherwise is now refused. It used to be dropped, so on a machine
         // without kissat this line said it checked a refutation that was never

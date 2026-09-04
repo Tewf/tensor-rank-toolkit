@@ -28,6 +28,10 @@ The last row is [`../bilinear_rank/canonical_augmentation/pool_cosets.h`](../bil
 and the plain route moved under it too: 0.0102 s to 0.00742 s on the same sweep,
 because the two rows were not measured on the same afternoon. **The ratio that
 stands today is 5.1x against, from 25.8x.**
+[`../../writeup/how-the-search-works/what-the-rewrites-were-worth.md`](../../writeup/how-the-search-works/what-the-rewrites-were-worth.md)
+quotes 8.1x for this same sweep: its 0.0576 s does not match any row above and
+sits between `from generators` and the two rows that followed it, so it reads as
+an earlier point in this table's progression rather than a disagreement with it.
 
 The early exit was the first 9x. The enumerator was written to *count* solution
 subspaces, so it finishes every level; a rank search only asks whether the level

@@ -89,7 +89,7 @@ struct IncumbentLimits {
     /// only find, and a tree cut by a number nobody has built is cut by a
     /// hypothesis rather than by an algorithm, so the run says which of the two
     /// happened and never turns the second into a bound.
-    /// [`IncumbentReport::reached_below`](#) is that answer.
+    /// `IncumbentReport::reached_below` is that answer.
     std::size_t below = 0;
 
     /// The most a single move may take off the cost. **Zero means the bound
@@ -107,7 +107,7 @@ struct IncumbentLimits {
     ///
     /// **`s` is measured, not proved, so the search checks it as it goes.** Every
     /// child's drop is compared against this value and
-    /// [`IncumbentReport::drops_exceeded`](#) counts the violations. A run that
+    /// `IncumbentReport::drops_exceeded` counts the violations. A run that
     /// used the bound and saw one has cut a branch it had no right to cut, and the
     /// command refuses to report its answer rather than quietly returning a worse
     /// one. Measured at **1** on seven fixtures; `level_lowering_moves.h` derives

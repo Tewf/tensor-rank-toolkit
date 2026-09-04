@@ -1,9 +1,9 @@
 # A bound from the shape of the slice space
 
-Read a slice space as a **rank-metric code**: `k` is its dimension, `d` the least
-rank of a nonzero element. Two lower bounds on tensor rank follow from `(k, d)`
-alone, and the second hands over for a table scan a number that until now cost an
-exhaustive refutation.
+Read a [slice space](rank_metric_bound.h) as a **rank-metric code**: `k` is its
+dimension, `d` the least rank of a nonzero element. Two lower bounds on tensor
+rank follow from `(k, d)` alone, and the second hands over for a table scan a
+number that until now cost an exhaustive refutation.
 
 | | |
 |---|---|

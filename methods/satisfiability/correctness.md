@@ -10,7 +10,7 @@ means a test fails if it stops being true.
 | A **yes** is right | the decomposition is multiplied out and compared against the tensor | checked |
 | A **no** is right | the solver, *unless* a refutation is written and verified | checked when `--proof`, which is refused by a solver that writes none |
 | An **unknown** is not a no | a third verdict carried everywhere, never folded | checked |
-| The flattening bound is sound | a rank-one tensor has rank-one flattenings, and rank is subadditive | checked |
+| The [flattening](../../core/linear_algebra/tensor_flattening.h) bound is sound | a rank-one tensor has rank-one flattenings, and rank is subadditive | checked |
 | Walking up finds the rank | monotonicity: a `k`-decomposition gives a `k+1` one | checked |
 | The rank is **exact** | a satisfiable `k`, a definite refusal below it, and a start at or below the flattening bound | checked |
 | Symmetry breaking removes no solution | the terms are a set; `(λa)⊗(μb)⊗(νc)` is the same term when `λμν = 1` | checked |

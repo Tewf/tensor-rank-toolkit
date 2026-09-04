@@ -30,8 +30,8 @@ here as a MILP so a third instrument could answer beside the SAT solvers and the
 tree search; it was measured, it lost by two to three orders of magnitude, and it
 is retired. The numbers and the argument:
 [`../../writeup/the-research-front/rank-as-a-milp.md`](../../writeup/the-research-front/rank-as-a-milp.md).
-So this folder is a layer the
-curve strand uses and not a strand of its own.
+So this folder is a layer the curve strand and the sparsifier's simplex route
+both use, not a strand of its own.
 
 ## The chain
 
@@ -86,6 +86,7 @@ believed, which is why it is both the last resort and the arbiter.
 
 `node_limit` bounds the tree. Reaching it returns `Exhausted` carrying the best
 point found, which bounds the optimum without proving it; `Optimal` is a proof.
+
 ## What the file format cost
 
 MPS is fixed-column, and the integer markers go in fields 3 and 5, not 4 and 6

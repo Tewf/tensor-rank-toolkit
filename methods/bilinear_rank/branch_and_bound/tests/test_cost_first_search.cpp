@@ -1,4 +1,4 @@
-/// The three claims this search rests on, executed rather than argued.
+/// The four claims this search rests on, executed rather than argued.
 ///
 /// 1. **The bound is admissible.** `cost(V) >= dim V` for every subspace, with
 ///    equality exactly when `V` has a rank-one basis. That is the whole proof
@@ -13,6 +13,10 @@
 ///    offers that does not simply cost one more is in the generated set.
 /// 3. **The answer computes the map.** A search that quietly loses a slice
 ///    reports excellent numbers.
+/// 4. **`--below k` reaches the same answer from a smaller tree**, and says
+///    truthfully which of the two outcomes happened: seeding the incumbent at
+///    `k + 1` cuts sooner without changing what is found, and a `--below` that
+///    is not met is not a refutation of anything.
 #include <algorithm>
 #include <string>
 #include <vector>

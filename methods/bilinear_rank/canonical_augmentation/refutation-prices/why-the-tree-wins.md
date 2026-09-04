@@ -13,4 +13,4 @@ stopped, against a 5 000 000 node budget per candidate. This is a result about s
 pinning near the rank, not about matrix multiplication in general.
 
 The shallow case, where the tree does win, is the command run in
-[`README.md`](./): `⟨2,2,2⟩` at `k = 6`, one level deep, 45 to 72 nodes.
+[`README.md`](README.md): `⟨2,2,2⟩` at `k = 6`, one level deep, 45 to 72 nodes.

@@ -58,7 +58,7 @@ of 15.
 | Time | O( Σ_{w ≤ W} C(b, w) · (w³ + w·b) ), `W` the largest greedy weight, `W ≤ b − r + 1` |
 | Space | Θ( r·b ): the echelon form and what is held. The subsets are walked, not listed |
 
-Counts and timings: [`../README.md`](../).
+Counts and timings: [`../`](../).
 
 **Where this scan stops, why, and who already has the algorithm that gets past
 it**: [`where-the-scan-stops.md`](where-the-scan-stops.md).

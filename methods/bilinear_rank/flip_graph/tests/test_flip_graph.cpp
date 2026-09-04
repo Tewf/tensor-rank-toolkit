@@ -124,7 +124,7 @@ struct Expectation {
 ///
 /// `f3_3x6` is deliberately in the list and deliberately unflattering. On a
 /// budget this small the walk gets 18 down to 16; given 60 000 flips a seed it
-/// reaches 12, and `minimise-rank` reaches 10 in 2.7 s (results.json). Over GF(3) this
+/// reaches 12, and `minimise-rank` reaches 10 in 2.7 s (greedy_heuristic/results.json). Over GF(3) this
 /// method is behind the heuristic it was meant to rescue, and a test that only
 /// held GF(2) fixtures would not say so.
 void check_fixtures(const std::string& directory) {

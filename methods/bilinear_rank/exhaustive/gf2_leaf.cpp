@@ -22,15 +22,6 @@ bool gf2_leaf_applies(const Field& field, std::size_t columns) {
     return offered && static_cast<std::size_t>(field.characteristic()) == 2 && columns <= 64;
 }
 
-/// Packing the pool once is most of what the representation is worth: a
-/// membership test then costs one XOR per basis row and no conversion at all.
-///
-/// It is priced against the same budget the materialised pool is priced against,
-/// and skipped rather than refused when it does not fit, because an addressed
-/// pool exists exactly for the shapes where nothing pool-sized may be held. At
-/// `<4,4,4>` the table would be 4.3e9 maps of four words, which is 137 GiB, so
-/// there the maps are packed one at a time into the caller's buffer and the win
-/// is the reduction alone.
 namespace {
 
 /// A vector of GF(2) entries as the low bits of one word. Widths above 64 do not
@@ -60,6 +51,15 @@ constexpr std::uint32_t unclaimed = ~std::uint32_t(0);
 
 }  // namespace
 
+/// Packing the pool once is most of what the representation is worth: a
+/// membership test then costs one XOR per basis row and no conversion at all.
+///
+/// It is priced against the same budget the materialised pool is priced against,
+/// and skipped rather than refused when it does not fit, because an addressed
+/// pool exists exactly for the shapes where nothing pool-sized may be held. At
+/// `<4,4,4>` the table would be 4.3e9 maps of four words, which is 137 GiB, so
+/// there the maps are packed one at a time into the caller's buffer and the win
+/// is the reduction alone.
 template <typename Candidates>
 Gf2Leaf<Candidates>::Gf2Leaf(const Field& field, const Candidates& pool, std::size_t rows,
                              std::size_t columns)

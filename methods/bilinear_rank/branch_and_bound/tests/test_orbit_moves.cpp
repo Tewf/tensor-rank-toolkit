@@ -5,7 +5,7 @@
 /// that does not stabilise the node's span, or a representative rule that drops
 /// a whole orbit, removes the move that would have paid; the run then reports a
 /// worse cost with no sign that anything went wrong, exactly as
-/// [`../../orbit_reduction/README.md`](../../orbit_reduction/README.md) says of
+/// [`../../orbit_reduction/`](../../orbit_reduction/) says of
 /// the exact search. So the quotiented run is held against the unquotiented one
 /// on every fixture where both finish:
 ///

@@ -87,18 +87,6 @@ std::size_t pool_size_for(const ModularField& field, std::size_t rows, std::size
     return classes * others;
 }
 
-/// The stabiliser of the slice space, narrowed from whichever ambient group was
-/// asked for.
-///
-/// `expand_subspace_up_to_symmetry` requires a group that stabilises the span it
-/// is given, and a group that does not is the one way it can report a false NO.
-/// So the ambient group is narrowed here and never passed through.
-///
-/// A refusal to build the ambient group is not a wrong answer, only a slower
-/// one, so it falls back rather than failing. What it must not do is fall back
-/// **quietly**, which is what this did when it called `all_automorphisms`
-/// directly: that refuses on any 4x4 map over GF(2), so every matrix
-/// multiplication fixture ran unquotiented while reporting that symmetry was on.
 /// The `<n,m,k>` a shape would have if it were a matrix multiplication tensor.
 ///
 /// `nm x mk x kn` are the three dimensions, so their product is `(nmk)^2` and
@@ -126,6 +114,18 @@ bool inferred_matmul_shape(std::size_t rows, std::size_t columns, std::size_t sl
            shape[2] * shape[0] == slices;
 }
 
+/// The stabiliser of the slice space, narrowed from whichever ambient group was
+/// asked for.
+///
+/// `expand_subspace_up_to_symmetry` requires a group that stabilises the span it
+/// is given, and a group that does not is the one way it can report a false NO.
+/// So the ambient group is narrowed here and never passed through.
+///
+/// A refusal to build the ambient group is not a wrong answer, only a slower
+/// one, so it falls back rather than failing. What it must not do is fall back
+/// **quietly**, which is what this did when it called `all_automorphisms`
+/// directly: that refuses on any 4x4 map over GF(2), so every matrix
+/// multiplication fixture ran unquotiented while reporting that symmetry was on.
 std::vector<bilinear_rank::Automorphism> stabiliser_or_nothing(
     const ModularField& field, const std::vector<ModularMatrix>& slices,
     const cli::Symmetry& symmetry, std::string& refusal) {

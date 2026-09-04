@@ -13,6 +13,11 @@ it can only ever produce upper bounds, and it never runs out of moves.
 
     walk-scheme evidence/fixtures/f3_3x6.tensor --from 10 --flips 20000
 
+    GF(3), naive scheme: 18 products
+    heuristic scheme: 10 products, walking from there
+    best over 8 seeds: 10 products, rank bound 9, gap 1
+    # 0.468824 s, 1 worker(s)
+
 `--from k` walks from the heuristic's scheme at `k` products rather than from the
 naive one, and refuses when the heuristic cannot reach `k`. That refusal matters:
 walking from a bad start is what makes a flip walk look worse than it is.

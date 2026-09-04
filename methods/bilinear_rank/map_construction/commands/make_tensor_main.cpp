@@ -43,10 +43,11 @@ void usage() {
 /// words after one are its own positional numbers. The walker reads flags and a
 /// single positional filename, so `--matmul 2 2 2 2` would hand it four files.
 /// What it does take from that header is the refusals: every number below goes
-/// through `cli::parse_count`, so a word where a dimension belongs is named with
-/// the mode in front of it rather than reported as `stoll` from inside the
-/// standard library. `std::stoll(argv[2])` was the worst of those, because it sat
-/// outside the try below and left `--matmul abc 2 2 2` as a terminate.
+/// through `cli::parse_count` or `cli::parse_whole_number`, so a word where a
+/// dimension belongs is named with the mode in front of it rather than reported
+/// as `stoll` from inside the standard library. `std::stoll(argv[2])` was the
+/// worst of those, because it sat outside the try below and left
+/// `--matmul abc 2 2 2` as a terminate.
 /// `--max-memory N` lifted out of the line before the modes are read, and the
 /// rest handed on as if it had never been there.
 ///

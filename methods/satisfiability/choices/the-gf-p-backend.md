@@ -4,7 +4,8 @@
 built without CoCoALib and cannot run its finite-field solver at all, but the
 upstream 1.3.4 GPL build can, so the comparison the two backends were built for
 actually happened. Ground truth from the exhaustive search: `GF(9)` and F₃
-2×2-term both rank 3, F₃ 2×3-term rank 4.
+2×2-term both rank 3, F₃ 2×3-term rank 4. Measured in
+[`results.json`](../results.json), under `prime_field_backends`.
 
 | Question | one-hot CNF | cvc5 finite fields |
 |---|---|---|

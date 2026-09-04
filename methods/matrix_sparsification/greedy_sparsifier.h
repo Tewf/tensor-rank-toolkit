@@ -39,8 +39,8 @@ std::vector<Element> best_scaling(const Field& field, const std::vector<Element>
 
 /// Algorithm 6, on the transposed operator every route here works on.
 ///
-/// Takes and returns `rows`, so it is interchangeable with
-/// `sparsify_by_best_corank_one` and `sparsify_by_descending_support` at the call site.
+/// Takes and returns `rows`, the same shape `sparsest_basis_over_the_rationals`
+/// does, so the two are interchangeable at the call site.
 Matrix sparsify_by_rescaling(const Field& field, Matrix rows);
 
 }  // namespace matrix_sparsification

@@ -1,6 +1,9 @@
 # The five schedules, summed from that table
 
-Seconds. `floor` is the mandatory two questions.
+Seconds. `floor` is the mandatory two questions; gallop up and gallop down are
+named for the literature's galloping search, exponentially growing steps from
+the floor and from the ceiling respectively, then bisection of the interval the
+last step overshot.
 
 | fixture | floor | ascending | descending | bisection | gallop up | gallop down |
 |---|---|---|---|---|---|---|

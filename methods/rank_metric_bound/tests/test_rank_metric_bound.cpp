@@ -61,7 +61,6 @@ struct Fixture {
     /// holds 25 and 36, which is the naive algorithm the fixture itself
     /// exhibits. Sound and weak beats tight and unsourced.
     long long known_rank;
-    /// `k + d - 1`, the best over the three axes.
     /// `sum_j ceil(d / p^j)`, the best over the three axes.
     long long griesmer;
     /// `max(rank_lower_bound, Griesmer)`: the floor a caller would get if
@@ -166,7 +165,7 @@ int main(int argc, char** argv) {
         check::equal(label + " does not exceed a known rank",
                      griesmer <= fixture.known_rank ? 1 : 0, 1);
         // Per axis: `k` read off the contraction table must be the flattening
-        // rank, and `k + d - 1` must reach at least it.
+        // rank.
         const std::vector<std::size_t> flattenings =
             linear_algebra::flattening_ranks(field, tensor.slices);
         // The `(k, d)` of the axis the answer came from. Printed and never

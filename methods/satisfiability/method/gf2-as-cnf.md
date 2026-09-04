@@ -28,5 +28,11 @@ Measured, with `--emit-cnf`:
 | ⟨2,2,2⟩ | 7 | 644 | 1 744 | 1 028 vars, 3 280 clauses |
 | ⟨3,3,3⟩ | 23 | 19 251 | 56 619 | |
 
+`F₂ 2×3` is [`evidence/fixtures/f2_2x3.tensor`](../../../evidence/fixtures/f2_2x3.tensor);
+`⟨2,2,2⟩` and `⟨3,3,3⟩` are the matrix multiplication tensors of those shapes,
+[`matmul_2x2x2.tensor`](../../../evidence/fixtures/matmul_2x2x2.tensor) and
+[`matmul_3x3x3.tensor`](../../../evidence/fixtures/matmul_3x3x3.tensor), each run
+as `decide-rank-by-sat <file> --target <r> --emit-cnf out.cnf`.
+
 ⟨3,3,3⟩ at Laderman's 23 is a file of about a megabyte. The exhaustive search
 cannot go near that tensor; this is a question a solver can be asked.

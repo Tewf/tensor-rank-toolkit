@@ -8,7 +8,7 @@
 /// Building the bilinear maps the search then decomposes.
 ///
 /// Two key cases: multiplying polynomials, and multiplying elements of GF(pⁿ),
-/// which is the first reduced modulo an irreducible polynomial.
+/// which is the first case, reduced modulo an irreducible polynomial.
 namespace bilinear_rank {
 
 /// Coefficients highest degree first: `1 0 3` represents `x² + 3`.
@@ -35,8 +35,10 @@ bool is_irreducible(const Field& field, const Polynomial& modulus);
 /// whose coefficients are scalars, keeping the remainder.
 ///
 /// `slices` are in descending degree here, matching how `modulus` is written.
-/// Zero coefficients are dropped from the result, so it is shorter than what
-/// went in.
+/// If `slices` is already below the modulus's degree it comes back unchanged;
+/// otherwise zero coefficients are dropped from the result, so it is then
+/// shorter than what went in. Throws if `modulus` is empty or its leading
+/// coefficient is zero.
 std::vector<Matrix> reduce_tensor_modulo(const Field& field, std::vector<Matrix> slices,
                                          const Polynomial& modulus);
 
@@ -50,6 +52,10 @@ std::vector<Matrix> reduce_tensor_modulo(const Field& field, std::vector<Matrix>
 ///
 /// ⟨2,2,2⟩ is where fast matrix multiplication starts: Strassen's seven
 /// products instead of eight, and Winograd's proof that seven is the floor.
+///
+/// Throws, via
+/// [`run_limits::require_room`](../../../infrastructure/run_limits/memory_budget.h),
+/// if the shape does not fit the memory budget.
 std::vector<Matrix> matrix_multiplication_tensor(std::size_t rows, std::size_t inner,
                                                  std::size_t columns);
 
@@ -58,13 +64,16 @@ std::vector<Matrix> matrix_multiplication_tensor(std::size_t rows, std::size_t i
 ///
 /// Slice `i` carries a 1 at `(j, l)` exactly when `j + l ≡ i (mod n)`, so every
 /// slice is a permutation matrix and the naive cost is `n²`.
+///
+/// Throws, via `run_limits::require_room`, if the shape does not fit the
+/// memory budget.
 std::vector<Matrix> cyclic_convolution_tensor(std::size_t length);
 
 /// The tensor of multiplication in GF(pⁿ), for `modulus` of degree `n`:
 /// multiply two elements as polynomials, then reduce.
 ///
 /// Builds the polynomial product using the degree, so both operands are reduced
-/// field elements.
+/// field elements. Throws if `modulus` is not irreducible over GF(p).
 std::vector<Matrix> field_multiplication_tensor(const Field& field, const Polynomial& modulus);
 
 }  // namespace bilinear_rank

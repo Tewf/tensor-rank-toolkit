@@ -1,7 +1,7 @@
 # Positionnement, stated so it can be contradicted
 
 **Not new**: the three schedules, the call-count pricing, the hybrid instinct.
-Nor is the observation that bisection can lose on time despite winning on calls,
+Nor is the observation that [bisection](naming-the-problem.md) can lose on time despite winning on calls,
 which is `[heras2011]`'s about core-guided binary search.
 
 **New, as far as reading found**: the per-question price table in

@@ -116,9 +116,11 @@ int main() {
     }
     check::equal("GF(4) is refused, the theory of finite fields is for primes", threw ? 1 : 0, 1);
 
-    // Nothing here reads a cvc5 proof, so `--proof` on this backend could only
-    // ever have looked like a checked refusal. Refused where the approach is
-    // vetted, before any solver is looked for, so no cvc5 is needed to check it.
+    // Nothing here reads a cvc5 proof, so `--proof` (which asks for a DRAT
+    // refutation, the unsatisfiability proof a CNF solver can write) on this
+    // backend could only ever have looked like a checked refusal. Refused where
+    // the approach is vetted, before any solver is looked for, so no cvc5 is
+    // needed to check it.
     bool proof_refused = false;
     try {
         satisfiability::SolveOptions certified;

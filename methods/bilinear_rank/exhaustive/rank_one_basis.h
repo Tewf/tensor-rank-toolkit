@@ -38,34 +38,6 @@
 /// [`which-leaf-route-is-cheaper.md`](which-leaf-route-is-cheaper.md).
 namespace bilinear_rank {
 
-/// Up to `needed` independent rank-one maps inside `span`. Fewer than `needed`
-/// means there is no such basis.
-/// The shape comes from the pool, which is every rank-one map of it.
-///
-/// Templated on where the candidates come from, so the same code serves a
-/// materialised pool and an addressed one: see `Materialised` and `Addressed` in
-/// [`candidate_pool.h`](../candidate_pool.h). Instantiated for
-/// exactly those two in the source, so the definition stays out of this header.
-///
-/// Note that the cheaper of the two routes above, walking the subspace, touches
-/// the pool only for the shape and the size. So the leaf is already pool-free
-/// wherever it is the route taken, and an addressed pool costs nothing there.
-///
-/// **`binary` is the GF(2) case of both routes**, in
-/// [`gf2_leaf.h`](gf2_leaf.h), which is where the search spends its life over
-/// the field most fixtures here are written over. Passing `nullptr` is the
-/// general path, which answers for every other field; the choice
-/// between the two routes is made here either way, so the two fields cannot
-/// come to disagree about what a leaf is. It defaults to `nullptr` so that a
-/// caller which has not built one, such as
-/// [the quotiented search](../orbit_reduction/orbit_search.h), reads the same
-/// as it did.
-///
-/// **`budget` is what stops a leaf**, and both routes are unbounded without it.
-/// Whichever is taken here is the search's whole cost at a large shape, and the
-/// node limit bounds neither: see `SearchBudget::leaf_element_limit` in
-/// [`exhaustive_search.h`](exhaustive_search.h) for the measurement that says by
-/// how much.
 /// Which of the two routes a leaf takes, when a run wants to say rather than ask.
 ///
 /// **It exists so the two can be timed on the same question**, for the reason
@@ -97,6 +69,34 @@ LeafRoute leaf_route();
 std::size_t subspace_elements(std::size_t characteristic, std::size_t dimension,
                               std::size_t ceiling);
 
+/// Up to `needed` independent rank-one maps inside `span`. Fewer than `needed`
+/// means there is no such basis.
+/// The shape comes from the pool, which is every rank-one map of it.
+///
+/// Templated on where the candidates come from, so the same code serves a
+/// materialised pool and an addressed one: see `Materialised` and `Addressed` in
+/// [`candidate_pool.h`](../candidate_pool.h). Instantiated for
+/// exactly those two in the source, so the definition stays out of this header.
+///
+/// Note that the cheaper of the two routes above, walking the subspace, touches
+/// the pool only for the shape and the size. So the leaf is already pool-free
+/// wherever it is the route taken, and an addressed pool costs nothing there.
+///
+/// **`binary` is the GF(2) case of both routes**, in
+/// [`gf2_leaf.h`](gf2_leaf.h), which is where the search spends its life over
+/// the field most fixtures here are written over. Passing `nullptr` is the
+/// general path, which answers for every other field; the choice
+/// between the two routes is made here either way, so the two fields cannot
+/// come to disagree about what a leaf is. It defaults to `nullptr` so that a
+/// caller which has not built one, such as
+/// [the quotiented search](../orbit_reduction/orbit_search.h), reads the same
+/// as it did.
+///
+/// **`budget` is what stops a leaf**, and both routes are unbounded without it.
+/// Whichever is taken here is the search's whole cost at a large shape, and the
+/// node limit bounds neither: see `SearchBudget::leaf_element_limit` in
+/// [`exhaustive_search.h`](exhaustive_search.h) for the measurement that says by
+/// how much.
 template <typename Candidates>
 std::vector<Matrix> rank_one_basis_of(const Field& field, const ReducedBasis& span,
                                       const Candidates& pool, std::size_t needed,

@@ -7,6 +7,13 @@
 /// Integrality, bought by splitting on a variable the relaxation left in
 /// between.
 ///
+/// This is the branch and bound for a linear or integer programme: the node is
+/// the whole model with tighter bounds, and the split is on a variable the LP
+/// relaxation left fractional. It shares a name and nothing else with the
+/// bilinear-rank search tree in
+/// [`../bilinear_rank/branch_and_bound/`](../bilinear_rank/branch_and_bound/),
+/// which splits on a rank-one term instead.
+///
 /// Solving the relaxation and branching on a fractional variable is
 /// `[landdoig1960, §3]`, which is a prose description of a procedure and
 /// carries no numbered results to cite. Keys are

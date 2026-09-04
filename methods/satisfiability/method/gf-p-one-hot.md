@@ -5,7 +5,7 @@ becomes the field's table as implications `(¬x[e₁] ∨ ¬y[e₂] ∨ z[e₁�
 
 | | |
 |---|---|
-| Variables | `p·(r(n₁+n₂+n₃) + r·n₁n₂ + 2r·n₁n₂n₃)` |
+| Variables | `p·(r(n₁+n₂+n₃) + r·n₁n₂ + (2r+1)·n₁n₂n₃)` |
 | Clauses | about `2p²·r·n₁n₂n₃`, plus `1 + p(p−1)/2` per one-hot group |
 
 So about `2p²` clauses per term per entry, nine times the GF(2) cost at `p = 3`.

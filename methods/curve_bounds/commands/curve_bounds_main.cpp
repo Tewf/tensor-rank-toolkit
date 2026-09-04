@@ -5,7 +5,7 @@
 /// one: the whole input is a divisor degree and a list of `degree:count` pairs,
 /// which is step 2's output and is supplied rather than computed.
 ///
-/// What the number means is [`../README.md`](../README.md), and it is weaker than
+/// What the number means is [`../`](../), and it is weaker than
 /// it looks: this reports the best the method could give **if** a curve with that
 /// supply exists and admits an interpolation system, and neither is checked here.
 #include <stdexcept>

@@ -4,19 +4,19 @@
 |---|---|---|
 | `minimise-rank --steps 3 -s matmul 3 3 3` | 27, the naive cost, no improvement | 4.3 s |
 | `walk-scheme --flips 20000 --seeds 8` | **24** | 38.1 s, one worker |
-
-The 38.1 s is one worker, which is the default and which is what it was measured
-with. The eight seeds are independent walks sharing nothing, so `--threads` is
-free here in a way it is not for `decide-rank`: the schemes, the seed reported and
-its flip and reduction counts are bit-identical at 1, 4 and 8 workers, and only
-the elapsed figures move. Measured 3.2x at four workers and 5.4x at eight, both on
-a machine that was not quiet, so both are floors rather than a claim. The 38.1 s
-above is deliberately **not** replaced by a threaded figure: a number measured
-under `MEASURING.md` should be superseded by another one, not by a faster run on a
-busy machine.
 | `find-at-rank --target 23 -s matmul 3 3 3` | nothing, 13 candidates at 60 s each | 780 s |
 | `find-at-rank --target 23`, unrestricted | nothing | 300 s |
 | `find-at-rank --descend --ceiling 27 -s matmul 3 3 3` | 26, stalling at 25 | 313 s |
+
+The 38.1 s above is one worker, which is the default and which is what it was
+measured with. The eight seeds are independent walks sharing nothing, so
+`--threads` is free here in a way it is not for `decide-rank`: the schemes, the
+seed reported and its flip and reduction counts are bit-identical at 1, 4 and 8
+workers, and only the elapsed figures move. Measured 3.2x at four workers and
+5.4x at eight, both on a machine that was not quiet, so both are floors rather
+than a claim. The 38.1 s above is deliberately **not** replaced by a threaded
+figure: a number measured under [`MEASURING.md`](../../../../MEASURING.md) should be superseded by another
+one, not by a faster run on a busy machine.
 
 Nobody reaches 23. `minimise-rank` cannot move off the naive 27, which is the shortlist
 problem again at a larger shape; the flip walk reaches 24, now re-derived on every CI run

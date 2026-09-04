@@ -22,8 +22,8 @@ make-tensor --polynomial 2 2 2 > my.tensor
 head -4 my.tensor
 # Polynomial multiplication of 2 coefficients by 2, over GF(2).
 # Naive cost 4 multiplications, written by make-tensor.
-# field 2
-# shape 3 2 2
+field 2
+shape 3 2 2
 ```
 
 The four spellings and what refuses an impossible size:

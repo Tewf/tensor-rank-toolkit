@@ -13,7 +13,8 @@ In this group:
 - [`canonical_factorisation/`](canonical_factorisation/): the rank
   as S = C A, with a receipt anybody can multiply out.
 - [`satisfiability/`](satisfiability/): the rank question put to a
-  SAT or SMT solver, refutations checkable as DRAT.
+  SAT or SMT solver, refutations checkable as DRAT, a proof of
+  unsatisfiability that a program sharing no code with the solver can verify.
 - [`matrix_sparsification/`](matrix_sparsification/): fewest
   nonzeros in an operator, proved minimal over every change of basis.
 - [`rank_metric_bound/`](rank_metric_bound/): two search-free

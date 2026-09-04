@@ -1,6 +1,6 @@
 # Why our result is a contrast with it, not a confirmation
 
-On GF(16) bisection makes the fewest calls and finishes **last**, 113.614 s
+On GF(16) [bisection](naming-the-problem.md) makes the fewest calls and finishes **last**, 113.614 s
 against 110.094 s for the schedule that wins. That disagrees with the survey, and
 the reason is ours to give rather than the survey's to have missed.
 
@@ -11,9 +11,10 @@ the reason is ours to give rather than the survey's to have missed.
 
 Source: [`the-five-schedules.md`](../bracket/the-five-schedules.md). That
 comparison predates a stronger lower bound merged since, `[yang2025]`'s rank
-sums joined to the flattening bound, and [`rank_question.h`](../rank_question.h)
-flags it as wanting re-measurement: the numbers above are what was measured
-under the old bound, not necessarily what a rerun would show.
+sums joined to the [flattening bound](../bracket/), and
+[`rank_question.h`](../rank_question.h) flags it as wanting re-measurement: the
+numbers above are what was measured under the old bound, not necessarily what a
+rerun would show.
 
 The exponential-versus-linear gap is in the *size of the cost range*, which for
 MaxSAT is exponential in the number of soft clauses. Here the range is

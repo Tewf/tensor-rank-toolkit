@@ -1,7 +1,7 @@
 # What the literature already settles
 
 Written after reading `[sumi2009]` properly rather than from its abstract. The
-measured table is in [`README.md`](./); this page is which parts of it the
+measured table is in [`README.md`](README.md); this page is which parts of it the
 literature had already answered, and it is more than was assumed.
 
 **The field-size condition this module was written around is not a conjecture. It

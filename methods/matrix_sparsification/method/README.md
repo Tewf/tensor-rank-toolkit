@@ -1,6 +1,6 @@
 # The method, exactly
 
-Notation: [`../../../core/linear_algebra/README.md`](../../../core/linear_algebra/).
+Notation: [`../../../core/linear_algebra/`](../../../core/linear_algebra/).
 The cost of each primitive:
 [`../../../core/linear_algebra/costs.md`](../../../core/linear_algebra/costs.md).
 Here `U` is the operator, `r × c`, over `Q`. The search works on `Uᵀ`, written

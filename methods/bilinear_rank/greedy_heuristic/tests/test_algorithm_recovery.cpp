@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
     }
     const std::string directory = argv[1];
 
-    // Step 1's cost on each fixture, from Table 1.
+    // Step 1's cost on each fixture, from results.json.
     const std::pair<const char*, long long> fixtures[] = {
         {"f2_5x5", 16}, {"f2_3x8", 19}, {"f2_4x7", 19}, {"f3_3x6", 12}};
 

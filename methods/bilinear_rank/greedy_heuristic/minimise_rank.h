@@ -19,9 +19,6 @@
 namespace bilinear_rank {
 
 /// Keep only the candidates that, taken one at a time, would improve the map.
-///
-/// Named for what it does: keep only the candidates that would improve the map
-/// when taken one at a time.
 std::vector<Matrix> improving_candidates(const Field& field, const std::vector<Matrix>& slices,
                                          const std::vector<Matrix>& candidates);
 

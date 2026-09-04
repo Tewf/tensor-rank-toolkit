@@ -31,7 +31,7 @@
 /// produces a confident wrong rank rather than an error.
 /// [`field_theory_encoding.h`](field_theory_encoding.h) exists to disagree with
 /// it. Which of the two survives is settled by measurement, in
-/// [`method/`](method/README.md).
+/// [`method/`](method/).
 ///
 /// It accepts `p = 2` as well, where it should agree with the cheaper
 /// [Boolean encoding](binary_encoding.h), which is a test rather than a use.

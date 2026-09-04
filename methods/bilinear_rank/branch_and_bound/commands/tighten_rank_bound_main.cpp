@@ -117,7 +117,7 @@ double repeated_share(const bilinear_rank::SpanTally& tally) {
 /// Does this spanning set still compute the map, and at the count claimed?
 ///
 /// Asked in the tool and not only in the tests, under the rule
-/// [`../../greedy_heuristic/README.md`](../../greedy_heuristic/README.md) states: a
+/// [`../../greedy_heuristic/`](../../greedy_heuristic/) states: a
 /// search that quietly loses a slice reports excellent numbers.
 bool verified(const bilinear_rank::Field& field, const std::vector<bilinear_rank::Matrix>& target,
               const std::vector<bilinear_rank::Matrix>& answer,

@@ -6,7 +6,7 @@
 /// space**, and where the exhaustive scan finishes, the two agree on the least
 /// weight.
 ///
-/// The prototypes this replaces are in [`../prototypes/`](../prototypes/README.md)
+/// The prototypes this replaces are in [`../prototypes/`](../prototypes/)
 /// and the finding is [`../method/answering-without-searching.md`](../method/answering-without-searching.md).
 #include <cstddef>
 #include <string>

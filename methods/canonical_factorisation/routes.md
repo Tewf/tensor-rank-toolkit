@@ -3,7 +3,7 @@
 `factor-over-canonical-basis` finds the rank-one rows two ways. The
 factorisation is the same object either way and is checked the same way, by
 [`recovers_slices`](factorisation.h); what differs is the space it costs and
-what the answer is allowed to claim. See [`README.md`](./) for the
+what the answer is allowed to claim. See [`README.md`](README.md) for the
 formulation itself.
 
 There are three. `--route canonical` is the third and is documented separately,

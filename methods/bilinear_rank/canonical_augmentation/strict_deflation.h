@@ -20,7 +20,7 @@
 /// inside. Neither number survives matched flags: the whole-instance refutation of
 /// `⟨2,2,2⟩` at `k = 6` costs **1.32 s** and the five pinned refutations cost
 /// **1.65 s** together. Full table in
-/// [`refutation-prices/README.md`](refutation-prices/README.md).
+/// [`refutation-prices/`](refutation-prices/).
 ///
 /// **The real result is which machine buys the refutation.** Two of them, asked
 /// about the same candidates in the same order:

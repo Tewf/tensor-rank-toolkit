@@ -23,7 +23,12 @@ In this folder:
 - [`measurements/`](measurements/): every number, including the ones
   that retired `find-at-rank` to the `rejected-experiments` branch.
 - Two notes and two folders of evidence:
-  [`deduplication-cost.md`](deduplication-cost.md),
+  [`deduplication-cost.md`](deduplication-cost.md) (this strand's headline:
+  **22 778x fewer nodes than the plain route and 11.8x faster**, on
+  `⟨2,2,2⟩` at target 7, while *counting* subspaces; while *deciding*, the
+  route trades a **53x** node saving for a wall clock **5.1x** slower, which
+  is why deciding does not use it by default:
+  [`../../canonical_factorisation/canonical-augmentation.md`](../../canonical_factorisation/canonical-augmentation.md)),
   [`enumerating-on-every-core.md`](enumerating-on-every-core.md),
   [`refutation-prices/`](refutation-prices),
   [`when-canonical-pays/`](when-canonical-pays).

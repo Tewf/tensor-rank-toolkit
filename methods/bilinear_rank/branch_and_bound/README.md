@@ -14,6 +14,10 @@ weaker algorithm rather than no answer.
 
     tighten-rank-bound evidence/fixtures/cyclic_f2_7.tensor --from descent --width 4
 
+    GF(2), start: 15 products over 9 dimensions
+    best: 13 products, rank bound 12, gap 1, verified
+    # 22 nodes, 17371 children costed, 20678 moves offered, 2 improvements, 68 branches bounded, depth 4, largest single-move drop 1, tree exhausted
+
 ## The tree is `[bdez2012]`, and only the stopping rule is new here
 
 `[bdez2012]` Algorithm 2 and `[yang2025]` Theorem 1 walk exactly these
@@ -53,8 +57,8 @@ no run here is ever a lower bound, and the floors quoted beside every count come
 from [`rank_lower_bound.h`](../../../core/linear_algebra/rank_lower_bound.h) and not from
 this search.
 
-**It is not a rival to a flip graph.** Every recent record in the field came
-from rewriting a decomposition that already works
+**It is not a rival to a [flip graph](../flip_graph/).** Every recent
+record in the field came from rewriting a decomposition that already works
 ([`../the-research-front/upper-bounds.md`](../../../writeup/the-research-front/upper-bounds.md)),
 and a walk never runs out of moves where this is bounded by
 `C(|pool|, best − dim span T)` before any beam is imposed. What it has instead is

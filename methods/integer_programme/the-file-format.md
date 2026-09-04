@@ -4,7 +4,7 @@ MPS is a fixed-column punched-card layout from the IBM MPS/360 era, its
 manual's date deliberately unstated in `[mps360]`'s ledger entry, and reading
 it wrongly is how a solver is
 handed a different programme from the one intended. The chain that consumes it is
-in [`README.md`](./).
+in [`README.md`](README.md).
 
 Everything reaches a solver as fixed-column MPS, and three of its traps are
 silent. All three were found by running the solvers, not by reading about them.
