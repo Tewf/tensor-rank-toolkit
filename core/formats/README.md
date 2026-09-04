@@ -51,9 +51,6 @@ a parameter, exactly as PLinOpt's checkers take it as `-q`. Three of them are an
 algorithm: `operators-to-tensor` reads a ⟨L,R,P⟩ triple back into the `.tensor`
 above, which is how a published algorithm becomes an input here.
 
-It is worth exchanging files with another tool only if you have checked that you
-can. Both directions have been run against PLinOpt's own binaries: its checker
-confirms the published 14 products on `f2_5x5` and 10 on `f3_3x6` from our
-operators alone, and its published Strassen operators rebuild our `⟨2,2,2⟩`
-fixture entry for entry:
-[`interchange/`](interchange/).
+It is worth exchanging files with another tool only if you have checked that
+you can: both directions have been run against PLinOpt's own binaries, as
+verified in [`interchange/`](interchange/).

@@ -17,9 +17,9 @@ C++ library for linear and bilinear straight-line programs by Dumas, Grenet,
 Pernet and Sedoglavic, whose `data/` ships operators for Strassen, Winograd,
 Karatsuba, Toom-3 and matrix multiplication up to 32x32x32.
 
-Reading either is a test rather than a claim: an operator triple published
-elsewhere rebuilds the fixture this repository writes from the definition of the
-map, entry for entry, and a disagreement would be ours to explain.
+Reading either is a test rather than a claim, and what a published triple
+rebuilds against this repository's own definitions is in
+[`where-the-conventions-differ.md`](where-the-conventions-differ.md).
 
 What the type letter means, and what is measured about it, is
 [`sms_file.h`](../sms_file.h). The `stem_{L,R,P}.sms` naming is the convention
