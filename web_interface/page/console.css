@@ -180,3 +180,17 @@ button.copy {
   overflow-x: auto;
   white-space: pre;
 }
+
+/* The measurement behind a default, one per option, shut until asked: the
+   options pane is for choosing, and eight paragraphs at once is a wall. */
+.why {
+  margin: 0.1rem 0 0.55rem;
+  font-size: 0.86em;
+}
+.why summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.why p {
+  margin: 0.25rem 0 0;
+}

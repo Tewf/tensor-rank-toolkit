@@ -167,7 +167,16 @@ function renderOptions() {
   }
   for (const option of state.tool.options) {
     holder.appendChild(control(option));
-    if (option.note) holder.appendChild(el("p", {class: "hint", text: option.note}));
+    // The note is the measurement behind the default, and it is a paragraph.
+    // Eight of them at once is a wall, so each waits behind its own summary;
+    // nothing is lost, only deferred to the moment a reader asks.
+    if (option.note) {
+      const why = el("details", {class: "why"}, [
+        el("summary", {text: "why this default"}),
+        el("p", {class: "hint", text: option.note}),
+      ]);
+      holder.appendChild(why);
+    }
   }
   if (!state.tool.options.length) {
     holder.appendChild(el("p", {class: "hint",

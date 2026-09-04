@@ -134,7 +134,11 @@ async function begin() {
   renderTools();
   renderExamples();
   buildPanel();
-  drawEarlierRuns();
+  // A console with no runs yet is being seen for the first time, and the
+  // person it greets is exactly who the starters were written for. Opened
+  // once, by that emptiness rather than by a stored flag: after the first
+  // run there is something better on the screen than this drawer.
+  drawEarlierRuns().then((count) => { if (!count) $("starters").showModal(); });
 }
 
 /* A panel that is opened, read and closed, over the four panes rather than

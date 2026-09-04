@@ -29,7 +29,7 @@
   <h2>1 &nbsp;The map</h2>
   <div class="pane-body filling">
     <div class="row">
-      <select id="fixture"><option value="">load a fixture...</option></select>
+      <select id="fixture"><option value="">load a shipped fixture...</option></select>
       <button id="upload-button">open a file...</button>
       <input type="file" id="upload" hidden accept=".tensor,.matrix,.sms,.txt,text/plain">
       <button id="build-button">build one...</button>
@@ -107,7 +107,7 @@
       <span class="hint" id="run-note"></span>
     </div>
   </div>
-  <div class="pane-body" id="results">
+  <div class="pane-body" id="results" aria-live="polite">
     <p class="empty">Nothing has been run yet. Press <b>Start here</b> above if
     you have not used this before. Every run appears here with the exact
     command, the plan the tool printed, both of its streams, and how it
@@ -128,9 +128,11 @@
   <div class="drawer-body">
     <p class="hint">Each of these fills the panels behind this one with a real
       question, and stops there so you can read the command before running it.
-      The first four are the same map: found, proved impossible, and a budget
-      that ran out and proved nothing. The last is a flow, which is two tools in
-      the order the pipeline needs them and four runs from one press.</p>
+      The first four are the same map: found, proved impossible, the same proof
+      quotiented, and a budget that ran out and proved nothing. Then the cheap
+      descent, the factorisation with its receipt, and last a flow, which is
+      two tools in the order the pipeline needs them and four runs from one
+      press.</p>
     <div id="examples"></div>
   </div>
 </dialog>

@@ -61,7 +61,7 @@ async function drawEarlierRuns() {
   /* The runs belong to the server, so a page reloaded mid-search finds them
      again instead of an empty column. */
   const cards = await ask("GET", "/api/runs");
-  if (!cards.length) return;
+  if (!cards.length) return 0;
   const results = $("results");
   results.textContent = "";
   for (const card of cards) {
@@ -69,6 +69,7 @@ async function drawEarlierRuns() {
     results.appendChild(node);
     if (card.running) follow(card.id, node); else draw(node, card);
   }
+  return cards.length;
 }
 
 function follow(identifier, node) {

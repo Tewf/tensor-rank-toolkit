@@ -35,11 +35,17 @@ command they built, then that same command again under the answer. Only a pane
 scrolls, never the page. `layout.css` is the shell, `console.css` the filling.
 
 **Start here.** Seven worked examples, behind the button of that name, in
-[`worked_examples.py`](worked_examples.py). Each fills the map, the question and
+[`worked_examples.py`](worked_examples.py); a console with no runs yet opens
+them on its own, since the empty screen and the first-time visitor are the
+same event. Each fills the map, the question and
 the flags and then stops, so the line is read before it is run. Three of them
 are the same map one flag apart, the shortest way to see found against proved
 impossible, with and without the quotient; a fourth shows a budget running
 out, which proves nothing. The last is the pipeline below.
+
+Each flag's control carries the measurement behind its default, shut behind
+its own "why this default" line, so the pane reads as choices first and as
+documentation on request.
 
 1. **The map.** Type it, paste it, load one of the repository's fixtures, open a
    file, or build one with `make-tensor`. The format is the one that already
