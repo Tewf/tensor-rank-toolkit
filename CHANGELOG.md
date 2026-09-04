@@ -6,6 +6,29 @@ numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The tensor and matrix readers refuse a row or header carrying more
+  entries than `shape` declares.** Both extracted exactly the declared
+  count from each line and dropped the surplus, so a mistyped file came
+  back as a verified answer to a different question than the one written.
+  Found by exercising the documented format against the built tools; the
+  dense rational reader gains its first refusal tests
+  (`test_dense_matrix.cpp`) and the suite grows from 95 to 96.
+
+### Changed
+
+- **A documentation pass over every group, against named standards.** The
+  page taxonomy is Diátaxis held to the JOSS review criteria; comments
+  follow the Google C++ comment rules and PEP 257, kept only where they
+  carry what the code cannot. Terms of art are defined or linked at first
+  use (DRAT, Tseitin, the gallop schedules), each strand states its own
+  headline number with its source beside it, stale transcripts and
+  comment-versus-code contradictions were reconciled against the built
+  binaries, and quoted examples were rerun rather than trusted. Links to
+  a folder point at the folder again; only a link carrying an anchor
+  names the page.
+
 ### Added
 
 - **`start-here.md`, a task-first front door in plain words**: the visitor
