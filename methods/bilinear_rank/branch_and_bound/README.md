@@ -38,16 +38,9 @@ paragraph.
 
 ## What it reaches
 
-Every count is verified in the tool: the answer is decomposed, the algorithm
-rebuilt and multiplied out against the map before the number is printed.
-Measurements, and the two it does not move:
-[`what-it-reaches.md`](what-it-reaches.md).
-
-**`cyclic_f2_7` from 15 to 13 in 22 nodes**, where the descent's step 3 has a
-shortlist of 0 out of 16 129 and cannot take a first step. **`f2_5x5` from 14 to
-13**, which with the exhaustive refutation at 12 settles `rank = 13` in this
-repository alone. **`matmul_2x2x2` to 7 with the tree exhausted**, from a
-generated move set that never forms the pool.
+Every count is verified twice before it is printed. Per-fixture node counts, the
+two fixtures it does not move, and where `f2_5x5` now stands proved on both
+sides: [`what-it-reaches.md`](what-it-reaches.md).
 
 ## Where this stops
 

@@ -23,10 +23,10 @@ walked out. Every other row is a refutation and its counts are exact.
 
 **The seconds were re-taken on 2026-08-21 and every count came out the same**, at
 every shape and every level, which is the check that a rebuild moved a clock and
-not an answer. The five one-level rows have a second exact cross-check since:
-counting the orbits of each pool under the stabiliser gives 5, 5, 5, 10 and 13,
-and `orbits + 1` is the node count of **both** routes at all five. That is not an
-observation that the two agree, it is the reason they must.
+not an answer. The five one-level rows have a second exact cross-check: the
+orbit-count identity [the-derivation.md](the-derivation.md) proves, `orbits + 1`
+the node count of **both** routes at every shape. That is not an observation
+that the two agree, it is the reason they must.
 
 These are the timings **after** the two changes
 [where-the-time-goes.md](where-the-time-goes.md) asked for. What they were worth,

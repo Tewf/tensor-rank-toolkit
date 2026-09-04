@@ -4,8 +4,22 @@ Two bounds come free: the flattening rank
 ([`tensor_flattening.h`](../../../core/linear_algebra/tensor_flattening.h))
 below, the smallest product of two of the three dimensions above. Finding the
 rank between them means asking a solver a sequence of decision questions, and
-there is more than one order to ask them in. Encodings are
-[`method/`](../method/); costs against the exhaustive search are
+there is more than one order to ask them in; each order picks the next `k`
+differently, which [`the-five-schedules.md`](the-five-schedules.md) names:
+
+```mermaid
+flowchart LR
+    B["floor, ceiling"] --> P["pick k"]
+    P --> A{"ask k"}
+    A -->|yes| C["ceiling = k"]
+    A -->|no| F["floor = k"]
+    C --> D{"floor + 1 = ceiling?"}
+    F --> D
+    D -->|no| P
+    D -->|yes| R["rank = ceiling"]
+```
+
+Encodings are [`method/`](../method/); costs against the exhaustive search are
 [`measurements.md`](../measurements.md).
 
 ## The floor no strategy can go below

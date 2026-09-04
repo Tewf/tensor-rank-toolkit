@@ -39,27 +39,14 @@ constant that closes two orders of magnitude, and the model does not try.**
 
 ## At one level: two roots, and the difference is an order
 
-At `L = 1` there is no tree to save. Both routes emit exactly one node per
-`G`-orbit of the pool, so the node counts are equal: checked as an identity
-rather than observed, since **orbits + 1 is the node count of both**, at all five
-shapes. What is left is how each route names those children.
-
-| shape | `\|P\|` | orbits | `sum \|O_i\|^2` | `least_in_orbit` | `orbit_representatives` |
-|---|---|---|---|---|---|
-| `<2,2,2>` | 225 | 5 | 1.08e4 | 29.2 us | 27.3 us |
-| `<2,2,3>` | 945 | 5 | 2.42e5 | 286 us | 123 us |
-| `<2,2,4>` | 3 825 | 5 | 5.32e6 | 4.19 ms | 502 us |
-| `<2,3,3>` | 32 193 | 10 | 1.73e8 | 88.9 ms | 4.27 ms |
-| `<3,3,3>` | 261 121 | 13 | 9.94e9 | **5.05 s** | **51.2 ms** |
-
-Same answer, same 13 children, **99x**. The plain route asks `least_in_orbit`
-once per pool element; it walks the orbit breadth first and asks `std::find` over
-a `seen` list that grows to the whole orbit, so the sweep costs
-`Theta(sum |O_i|^2)`, measured at 0.51 ns a unit, within 4% at the two largest
-shapes. `orbit_representatives` marks every element once and costs
-`Theta(|P|)`, 182 ns an element. **That is a difference in order, not a
-constant**, and it is the whole of the `<3,3,3>` margin: the plain route's entire
-4.87 s run at target 10 *is* that one call.
+At `L = 1` there is no tree to save: both routes visit the identical
+`orbits + 1` nodes, an identity [the-derivation.md](the-derivation.md) proves
+from the two routes' generators. What is left is how each route names those
+children, and it is the same shape of difference as above: `least_in_orbit`
+costs `Theta(sum |O_i|^2)` against `orbit_representatives`'s `Theta(|P|)`,
+priced row by row in [what-it-costs-here.md](what-it-costs-here.md). Same 13
+children at `<3,3,3>`, **99x**, and what that margin actually measures is in
+[why-nothing-consults-it.md](why-nothing-consults-it.md).
 
 ## What the group costs, which is not what decides either regime
 

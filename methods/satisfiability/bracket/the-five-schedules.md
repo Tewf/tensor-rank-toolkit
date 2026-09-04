@@ -22,8 +22,8 @@ stops. It lost on GF(16) because the floor was five short there, so it walked
 through `k = 7` at 3.7 s: the second dearest question in the table, and one no
 other schedule asks.
 
-**That specific handicap is gone.** The floor on GF(16) is now 8 rather than 4,
-one short of the rank instead of five, so ascending asks `k = 8` and `k = 9` and
+**That specific handicap is gone.** The floor on GF(16) [is now 8 rather than
+4, one short of the rank instead of five](what-decides-it.md), so ascending asks `k = 8` and `k = 9` and
 nothing else. The table above was measured before that and is not re-run here;
 what can be said without re-running it is that the four questions ascending was
 paying for and no other schedule asked, 4.10 s of its 108.461 s, are no longer

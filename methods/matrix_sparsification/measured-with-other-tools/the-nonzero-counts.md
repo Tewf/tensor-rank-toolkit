@@ -37,13 +37,9 @@ cost.
 Timings are one core, fastest of three, per
 [`../../../MEASURING.md`](../../../MEASURING.md).
 
-**Where it stops is combinatorial.** On `4x4x4_49_156_L`, a 16-dimensional space
-in `Q^49`, the greedy holds 9 of 16 vectors at weight 4 in 5 s and needs weight 6
-or more for the rest, where the scan is 14 million column subsets rising to 451
-million at weight 8. Thirty minutes was not enough when it still tried; it prices
-the walk now and refuses in milliseconds. What answers that operator is
-[`../method/answering-without-searching.md`](../method/answering-without-searching.md),
-by not searching.
+**Where it stops is combinatorial**, on `4x4x4_49_156_L`: the wall, why, and
+what answers it instead of searching:
+[`../method/where-the-scan-stops.md`](../method/where-the-scan-stops.md).
 
 ## Where each column came from
 

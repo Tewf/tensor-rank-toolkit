@@ -25,12 +25,8 @@ separate question, is measured, and is these two pages:
 the span is the first thing it sees. It used that to choose a basis and never as
 a bound.
 
-**The headline, stated as narrowly as it is true.** On `f2_5x5` the Griesmer form
-returns **12 where `rank_lower_bound` returns 10**, in under half a millisecond.
-That did not move the repository's bracket, which was already `12 <= rank <= 14`.
-It moved the *cheap* floor onto that 12, which until then came from an exhaustive
-refutation at `--target 11`. **The bracket has since closed at 13**, the floor by
-exhausting `--target 12` and the ceiling by
-[`tighten-rank-bound`](../bilinear_rank/branch_and_bound/), so the cheap floor no longer
-reaches the exhaustive one and the gap this closed has reopened one higher. The reading is in
-[`what-each-is-worth.md`](what-each-is-worth.md).
+**The Griesmer form's one win.** On `f2_5x5` it beat the existing floor and
+became the new default term, though the bracket has since moved past it: what
+it was worth and what joining the shared floor cost are in
+[`what-each-is-worth.md`](what-each-is-worth.md) and
+[`joining-the-shared-floor.md`](joining-the-shared-floor.md).

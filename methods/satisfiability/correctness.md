@@ -18,10 +18,9 @@ means a test fails if it stops being true.
 
 ## The asymmetry that shapes everything else
 
-A **yes** carries its own proof. The model is turned back into rank-one matrices
-and recombined, and the answer is refused if that does not reproduce the tensor.
-This is the FNP verifier of [`complexity.md`](complexity.md) written out, and it
-means a yes cannot be wrong unless the verifier is.
+A **yes** carries its own proof: the FNP verifier
+[`complexity.md`](complexity.md) describes, so a yes cannot be wrong unless the
+verifier is.
 
 A **no** carries nothing. It is a claim about every assignment the solver did not
 visit. Until `drat-trim` was wired in, it rested entirely on kissat being

@@ -57,10 +57,9 @@ Restoring the old behaviour would have been the wrong repair. **The scan is now
 priced by what it may walk rather than by what it allocates**, which is the thing
 that actually runs away: the widest level it could reach, `C(b, w)` at
 `w = (b − r + 1) / 2`. On a 23×9 operator that is about ten megabytes and passes.
-On `4x4x4_49_156_L` it is 1.4 PiB, so the command refuses **in milliseconds**,
-names the number, and points at
-[`method/answering-without-searching.md`](method/answering-without-searching.md).
-That operator used to run for thirty minutes and say nothing at all.
+What it prices to on the operator it cannot finish, and what answers that
+operator instead:
+[`method/where-the-scan-stops.md`](method/where-the-scan-stops.md).
 
 ## If you are looking for something here
 

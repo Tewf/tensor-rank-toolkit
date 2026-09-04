@@ -8,15 +8,9 @@ algorithm and ask it for `k − 1`. `⟨3,4,5⟩` at 47 is the case that prompts
 ## What the state is
 
 The search holds a set of matrices spanning `span(T)`. Its cost is the **sum of
-their ranks**, because a basis element of rank `r` becomes `r` rank-one products.
-Its one pruning rule is
-
-```
-dim V + 1 >= best   ->   cut
-```
-
-and it is sound because a subspace of dimension `d` costs at least `d`: every
-element contributes at least rank one.
+their ranks**, because a basis element of rank `r` becomes `r` rank-one products,
+and it prunes by the rule [the README derives](README.md#the-tree-is-bdez2012-and-only-the-stopping-rule-is-new-here):
+`dim V + 1 >= best` cuts.
 
 So the search has room to work exactly when **cost exceeds dimension**. Twelve
 matrices of average rank four cost 48 over dimension 12, and the gap of 36 is the

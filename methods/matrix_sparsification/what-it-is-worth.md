@@ -37,14 +37,11 @@ this page compared two of them until 2026-08-22.
 | **(c) straight-line program with common subexpressions** | the length of the program, which can be **below** `nnz − rows` | no | `[plinopt]`, and the `⟨3,3,3⟩` record chain |
 
 **This repository measures nnz, so it is in (a) and (b) and structurally cannot
-see (c)** on its own. What it can do is hand its answer to something that does,
-and [`measured-with-other-tools/before-a-subexpression-pass.md`](measured-with-other-tools/before-a-subexpression-pass.md)
-measures that:
-handed to `[plinopt]`'s subexpression pass the exact stage takes `Grey-221` from
-81 additions to 62, and two already-optimised schemes by 2% and 7%. That is (b)
-crossed with (c), a fourth thing again and not comparable to either record below.
-It also shows the two models pulling apart: on `3x3x3_23_58_L` six more zeros
-cost two additions. The gap is not small: `[plinopt]`'s own `3x3x3_23_55` operators carry
+see (c)** on its own. What it can do is hand its answer to something that does:
+what that is worth on `Grey-221` and two already-optimised schemes, a fourth
+thing again, (b) crossed with (c) and not comparable to either record below, is
+[`measured-with-other-tools/before-a-subexpression-pass.md`](measured-with-other-tools/before-a-subexpression-pass.md).
+The gap is not small: `[plinopt]`'s own `3x3x3_23_55` operators carry
 enough nonzeros to imply 122 additions by `nnz − rows`, and the straight-line
 program it ships for them runs in **55**. A sparsification-only pipeline reports
 roughly twice the literature's number for the same algorithm, and reporting them

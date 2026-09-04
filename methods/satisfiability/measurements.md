@@ -29,10 +29,8 @@ the same way is 5 after ruling out 1 through 4, in 50 ms.
 **Those are the flags `results.json` records, `--break-symmetry --plain-cnf`, and
 the flags are most of the figure.** The same sweep at the defaults costs
 **25.04 s** rather than 0.517 s, measured 2026-08-23 under the protocol, because
-symmetry breaking is off by default and off for an argument rather than for a
-measurement: an over-strong constraint would turn a satisfiable instance
-unsatisfiable, which is a false lower bound
-([`../../OPTIONS/asking-a-sat-solver.md`](../../OPTIONS/asking-a-sat-solver.md)).
+symmetry breaking is off by default; why, and what it does and does not rescue:
+[`choices/two-defaults-that-were-wrong.md`](choices/two-defaults-that-were-wrong.md).
 
 ## What it costs against the exhaustive search
 

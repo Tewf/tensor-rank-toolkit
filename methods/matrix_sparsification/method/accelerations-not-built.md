@@ -22,20 +22,17 @@ hopeless.
 [`answering-without-searching.md`](answering-without-searching.md).** On every
 operator large enough to time, the linear programme returns the same count as the
 scan between four and fifteen times faster, and returns an answer at all on the
-one the scan refuses:
+one the scan refuses; the Grey-221 and `4x4x4_49_156_L` rows are there. The same
+margin holds on every other timed fixture:
 
 | operator | search | simplex |
 |---|---|---|
-| `Grey-221_L` | 43 in 0.338 s | **43 in 0.022 s** |
-| `Grey-221_R` | 42 in 0.327 s | **42 in 0.022 s** |
-| `Grey-221_P` | 43 in 0.434 s | **43 in 0.031 s** |
 | `3x3x3_23_58_L` | 43 in 0.395 s | **43 in 0.025 s** |
 | `3x3x3_23_55_L` | 38 in 0.088 s | **38 in 0.022 s** |
 | `2x2x2_7_Strassen_L` 7×4 | **10 in 0.0002 s** | 10 in 0.0006 s |
-| `4x4x4_49_156_L` | **refuses** | 100 in 0.34 s |
 
-The scan wins only on the 7×4 fixtures, where the programme's setup costs more
-than the whole walk and both are under a millisecond.
+The scan wins only on the 7×4 fixture above, where the programme's setup costs
+more than the whole walk and both are under a millisecond.
 
 **The scan is not obsolete, and that is the reason to keep it fast enough rather
 than faster.** It is the only route here that *proves* its answer minimal; the

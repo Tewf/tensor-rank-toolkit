@@ -57,16 +57,14 @@ and is reported as agreeing is the worst outcome available.
 ## Why GL(n) x GL(m) cannot shrink the pool, and what can
 
 The natural hope is to quotient the rank-one maps by the sandwiching action
-`M -> mu M nu` and search over representatives. It buys nothing: that action is
-transitive on the nonzero rank-one matrices, so the entire pool is a single
-orbit and quotienting by the full group leaves one representative and no
-problem. The proof is in [`narrowing-the-search.md`](narrowing-the-search.md).
+`M -> mu M nu` and search over representatives. It buys nothing:
+[`narrowing-the-search.md`](narrowing-the-search.md) proves the action is
+transitive on the nonzero rank-one matrices, leaving one orbit and no problem.
 
-The group that helps is the subgroup that stabilises `span(T)`, since only that
-one maps solutions for `T` to solutions for `T`. It is what
-`expand_subspace_up_to_symmetry` quotients by here, and it is worth a great
-deal: `methods/bilinear_rank/orbit_reduction/` measures the `<3,3,3>` pool collapsing from 261 121 to
-**13 orbits**.
+The group that helps is the subgroup that stabilises `span(T)`, covered on the
+same page. It is what `expand_subspace_up_to_symmetry` quotients by here, and
+it is worth a great deal: `methods/bilinear_rank/orbit_reduction/` measures the
+`<3,3,3>` pool collapsing from 261 121 to **13 orbits**.
 
 But note what that does and does not save. The quotient prunes the **search**;
 the pool is still built in full before it is pruned, so the **space** is
@@ -77,13 +75,9 @@ carries a pool index down its recursion and has not been converted. Until it is,
 the answer to "generate fewer matrices" on a large shape is not to generate them
 at all, which is the SAT route.
 
-
 ## The rest of the schedule
 
-The floor is `rank_lower_bound`, the maximum of the flattening bound and both
-rank sums, which raises GF(16) from 4 to 8 for the price of milliseconds. The
-ceiling is the sum of the slices' ranks, reachable by decomposing each slice
-alone, so no search is spent establishing that an answer exists. The pool route
-is quotiented by the stabiliser where a group can be built for the shape and
-falls back silently where one cannot, because the quotient changes the time and
-never the answer.
+Floor and ceiling are [`complexity.md`](complexity.md)'s; on `gf16_multiplication`
+the floor alone raises the bound from 4 to 8 for the price of milliseconds. What
+the pool route does with the stabiliser, including when it falls back, is
+[`narrowing-the-search.md`](narrowing-the-search.md)'s.

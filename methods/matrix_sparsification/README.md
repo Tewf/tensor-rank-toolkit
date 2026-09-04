@@ -36,13 +36,11 @@ any of the hardness results:
 As in the other strand, the filenames carry what each method guarantees, and
 [`method/`](method/) says what each is and where it fails.
 **A third route does not search at all.** `--simplex` answers by linear
-programming. That is the minimum where the operator's matroid is regular and an
-upper bound elsewhere, and **no operator here is regular**, so read it as the
-second: it reaches the proved minimum on the `Grey-221` operators anyway, for
-reasons nothing cited explains. It is the only route that finishes `4x4x4_49_156_L`, and
-on the `Grey-221` operators it reaches the proved minimum, and on every operator
-large enough to time it is between four and fifteen times faster than the search:
-[`method/answering-without-searching.md`](method/answering-without-searching.md).
+programming: the minimum where the operator's matroid is regular, an upper bound
+elsewhere. What it reaches where no operator is regular, and why it beats the
+search on every operator large enough to time:
+[`method/answering-without-searching.md`](method/answering-without-searching.md)
+and [`method/accelerations-not-built.md`](method/accelerations-not-built.md).
 
 **Two methods search**: [`method/exact-over-q.md`](method/exact-over-q.md),
 which returns the minimum over every invertible `V` rather than a good answer,
@@ -111,10 +109,8 @@ record of the correction reads exactly like one that was always right.
 
 The exact method walks column subsets with an upper bound and no lower bound, so
 it stops on collecting a basis rather than on a proof that nothing lighter
-exists. **Brouwer-Zimmermann** `[zimmermann1996]`, coding theory's standard
-algorithm for the same subproblem, prunes with a lower bound from several
-disjoint information sets, and is the first thing to try on an operator this
-cannot finish.
+exists. Where it stops, and the published algorithm that could get past it:
+[`method/where-the-scan-stops.md`](method/where-the-scan-stops.md).
 
 The decomposition of `[beniamini2019]`, which factors an operator into a sparser
 one times a basis change and recurses, is still not implemented. What is

@@ -31,18 +31,10 @@ has to pass to be one at all.
 ## And the win it finds is the baseline's, not `[mckay1998]`'s
 
 Both roots name one child per orbit, from the same six generators, and get the
-same children. The plain route asks `least_in_orbit` once per pool element: it
-walks the orbit breadth first and asks `std::find` over a `seen` list that grows
-to the whole orbit, so the sweep costs `Theta(sum |O_i|^2)`. The canonical route
-asks `orbit_representatives`, which marks each element once: `Theta(|P|)`.
-
-| shape | `\|P\|` | `sum \|O_i\|^2` | `least_in_orbit` | `orbit_representatives` | children |
-|---|---|---|---|---|---|
-| `<2,2,2>` | 225 | 1.08e4 | 29.2 us | 27.3 us | 5 |
-| `<2,2,3>` | 945 | 2.42e5 | 286 us | 123 us | 5 |
-| `<2,2,4>` | 3 825 | 5.32e6 | 4.19 ms | 502 us | 5 |
-| `<2,3,3>` | 32 193 | 1.73e8 | 88.9 ms | 4.27 ms | 10 |
-| `<3,3,3>` | 261 121 | 9.94e9 | **5.05 s** | **51.2 ms** | 13 |
+same children: [the-derivation.md](the-derivation.md) proves the identity and
+[what-it-costs-here.md](what-it-costs-here.md) prices each route's way of
+naming them, `least_in_orbit`'s `Theta(sum |O_i|^2)` against
+`orbit_representatives`'s `Theta(|P|)`.
 
 **The plain route's entire 4.87 s run at `<3,3,3>` target 10 is that one call.**
 So the predicate fires there because the competitor is slow, on the one level of
@@ -95,8 +87,8 @@ has nothing left to buy.
 ## Where the route does win outright is a question, not a shape
 
 Counting solution subspaces up to the group, where the plain enumerator must
-store one canonical code per distinct object and re-walk every orbit: 22 778x
-fewer nodes and 11.8x the clock at `<2,2,2>` target 7, the margin growing with
-the group ([`../deduplication-cost.md`](../deduplication-cost.md)). That is
-already wired, in `enumerate-subspaces`. Deciding is not counting, and
-`decide-rank` is deciding.
+store one canonical code per distinct object and re-walk every orbit, is a
+different question: 22 778x fewer nodes at `<2,2,2>` target 7, the margin
+growing with the group ([`../deduplication-cost.md`](../deduplication-cost.md)). That is already wired,
+in `enumerate-subspaces`. Deciding is not counting, and `decide-rank` is
+deciding.

@@ -11,9 +11,5 @@ cannot be misled by a loose one.
 
 On four of the seven fixtures measured in
 [`the-five-schedules.md`](../bracket/the-five-schedules.md) the floor already
-equals the rank, so ascending asks that one mandatory question and stops:
-
-| Fixture | Floor, s | Ascending, s |
-|---|---|---|
-| f2_2x2 | 0.006 | 0.006 |
-| gf4 | 0.006 | 0.006 |
+equals the rank, so ascending asks that one mandatory question and stops, for
+example `f2_2x2` and `gf4` at 0.006 s.

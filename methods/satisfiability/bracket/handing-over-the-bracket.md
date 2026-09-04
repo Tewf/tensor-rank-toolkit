@@ -35,17 +35,12 @@ which 30 s is the candidate budget expiring at `k = 8`, to save the 0.35 s yes a
 
 ## Why the lever moved
 
-[`what-decides-it.md`](what-decides-it.md) was measured when the floor on GF(16)
-was 4 against a rank of 9, so ascending walked five ranks to reach the answer and
-a tight ceiling had five questions to save. `rank_lower_bound` now returns 8. The
-floor equals the rank on five of these seven fixtures and is one short on the
-other two, so `find_rank` already pays the mandatory
-`cost(no at r-1) + cost(yes at r)` and no ceiling has anything left to close.
-
-**A better upper bound is still the lever wherever the floor is loose**, and
-nothing here refutes that. What it says is that on these seven the floor is not
-loose any more, so a sweep bought to tighten a ceiling is a sweep bought to close
-a gap a polynomial bound has already closed.
+The floor on GF(16) has since risen from 4, five short of the rank of 9, to 8;
+why, and what that leaves for a ceiling to save across all seven fixtures, is
+[`what-decides-it.md`](what-decides-it.md)'s. A better upper bound is still the
+lever wherever the floor is loose, and nothing here refutes that: on these seven
+it no longer is, which is why a sweep bought to tighten a ceiling closes a gap a
+polynomial bound has already closed.
 
 So `find_rank` can take an achieved ceiling and no command spends a sweep to get
 one. A caller that already holds a checked decomposition, from a heuristic or

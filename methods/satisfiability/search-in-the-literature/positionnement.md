@@ -5,18 +5,11 @@ Nor is the observation that [bisection](naming-the-problem.md) can lose on time 
 which is `[heras2011]`'s about core-guided binary search.
 
 **New, as far as reading found**: the per-question price table in
-[`bracket/`](../bracket/), which on GF(16) prices all thirteen questions
-from k = 4 to k = 16 at once:
-
-| GF(16), from [`every-question-priced.md`](../bracket/every-question-priced.md) | Seconds |
-|---|---|
-| k = 4 to k = 7 (retired now, priced anyway) | 4.10 total |
-| k = 8 (the refusal that decides it) | 108.2 |
-
-Every question here is a separate deterministic
-process, so its cost is independent of the order it is reached in, and pricing
-all of them prices every schedule exactly and at once, including unimplemented
-ones. **A MaxSAT solver cannot do this**, because it is incremental: a call's
+[`every-question-priced.md`](../bracket/every-question-priced.md), pricing all
+thirteen GF(16) questions from k = 4 to k = 16 at once, and by the same
+argument every schedule over them, because each question is a separate
+deterministic process independent of the order it is reached in. **A MaxSAT
+solver cannot do this**, because it is incremental: a call's
 cost there depends on what the solver learned in the calls before it. The
 no-linking rule that costs this module incrementality is what buys it exact
 schedule pricing. That is a trade, not a gap.

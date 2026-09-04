@@ -8,8 +8,9 @@ of narrowing this search, the one that works and the two that cannot, is
 subspace a group-invariant canonical parent and accept an augmentation only from
 that parent's class, so each class is reached exactly once with **no memory** of
 what was generated. It is the standard fix for the duplication the plain tree
-leaves, and `methods/bilinear_rank/canonical_augmentation/` measures it at **22 778x fewer nodes** when
-*counting* solution subspaces.
+leaves, and `methods/bilinear_rank/canonical_augmentation/` measures it at
+**22 778x fewer nodes** when *counting* solution subspaces
+([`deduplication-cost.md`](../bilinear_rank/canonical_augmentation/deduplication-cost.md)).
 
 Deciding is not counting, and the first wiring of it lost by 129x. Two fixes
 since have taken most of that back. On `matmul_2x2x2`, over the whole sweep from

@@ -51,11 +51,9 @@ elementary divisors; `kronecker_structure` throws unless all three agree.
 ## The thing this module was wrong about
 
 It first shipped Ja'Ja's formula read with the **GF(p)** elementary divisors and
-called the result the rank. On `(I_4, C)` over GF(2) with `C` the companion of
-`x^4 + x + 1` that says 5, and the exhaustive search **proves** there is no
-algorithm with five products and exhibits one with six. Twelve pencils settled by
-exhaustion, three of which the classical formula gets wrong:
-[`the-measured-gap.md`](the-measured-gap.md).
+called the result the rank, which the exhaustive search refuted on the pencil
+that caught it. The twelve pencils settled by exhaustion, three of which the
+classical formula gets wrong: [`the-measured-gap.md`](the-measured-gap.md).
 
 ## What closes it, and it is published
 

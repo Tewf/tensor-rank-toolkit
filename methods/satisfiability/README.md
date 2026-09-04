@@ -7,7 +7,7 @@ directions, and this folder runs both.
 
 | | |
 |---|---|
-| **Rank is at least as hard as SAT** | [`formula_to_tensor.h`](formula_to_tensor.h) turns a 3SAT formula into a tensor of rank `4n + 2m` exactly when it is satisfiable |
+| **Rank is at least as hard as SAT** | [`formula_to_tensor.h`](formula_to_tensor.h) turns a 3SAT formula into a tensor of rank `4n + 2m` exactly when it is satisfiable, worked out in [`method/hastad-reduction.md`](method/hastad-reduction.md) |
 | **Rank is no harder than SAT** | the encoders turn `rank(T) ≤ r` into a formula, and a solver answers it |
 
 The second is why this exists, and **the advantage grows with the instance**:
@@ -45,11 +45,9 @@ trade.
 | [`field_theory_encoding.h`](field_theory_encoding.h) | GF(p) | nothing. cvc5 has a theory of prime fields, so the equations go across as equations |
 
 GF(2) has nothing in it to get wrong. **GF(p) has two backends and the one-hot
-encoder won**, which leaves cvc5 in the role it earned: the independent check on
-arithmetic that would otherwise be mine alone, reachable with `--backend smt`.
-The one-hot encoder's tables and addition chain are hand-written, and an
-encoding sharing none of them agreeing on every verdict is the best evidence
-available that they are right. Why it won:
+encoder won**, on merit, leaving cvc5 as the independent check on arithmetic
+that would otherwise be mine alone (`--backend smt`). Why it won, and what the
+agreement between them is worth:
 [`choices/the-gf-p-backend.md`](choices/the-gf-p-backend.md).
 
 ## What is checked, and how
@@ -65,21 +63,26 @@ argued: [`correctness.md`](correctness.md).
 
 ## Where this stops
 
-A solver's "no" is a lower bound only if it finished, **and only on the solver's
-word unless `--proof` is given**, which writes a DRAT refutation, an
-unsatisfiability proof checkable by a program that shares no code with the
-solver, and has `drat-trim` check it. Only kissat writes one here, so under any other solver the
-flag is refused rather than obeyed silently and uselessly. Ruling out six products for `⟨2,2,2⟩` produces a 1.1 MB
-certificate that verifies in half a second. A refutation that fails to verify
-stops the command. Timeouts and memory
-kills are reported as a third answer and never folded into "no", because that would
-turn giving up into a proof. A solver's "yes" is checked: the model is turned
-back into rank-one matrices and recombined, and the command fails if that does
-not reproduce the tensor.
+A tensor becomes a formula becomes a verdict, and the two verdicts are trusted
+differently:
 
-What each claim rests on, and which are checked rather than argued:
-[`correctness.md`](correctness.md). How the rank is located between the free
-bounds, and the four searches measured to decide it: [`bracket/`](bracket/).
+```mermaid
+flowchart LR
+    T[tensor] --> E[encoder]
+    E -->|CNF or SMT| S[solver process]
+    S -->|yes| V[rebuild decomposition,<br/>compare to tensor]
+    S -->|no, --proof| D[DRAT refutation,<br/>checked by drat-trim]
+    S -->|no, no proof| W[solver's word alone]
+    S -->|timeout / memory| U[unknown, moves no bound]
+```
+
+Only kissat writes a DRAT refutation here, so `--proof` under any other solver
+is refused rather than obeyed silently. Ruling out six products for `⟨2,2,2⟩`
+produces a 1.1 MB certificate that verifies in half a second, and a refutation
+that fails to verify stops the command.
+
+How the rank is located between the free bounds, and the four searches
+measured to decide it: [`bracket/`](bracket/).
 
 Symmetry breaking ships off by default, because an over-strong constraint would
 turn a satisfiable instance into UNSAT and a wrong "no" is a wrong lower bound.

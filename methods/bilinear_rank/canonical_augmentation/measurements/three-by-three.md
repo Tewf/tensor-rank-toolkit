@@ -26,18 +26,19 @@ least 19, so the free bound refuses no part of a descent.
 
 Candidate 0 timed out at both 27 and 26 and candidate 1 answered both, at 20 s and
 32 s. One systematically bad representative asked first costs a full budget per rank,
-which is the `⟨2,2,2⟩` observation below repeating at scale.
+which is the `⟨2,2,2⟩` observation in [where the mechanism does show
+something](where-the-mechanism-shows.md) repeating at scale.
 
 Two premises this run corrected:
 
-- **`f3_3x6` at 10 was not unanswered.** `minimise-rank --steps 3` delivers 10
-  products, checked by `recovers_map`, in 18.9 s. What no backend settles is the
-  *decision*, proving 10 minimal. The upper bound was already had, by the tool the
-  finder was meant to beat.
+- **`f3_3x6` at 10 was not unanswered.** [Against the
+  heuristics](against-the-heuristics.md) already has the verified `minimise-rank`
+  answer; what no backend here settles is the *decision*, proving 10 minimal.
 - **`minimise_rank` cannot take a first step on `⟨2,2,2⟩`, and two different
   things can.** The shortlist really is 0 of 225, so the greedy stops at the naive
-  8, and 7 is the number to beat. The 0.11 s printed here was `walk-scheme`'s and
-  not `plateau_search`'s, which is a timing from one tool sitting beside a claim
+  8, and 7 is the number to beat. The `0.11 s` in [against the
+  heuristics](against-the-heuristics.md) was `walk-scheme`'s and not
+  `plateau_search`'s, which is a timing from one tool sitting beside a claim
   about the other. Both do cross, and what each costs is now published rather than
   quoted: [`../../flip_graph/results.json`](../../flip_graph/results.json), which
   `evidence/reproduce/measure.py --check` re-derives.

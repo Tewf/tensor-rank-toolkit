@@ -3,8 +3,8 @@
 Each question is a separate deterministic kissat process, so its cost does not
 depend on the order it is reached in. Pricing all of them prices all schedules
 at once, exactly, including ones nobody implemented. GF(16), rank 9, ceiling 16,
-`--break-symmetry --plain-cnf`. **The floor was 4 when this was measured and is
-now 8**, so `k = 4` to `k = 7` are no longer asked; they are priced here anyway,
+`--break-symmetry --plain-cnf`. **The floor [was 4 when this was measured and is
+now 8](what-decides-it.md)**, so `k = 4` to `k = 7` are no longer asked; they are priced here anyway,
 because pricing every question is the point and because their total, 4.10 s, is
 what the stronger bound saves:
 

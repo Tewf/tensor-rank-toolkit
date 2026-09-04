@@ -44,10 +44,8 @@ still costs less than a pool pass a leaf`.
 
 **One input is not free and is stated as its own type.** `PoolOrbits` (the
 orbits of the pool under the stabiliser and the sum of their squared sizes) has
-no closed form here and costs one `O(|P| * generators)` pass: 27 us at `<2,2,2>`
-and 51 ms at `<3,3,3>`, the latter against the 4.9 s decision it prices.
-Withheld, the one-level arm refuses rather than falling back on `|O| <= |G|`,
-which is **125x** the truth at `<3,3,3>`.
+no closed form here: what the pass costs, and why the one-level arm refuses
+rather than guesses at it, is in [the derivation](the-derivation.md).
 
 ## The files
 

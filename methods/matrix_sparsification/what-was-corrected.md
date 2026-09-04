@@ -46,25 +46,13 @@ number.
 ## And a second, the same day: a property asserted from a sample
 
 **`4x4x4_49_156_L` was published as having a regular matroid, and it does not.**
-The claim rested on 200 000 random 16-subsets whose determinants were all in
-`{0, ±1}` and 20 000 subsets whose `Q`, GF(2) and GF(3) ranks agreed. Both
-numbers are true and neither is evidence: only about 0.8% of random 16-subsets
-are bases at all, so the sample was mostly singular matrices agreeing that they
-were singular.
-
-A decision procedure refuted it in **2.8 milliseconds**. The witness is sixteen
-columns with determinant −2, rank 16 over `Q` and 15 over GF(2), and it is
-recorded in
-[`method/answering-without-searching.md`](method/answering-without-searching.md)
-so that anyone can recompute it without the library that found it.
+A sample of random subsets agreed twice over, and neither agreement was
+evidence; a decision procedure refuted it instead. The sample, the witness, and
+what the correction leaves standing:
+[`method/answering-without-searching.md`](method/answering-without-searching.md).
 
 **What it cost.** One sentence, that the least weight of 4 was minimal *by
 Tillmann's theorem*. It was not, and the basis at 100 nonzeros is an upper bound
 rather than an optimum. Everything else survived, because it had been checked
 rather than deduced: the basis spans the right space, and that was verified in
 exact rational arithmetic independently of any solver.
-
-**What it is worth.** The correction improves the finding it damages. Four
-operators out of four now reach the proved minimum, or an answer where there was
-none, with the `ℓ1` relaxation tight and not one of them regular. The theorem was
-the reason to try it, and it turns out not to be the reason it works.
