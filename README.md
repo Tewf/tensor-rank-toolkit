@@ -61,24 +61,30 @@ answers that no other does:
 
 ## Methods
 
-The greedy **heuristic** descends rank by matroid-greedy steps: exact for the
+One claim per strand, its guarantee first.
+
+**The greedy heuristic** descends rank by matroid-greedy steps: exact for the
 basis its first step picks, polynomial-time throughout, and offering no
 optimality guarantee past that step, which its correctness note states
-precisely. The exhaustive
-search is a **complete decision procedure** after
+precisely.
+
+**The exhaustive search** is a **complete decision procedure** after
 [`[bdez2012]`](references.md), exponential as the NP-completeness of the
-problem leads one to expect; the isomorph-free strand generates one candidate
-per equivalence class in the sense of [`[mckay1998]`](references.md), a count
-for *enumeration*: asked to *decide* instead, the same generator trades those
-fewer nodes for a slower clock, 53x fewer nodes for 5.1x the wall clock, which
-is why deciding does not use it
-([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
-The satisfiability strand reduces the rank decision to SAT, its binary encoding
-the idea of [`[heule2021]`](references.md); a negative answer there is a
-DRAT refutation checked by an independent program. The sparsification
-strand proves its minima: the reduction of the published `Grey-221` operators
-to 128 nonzeros is a minimum over every invertible change of basis, not a
-best effort.
+problem leads one to expect.
+
+**The isomorph-free strand** generates one candidate per equivalence class in
+the sense of [`[mckay1998]`](references.md), a count for *enumeration*: asked
+to *decide* instead, the same generator trades those fewer nodes for a slower
+clock, 53x fewer nodes for 5.1x the wall clock, which is why deciding does not
+use it ([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
+
+**The satisfiability strand** reduces the rank decision to SAT, its binary
+encoding the idea of [`[heule2021]`](references.md); a negative answer there
+is a DRAT refutation checked by an independent program.
+
+**The sparsification strand** proves its minima: the reduction of the
+published `Grey-221` operators to 128 nonzeros is a minimum over every
+invertible change of basis, not a best effort.
 
 **The leaf is where the exhaustive search lives**, and neither of its two
 routes forms an element any more: the walk steps in reflected Gray order over

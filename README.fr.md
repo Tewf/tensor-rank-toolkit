@@ -64,24 +64,31 @@ que chacun est seul à traiter :
 
 ## Méthodes
 
-L'**heuristique** gloutonne descend le rang par pas gloutons sur matroïde :
-exacte pour la base que choisit sa première étape, polynomiale de bout en bout, et
-sans garantie d'optimalité au-delà, ce que sa note de correction énonce
-précisément. La recherche exhaustive est une **procédure de décision
-complète** d'après [`[bdez2012]`](references.md), exponentielle comme la
-NP-complétude du problème le laisse attendre ; l'axe sans isomorphes engendre
-un candidat par classe d'équivalence au sens de
-[`[mckay1998]`](references.md), un chiffre de *dénombrement* : demandé de
-*décider* plutôt, le même générateur échange ces nœuds en moins contre un
-temps de calcul plus long, 53x moins de nœuds pour 5,1x le temps de calcul, ce
-pour quoi la décision ne l'utilise pas
+Une affirmation par axe, sa garantie d'abord.
+
+**L'heuristique gloutonne** descend le rang par pas gloutons sur matroïde :
+exacte pour la base que choisit sa première étape, polynomiale de bout en
+bout, et sans garantie d'optimalité au-delà, ce que sa note de correction
+énonce précisément.
+
+**La recherche exhaustive** est une **procédure de décision complète**
+d'après [`[bdez2012]`](references.md), exponentielle comme la NP-complétude
+du problème le laisse attendre.
+
+**L'axe sans isomorphes** engendre un candidat par classe d'équivalence au
+sens de [`[mckay1998]`](references.md), un chiffre de *dénombrement* :
+demandé de *décider* plutôt, le même générateur échange ces nœuds en moins
+contre un temps de calcul plus long, 53x moins de nœuds pour 5,1x le temps de
+calcul, ce pour quoi la décision ne l'utilise pas
 ([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
-L'axe satisfiabilité réduit la décision du
-rang à SAT, son encodage binaire reprenant l'idée de
-[`[heule2021]`](references.md) ; une réponse négative y est une réfutation
-DRAT vérifiée par un programme indépendant. L'axe creusement prouve ses
-minima : la réduction des opérateurs publiés `Grey-221` à 128 non-nuls est un
-minimum sur tout changement de base inversible, pas un meilleur effort.
+
+**L'axe satisfiabilité** réduit la décision du rang à SAT, son encodage
+binaire reprenant l'idée de [`[heule2021]`](references.md) ; une réponse
+négative y est une réfutation DRAT vérifiée par un programme indépendant.
+
+**L'axe creusement** prouve ses minima : la réduction des opérateurs publiés
+`Grey-221` à 128 non-nuls est un minimum sur tout changement de base
+inversible, pas un meilleur effort.
 
 **La feuille est l'endroit où vit la recherche exhaustive**, et aucune de ses
 deux routes n'y forme plus d'élément : le parcours avance en code de Gray
