@@ -6,8 +6,7 @@ nvcc exists, below).
 
 In this group:
 
-- [`cli/`](cli/): the shared command grammar, the exit-code
-  vocabulary (a proved no is 1, a spent budget is 3, neither a crash), and
+- [`cli/`](cli/): the shared command grammar, the exit-code vocabulary, and
   the stdout-for-results discipline.
 - [`run_limits/`](run_limits/): memory, cores, and which
   processor, plus the card-failure note both card leaves share.

@@ -6,10 +6,9 @@ and each is a rule, with a fifth that is not about timing at all.
 
 **The baseline is the path the kernel would replace, on this machine, today.**
 Not a figure from an older document and not the general Givaro path when the
-packed one is what ships. Timing the leaf kernel against 785 ns rather than the
-940.2 ns the leaf actually cost would have flattered the card by up to 23x,
-which is recorded in [`what-the-card-did.md`](what-the-card-did.md)
-because it was nearly done.
+packed one is what ships: an older figure was nearly used here by mistake, and
+[`what-the-card-did.md`](what-the-card-did.md) records what that would have
+cost the comparison.
 
 **A host baseline is quoted at one core and at twelve, both.** One core is the
 comparison the rest of this file makes; twelve is the comparison a reader with
@@ -27,8 +26,9 @@ runs are the ones a machine without a card has. A card number is reproduced on
 comparable hardware or not at all, and the model is published beside it: an RTX
 4060 Laptop, 8 GB.
 
-**Correctness is checked against the CPU, never assumed from the timing.** The
-survivor sets are compared element for element with the shipped leaf's on every
-question measured. A kernel that is fast and wrong is the failure this guards,
-and it does not announce itself in a table of seconds.
+**Correctness is checked against the CPU, never assumed from the timing.**
+[`why-the-answer-is-the-same.md`](why-the-answer-is-the-same.md) is that
+comparison, survivor by survivor, for every question measured. A kernel that is
+fast and wrong is the failure this guards, and it does not announce itself in a
+table of seconds.
 

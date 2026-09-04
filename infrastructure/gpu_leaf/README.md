@@ -7,22 +7,29 @@ each candidate from that index, timed against the leaf that already exists. This
 is that measurement, on an RTX 4060 Laptop, 24 SMs, compute capability 8.9.
 
 **It is a proof of concept, and it is wired behind `CUDAToolkit_FOUND`.** The
-kernels are built only where the toolkit is found. Where it is,
-[`register_the_card.cpp`](register_the_card.cpp) is linked into `decide-rank`,
-`minimise-rank`, `tighten-rank-bound`, `walk-scheme` and `show-limits`, and that
-link is the whole of the registration: `gf2_leaf.cpp` in
-`methods/bilinear_rank/exhaustive/` asks
-`leaf_on_card()` and `run_limits::chosen_device()` at each leaf, so `--device
-auto` sends one past the measured floor to the card. Where it is not,
-`find_package` returns before any of that, the seam stays null and every run
-prints `device: cpu (no gpu backend compiled in)`, so a machine without `nvcc`
-builds and tests exactly as before; the harness's C++ is compiled everywhere,
-which is a different matter and
-[`../../CMakeLists.txt`](../../CMakeLists.txt) says why. What is wanted is a number a
-laboratory with real hardware can multiply, not a faster laptop.
+kernels are built only where the toolkit is found. What decides card or host
+from there, down to one leaf's answer, is
+[`../run_limits/device.h`](../run_limits/device.h)'s `chosen_device`:
 
-How to build it, which is not the obvious command on this machine:
-[`building-it.md`](building-it.md).
+```mermaid
+flowchart TD
+    F["CUDAToolkit_FOUND?"] -->|no| N["seam stays null"]
+    N --> P["every run prints<br/>device: cpu (no gpu backend compiled in)"]
+    F -->|yes| L["register_the_card.cpp linked into<br/>decide-rank, minimise-rank, tighten-rank-bound,<br/>walk-scheme, show-limits"]
+    L -->|"decide-rank's leaf question"| G["gf2_leaf.cpp asks leaf_on_card()"]
+    G --> C["chosen_device(elements), asked fresh per leaf"]
+    C -->|"--device auto or gpu, elements over launch_floor"| K["pool_scan.cu / subspace_walk.cu answers"]
+    C -->|"below launch_floor, or --device cpu"| H["host answers"]
+```
+
+A machine without `nvcc` builds and tests exactly as before; the harness's C++
+is compiled everywhere regardless, which is a different matter and
+[`../../CMakeLists.txt`](../../CMakeLists.txt) says why. What is wanted is a
+number a laboratory with real hardware can multiply, not a faster laptop.
+
+How to build it, which is not the obvious command on this machine and needs a
+second build directory with `-DCUDAToolkit_ROOT` set and the host compiler kept
+at the system one: [`building-it.md`](building-it.md).
 
 **The suite has now been run with the kernels compiled in, and it was not before.**
 That claim ran one way only: a machine without `nvcc` builds and tests as before,
@@ -31,11 +38,6 @@ exercised here at all. Built 2026-08-23 with `nvcc` 12.9 from the `cuda` conda
 environment and the system C++ compiler, against an RTX 4060 Laptop:
 **76 of 76 fast tests pass**. So the kernels are not merely compilable, they are
 test-clean, and the asymmetry in that claim is closed.
-
-Two things that build needed and the obvious command does not give:
-`-DCUDAToolkit_ROOT` pointing at the conda environment, since `find_package`
-looks on `PATH` and `nvcc` is not on it, and the system C++ compiler rather than
-the environment's, which does not see the system Givaro headers.
 
 ## What the kernel does
 
@@ -82,24 +84,22 @@ accident.** They price the card against the kernel's own arithmetic run on the
 host, which was written here to keep the card from being credited with a win
 belonging to the representation. Hours later `d85fd32` put that arithmetic into
 `Gf2Leaf` itself, so those rows stopped being a control and became the
-comparison: **544x on one core, 81x on twelve.** Re-measured 2026-08-20 on
-`decide-rank --matmul 2 4 4 4 --target 47`, differencing two `--leaf-limit`
-values so the setup cancels, the packed leaf is **120.3 ns an element** against
-the 940.2 ns the top two rows are taken against. Those two now price a path
-nothing takes, and are kept because the 785 ns story above needs them.
+comparison: **544x on one core, 81x on twelve.** That rate is confirmed
+independently at **120.3 ns** an element against the 940.2 ns the top two rows
+are taken against, detailed in [`what-the-card-did.md`](what-the-card-did.md).
+Those two now price a path nothing takes, and are kept because the 785 ns story
+above needs them.
 
 **Every ratio in that table is against the packed leaf, and the leaf stopped
-being the packed leaf hours later**, when `is_rank_one` and the carried residual
-took a scan element to **3.3 ns** in the search and 1.16 ns in a harness. Against
-the card's 0.24 ns that is 5x to 14x rather than 544x, so **the verdict here is
-suspended, not retracted**, until `measure-leaf` re-takes it against the leaf
-that ships: [`what-the-card-did.md`](what-the-card-did.md) and
+being the packed leaf hours later**, which leaves the card's edge at 5x to 14x
+rather than 544x, so **the verdict here is suspended, not retracted**, until
+`measure-leaf` re-takes it against the leaf that ships: what changed and by how
+much is in [`what-the-card-did.md`](what-the-card-did.md) and
 [`../../writeup/how-the-search-works/what-to-wire.md`](../../writeup/how-the-search-works/what-to-wire.md).
 
-**One whole `⟨4,4,4⟩` leaf is 1.02 s on the card against 9.2 minutes of one core
-at the packed leaf's rate**, not the 67 minutes this said until the host caught
-up, and about 14 seconds at the rate the scan runs at now. Only the 1.02 s was
-timed; the other two are arithmetic on a rate.
+**One whole `⟨4,4,4⟩` leaf is 1.02 s on the card**, timed end to end; what that
+is against one core, and what it was before, is in
+[`what-the-card-did.md`](what-the-card-did.md).
 
 **It is compute bound, and the prior that said otherwise was wrong.**
 [`../../writeup/positioning/what-a-gpu-would-take.md`](../../writeup/positioning/what-a-gpu-would-take.md)

@@ -35,10 +35,9 @@ starting a measurement, `--help` printed exactly as captured:
     #   floor    where the card starts winning, re-fit
     #   --help   print this and stop, as exit 2
 
-**`-DCMAKE_CUDA_ARCHITECTURES=89` was on that line and is gone from it.** It is
-the RTX 4060 and it was also written into `CMakeLists.txt`, so a build on any
-other card produced a fatbin with no image the device could run, and the failure
-is invisible, because `leaf_backend.cpp` catches it and lets the host answer.
-`CMakeLists.txt` now asks CMake for `native`, which asks the driver what is
-really in the machine. Pass the flag only to build for a card that is *not* here;
-an explicit value still wins, which is what a packager cross-compiling needs.
+**`-DCMAKE_CUDA_ARCHITECTURES=89` was on that line and is gone from it.**
+`CMakeLists.txt` now asks CMake for `native` instead of the RTX 4060 pin that
+made every other card fail silently; why, and what it cost, is in
+[`../run_limits/adapting-to-the-machine/fitted-or-genuine.md`](../run_limits/adapting-to-the-machine/fitted-or-genuine.md#fitted-and-there-were-four-two-are-now-derived).
+Pass the flag only to build for a card that is *not* here; an explicit value
+still wins, which is what a packager cross-compiling needs.

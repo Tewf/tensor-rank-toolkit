@@ -95,22 +95,13 @@ cannot be priced against it.
 
 ## (c) The card: one line, and it was the worst bug of the three axes
 
-`infrastructure/gpu_leaf/CMakeLists.txt` said `CUDA_ARCHITECTURES "89"`. **8.9 is the RTX 4060
-and nothing else.** On any other card the fatbin held no image the device could
-run, every launch returned `cudaErrorNoKernelImageForDevice`, `leaf_backend.cpp`
-caught it exactly as designed and let the host answer, so the run was several
-hundred times slower with one line on stderr to say so, and the two seams this
-whole directory exists for were dead. It now asks CMake for `native`, which asks
-the driver what is really in the machine; an explicit `CMAKE_CUDA_ARCHITECTURES`
-still wins, which is what a packager cross-compiling needs.
+`infrastructure/gpu_leaf/CMakeLists.txt` said `CUDA_ARCHITECTURES "89"`, right
+only for the RTX 4060 this was written on, and now asks CMake for `native`
+instead. What the old pin cost on other hardware, and why the replacement
+holds, is in
+[`fitted-or-genuine.md`](fitted-or-genuine.md#fitted-and-there-were-four-two-are-now-derived).
 
-**No third seam was built, and that is the finding rather than a deferral.** The
-two that exist cover both GPU-shaped loops in the repository. The one honest
-candidate, `contraction_ranks`, is the general-field path, and `gpu_leaf`'s own
-README already says that field has none of the bit arithmetic the kernels are made
-of; its whole cost is under half a second, once, before a search starts. It got
-cores instead, which work on every machine and needed no kernel.
-
-**No strand decides its own device, so nothing had to be routed through
-`chosen_device`.** It is called from four places and three of them are the two
-seams; the fourth is the plan reporting what those three will do.
+No third seam was built and no strand decides its own device, so nothing had
+to be routed through `chosen_device`; the reasoning and the four call sites
+are in
+[`the-audit.md`](the-audit.md#the-one-candidate-for-a-third-seam-and-why-it-stays-unbuilt).
