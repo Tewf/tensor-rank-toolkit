@@ -81,7 +81,22 @@ that finding still.
 
 ## One pipeline
 
-The rank search recovers ⟨L, R, P⟩; sparsification is what they are for.
+The rank search recovers ⟨L, R, P⟩; sparsification is what they are for. The
+whole use, one drawing: two ways to a tensor, two finders and a decider on
+it, and what a recipe is for.
+
+```mermaid
+flowchart LR
+    problem["your problem<br/>matmul, polynomials,<br/>any bilinear map"] -->|"make-tensor"| tensor["my.tensor"]
+    published["a published algorithm,<br/>L, R, P in SMS"] -->|"operators-to-tensor"| tensor
+    tensor -->|"minimise-rank --emit-operators<br/>seconds, good, no guarantee"| recipe["out_L, out_R, out_P<br/>a working recipe"]
+    tensor -->|"tighten-rank-bound --emit-operators<br/>below the heuristic; gap 0 is proved best"| recipe
+    tensor -->|"decide-rank<br/>the true rank, exponential, writes no files"| verdict["yes with a checked witness,<br/>no with a proof"]
+    recipe -->|"sparsify-operator<br/>rank fixed"| sparse["fewest additions,<br/>proved minimal"]
+    recipe -->|"PMchecker, PLinOpt's checker"| outside["checked outside<br/>this repository"]
+```
+
+The two lines a first session actually types:
 
 ```sh
 minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 products

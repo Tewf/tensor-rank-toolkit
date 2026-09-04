@@ -86,7 +86,21 @@ maintenir ce constat.
 ## Une seule chaîne
 
 La recherche de rang reconstruit les opérateurs ⟨L, R, P⟩ ; le creusement est
-ce à quoi ils servent.
+ce à quoi ils servent. Tout l'usage, en un dessin : deux chemins vers un
+tenseur, deux chercheurs et un décideur dessus, et ce à quoi sert une recette.
+
+```mermaid
+flowchart LR
+    probleme["votre problème<br/>matmul, polynômes,<br/>toute application bilinéaire"] -->|"make-tensor"| tenseur["my.tensor"]
+    publie["un algorithme publié,<br/>L, R, P au format SMS"] -->|"operators-to-tensor"| tenseur
+    tenseur -->|"minimise-rank --emit-operators<br/>secondes, bon, sans garantie"| recette["out_L, out_R, out_P<br/>une recette qui marche"]
+    tenseur -->|"tighten-rank-bound --emit-operators<br/>sous l'heuristique ; gap 0, prouvé optimal"| recette
+    tenseur -->|"decide-rank<br/>le vrai rang, exponentiel, n'écrit aucun fichier"| verdict["oui avec un témoin vérifié,<br/>non avec une preuve"]
+    recette -->|"sparsify-operator<br/>rang fixé"| creuse["le moins d'additions,<br/>minimum prouvé"]
+    recette -->|"PMchecker, le vérificateur de PLinOpt"| dehors["vérifié hors<br/>de ce dépôt"]
+```
+
+Les deux lignes qu'une première séance tape vraiment :
 
 ```sh
 minimise-rank evidence/fixtures/f2_5x5.tensor --emit-operators out   # 25 -> 14 multiplications
