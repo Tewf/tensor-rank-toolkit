@@ -92,5 +92,6 @@ the compression is tested on a tensor it actually changes rather than only on th
 identity map. It is `matmul_2x2x2` with one dependent row, two dependent columns
 and three dependent slices appended: `7 x 5 x 6` on the outside, flattening ranks
 `(4, 4, 4)`, and compressing it gives `matmul_2x2x2` back byte for byte, so the
-core's rank is the 7 that fixture is known to have. The file's own comment block
-says which combination each appended position is.
+core is the tensor whose rank [`evidence/benchmark_tensors/decided-exactly.md`](../benchmark_tensors/decided-exactly.md)
+decides outright. The file's own comment block says which combination each
+appended position is.

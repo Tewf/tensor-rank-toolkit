@@ -19,6 +19,20 @@ timings, and why it must not is the first thing
 invocations (full rewrite, `--counts`, `--slow`). The protocol a timing was
 taken under is [`../../MEASURING.md`](../../MEASURING.md).
 
+Four guards hold one file's claim to the file it must agree with, and CI runs
+`measure.py --check` first and the other three even when it fails
+([`../../.github/workflows/ci.yml`](../../.github/workflows/ci.yml)):
+
+```mermaid
+flowchart LR
+    binaries["binaries in build/"] -->|"measure.py: rewrites, stamps provenance<br/>--check: compares, exit 1 on drift"| results["committed<br/>results.json files"]
+    results -->|"front_page.py"| page["index.html's<br/>hand-typeset tables"]
+    results -->|"quoted_numbers.py"| prose["a ratio quoted<br/>into prose"]
+    test["canonical_augmentation's<br/>own test"] -->|"quoted_numbers.py"| prose
+    cmake["CMakeLists.txt"] -->|"notice_scope.py"| notice["NOTICE"]
+    plinopt["evidence/fixtures/plinopt/"] -->|"notice_scope.py"| notice
+```
+
 Five files, one role each, and each says its own rules at the top:
 
 - [`measure.py`](measure.py): runs the invocations and compares or rewrites

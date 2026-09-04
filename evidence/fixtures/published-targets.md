@@ -88,8 +88,9 @@ first property.
 **The two field extensions** extend a family this repository is already measured
 on. `mu_2(n)` is the bilinear complexity of `F_{2^n}` over `F_2`, and the values
 published for `n` up to 6 are 3, 6, 9, 13, 15. The first three of those are
-`gf4`, `gf8` and `gf16`, and each is settled here by
-[`../../methods/bilinear_rank/exhaustive/`](../../methods/bilinear_rank/exhaustive/) rather than taken on trust.
+`gf4`, `gf8` and `gf16`, settled by
+[`../../methods/bilinear_rank/exhaustive/`](../../methods/bilinear_rank/exhaustive/) rather than taken on trust,
+with the decided values themselves in [`evidence/benchmark_tensors`](../benchmark_tensors/).
 
 **13 and 15 are the two numbers on this page with no key beside them**, and that
 is deliberate rather than an omission to fill in later. They are widely quoted,
