@@ -23,8 +23,9 @@ this repository is, and the front is much closer to us:
   paper's own state count for ruling out rank 6 there is
   `Σ_{k≤2} C(225, k) = 25426`, against 25399 for
   [`expand_subspace`](../../methods/bilinear_rank/exhaustive/exhaustive_search.h) on the same
-  question. **Agreement to a tenth of a percent on three questions is empirical
-  proof the two walk the same tree**, and they do, because both are `[bdez2012]`
+  question, the agreement
+  [`comparing-against-the-baseline.md`](comparing-against-the-baseline.md) reads
+  as empirical proof the two walk the same tree, because both are `[bdez2012]`
   Algorithm 1. Wall-clock comparisons between the two cross a JVM boundary and
   are **not quoted here**: where the node counts match, a time difference
   measures the runtime, not the algorithm.

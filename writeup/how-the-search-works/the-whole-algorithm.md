@@ -7,6 +7,23 @@ the whole of it, so a proposal can be read against what ships.
 calls, and unmarked is what runs today. The verdict on each of the five, and why
 three of them are no: [`what-to-wire.md`](what-to-wire.md).
 
+The three stages below as one pipeline, `[flag]` and `[gap]` reading exactly as
+above:
+
+```mermaid
+flowchart TD
+    Setup["setup: rank floor, pool, group"] -->|"k < floor"| Refuted["NO, no node opened"]
+    Setup --> Tree["descend: grow V one pool map at a time"]
+    Tree -->|"dim V > k"| Pruned["NO"]
+    Tree -->|"dim V == k"| Leaf["leaf: rank-one basis?"]
+    Tree -->|"-s: skip orbit-mates"| Tree
+    Tree -.->|"--route canonical [flag]: rebuild stabiliser per node instead"| Tree
+    Leaf --> Route["walk or scan, by count"]
+    Route --> Device{"device"}
+    Device -->|"below launch floor"| Host["host"]
+    Device -.->|"at or above launch floor [gap]"| Card["card"]
+```
+
 ## The setup, before a node is opened
 
 ```

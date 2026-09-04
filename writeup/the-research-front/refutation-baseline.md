@@ -21,9 +21,9 @@ reach is not. Both search and then hand a refusal to an independent checker, and
 that discipline is the one place the two are level: a DRAT proof rechecked by
 `drat-trim` is exactly Wang's certificate argument in a different notation. But
 Wang settles `⟨3,3,3⟩`, and the largest thing this encoding refutes is far
-smaller: `f3_3x6` does not answer at ten in 300 s, though the exhaustive search
-settles that map at nine in under eight seconds, and on `f2_5x5` the exhaustive search
-reaches only the floor of 13, the 13 itself being exhibited by
+smaller: `f3_3x6` does not answer at ten in 300 s, where the exhaustive search
+already has, timed on [`what-is-missing.md`](what-is-missing.md), and on
+`f2_5x5` the exhaustive search reaches only the floor of 13, the 13 itself being exhibited by
 [`tighten-rank-bound`](../../methods/bilinear_rank/branch_and_bound/) rather than refuted into
 place; `[bdez2012]` settled the same 13 by exhaustive search in 2012.
 **The gap is not the certificate, it is the orbit

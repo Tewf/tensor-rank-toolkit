@@ -51,8 +51,8 @@ leaf(V):                                        has V a rank-one basis?
 Two facts do the work. `least_in_orbit` makes the quotient need **no array over
 `P`**: it is a breadth-first walk of one orbit under the generators, early-exiting
 the moment it meets a smaller index still in `[from, |P|)`. And `P[i]` on an
-addressed pool is arithmetic, `lefts[i / |rights|] ⊗ rights[i % |rights|]`, so
-4 294 836 225 candidates cost no memory at all.
+addressed pool is arithmetic rather than stored ([`the-whole-algorithm.md`](the-whole-algorithm.md)
+has the formula), so 4 294 836 225 candidates cost no memory at all.
 
 ## What it prints
 
@@ -175,11 +175,10 @@ remembered. It is measured at 22 778x fewer nodes while *counting* subspaces and
 at 53x fewer nodes for 5.1x the wall clock while *deciding*, which is why
 deciding does not use it: [the cost model](../../methods/canonical_factorisation/canonical-augmentation.md).
 
-**`SortedSpan`** holds `V` as its rank filtration `R[1] ⊆ … ⊆ R[16]` instead of a
-sorted list, which makes the minimum-weight cost a closed form. It reads as a
-leaf test too, `dim R[1] == dim V`, and that reading is the trap: building the
-filtration walks the same `p^dim` elements the walk route walks, without its
-early exit and with a Gaussian rank where a rank-one test would do.
+**`SortedSpan`** holds `V` as a rank filtration instead of a sorted list
+([`parameters.md`](parameters.md) has the members); wired as a leaf test it
+would just replay the walk route without its early exit, which is why it stays
+at the descent's cost query instead ([`what-to-wire.md`](what-to-wire.md)).
 
 **The GPU** does one whole `⟨4,4,4⟩` leaf in 1.019 s, and answers no question
 this repository can currently pose, because the tree above that leaf has a node

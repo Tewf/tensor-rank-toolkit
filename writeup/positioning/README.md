@@ -30,10 +30,8 @@ In this folder:
   position implies.
 - [`what-a-gpu-would-take.md`](what-a-gpu-would-take.md): the two parts the
   page below never examined, why the `C A` multiply is dead at any speed, and
-  why the same measurement says 4% at one shape and almost everything at
-  another.
+  why pool generation's ceiling depends on which shape you ask about.
 - [`hardware-and-parallelism.md`](hardware-and-parallelism.md): why a GPU is
-  the wrong instrument for the tree and backwards for the solver, and what the
-  GF(2) bitset representation measured on the hot loop: 6.0x to 39.6x, against
-  the 40x to 64x that page had predicted, and it says where the prediction
-  went wrong.
+  the wrong instrument for the tree and backwards for the solver, what the
+  GF(2) bitset representation measured on the hot loop, and where its own
+  earlier prediction went wrong.

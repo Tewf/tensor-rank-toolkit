@@ -9,25 +9,21 @@ checked.
 
 ## What is actually ours, with the number for each
 
-Five things, and each one is a count somebody else can re-derive rather than an
-adjective.
+Five things and an answered question, each one a count somebody else can
+re-derive rather than an adjective.
 
 **Both directions, in one place.** Flip graphs and learned search produce upper
 bounds only, and `[chen2025]` says so in its own words: it is not clear how to use
 the technique for checking whether an optimum has been reached. Here `f2_5x5` is
-settled at **13 by this repository's own two searches**,
-[the exhaustive one](../../methods/bilinear_rank/exhaustive/)
-refuting 12 in **146 402 553 nodes** and
-[the incumbent one](../../methods/bilinear_rank/branch_and_bound/) exhibiting 13 in
-**80**. Until 2026-08-21 the upper half of that was a citation.
+settled at **13 by this repository's own two searches**, one refuting 12 and the
+other exhibiting 13; the node counts and what the upper half replaced are on
+[`where-we-stand.md`](where-we-stand.md).
 
 **The orbit quotient inside the exact search.** On the same question as
 `[yang2025]`'s own implementation, refuting six products for 2x2 matrix
-multiplication: **648 nodes against its 25 426**. That is the one comparison here
-that is not about the language or the hardware, and the reason it is not is the
-row beside it, our unquotiented search visiting **25 399** against its 25 426.
-Agreeing to a tenth of a percent on a tree size is what shows the two walk the
-same tree, so the 39x is the quotient and nothing else.
+multiplication: **648 nodes against its 25 426**, a 39x cut that is the quotient
+and nothing else. What isolates it from language and hardware is on
+[`comparing-against-the-baseline.md`](comparing-against-the-baseline.md).
 
 **Neither side of the field has both halves.** `[yang2025]` prunes by rank sums
 and by rref and has no quotient; `[covanov2019]`'s quotient removes whole orbits
@@ -40,8 +36,8 @@ value that rounds to zero is a different answer rather than a near one.
 
 **A refutation can be rechecked by a program that shares no code with this one.**
 The solver strand writes a DRAT proof, the standard machine-checkable refutation
-certificate for a SAT solver, and `drat-trim` rereads it, so a lower bound
-from that route rests on two programs rather than on our word.
+certificate for a SAT solver, and `drat-trim` rereads it; what that buys and what
+it replaced is on [`what-is-missing.md`](what-is-missing.md).
 
 **And one open question has been answered, in the direction nobody wanted.**
 `[chen2025]` closes by asking how to quotient the scalar freedom over `GF(p)` and

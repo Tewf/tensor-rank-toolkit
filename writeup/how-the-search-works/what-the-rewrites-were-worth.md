@@ -46,9 +46,9 @@ correctness controls rather than speed evidence.
 | `--device cpu` | 0.295 |
 | `--device auto`, engaging the card | **0.160** |
 
-The launch floor is measured at 8 192 elements, and the run says why it chose
-what it chose: *"gpu (261121 elements at the deepest leaf, at or over the 8192
-launch floor)"*.
+The launch floor is measured at 8 192 elements ([`what-to-wire.md`](what-to-wire.md)
+has how), and the run says why it chose what it chose: *"gpu (261121 elements
+at the deepest leaf, at or over the 8192 launch floor)"*.
 
 ## The canonical route
 

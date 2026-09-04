@@ -60,11 +60,10 @@ survives is 27 nodes traceable to a single line:
 
 ## Past `⟨2,2,2⟩`
 
-Six questions now, over three more tensors, and the baseline is above this search
-every time, by 0.06% to 1.04%. Three of the six the baseline cannot finish, which
-stopped mattering once its tree turned out to have a closed form; what accounts
-for the whole gap is one line of code:
-[`the-baseline-prunes-nothing.md`](the-baseline-prunes-nothing.md).
+Six questions now, over three more tensors, and the baseline leads on every one,
+three of them without finishing, which stopped mattering once its tree turned
+out to have a closed form. The margin and the one line of code that accounts for
+the whole gap: [`the-baseline-prunes-nothing.md`](the-baseline-prunes-nothing.md).
 
 ## What is not run yet
 
