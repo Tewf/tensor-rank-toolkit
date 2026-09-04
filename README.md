@@ -58,9 +58,7 @@ The groups around the strands:
 | [`start-here.md`](start-here.md) | a first session in plain words, for a reader without the field's vocabulary |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | the reasoned map; every flag with the measurement behind its default; the bibliography, keyed from the code |
 
-Why thirteen command-line tools rather than eight, and the one question each
-answers that no other does:
-[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
+Why thirteen command-line tools rather than eight: [`what-is-where.md`](what-is-where.md).
 
 ## Two measured facts
 
@@ -110,19 +108,9 @@ flow: [`web_interface/`](web_interface/).
 ## Interchange with the published literature
 
 A ⟨L, R, P⟩ triple in SMS is what the field publishes a bilinear algorithm
-as, and very nearly the only thing it publishes, so that is the way in as
-well as the way out. Two sources supply them in quantity: the
-[FMM catalogue](https://fmm.univ-lille.fr/), thousands of decompositions
-listed by rank, and [PLinOpt](https://github.com/jgdumas/plinopt), a C++
-library for linear and bilinear straight-line programs whose `data/` ships
-Strassen, Winograd, Karatsuba, Toom-3 and matrix multiplication up to
-32x32x32.
-
-Reading one is a test and not a claim: a Strassen triple published elsewhere
-rebuilds the fixture this repository writes from the definition of the map,
-entry for entry, and a disagreement would be ours to explain. **None of it is
-a dependency**: nothing here links against any of those tools and the whole
-suite passes on a machine where none is installed.
+as, so that is the way in as well as the way out. What publishes it, what a
+read of it tests, and why none of it is a dependency:
+[`core/formats/interchange/`](core/formats/interchange/).
 
 ```sh
 operators-to-tensor L.sms R.sms P.sms -q 2 > map.tensor     # a published algorithm, read in

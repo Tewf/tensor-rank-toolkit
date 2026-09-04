@@ -1,6 +1,6 @@
 # What it computes
 
-Ten strands, each with its own folder, its own tests and its own README. This
+Eleven strands, each with its own folder, its own tests and its own README. This
 page is the long form; [`README.md`](README.md) carries the headline numbers in a
 table and links here rather than restating them, which is the repository's
 zero-redundancy rule applied to itself.
@@ -94,6 +94,17 @@ sharper count marked provisional, and *exact* only where the pencil is
 diagonalisable over the field. Twelve pencils settled by exhaustion, three of
 which the classical formula gets wrong, are tabulated in
 [`methods/pencil_rank/`](methods/pencil_rank/).
+
+**[Moving a decomposition sideways](methods/bilinear_rank/flip_graph/).** Both
+searches build a decomposition from nothing; the flip graph of `[kauers2023]`
+starts from one that already works and rewrites two terms into two others
+without changing what they compute, so every vertex visited is a valid scheme
+and the walk can only ever produce upper bounds. The plateau extension, new
+here, crosses cost plateaus under a state budget: `⟨2,2,2⟩` crosses to 7 at a
+380-state budget and its negative control at 370 stays at 8
+([`results.json`](methods/bilinear_rank/flip_graph/results.json)). Where the
+method's records stand and who holds them:
+[`writeup/positioning/already-published.md`](writeup/positioning/already-published.md).
 
 **[The rank as a factorisation](methods/canonical_factorisation/).** Take `B`, the
 canonical basis of the slice space (the `nm` matrices with a single 1), and find

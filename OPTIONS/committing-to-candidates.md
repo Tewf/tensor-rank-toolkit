@@ -5,9 +5,8 @@ Precedence and `BILINEAR_TUNABLES`:
 [`precedence-and-tunables.md`](precedence-and-tunables.md).
 
 The third route, `find-at-rank`, is on the `rejected-experiments` branch and its
-flags are gone with it. Its defaults and what chose them are recorded there, and
-the measurement that retired it is in
-[`../methods/bilinear_rank/canonical_augmentation/measurements/`](../methods/bilinear_rank/canonical_augmentation/measurements/).
+flags are gone with it. Its defaults and what chose them are recorded there;
+which flags and what retired it: [`../OPTIONS.md`](../OPTIONS.md).
 
 ## `decide-rank-by-deflation`
 

@@ -67,9 +67,11 @@ binaries are instruments, not tools: `measure-leaf`, `price-canonical-route`
 and `show-limits` print facts about one machine and one working directory,
 build outside any `commands/`, and deliberately do not install.
 
-Two commands changed their names on 2026-09-03 and two more folders their
-homes; the retired spellings and what replaced them are recorded in
+Two commands changed their names on 2026-09-03; the retired spellings and
+what replaced them are recorded in
 [`OPTIONS/one-idea-several-spellings.md`](OPTIONS/one-idea-several-spellings.md).
+The folder moves of the same regrouping are recorded in
+[`CHANGELOG.md`](CHANGELOG.md).
 
 Every paper any of it implements is named once, in
 [`references.md`](references.md), and the code cites a key.

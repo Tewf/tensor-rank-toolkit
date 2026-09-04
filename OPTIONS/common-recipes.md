@@ -18,10 +18,9 @@ this page is only the shape of the line.
 | an answer with a receipt to multiply out | `factor-over-canonical-basis evidence/fixtures/f2_2x3.tensor` |
 | two slices, read off rather than searched | `decide-rank-by-pencil evidence/fixtures/pencil_split_f3_3.tensor` |
 
-**`--target k` is the difference between two questions.** With it the tool asks
-whether `k` products suffice and answers yes or no; without it, it sweeps and
-answers how few. A sweep holds its pool, so it is the one shape that cannot run
-on a pool too large to materialise.
+**`--target k` is the difference between two questions**
+([`searching-for-rank.md`](searching-for-rank.md)): a sweep holds its pool, so
+it is the one shape that cannot run on a pool too large to materialise.
 
 ## A refutation somebody else can check
 
@@ -35,8 +34,8 @@ not the answer's, which is [`../MEASURING.md`](../MEASURING.md)'s division.
 
 The run hands the certificate to `drat-trim` itself and stops if it fails to
 verify, so what `six.drat` is for is a reader who wants to check it again
-elsewhere. `--proof` is kissat only; any other solver, and the `smt` backend,
-refuse the flag rather than write nothing. `--break-symmetry` is sound and off by
+elsewhere. `--proof` is kissat only ([`asking-a-sat-solver.md`](asking-a-sat-solver.md)),
+and the `smt` backend refuses it too. `--break-symmetry` is sound and off by
 default, and is worth at least 76x on a question expected to answer no.
 
 ## Bounding a run so it cannot outlive you

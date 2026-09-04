@@ -7,8 +7,7 @@ behind it are different claims, and this file exists so the two are never read
 as one.
 
 Timings quoted here were taken under [`MEASURING.md`](MEASURING.md), whose
-**13% noise floor** applies to all of them. Two timings inside that band are not
-distinguishable and are not reported here as a ratio.
+**13% noise floor** governs every ratio in the tables below.
 
 **`--help` is the one flag every command shares**, the three instruments included.
 It prints the usage and leaves as **exit 2**: a line asking for help asked no

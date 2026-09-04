@@ -61,9 +61,8 @@ Les groupes autour des axes :
 | [`start-here.md`](start-here.md) | une première session en mots simples (en anglais) |
 | [`what-is-where.md`](what-is-where.md), [`OPTIONS.md`](OPTIONS.md), [`references.md`](references.md) | la carte raisonnée ; chaque option avec la mesure derrière sa valeur par défaut ; la bibliographie, citée par clé depuis le code |
 
-Pourquoi treize outils en ligne de commande plutôt que huit, et la question
-que chacun est seul à traiter :
-[`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
+Pourquoi treize outils en ligne de commande plutôt que huit :
+[`what-is-where.md`](what-is-where.md).
 
 ## Deux faits mesurés
 
@@ -115,21 +114,10 @@ fois par opérateur, comme un seul parcours :
 ## Échanges avec la littérature publiée
 
 Un triplet ⟨L, R, P⟩ au format SMS est ce sous quoi le domaine publie un
-algorithme bilinéaire, et à peu près la seule chose qu'il publie : c'est donc
-la porte d'entrée autant que la porte de sortie. Deux sources en distribuent
-en quantité : le [catalogue FMM](https://fmm.univ-lille.fr/), des milliers de
-décompositions classées par rang, et
-[PLinOpt](https://github.com/jgdumas/plinopt), une bibliothèque C++ pour les
-programmes linéaires et bilinéaires en ligne droite, dont le `data/` livre
-Strassen, Winograd, Karatsuba, Toom-3 et la multiplication matricielle
-jusqu'à 32x32x32.
-
-En lire un est un test et non une affirmation : un triplet de Strassen publié
-ailleurs reconstruit, entrée par entrée, le jeu d'essai que ce dépôt écrit à
-partir de la définition de l'application, et un désaccord serait à nous de
-l'expliquer. **Rien de tout cela n'est une dépendance** : rien ici ne se lie
-à aucun de ces outils, et la suite entière passe sur une machine où aucun
-n'est installé.
+algorithme bilinéaire, donc c'est la porte d'entrée autant que la porte de
+sortie. Qui le publie, ce que sa lecture met à l'épreuve, et pourquoi rien de
+tout cela n'est une dépendance :
+[`core/formats/interchange/`](core/formats/interchange/).
 
 ```sh
 operators-to-tensor L.sms R.sms P.sms -q 2 > map.tensor     # un algorithme publié, lu ici
