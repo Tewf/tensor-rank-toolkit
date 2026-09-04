@@ -16,8 +16,8 @@ namespace gpu_leaf {
 ///
 /// `indices` is sorted, because the threads that wrote it were not ordered and
 /// the greedy the host runs afterwards depends on the order: see
-/// [`README.md`](README.md) on why sorting is enough to make the answer
-/// bit-identical to the sequential loop.
+/// [`why-the-answer-is-the-same.md`](why-the-answer-is-the-same.md) on why sorting
+/// is enough to make the answer bit-identical to the sequential loop.
 ///
 /// `overflowed` true means the survivor buffer was too small and some survivors
 /// were never written, so `indices` is not an answer to anything. Nothing here

@@ -1,7 +1,8 @@
 # infrastructure/
 
 How a run happens, bounded: nothing here answers a question about a tensor,
-and every command uses all of it.
+and every command draws on some of it (not all: `gpu_leaf/` joins only where
+nvcc exists, below).
 
 In this group:
 

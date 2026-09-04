@@ -9,8 +9,9 @@ In this folder:
 - [`arguments.h`](arguments.h): the command-line walk, written once, so every
   refusal names the flag and quotes the word.
 - [`exit_code.h`](exit_code.h): the exit vocabulary. Yes is 0, a proved no is
-  1, a line that did not parse is 2, a spent budget is 3, a run that could
-  not start is 5. Neither 1 nor 3 is a crash.
+  1, a line that did not parse is 2, a spent budget is 3, an answer that
+  failed its own check is 4, a run that could not start is 5. Neither 1 nor
+  3 is a crash.
 - [`report.h`](report.h): commentary goes to stderr with `#` in front,
   results go to stdout, bare.
 - [`size_argument.h`](size_argument.h) and

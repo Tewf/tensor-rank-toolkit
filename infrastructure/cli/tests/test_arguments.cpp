@@ -104,8 +104,6 @@ void check_reads_a_line() {
     check::equal("and keeps its sign", negative.target, -1);
 }
 
-/// The seam with `symmetry_argument.h`: that parser walks several words itself,
-/// and the walk has to resume after the last one it took.
 /// `--help` is where three commands read a flag as a filename and left as 5,
 /// "could not run at all", when the line had asked a question this header can
 /// answer. Nothing about it is special: it is a flag because it looks like one,
@@ -122,6 +120,8 @@ void check_help_is_a_flag_and_not_a_filename() {
     check::text("leaving the file alone", short_form.file, "tensor.sms");
 }
 
+/// The seam with `symmetry_argument.h`: that parser walks several words itself,
+/// and the walk has to resume after the last one it took.
 void check_hands_over_to_the_symmetry_parser() {
     Parsed parsed;
     check::text("a symmetry and a flag after it are both accepted",

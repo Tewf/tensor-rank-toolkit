@@ -13,6 +13,9 @@ In this folder:
   run may ask for, and refuses the rest before the allocator sees it.
 - [`parallel.h`](parallel.h): the worker pool behind `--threads`.
 - [`device.h`](device.h): the cpu/gpu ranking behind `--device`.
+- [`card_failure_note.h`](card_failure_note.h): the one sentence, printed once
+  at a command's end, saying a card fell over and the host answered; kept
+  apart from `card_failure.h`, which only records.
 - [`child_process.h`](child_process.h): solvers run in a process group of
   their own, with the alarm that ends them; its header explains the one
   window that leaves open.
@@ -27,8 +30,8 @@ installed):
 ```sh
 build/infrastructure/run_limits/show-limits
 # show-limits: what a run is bounded by here
-#
-# machine, as the kernel reports it
-#   cores                   12                    hardware_concurrency()
-#   physical memory         31.0 GiB              MemTotal
+
+machine, as the kernel reports it
+  cores                   12                    hardware_concurrency()
+  physical memory         31.0 GiB              MemTotal
 ```

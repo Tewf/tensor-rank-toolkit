@@ -103,7 +103,7 @@ inline long long parse_whole_number(const std::string& named, const std::string&
 ///     if (arguments.is("--json")) as_json = true;
 ///     else if (arguments.is("--target")) target = arguments.whole_number();
 ///     else if (arguments.is("--max-memory")) budget = arguments.memory_size();
-///     else if (arguments.is("--symmetry", "-s")) symmetry = arguments.parsed_by(parse_symmetry);
+///     else if (arguments.is("--symmetry", "-s")) symmetry = arguments.parsed_by(cli::parse_symmetry);
 ///     else arguments.refuse();
 /// }
 /// const std::string path = arguments.filename();  // empty or "-": none named
