@@ -26,21 +26,23 @@ its provenance).
 
 ## Repository layout
 
-The ten method strands. Method and caveats, per strand:
-[`what-it-computes.md`](what-it-computes.md).
+One row per strand: what it asks, on what guarantee, and its headline
+number. The row is the whole claim; the strand's folder holds the depth, and
+the long form across strands is [`what-it-computes.md`](what-it-computes.md).
 
-| Strand | Asks | Headline |
+| Strand | Asks, on what guarantee | Headline |
 |---|---|---|
-| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/) | rank from above, cheaply | F2 5x5 to **14**, F3 3x6 to **10** |
-| [exhaustion](methods/bilinear_rank/exhaustive/) | rank outright, with a proof | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
-| [branch and bound](methods/bilinear_rank/branch_and_bound/) | the same tree, cut by what is built | cyclic F2 7 from 15 to **13**, in 22 nodes |
+| [greedy heuristic](methods/bilinear_rank/greedy_heuristic/) | rank from above in polynomial time: matroid-greedy, exact for its first step's basis, no guarantee past it | F2 5x5 to **14**, F3 3x6 to **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive/) | rank outright: a **complete decision procedure** after [`[bdez2012]`](references.md), exponential as NP-completeness leads one to expect | **rank of 2x2 matmul = 7**: 7 found and checked, 6 refuted |
+| [branch and bound](methods/bilinear_rank/branch_and_bound/) | the same tree, cut by the incumbent's cost, stoppable at any moment | cyclic F2 7 from 15 to **13**, in 22 nodes |
 | [rank sums](core/linear_algebra/tensor_rank_sum.h) | a floor with no search | GF(16) from 4 to **8**, in milliseconds |
-| [pencils](methods/pencil_rank/) | two slices, in polynomial time | the Kronecker form, and where Ja'Ja' stops holding |
+| [pencils](methods/pencil_rank/) | two slices, in polynomial time, read off the Kronecker form | the Kronecker form, and where Ja'Ja' stops holding |
 | [factorisation](methods/canonical_factorisation/) | the rank as `S = C A` | an answer with a receipt anybody can multiply out |
-| [satisfiability](methods/satisfiability/) | the same question, to a solver | pool-free, and a refutation checkable as DRAT |
-| [symmetry](methods/bilinear_rank/orbit_reduction/) | one member per orbit | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
-| [isomorph-free](methods/bilinear_rank/canonical_augmentation/) | each class exactly once, no memory | **22 778x fewer nodes** on 2x2 matmul, counting; asked to decide instead, the same generator is 5.1x the wall clock (below) |
-| [sparsification](methods/matrix_sparsification/) | fewer additions, rank fixed | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
+| [satisfiability](methods/satisfiability/) | the same question, to a SAT solver, its encoding after [`[heule2021]`](references.md) | pool-free, and a refutation checkable as DRAT, a proof an independent program verifies |
+| [symmetry](methods/bilinear_rank/orbit_reduction/) | one member per orbit of the map's automorphisms | **39.2x fewer nodes** on a refutation, 261 121 maps to **13 orbits** |
+| [isomorph-free](methods/bilinear_rank/canonical_augmentation/) | each class exactly once, no memory, after [`[mckay1998]`](references.md); an enumeration figure, and deciding instead trades 53x fewer nodes for 5.1x the wall clock | **22 778x fewer nodes** on 2x2 matmul, counting |
+| [flip graph](methods/bilinear_rank/flip_graph/) | moving a working decomposition sideways, after [`[kauers2023]`](references.md): upper bounds only, and today's records are [`[moosbauer2025]`](references.md)'s | the ⟨2,2,2⟩ plateau crossed to **7** at a 380-state budget, the control at 370 refusing |
+| [sparsification](methods/matrix_sparsification/) | fewer additions, rank fixed, after [`[karstadt2017]`](references.md) and [`[beniamini2020]`](references.md), perhaps their only public implementation ([the search, read narrowly](writeup/positioning/the-sparsification-strand.md)) | a rank-23 ⟨3,3,3⟩ scheme **221 nonzeros to 128**, the minimum over every change of basis, every entry left 0 or ±1 |
 
 The groups around the strands:
 
@@ -59,45 +61,7 @@ Why thirteen command-line tools rather than eight, and the one question each
 answers that no other does:
 [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
 
-## Methods
-
-The load-bearing guarantees, a paragraph each; every strand's own page
-states its own.
-
-**The greedy heuristic** descends rank by matroid-greedy steps: exact for the
-basis its first step picks, polynomial-time throughout, and offering no
-optimality guarantee past that step, which its correctness note states
-precisely.
-
-**The exhaustive search** is a **complete decision procedure** after
-[`[bdez2012]`](references.md), exponential as the NP-completeness of the
-problem leads one to expect.
-
-**The isomorph-free strand** generates one candidate per equivalence class in
-the sense of [`[mckay1998]`](references.md), a count for *enumeration*: asked
-to *decide* instead, the same generator trades those fewer nodes for a slower
-clock, 53x fewer nodes for 5.1x the wall clock, which is why deciding does not
-use it ([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
-
-**The satisfiability strand** reduces the rank decision to SAT, its binary
-encoding the idea of [`[heule2021]`](references.md); a negative answer there
-is a DRAT refutation checked by an independent program.
-
-**The flip graph strand** starts from a decomposition that already works and
-moves it sideways, after [`[kauers2023]`](references.md): upper bounds only,
-by construction. Today's records belong to the symmetry-restricted walk of
-[`[moosbauer2025]`](references.md), and the successors, adaptive and meta
-walks included, are catalogued in
-[`writeup/positioning/already-published.md`](writeup/positioning/already-published.md).
-
-**The sparsification strand** implements [`[karstadt2017]`](references.md)'s
-alternative-basis construction and [`[beniamini2020]`](references.md)'s
-sparsification over it, and a search found no other public implementation of
-either, a claim
-[`writeup/positioning/the-sparsification-strand.md`](writeup/positioning/the-sparsification-strand.md)
-reads narrowly. It proves its minima: the reduction of the published
-`Grey-221` operators to 128 nonzeros is a minimum over every invertible
-change of basis, not a best effort.
+## Two measured facts
 
 **The leaf is where the exhaustive search lives**, and neither of its two
 routes forms an element any more: the walk steps in reflected Gray order over
@@ -219,6 +183,4 @@ bibliography. The complexity results framing the undertaking: J. Håstad,
 complexity of tensor rank*, Theory Comput. Syst. 62 (2018),
 [`[schaefer2018]`](references.md); C. J. Hillar and L.-H. Lim, *Most tensor
 problems are NP-hard*, J. ACM 60 (2013), [`[hillar2013]`](references.md).
-The exhaustive search implements [`[bdez2012]`](references.md), the
-isomorph-free generation follows [`[mckay1998]`](references.md), and the
-binary SAT encoding shares its idea with [`[heule2021]`](references.md).
+The key each strand implements stands in its row of the layout table above.

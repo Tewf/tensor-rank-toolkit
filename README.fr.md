@@ -28,22 +28,25 @@ par [`start-here.md`](start-here.md) (en anglais).
 
 ## Organisation du dépôt
 
-Les dix axes de méthode. La méthode et les réserves de
-chacun : [`what-it-computes.md`](what-it-computes.md), en anglais comme le
-reste de la documentation technique.
+Une ligne par axe : sa question, sa garantie, et son chiffre de tête. La
+ligne est toute l'affirmation ; le dossier de l'axe porte la profondeur, et la
+forme longue à travers les axes est
+[`what-it-computes.md`](what-it-computes.md), en anglais comme le reste de la
+documentation technique.
 
-| Axe | Question | Résultat |
+| Axe | Question, et sur quelle garantie | Résultat |
 |---|---|---|
-| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/) | le rang par le haut, à bas prix | F2 5x5 à **14**, F3 3x6 à **10** |
-| [exhaustion](methods/bilinear_rank/exhaustive/) | le rang tranché, avec preuve | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
-| [séparation et évaluation](methods/bilinear_rank/branch_and_bound/) | le même arbre, élagué par ce qui est déjà construit | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
+| [heuristique gloutonne](methods/bilinear_rank/greedy_heuristic/) | le rang par le haut en temps polynomial : gloutonne sur matroïde, exacte pour la base de sa première étape, sans garantie au-delà | F2 5x5 à **14**, F3 3x6 à **10** |
+| [exhaustion](methods/bilinear_rank/exhaustive/) | le rang tranché : une **procédure de décision complète** d'après [`[bdez2012]`](references.md), exponentielle comme la NP-complétude le laisse attendre | **rang de matmul 2x2 = 7** : 7 trouvé et vérifié, 6 réfuté |
+| [séparation et évaluation](methods/bilinear_rank/branch_and_bound/) | le même arbre, élagué par le coût du titulaire, arrêtable à tout instant | convolution cyclique F2 7, de 15 à **13**, en 22 nœuds |
 | [sommes de rangs](core/linear_algebra/tensor_rank_sum.h) | un plancher sans recherche | GF(16) de 4 à **8**, en millisecondes |
-| [faisceaux](methods/pencil_rank/) | deux tranches, en temps polynomial | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
+| [faisceaux](methods/pencil_rank/) | deux tranches, en temps polynomial, lues sur la forme de Kronecker | la forme de Kronecker, et là où Ja'Ja' cesse de valoir |
 | [factorisation](methods/canonical_factorisation/) | le rang comme `S = C A` | une réponse avec un reçu que quiconque peut multiplier |
-| [satisfiabilité](methods/satisfiability/) | la même question, à un solveur | sans réservoir, et une réfutation vérifiable en DRAT |
-| [symétrie](methods/bilinear_rank/orbit_reduction/) | un membre par orbite | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
-| [sans isomorphes](methods/bilinear_rank/canonical_augmentation/) | chaque classe une seule fois | **22 778x moins de nœuds** sur matmul 2x2 |
-| [creusement](methods/matrix_sparsification/) | moins d'additions, rang fixé | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
+| [satisfiabilité](methods/satisfiability/) | la même question, à un solveur SAT, l'encodage d'après [`[heule2021]`](references.md) | sans réservoir, et une réfutation vérifiable en DRAT, une preuve qu'un programme indépendant contrôle |
+| [symétrie](methods/bilinear_rank/orbit_reduction/) | un membre par orbite des automorphismes de l'application | **39,2x moins de nœuds** sur une réfutation, 261 121 applications en **13 orbites** |
+| [sans isomorphes](methods/bilinear_rank/canonical_augmentation/) | chaque classe une seule fois, sans mémoire, d'après [`[mckay1998]`](references.md) ; un chiffre de dénombrement, et décider échange 53x moins de nœuds contre 5,1x le temps de calcul | **22 778x moins de nœuds** sur matmul 2x2, en dénombrant |
+| [graphe de flips](methods/bilinear_rank/flip_graph/) | déplacer latéralement une décomposition qui marche, d'après [`[kauers2023]`](references.md) : bornes supérieures seulement, et les records du jour sont ceux de [`[moosbauer2025]`](references.md) | le plateau de ⟨2,2,2⟩ franchi vers **7** avec un budget de 380 états, le témoin à 370 refusant |
+| [creusement](methods/matrix_sparsification/) | moins d'additions, rang fixé, d'après [`[karstadt2017]`](references.md) et [`[beniamini2020]`](references.md), peut-être leur seule implémentation publique ([la recherche, lue au sens étroit](writeup/positioning/the-sparsification-strand.md)) | un schéma ⟨3,3,3⟩ de rang 23 de **221 non-nuls à 128**, minimum sur tout changement de base, chaque coefficient laissé à 0 ou ±1 |
 
 Les groupes autour des axes :
 
@@ -62,47 +65,7 @@ Pourquoi treize outils en ligne de commande plutôt que huit, et la question
 que chacun est seul à traiter :
 [`OPTIONS/one-question-per-command.md`](OPTIONS/one-question-per-command.md).
 
-## Méthodes
-
-Les garanties porteuses, un paragraphe chacune ; la page de chaque axe
-énonce la sienne.
-
-**L'heuristique gloutonne** descend le rang par pas gloutons sur matroïde :
-exacte pour la base que choisit sa première étape, polynomiale de bout en
-bout, et sans garantie d'optimalité au-delà, ce que sa note de correction
-énonce précisément.
-
-**La recherche exhaustive** est une **procédure de décision complète**
-d'après [`[bdez2012]`](references.md), exponentielle comme la NP-complétude
-du problème le laisse attendre.
-
-**L'axe sans isomorphes** engendre un candidat par classe d'équivalence au
-sens de [`[mckay1998]`](references.md), un chiffre de *dénombrement* :
-demandé de *décider* plutôt, le même générateur échange ces nœuds en moins
-contre un temps de calcul plus long, 53x moins de nœuds pour 5,1x le temps de
-calcul, ce pour quoi la décision ne l'utilise pas
-([`writeup/how-the-search-works/`](writeup/how-the-search-works/)).
-
-**L'axe satisfiabilité** réduit la décision du rang à SAT, son encodage
-binaire reprenant l'idée de [`[heule2021]`](references.md) ; une réponse
-négative y est une réfutation DRAT vérifiée par un programme indépendant.
-
-**L'axe graphe de flips** part d'une décomposition qui marche déjà et la
-déplace latéralement, d'après [`[kauers2023]`](references.md) : des bornes
-supérieures seulement, par construction. Les records du jour appartiennent à
-la marche restreinte aux symétries de [`[moosbauer2025]`](references.md), et
-les suites, marches adaptatives et méta comprises, sont cataloguées dans
-[`writeup/positioning/already-published.md`](writeup/positioning/already-published.md).
-
-**L'axe creusement** implémente la construction en base alternative de
-[`[karstadt2017]`](references.md) et le creusement de
-[`[beniamini2020]`](references.md) par-dessus, et une recherche n'a trouvé
-aucune autre implémentation publique de l'un ou de l'autre, une affirmation
-que
-[`writeup/positioning/the-sparsification-strand.md`](writeup/positioning/the-sparsification-strand.md)
-lit au sens étroit. Il prouve ses minima : la réduction des opérateurs
-publiés `Grey-221` à 128 non-nuls est un minimum sur tout changement de base
-inversible, pas un meilleur effort.
+## Deux faits mesurés
 
 **La feuille est l'endroit où vit la recherche exhaustive**, et aucune de ses
 deux routes n'y forme plus d'élément : le parcours avance en code de Gray
@@ -233,7 +196,6 @@ complète. Les résultats de complexité qui encadrent l'entreprise : J. Håstad
 [`[hastad1990]`](references.md) ; M. Schaefer et D. Štefankovič, *The
 complexity of tensor rank*, Theory Comput. Syst. 62 (2018),
 [`[schaefer2018]`](references.md) ; C. J. Hillar et L.-H. Lim, *Most tensor
-problems are NP-hard*, J. ACM 60 (2013), [`[hillar2013]`](references.md). La
-recherche exhaustive implémente [`[bdez2012]`](references.md), la génération
-sans isomorphes suit [`[mckay1998]`](references.md), et l'encodage SAT
-binaire reprend l'idée de [`[heule2021]`](references.md).
+problems are NP-hard*, J. ACM 60 (2013), [`[hillar2013]`](references.md).
+La clé que chaque axe implémente figure dans sa ligne du tableau
+d'organisation ci-dessus.
